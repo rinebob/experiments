@@ -1,0 +1,19 @@
+<!--<mat-tab-group mat-align-tabs="start"-->
+<!--               animationDuration="0ms">-->
+<!--  <mat-tab label="Counter"-->
+<!--  routerLink="/counter"-->
+<!--  routerLinkActive="active"></mat-tab>-->
+<!--  <mat-tab label="Tic Tac Toe"-->
+<!--           routerLink="/tic-tac-toe"-->
+<!--           routerLinkActive="active"></mat-tab>-->
+<!--  <mat-tab label="Third"></mat-tab>-->
+<!--</mat-tab-group>-->
+
+<nav mat-tab-nav-bar mat-align-tabs="start"
+               animationDuration="0ms">
+  <a mat-tab-link *ngFor="let link of navLinks"
+           [routerLink]="link.link">
+    {{link.label}}</a>
+</nav>
+<!--    [routerLinkActive]="active"-->
+<router-outlet></router-outlet>
