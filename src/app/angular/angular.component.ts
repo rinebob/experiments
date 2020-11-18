@@ -24,8 +24,8 @@ export class AngularComponent implements OnInit {
         index: 1
       },
       {
-        label: 'Other',
-        link: './counter',
+        label: 'Weather',
+        link: './weather',
         index: 2
       },
     ];
