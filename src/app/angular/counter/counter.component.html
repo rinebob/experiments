@@ -1,1 +1,14 @@
-<p>counter works!</p>
+<div class="container">
+  <header>
+    <h1>
+      {{title}}
+    </h1>
+  </header>
+  <main>
+    <h2>Count: {{count}} </h2>
+    <button mat-raised-button color="primary" (click)="resetCount()">Reset</button>
+    <button mat-raised-button color="primary" (click)="handleIncrease()">Increase</button>
+    <button mat-raised-button color="primary" (click)="handleDecrease()">Decrease</button>
+  </main>
+</div>
+
