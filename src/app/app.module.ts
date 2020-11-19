@@ -9,12 +9,14 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatToolbarModule} from '@angular/material/toolbar';
 
 import { AppComponent } from './app.component';
 import { AngularModule } from './angular/angular.module';
 import { DeeThreePanelComponent } from './d3/dee-three-panel/dee-three-panel.component';
 import { DashboardPanelComponent } from './dashboard/dashboard-panel/dashboard-panel.component';
+import {ReactiveFormsModule} from '@angular/forms';
 
 
 
@@ -34,8 +36,10 @@ import { DashboardPanelComponent } from './dashboard/dashboard-panel/dashboard-p
     MatIconModule,
     MatListModule,
     MatSidenavModule,
+    MatSlideToggleModule,
     MatTabsModule,
-    MatToolbarModule
+    MatToolbarModule,
+    ReactiveFormsModule
   ],
   providers: [],
   exports: [
