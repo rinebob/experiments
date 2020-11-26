@@ -1,3 +1,5 @@
+@import "src/variables";
+
 :host {
   margin: 0;
   padding: 0;
@@ -12,7 +14,7 @@
   align-items: center;
   flex-direction: column;
   min-height: 100vh;
-  color: blue;
+  color: $angular-primary;
   margin-top: 30px;
 }
 
@@ -30,6 +32,6 @@ button {
 }
 
 .active {
-  color: blue;
+  color: $angular-primary;
   text-transform: uppercase;
 }

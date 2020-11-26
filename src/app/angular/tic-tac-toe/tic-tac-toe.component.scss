@@ -1,4 +1,5 @@
 //============ "Global" styles ==========
+@import "src/variables";
 @import "~ngx-toastr/toastr";
 
 *,
@@ -23,7 +24,7 @@ h1 {
 }
 .title {
   text-align: center;
-  color: mediumblue;
+  color: $angular-primary;
   font-size: 30px;
   padding: 10px 20px;
 }

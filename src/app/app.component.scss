@@ -1,4 +1,4 @@
-
+@import "src/variables";
 
 :host {
   display: flex;
@@ -49,5 +49,5 @@ main {
 }
 
 .active {
-  color: #1976d2;
+  color: $angular-primary;
 }
