@@ -7,7 +7,12 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  //border: 1px solid black;
+  border: 1px solid black;
+}
+
+:host {
+  display: flex;
+  justify-content: center;
 }
 
 body {
@@ -23,19 +28,20 @@ h1 {
 }
 .title {
   text-align: center;
-  color: mediumblue;
+  color: primary;
   font-size: 30px;
   padding: 10px 20px;
 }
 .container {
   //height: 100vh;
+  // max-width: 50vw;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   //background-image: url(./assets/bgc.jpg);
 }
 
 .box {
-  width: 50%;
+  // width: 50%;
   //height: 150px;
   display: flex;
   flex-direction: column;
@@ -49,6 +55,7 @@ h1 {
   justify-content: center;
 
   flex-wrap: wrap;
+  width: 375px;
 }
 
 .box2 {

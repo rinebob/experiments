@@ -1,7 +1,8 @@
-<h1>{{title}}</h1>
+
 <div class="container">
+  <h1>{{title}}</h1>
   <div class="box">
-    <p class="title">Player {{player}} turn</p>
+    <p class="title">Player turn: {{player}}</p>
     <div class="box1">
       <div *ngFor="let square of squares; index as i"
            (click)="handleClick(+i)"

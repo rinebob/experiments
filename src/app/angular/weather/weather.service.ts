@@ -23,7 +23,7 @@ export class WeatherService {
       map(data => ({
 
         ...data,
-        image: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
+        // image: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`
       })),
       delay(1500)
     );
