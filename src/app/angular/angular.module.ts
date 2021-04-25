@@ -2,31 +2,27 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
 
-// import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
-// import {ToastrModule} from 'ngx-toastr';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {ToastrModule} from 'ngx-toastr';
 
-// import {MatButtonModule} from '@angular/material/button';
-// import {MatCardModule} from '@angular/material/card';
-// import {MatOptionModule} from '@angular/material/core';
-// import {MatProgressBarModule} from '@angular/material/progress-bar';
-// import {MatSelectModule} from '@angular/material/select';
-// import {MatTabsModule} from '@angular/material/tabs';
-// import {MatToolbarModule} from '@angular/material/toolbar';
-// import {ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {MatListModule} from '@angular/material/list';
+import {MatOptionModule} from '@angular/material/core';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatSelectModule} from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {ReactiveFormsModule} from '@angular/forms';
 
 import {AngularComponent} from './angular.component';
-// import {CounterComponent} from './counter/counter.component';
-// import {TicTacToeComponent} from './tic-tac-toe/tic-tac-toe.component';
-// import {IconComponent} from './tic-tac-toe/icon/icon.component';
-// import {WeatherComponent} from './weather/weather.component';
-// import {WeatherReportComponent} from './weather/weather-report/weather-report.component';
-
+import { RxjsComponent } from './rxjs/rxjs.component';
 
 const routes: Routes = [
   {
     path: '', component: AngularComponent,
     children: [
-      // {path: 'counter', component: CounterComponent},
+      {path: 'rxjs', component: RxjsComponent},
       // {path: 'tic-tac-toe', component: TicTacToeComponent},
       // {
       //   path: 'weather', component: WeatherComponent,
@@ -41,24 +37,22 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AngularComponent,
-    // CounterComponent,
-    // TicTacToeComponent,
-    // IconComponent,
-    // WeatherComponent,
-    // WeatherReportComponent
+    RxjsComponent,
+
   ],
   imports: [
-    // CommonModule,
-    // FontAwesomeModule,
-    // MatButtonModule,
-    // MatCardModule,
-    // MatOptionModule,
-    // MatProgressBarModule,
-    // MatSelectModule,
-    // MatTabsModule,
-    // MatToolbarModule,
-    // ReactiveFormsModule,
-    // ToastrModule.forRoot(),
+    CommonModule,
+    FontAwesomeModule,
+    MatButtonModule,
+    MatCardModule,
+    MatListModule,
+    MatOptionModule,
+    MatProgressBarModule,
+    MatSelectModule,
+    MatTabsModule,
+    MatToolbarModule,
+    ReactiveFormsModule,
+    ToastrModule.forRoot(),
     RouterModule.forChild(routes),
   ]
 })
