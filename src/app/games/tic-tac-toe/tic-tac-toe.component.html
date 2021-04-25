@@ -1,0 +1,22 @@
+
+<div class="container">
+  <h1>{{title}}</h1>
+  <div class="box">
+    <p class="title">Player turn: {{player}}</p>
+    <div class="box1">
+      <div *ngFor="let square of squares; index as i"
+           (click)="handleClick(+i)"
+           class="icon">
+        <app-icon [icon]="square"></app-icon>
+      </div>
+    </div>
+
+  </div>
+  <div class="box box2" *ngIf="winMessage">
+    <h2>Game Over!  {{winMessage | titlecase}}</h2>
+    <button
+      (click)="reloadGame()"
+      mat-raised-button
+      color="primary">Reload Game</button>
+  </div>
+</div>

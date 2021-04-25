@@ -3,26 +3,29 @@
 </mat-toolbar>
 <div class="content">
   <div class="row">
+    <form [formGroup]="weatherForm">
       <mat-form-field>
-      <mat-label>Select Country</mat-label>
-      <mat-select [formControl]="countryControl">
-        <mat-option *ngFor="let country of countries"
-        [value]="country">
-          {{country.name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Select City</mat-label>
-      <mat-select [formControl]="cityControl">
-        <mat-option
-          *ngFor="let city of cities$ | async"
-          [value]="city">
-          {{city}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        <mat-label>Select Country</mat-label>
+        <mat-select formControlName="country">
+          <mat-option *ngFor="let country of countriesList"
+          [value]="country.code">
+            {{country.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Select City</mat-label>
+        <mat-select formControlName="city">
+          <mat-option
+            *ngFor="let city of citiesList"
+            [value]="city">
+            {{city}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
   </div>
+  <p>{{weatherForm.value | json}}</p>
   <br />
   <router-outlet></router-outlet>
 </div>

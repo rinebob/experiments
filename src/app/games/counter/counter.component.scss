@@ -1,0 +1,35 @@
+:host {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-size: cover;
+  width: auto;
+}
+.container {
+  text-align: center;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  color: blue;
+  margin-top: 30px;
+}
+
+button {
+  //color: #fff;
+  padding: 5px 25px;
+  margin: 10px;
+  font-size: 16px;
+  text-transform: uppercase;
+  width: 120px;
+  //border-radius: 15px;
+  //background-color: #ff00d4;
+
+
+}
+
+.active {
+  color: blue;
+  text-transform: uppercase;
+}

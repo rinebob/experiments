@@ -21,6 +21,7 @@ export class WeatherReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.data$ = this.route.params.pipe(
+      tap(params => console.log(params)),
       map(params => params["locationName"]),
       filter(name => !!name),
       tap(params => {

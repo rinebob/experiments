@@ -14,20 +14,25 @@ export class AngularComponent implements OnInit {
   constructor(private router: Router) {
     this.navLinks = [
       {
-        label: 'Counter',
-        link: './counter',
+        label: 'RxJs',
+        link: './rxjs',
         index: 0
       },
-      {
-        label: 'Tic-Tac-Toe',
-        link: './tic-tac-toe',
-        index: 1
-      },
-      {
-        label: 'Weather',
-        link: './weather',
-        index: 2
-      },
+      // {
+      //   label: 'Counter',
+      //   link: './counter',
+      //   index: 0
+      // },
+      // {
+      //   label: 'Tic-Tac-Toe',
+      //   link: './tic-tac-toe',
+      //   index: 1
+      // },
+      // {
+      //   label: 'Weather',
+      //   link: './weather',
+      //   index: 2
+      // },
     ];
   }
 
