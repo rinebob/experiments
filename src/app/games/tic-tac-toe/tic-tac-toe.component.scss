@@ -1,0 +1,89 @@
+//============ "Global" styles ==========
+@import "~ngx-toastr/toastr";
+
+*,
+*::after,
+*::before {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  border: 1px solid black;
+}
+
+:host {
+  display: flex;
+  justify-content: center;
+}
+
+body {
+  position: relative;
+  //background-image: url(./assets/bgc.jpg);
+}
+//=====================================
+h1 {
+  //color: white;
+  margin-top: 20px;
+  text-align: center;
+  width: 100%;
+}
+.title {
+  text-align: center;
+  color: primary;
+  font-size: 30px;
+  padding: 10px 20px;
+}
+.container {
+  //height: 100vh;
+  // max-width: 50vw;
+  display: flex;
+  flex-direction: column;
+  //background-image: url(./assets/bgc.jpg);
+}
+
+.box {
+  // width: 50%;
+  //height: 150px;
+  display: flex;
+  flex-direction: column;
+
+  //justify-content: center;
+  //align-items: center;
+}
+
+.box1 {
+  display: flex;
+  justify-content: center;
+
+  flex-wrap: wrap;
+  width: 375px;
+}
+
+.box2 {
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 50px;
+  color: #000000;
+  font-weight: bolder;
+  height: 100px;
+  width: 100px;
+  margin: 10px;
+
+}
+
+button {
+  width: 100px;
+  text-transform: uppercase;
+}
+
+
+
