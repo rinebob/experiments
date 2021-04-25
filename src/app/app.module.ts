@@ -15,6 +15,7 @@ import { AppComponent } from './app.component';
 import { AngularModule } from './angular/angular.module';
 import { DeeThreePanelComponent } from './d3/dee-three-panel/dee-three-panel.component';
 import { DashboardPanelComponent } from './dashboard/dashboard-panel/dashboard-panel.component';
+import { GamesModule } from './games/games.module';
 
 
 
@@ -35,7 +36,8 @@ import { DashboardPanelComponent } from './dashboard/dashboard-panel/dashboard-p
     MatListModule,
     MatSidenavModule,
     MatTabsModule,
-    MatToolbarModule
+    MatToolbarModule,
+    GamesModule,
   ],
   providers: [],
   exports: [
