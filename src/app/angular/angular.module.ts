@@ -17,12 +17,15 @@ import {ReactiveFormsModule} from '@angular/forms';
 
 import {AngularComponent} from './angular.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
+import { ControlsComponent } from './controls/controls.component';
 
 const routes: Routes = [
   {
     path: '', component: AngularComponent,
     children: [
+      {path: '', redirectTo: 'rxjs', pathMatch: 'full'},
       {path: 'rxjs', component: RxjsComponent},
+      {path: 'controls', component: ControlsComponent},
       // {path: 'tic-tac-toe', component: TicTacToeComponent},
       // {
       //   path: 'weather', component: WeatherComponent,
@@ -38,6 +41,7 @@ const routes: Routes = [
   declarations: [
     AngularComponent,
     RxjsComponent,
+    ControlsComponent,
 
   ],
   imports: [

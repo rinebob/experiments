@@ -1,27 +1,13 @@
-<!-- <p>angular-component works dude!</p> -->
+<div class="list-container">
+   <mat-nav-list>
+      <a mat-list-item 
+         [routerLink]="link.link"
+         routerLinkActive="active"
+         *ngFor="let link of navLinks">
+      {{ link.label }}
+      </a>
+   </mat-nav-list>
+   <h2>Angular</h2>
+</div>
 
-<!-- <mat-list>
-   <mat-list-item> Pepper </mat-list-item>
-   <mat-list-item> Salt </mat-list-item>
-   <mat-list-item> Paprika </mat-list-item>
-  </mat-list> -->
-
-
-<mat-nav-list>
-   <a mat-list-item 
-   [routerLink]="link.link"
-   routerLinkActive="active"
-   *ngFor="let link of navLinks"> {{ link.label }} </a>
-</mat-nav-list>
-
-
-<!-- <nav mat-tab-nav-bar
-     mat-align-tabs="center"
-     animationDuration="0ms">
-  <a *ngFor="let link of navLinks"
-     mat-tab-link
-     [routerLink]="link.link"
-     routerLinkActive="active">
-    Link text {{link.label}}</a>
-</nav> -->
 <router-outlet></router-outlet>

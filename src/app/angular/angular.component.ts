@@ -18,16 +18,11 @@ export class AngularComponent implements OnInit {
         link: './rxjs',
         index: 0
       },
-      // {
-      //   label: 'Counter',
-      //   link: './counter',
-      //   index: 0
-      // },
-      // {
-      //   label: 'Tic-Tac-Toe',
-      //   link: './tic-tac-toe',
-      //   index: 1
-      // },
+      {
+        label: 'Controls',
+        link: './controls',
+        index: 1
+      },
       // {
       //   label: 'Weather',
       //   link: './weather',
