@@ -1,0 +1,6 @@
+<!-- <button style=`background-color: ${actualColor}`>{{colorText}}</button> -->
+
+<button mat-button [style.background-color]="actualColor" 
+(click)="updateColors()">
+{{colorText}}
+</button>
