@@ -40,9 +40,15 @@
         }
     }
 
+    
+
     h2 {
         justify-self: flex-end;
         flex: 0;
         margin-right: 20px;
     }
+}
+
+.active {
+    background-color: #aaa;
 }

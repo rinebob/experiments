@@ -18,6 +18,8 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {AngularComponent} from './angular.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { ControlsComponent } from './controls/controls.component';
+import { ColorButtonComponent } from './color-button/color-button.component';
+import { ColorButtonService } from './color-button/color-button.service';
 
 const routes: Routes = [
   {
@@ -26,6 +28,7 @@ const routes: Routes = [
       {path: '', redirectTo: 'rxjs', pathMatch: 'full'},
       {path: 'rxjs', component: RxjsComponent},
       {path: 'controls', component: ControlsComponent},
+      {path: 'color-button', component: ColorButtonComponent},
       // {path: 'tic-tac-toe', component: TicTacToeComponent},
       // {
       //   path: 'weather', component: WeatherComponent,
@@ -42,6 +45,7 @@ const routes: Routes = [
     AngularComponent,
     RxjsComponent,
     ControlsComponent,
+    ColorButtonComponent,
 
   ],
   imports: [
@@ -58,7 +62,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     ToastrModule.forRoot(),
     RouterModule.forChild(routes),
-  ]
+  ],
+  providers: [ColorButtonService],
 })
 export class AngularModule {
 }

@@ -23,6 +23,11 @@ export class AngularComponent implements OnInit {
         link: './controls',
         index: 1
       },
+      {
+        label: 'Buttons',
+        link: './color-button',
+        index: 2
+      },
       // {
       //   label: 'Weather',
       //   link: './weather',
