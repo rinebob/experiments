@@ -17,7 +17,7 @@ export class ColorButtonComponent implements OnInit {
   constructor(private colorButtonService: ColorButtonService) { }
 
   ngOnInit(): void {
-    console.log('cB C ngOI inputs aC cT: ', this.colorText, this.colorText);
+    console.log('cB C ngOI inputs aC cT: ', this.actualColor, this.colorText);
     this.colorButtonSubscription = this.colorButtonService
     .colorStreamListener.subscribe(
       colorText => {
