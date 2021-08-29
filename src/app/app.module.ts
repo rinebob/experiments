@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule} from '@angular/common/http';
+import {ReactiveFormsModule} from '@angular/forms';
 
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -17,7 +18,8 @@ import { AngularModule } from './angular/angular.module';
 import { DeeThreePanelComponent } from './d3/dee-three-panel/dee-three-panel.component';
 import { DashboardPanelComponent } from './dashboard/dashboard-panel/dashboard-panel.component';
 import { GamesModule } from './games/games.module';
-import {ReactiveFormsModule} from '@angular/forms';
+import { ChartsModule } from './charts/charts.module';
+import { BaseComponentsModule } from './base-components/base-components.module';
 
 
 
@@ -33,6 +35,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatIconModule,
     MatListModule,
@@ -40,8 +43,9 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatSlideToggleModule,
     MatTabsModule,
     MatToolbarModule,
+    ChartsModule,
     GamesModule,
-    ReactiveFormsModule
+    BaseComponentsModule,
   ],
   providers: [],
   exports: [
@@ -50,7 +54,7 @@ import {ReactiveFormsModule} from '@angular/forms';
     MatListModule,
     MatSidenavModule,
     MatTabsModule,
-    MatToolbarModule
+    MatToolbarModule,
   ],
   bootstrap: [AppComponent]
 })
