@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { MatButtonModule } from '@angular/material/button';
+
 import { BaseComponentsRoutingModule } from './base-components-routing.module';
 import { CarouselViewerComponent } from './carousel-viewer/carousel-viewer.component';
 import { PickerTableComponent } from './picker-table/picker-table.component';
@@ -19,7 +21,8 @@ import { BaseComponentsViewComponent } from './base-components-view.component';
   ],
   imports: [
     CommonModule,
-    BaseComponentsRoutingModule
+    MatButtonModule,
+    BaseComponentsRoutingModule,
   ]
 })
 export class BaseComponentsModule { }

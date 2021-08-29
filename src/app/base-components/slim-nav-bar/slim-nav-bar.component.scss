@@ -1,0 +1,27 @@
+
+
+.slim-nav {
+    
+    &-container {
+        border: 1px solid black;
+        display: flex;
+        justify-content: flex-start;
+        width: 100%;
+    
+    }
+
+    &-button {
+        background-color: cornflowerblue;
+        color: white;
+        height: 20px;
+        padding: 0 10px;
+        text-decoration: none;
+
+    }
+
+    &-button:not(:first-child) {
+        margin-left: 20px;
+    }
+
+    
+}

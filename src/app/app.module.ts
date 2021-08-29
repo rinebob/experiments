@@ -48,14 +48,6 @@ import { BaseComponentsModule } from './base-components/base-components.module';
     BaseComponentsModule,
   ],
   providers: [],
-  exports: [
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-    MatSidenavModule,
-    MatTabsModule,
-    MatToolbarModule,
-  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

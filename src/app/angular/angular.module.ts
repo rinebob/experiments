@@ -29,13 +29,6 @@ const routes: Routes = [
       {path: 'rxjs', component: RxjsComponent},
       {path: 'controls', component: ControlsComponent},
       {path: 'color-button', component: ColorButtonComponent},
-      // {path: 'tic-tac-toe', component: TicTacToeComponent},
-      // {
-      //   path: 'weather', component: WeatherComponent,
-      //   children: [
-      //     {path: ':locationName', component: WeatherReportComponent},
-      //   ]
-      // },
     ]
   },
 ];
