@@ -1,1 +1,16 @@
-<p>picker-table works!</p>
+<div class="picker picker-container">
+    <div class="picker-header">
+        <p class="data symbol">Symbol</p>
+        <p class="data symbol">Company</p>
+        <p class="data price">Price</p>
+        <p class="data iv">IV</p>
+    </div>
+
+    <div class="picker-row" *ngFor="let datum of data">
+        <p class="data symbol">{{datum.symbol}}</p>
+        <p class="data symbol">{{datum.company}}</p>
+        <p class="data price">{{datum.price}}</p>
+        <p class="data iv">{{datum.IV}}</p>
+    </div>
+
+</div>

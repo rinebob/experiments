@@ -1,0 +1,27 @@
+
+
+.picker {
+
+    &-container {
+        border: 1px solid black;
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+        width: 500px;
+
+    }
+
+    &-header {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    &-row {
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .data {
+
+    }
+}
