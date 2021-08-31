@@ -1,4 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, OnInit, ChangeDetectionStrategy, Output } from '@angular/core';
+
 
 @Component({
   selector: 'vz-slim-nav-bar',
@@ -7,10 +8,16 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlimNavBarComponent implements OnInit {
+  @Output() selectedComponent = new EventEmitter<string>();
 
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  handleClick(component: string) {
+    console.log('sNB hC selectedComponent: ', component);
+    this.selectedComponent.emit(component);
   }
 
 }

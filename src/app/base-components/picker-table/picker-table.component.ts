@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, OnInit, ChangeDetectionStrategy, Output } from '@angular/core';
+
 
 import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
 
-interface PickerSymbol {
+interface SymbolData {
   symbol: string;
   company: string;
   price: number;
@@ -17,8 +18,9 @@ interface PickerSymbol {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PickerTableComponent implements OnInit {
+  @Output() selectedSymbol = new EventEmitter<string>();
 
-  readonly dataSource: PickerSymbol[] = PICKER_TABLE_DATA;
+  readonly dataSource: SymbolData[] = PICKER_TABLE_DATA;
 
   columnsToRender = ['symbol', 'company', 'price', 'implVolty'];
 
@@ -29,6 +31,12 @@ export class PickerTableComponent implements OnInit {
       console.log('pT ngOI datum: ', datum);
     }
     
+  }
+
+  handleSymbolClick(symbol: string) {
+    console.log('pT hSC symbol: ', symbol);
+    this.selectedSymbol.emit(symbol);
+
   }
 
 

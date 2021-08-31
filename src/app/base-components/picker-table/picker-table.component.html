@@ -16,7 +16,11 @@
     <mat-table [dataSource]="dataSource">
         <ng-container matColumnDef="symbol">
             <mat-header-cell *matHeaderCellDef>Symbol</mat-header-cell>
-            <mat-cell *matCellDef="let row">{{row.symbol}}</mat-cell>
+            <mat-cell *matCellDef="let row">
+                <button mat-flat-buton (click)="handleSymbolClick(row.symbol)">
+                    {{row.symbol}}
+                </button>
+            </mat-cell>
         </ng-container>
         <ng-container matColumnDef="company">
             <mat-header-cell *matHeaderCellDef>Company</mat-header-cell>
