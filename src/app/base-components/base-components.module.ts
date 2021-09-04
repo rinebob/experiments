@@ -10,6 +10,7 @@ import { PickerTableComponent } from './picker-table/picker-table.component';
 import { BaseChartComponent } from './base-chart/base-chart.component';
 import { SlimNavBarComponent } from './slim-nav-bar/slim-nav-bar.component';
 import { BaseComponentsViewComponent } from './base-components-view.component';
+import { MdbCarouselModule } from 'mdb-angular-ui-kit/carousel';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { BaseComponentsViewComponent } from './base-components-view.component';
     CommonModule,
     MatButtonModule,
     MatTableModule,
+    MdbCarouselModule,
     BaseComponentsRoutingModule,
   ]
 })
