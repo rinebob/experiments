@@ -1,0 +1,10 @@
+<p>chart-gallery works!</p>
+<ng-container *ngFor="let chart of galleryData$ | async">
+    <!-- <exp-chart-container [chartData]="chart">
+
+    </exp-chart-container> -->
+    <exp-base-chart [chartData]="chart">
+
+    </exp-base-chart>
+
+</ng-container>
