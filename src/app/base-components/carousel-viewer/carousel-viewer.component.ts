@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/
 import { MdbCarouselComponent } from 'mdb-angular-ui-kit/carousel';
 
 @Component({
-  selector: 'vz-carousel-viewer',
+  selector: 'exp-carousel-viewer',
   templateUrl: './carousel-viewer.component.html',
   styleUrls: ['./carousel-viewer.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, ChangeDetectionStrategy, Output } from
 
 
 @Component({
-  selector: 'vz-slim-nav-bar',
+  selector: 'exp-slim-nav-bar',
   templateUrl: './slim-nav-bar.component.html',
   styleUrls: ['./slim-nav-bar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
