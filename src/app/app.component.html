@@ -18,30 +18,31 @@
   <!--  (click)="sidenav.close()"-->
   <mat-sidenav #sidenav opened mode="side">
     <mat-nav-list>
-      <mat-list-item>
-        <a mat-button class="sidenav-links"
-           routerLink="/dashboard"
-           routerLinkActive="active">
-          Dashboard</a>
-      </mat-list-item>
-      <mat-list-item>
-        <a mat-button class="sidenav-links"
-           routerLink="/angular"
-           routerLinkActive="active">
-          Angular</a>
-      </mat-list-item>
-      <mat-list-item>
-        <a mat-button class="sidenav-links"
-           routerLink="/d3"
-           routerLinkActive="active">
-          D3</a>
-      </mat-list-item>
-      <mat-list-item>
-        <a mat-button class="sidenav-links"
-           routerLink="/games"
-           routerLinkActive="active">
-          Games</a>
-      </mat-list-item>
+      <a mat-list-item class="sidenav-links"
+          routerLink="/dashboard"
+          routerLinkActive="active">
+        Dashboard
+      </a>
+      <a mat-list-item class="sidenav-links"
+          routerLink="/angular"
+          routerLinkActive="active">
+        Angular
+      </a>
+      <a mat-list-item class="sidenav-links"
+          routerLink="/d3"
+          routerLinkActive="active">
+        D3
+      </a>
+      <!-- <a mat-list-item class="sidenav-links"
+          routerLink="/games"
+          routerLinkActive="active">
+        Games
+      </a> -->
+      <a mat-list-item class="sidenav-links"
+          routerLink="/base-components"
+          routerLinkActive="active">
+        Base components
+      </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>

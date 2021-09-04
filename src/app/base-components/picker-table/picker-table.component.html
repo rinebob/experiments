@@ -1,0 +1,43 @@
+<div class="picker picker-container">
+    <!-- <div class="picker-header">
+        <p class="data symbol">Symbol</p>
+        <p class="data symbol">Company</p>
+        <p class="data price">Price</p>
+        <p class="data iv">IV</p>
+    </div>
+
+    <div class="picker-row" *ngFor="let datum of data">
+        <p class="data symbol">{{datum.symbol}}</p>
+        <p class="data symbol">{{datum.company}}</p>
+        <p class="data price">{{datum.price}}</p>
+        <p class="data iv">{{datum.IV}}</p>
+    </div> -->
+
+    <mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="symbol">
+            <mat-header-cell *matHeaderCellDef>Symbol</mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <button mat-flat-buton (click)="handleSymbolClick(row.symbol)">
+                    {{row.symbol}}
+                </button>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="company">
+            <mat-header-cell *matHeaderCellDef>Company</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.company}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="price">
+            <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.price}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="implVolty">
+            <mat-header-cell *matHeaderCellDef>IV</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.implVolty}}</mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="columnsToRender"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: columnsToRender"></mat-row>
+
+        
+    </mat-table>
+
+</div>
