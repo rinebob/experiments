@@ -1,4 +1,4 @@
-<mat-toolbar (click)="sidenav.toggle()" color="primary">
+<!-- <mat-toolbar (click)="sidenav.toggle()" color="primary">
   <button
     mat-icon-button
     (click)="menuClick.emit()">
@@ -11,7 +11,8 @@
   </mat-slide-toggle>
   <mat-icon>bedtime</mat-icon>
   </div>
-</mat-toolbar>
+</mat-toolbar> -->
+<exp-header (menuIconClick)="sidenav.toggle()"></exp-header>
 
 <mat-sidenav-container>
   <!--  mode="push"-->

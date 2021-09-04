@@ -20,6 +20,7 @@ import { DashboardPanelComponent } from './dashboard/dashboard-panel/dashboard-p
 import { GamesModule } from './games/games.module';
 import { ChartsModule } from './charts/charts.module';
 import { BaseComponentsModule } from './base-components/base-components.module';
+import { HeaderComponent } from './header/header.component';
 
 
 
@@ -28,6 +29,7 @@ import { BaseComponentsModule } from './base-components/base-components.module';
     AppComponent,
     DeeThreePanelComponent,
     DashboardPanelComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,

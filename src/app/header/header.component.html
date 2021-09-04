@@ -1,0 +1,14 @@
+<mat-toolbar color="primary">
+    <button
+        mat-icon-button
+        (click)="menuIconClick.emit()">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <h2>{{title}}</h2>
+    <div (click)="$event.stopPropagation()">
+        <mat-icon>brightness_5</mat-icon>
+        <mat-slide-toggle [formControl]="toggleControl">
+        </mat-slide-toggle>
+        <mat-icon>bedtime</mat-icon>
+    </div>
+</mat-toolbar>
