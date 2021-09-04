@@ -1,0 +1,23 @@
+
+
+.gallery {
+
+    &-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+
+    }
+
+    &-chart {
+        border: 1px solid black;
+        border-radius: 4px;
+        height: 120px;
+        width: 300px;
+        
+
+
+    }
+
+}

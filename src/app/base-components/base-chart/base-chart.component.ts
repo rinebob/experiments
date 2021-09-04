@@ -21,7 +21,7 @@ export class BaseChartComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['chartData']) {
-      console.log('bC ngOC changes-chartData: ', changes['chartData']);
+      // console.log('bC ngOC changes-chartData: ', changes['chartData']);
       
 
       const data: PickerTableData = (changes['chartData']).currentValue;

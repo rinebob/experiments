@@ -33,7 +33,7 @@ export class PickerTableComponent implements OnChanges, OnInit {
       const data: PickerTableData[] = (changes['pickerData']).currentValue;
       this.dataSourceBS.next(data);
       for (const datum of this.dataSourceBS.value) {
-        console.log('pT ngOI datum: ', datum);
+        // console.log('pT ngOI datum: ', datum);
       }
     }
 
