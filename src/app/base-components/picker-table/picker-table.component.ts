@@ -28,7 +28,7 @@ export class PickerTableComponent implements OnInit {
 
   ngOnInit(): void {
     for (const datum of this.dataSource) {
-      console.log('pT ngOI datum: ', datum);
+      // console.log('pT ngOI datum: ', datum);
     }
     
   }

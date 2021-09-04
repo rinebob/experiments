@@ -8,8 +8,8 @@
         flex-direction: column;
         // height: 500px;
         // width: 500px;
-        margin-top: 10px;
-        max-height: 90vh;
+        // margin-top: 10px;
+        max-height: calc(100vh - 64px);
         overflow: auto;
 
     }

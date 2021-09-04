@@ -1,6 +1,8 @@
 mat-toolbar {
     display: flex;
+    height: 64px;
     justify-content: space-between;
+
     & > div {
       flex: auto;
       display: flex;
