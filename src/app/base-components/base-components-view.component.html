@@ -1,7 +1,10 @@
 <!-- <vz-slim-nav-bar (selectedComponent)="handleComponentSelection($event)"> -->
 <!-- </vz-slim-nav-bar> -->
 <div class="base-container">
-    <vz-picker-table (selectedSymbol)="handleSymbolSelection($event)">
-    </vz-picker-table>
-    <!-- <vz-carousel-viewer></vz-carousel-viewer> -->
+    <exp-picker-table [pickerData]="pickerData$ | async"
+                      (selectedSymbol)="handleSymbolSelection($event)">
+    </exp-picker-table>
+    <exp-chart-gallery [galleryData]="galleryData$ | async">
+    </exp-chart-gallery>
+    <!-- <exp-carousel-viewer></exp-carousel-viewer> -->
 </div>

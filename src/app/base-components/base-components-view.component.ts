@@ -1,4 +1,8 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+import {PickerTableData } from '../common/interfaces';
+import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
 
 @Component({
   selector: 'vz-base-components-view',
@@ -11,6 +15,12 @@ export class BaseComponentsViewComponent implements OnInit {
   picker = true;
   charts = false;
   carousel = false;
+
+  galleryDataBS = new BehaviorSubject<PickerTableData[]>(PICKER_TABLE_DATA);
+  galleryData$: Observable<PickerTableData[]> = this.galleryDataBS;
+
+  pickerDataBS = new BehaviorSubject<PickerTableData[]>(PICKER_TABLE_DATA);
+  pickerData$: Observable<PickerTableData[]> = this.pickerDataBS;
 
   constructor() { }
 
