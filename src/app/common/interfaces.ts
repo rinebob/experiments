@@ -7,3 +7,14 @@ export interface PickerTableData {
     implVolty: number;
   
 }
+
+export interface NavBarSelection {
+    buttonText: string;
+  }
+  
+export enum GalleryViewOptions {
+    FULLSCREEN = 'fullscreen',
+    GALLERY = 'gallery',
+    FILMSTRIP = 'filmstrip',
+  
+  } 
