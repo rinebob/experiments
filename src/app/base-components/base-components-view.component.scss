@@ -4,14 +4,19 @@
     display: flex;
     justify-content: flex-start;
 
-    vz-picker-table {
+    exp-picker-table {
         // width: 400px;
     }
 
-    vz-carousel-viewer {
-        background-color: cornflowerblue;
+    exp-chart-gallery {
         border: 1px solid black;
         flex: 1 0 auto;
     }
+
+    // exp-carousel-viewer {
+    //     background-color: cornflowerblue;
+    //     border: 1px solid black;
+    //     flex: 1 0 auto;
+    // }
 
 }

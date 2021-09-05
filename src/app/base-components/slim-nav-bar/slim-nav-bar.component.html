@@ -1,4 +1,12 @@
 <div class="slim-nav slim-nav-container">
+    <ng-container *ngFor="let selection of navBarSelections$ | async">
+        <a class="slim-nav-button" 
+            (click)="handleClick(selection.buttonText)">
+            {{selection.buttonText}}
+        </a>
+    </ng-container>
+    
+    
     <!-- <a class="slim-nav-button" 
         routerLink="base-chart"
         routerLinkActive="active">
@@ -14,7 +22,7 @@
         routerLinkActive="active">
         Carousel viewer
     </a> -->
-    <a class="slim-nav-button" 
+    <!-- <a class="slim-nav-button" 
         (click)="handleClick('charts')">
         Base chart
     </a>
@@ -25,5 +33,5 @@
     <a  class="slim-nav-button"
         (click)="handleClick('carousel')">
         Carousel viewer
-    </a>
+    </a> -->
 </div>
