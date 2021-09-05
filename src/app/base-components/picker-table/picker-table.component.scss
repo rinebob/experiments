@@ -6,25 +6,41 @@
         border: 1px solid black;
         display: flex;
         flex-direction: column;
-        // height: 500px;
-        // width: 500px;
-        // margin-top: 10px;
-        max-height: calc(100vh - 64px);
+        width: 500px;
+        max-height: calc(100vh - 64px); // 64px = header height
         overflow: auto;
 
     }
+    
+    .mat-column {
+        &-symbol {
+            font-size: 16px;
+            width: 120px;
+            flex: 2;
 
-    &-header {
-        display: flex;
-        justify-content: space-around;
-    }
+        }
+        
+        &-company {
+            font-size: 16px;
+            width: 240px;
+            flex: 4;
 
-    &-row {
-        display: flex;
-        justify-content: space-around;
-    }
+        }
 
-    .data {
+        &-price {
+            font-size: 16px;
+            width: 60px;
+            text-align: center;
+            
 
+        }
+
+        &-implVolty {
+            font-size: 16px;
+            width: 60px;
+            text-align: center;
+            flex: 0 1;
+
+        }
     }
 }
