@@ -59,8 +59,8 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    console.log('cG ngAVI container ref: ', this.viewContainer);
-    console.log('cG ngAVI fullscreenTpl ref: ', this.fullscreenTpl);
+    // console.log('cG ngAVI container ref: ', this.viewContainer);
+    // console.log('cG ngAVI fullscreenTpl ref: ', this.fullscreenTpl);
   }
 
   handleNavSelection(selection: string) {
@@ -89,38 +89,43 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
     console.log('bCV sFu show fullscreen called');
     this.fullTpl = this.fullscreenTpl.createEmbeddedView();
     this.updateView(FULLSCREEN);
-    this.showFull = true;
-    this.showGal = false;
-    this.showStrip = false;
-    this.viewContainer.clear();
-    this.viewContainer.insert(this.fullTpl);
+    this.updateViewContainer(this.fullTpl);
+    // this.viewContainer.clear();
+    // this.viewContainer.insert(this.fullTpl);
 
   }
   showGallery() {
     console.log('bCV sG show gallery called');
     this.galTpl = this.galleryTpl.createEmbeddedView();
     this.updateView(GALLERY);
-    this.showFull = false;
-    this.showGal = true;
-    this.showStrip = false;
-    this.viewContainer.clear();
-    this.viewContainer.insert(this.galTpl);
+    this.updateViewContainer(this.galTpl);
+    // this.viewContainer.clear();
+    // this.viewContainer.insert(this.galTpl);
 
   }
   showFilmstrip() {
     console.log('bCV sFi show filmstrip called');
     this.stripTpl = this.filmstripTpl.createEmbeddedView();
     this.updateView(FILMSTRIP);
-    this.showFull = false;
-    this.showGal = false;
-    this.showStrip = true;
-    this.viewContainer.clear();
-    this.viewContainer.insert(this.stripTpl);
+    this.updateViewContainer(this.stripTpl);
+    // this.viewContainer.clear();
+    // this.viewContainer.insert(this.stripTpl);
 
   }
 
   updateView(view: string) {
     console.log('cG uV view: ', view);
+    this.showFull = view === FULLSCREEN ? true : false;
+    this.showGal = view === GALLERY ? true : false;
+    this.showStrip = view === FILMSTRIP ? true : false;
+
+  }
+
+  updateViewContainer(view: ViewRef) {
+    console.log('cG uVC viewRef: ', view);
+    this.viewContainer.clear();
+    this.viewContainer.insert(view);
+
   }
 
 }
