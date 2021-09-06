@@ -1,55 +1,42 @@
 <exp-slim-nav-bar [selectionOptions]="navSelections" (selection)="handleNavSelection($event)"></exp-slim-nav-bar>
-<div #container class="gallery gallery-container" *ngIf="galleryData$ | async">
-
-    <!-- <ng-template #fullscreen>Full screen</ng-template> -->
-    <!-- <ng-template #gallery>Gallery</ng-template> -->
-    <!-- <ng-template #filmstrip>Filmstrip</ng-template> -->
+<div class="gallery gallery-container">
     
+    <div #container class="gallery">
     
-    <ng-template #fullscreen>
-        <div class="gallery-fullscreen">
-            <exp-base-chart [chartData]="mainChart$ | async"
-                            class="chart-fullscreen">
-            </exp-base-chart>
-        </div>
-    </ng-template>
-
-    <ng-template #gallery>
-        <div class="gallery-gallery-view">
-            <exp-base-chart *ngFor="let chart of galleryData$ | async"
-                            [chartData]="chart"
-                            class="chart-gallery-view">
-            </exp-base-chart>
-        </div>
-    </ng-template>
-
-    <ng-template #filmstrip>
-        Filmstrip
-        <div class="gallery-filmstrip-container">
-            <div class="gallery-filmstrip-main">
+        <ng-template #fullscreen>
+            <div class="gallery-fullscreen">
                 <exp-base-chart [chartData]="mainChart$ | async"
-                                class="chart-filmstrip-main">
+                                class="chart-fullscreen">
                 </exp-base-chart>
-    
             </div>
-            <div class="gallery-filmstrip-strip">
+        </ng-template>
+
+        <ng-template #gallery>
+            <div class="gallery-gallery-view">
                 <exp-base-chart *ngFor="let chart of galleryData$ | async"
                                 [chartData]="chart"
-                                class="galleryView gallery-chart">
+                                class="chart-gallery-view">
                 </exp-base-chart>
             </div>
-        </div>
-    </ng-template>
-    
+        </ng-template>
+
+        <ng-template #filmstrip>
+            <div class="gallery-filmstrip-container">
+                <div class="gallery-filmstrip-main">
+                    <exp-base-chart [chartData]="mainChart$ | async"
+                                    class="chart-filmstrip-main">
+                    </exp-base-chart>
         
-   
-    <!-- <exp-base-chart  *ngFor="let chart of galleryData$ | async"
-                    [chartData]="chart"
-                    [class.fullscreen]="fullscreen"
-                    [class.gallery]="gallery"
-                    [class.filmstrip]="filmstrip"
-                    class="gallery-chart">
+                </div>
+                <div class="gallery-filmstrip-strip">
+                    <exp-base-chart *ngFor="let chart of galleryData$ | async"
+                                    [chartData]="chart"
+                                    class="galleryView gallery-chart">
+                    </exp-base-chart>
+                </div>
+            </div>
+        </ng-template>
 
-    </exp-base-chart> -->
-
+    </div>
+    
 </div>
