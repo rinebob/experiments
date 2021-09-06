@@ -1,0 +1,9 @@
+.box {
+    display: flex;
+    flex-wrap: wrap;
+}
+.box > * {
+    border: 1px solid black;
+    flex: 1 1 400px;
+
+}
