@@ -1,4 +1,4 @@
-<mat-toolbar (click)="sidenav.toggle()" color="primary">
+<!-- <mat-toolbar (click)="sidenav.toggle()" color="primary">
   <button
     mat-icon-button
     (click)="menuClick.emit()">
@@ -11,34 +11,40 @@
   </mat-slide-toggle>
   <mat-icon>bedtime</mat-icon>
   </div>
-</mat-toolbar>
+</mat-toolbar> -->
+<exp-header (menuIconClick)="sidenav.toggle()"></exp-header>
 
 <mat-sidenav-container>
   <!--  mode="push"-->
-  <!--  (click)="sidenav.close()"-->
-  <mat-sidenav #sidenav opened mode="side">
+   
+  <mat-sidenav #sidenav mode="side">
     <mat-nav-list>
       <a mat-list-item class="sidenav-links"
+          (click)="sidenav.close()"
           routerLink="/dashboard"
           routerLinkActive="active">
         Dashboard
       </a>
       <a mat-list-item class="sidenav-links"
+          (click)="sidenav.close()"
           routerLink="/angular"
           routerLinkActive="active">
         Angular
       </a>
       <a mat-list-item class="sidenav-links"
+          (click)="sidenav.close()"
           routerLink="/d3"
           routerLinkActive="active">
         D3
       </a>
       <!-- <a mat-list-item class="sidenav-links"
+          (click)="sidenav.close()"
           routerLink="/games"
           routerLinkActive="active">
         Games
       </a> -->
       <a mat-list-item class="sidenav-links"
+          (click)="sidenav.close()"
           routerLink="/base-components"
           routerLinkActive="active">
         Base components

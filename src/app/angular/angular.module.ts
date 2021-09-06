@@ -20,6 +20,7 @@ import { RxjsComponent } from './rxjs/rxjs.component';
 import { ControlsComponent } from './controls/controls.component';
 import { ColorButtonComponent } from './color-button/color-button.component';
 import { ColorButtonService } from './color-button/color-button.service';
+import { FlexBoxComponent } from './flex-box/flex-box.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,7 @@ const routes: Routes = [
       {path: 'rxjs', component: RxjsComponent},
       {path: 'controls', component: ControlsComponent},
       {path: 'color-button', component: ColorButtonComponent},
+      {path: 'flexbox', component: FlexBoxComponent},
     ]
   },
 ];
@@ -39,6 +41,7 @@ const routes: Routes = [
     RxjsComponent,
     ControlsComponent,
     ColorButtonComponent,
+    FlexBoxComponent,
 
   ],
   imports: [

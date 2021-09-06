@@ -1,23 +1,11 @@
 
-* {
-    // border: 1px solid black;
-}
 
-// :host{
-//     display: flex;
-//     flex-direction: column;
-//     align-items: stretch;
-//     justify-content: stretch;
-// }
-
-// .mat-nav-list {
 .list-container {
     display: flex;
     align-items: flex-end;
     justify-content: center;
 
     background: lightgrey;
-    // border-bottom: darkslategrey medium solid;
   
     .mat-nav-list {
         display: flex;
@@ -29,18 +17,12 @@
             display: flex;
             justify-content: center;
             align-items:baseline;
-            // border-style: solid solid hidden solid;
-            // border-color: darkslategrey;
-            // border-width: medium;
             border-radius: 10px 10px 0 0;
             width: 200px;
-            // text-align: center;
             background-color: #fff;
 
         }
     }
-
-    
 
     h2 {
         justify-self: flex-end;

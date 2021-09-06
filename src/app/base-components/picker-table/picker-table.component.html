@@ -13,25 +13,33 @@
         <p class="data iv">{{datum.IV}}</p>
     </div> -->
 
-    <mat-table [dataSource]="dataSource">
+    <mat-table [dataSource]="dataSource$ | async">
         <ng-container matColumnDef="symbol">
-            <mat-header-cell *matHeaderCellDef>Symbol</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="header-symbol">
+                Symbol
+            </mat-header-cell>
             <mat-cell *matCellDef="let row">
-                <button mat-flat-buton (click)="handleSymbolClick(row.symbol)">
+                <button mat-flat-buton class="header-button" (click)="handleSymbolClick(row.symbol)">
                     {{row.symbol}}
                 </button>
             </mat-cell>
         </ng-container>
         <ng-container matColumnDef="company">
-            <mat-header-cell *matHeaderCellDef>Company</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="header-company">
+                Company
+            </mat-header-cell>
             <mat-cell *matCellDef="let row">{{row.company}}</mat-cell>
         </ng-container>
         <ng-container matColumnDef="price">
-            <mat-header-cell *matHeaderCellDef>Price</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="header-data">
+                Price
+            </mat-header-cell>
             <mat-cell *matCellDef="let row">{{row.price}}</mat-cell>
         </ng-container>
         <ng-container matColumnDef="implVolty">
-            <mat-header-cell *matHeaderCellDef>IV</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef class="header-data">
+                IV
+            </mat-header-cell>
             <mat-cell *matCellDef="let row">{{row.implVolty}}</mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="columnsToRender"></mat-header-row>
