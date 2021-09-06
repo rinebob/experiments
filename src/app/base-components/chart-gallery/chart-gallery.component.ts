@@ -5,6 +5,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { GalleryViewOptions, NavBarSelection, PickerTableData } from 'src/app/common/interfaces';
 import { DEFAULT_PICKER_TABLE_DATUM } from 'src/app/common/constants';
 
+const FULLSCREEN = 'fullscreen';
+const GALLERY = 'gallery';
+const FILMSTRIP = 'filmstrip';
+
+
 @Component({
   selector: 'exp-chart-gallery',
   templateUrl: './chart-gallery.component.html',
@@ -56,10 +61,6 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     console.log('cG ngAVI container ref: ', this.viewContainer);
     console.log('cG ngAVI fullscreenTpl ref: ', this.fullscreenTpl);
-    this.fullTpl = this.fullscreenTpl.createEmbeddedView();
-    this.galTpl = this.galleryTpl.createEmbeddedView();
-    this.stripTpl = this.filmstripTpl.createEmbeddedView();
-
   }
 
   handleNavSelection(selection: string) {
@@ -86,6 +87,8 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
 
   showFullscreen() {
     console.log('bCV sFu show fullscreen called');
+    this.fullTpl = this.fullscreenTpl.createEmbeddedView();
+    this.updateView(FULLSCREEN);
     this.showFull = true;
     this.showGal = false;
     this.showStrip = false;
@@ -95,6 +98,8 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   }
   showGallery() {
     console.log('bCV sG show gallery called');
+    this.galTpl = this.galleryTpl.createEmbeddedView();
+    this.updateView(GALLERY);
     this.showFull = false;
     this.showGal = true;
     this.showStrip = false;
@@ -104,12 +109,18 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   }
   showFilmstrip() {
     console.log('bCV sFi show filmstrip called');
+    this.stripTpl = this.filmstripTpl.createEmbeddedView();
+    this.updateView(FILMSTRIP);
     this.showFull = false;
     this.showGal = false;
     this.showStrip = true;
     this.viewContainer.clear();
     this.viewContainer.insert(this.stripTpl);
 
+  }
+
+  updateView(view: string) {
+    console.log('cG uV view: ', view);
   }
 
 }

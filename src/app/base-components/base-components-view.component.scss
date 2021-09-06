@@ -3,4 +3,11 @@
 .base-container {
     display: flex;
     justify-content: flex-start;
+    width: 100%;
+
+
+    exp-chart-gallery {
+        width: 100%;
+    }
+
 }

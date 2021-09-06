@@ -30,6 +30,7 @@ exp-slim-nav-bar {
     &-filmstrip-container {
         height: 100%;
         width: 100%;
+        
 
     }
 
@@ -38,7 +39,10 @@ exp-slim-nav-bar {
         justify-content: center;
         align-items: center;
         height: 80%;
-        width: 100%;
+        width: 80%;
+        // background-color: lightgrey;
+        border: 1px solid black;
+        border-radius: 4px;
 
     }
 
@@ -47,6 +51,9 @@ exp-slim-nav-bar {
         justify-content: flex-start;
         height: 20%;
         width: 100%;
+        // background-color: lightgrey;
+        border: 1px solid black;
+        border-radius: 4px;
         
     }
 
