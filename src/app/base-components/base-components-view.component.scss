@@ -3,20 +3,4 @@
 .base-container {
     display: flex;
     justify-content: flex-start;
-
-    exp-picker-table {
-        // width: 400px;
-    }
-
-    exp-chart-gallery {
-        border: 1px solid black;
-        flex: 1 0 auto;
-    }
-
-    // exp-carousel-viewer {
-    //     background-color: cornflowerblue;
-    //     border: 1px solid black;
-    //     flex: 1 0 auto;
-    // }
-
 }

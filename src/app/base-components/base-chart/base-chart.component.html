@@ -1,4 +1,6 @@
 <div class="chart chart-container" *ngIf="chartData$ | async as data">
-    <div class="chart-symbol">{{data.symbol}}</div>
-    <div class="chart-data">{{data.company}} | {{data.price}} | {{data.implVolty}}</div>
+    <div class="chart-symbol">Symbol: {{data.symbol}}</div>
+    <div class="chart-data">Company: {{data.company}}</div>
+    <div class="chart-data">Price: {{data.price}}</div>
+    <div class="chart-data">IV: {{data.implVolty}}</div>
 </div>
