@@ -3,12 +3,14 @@ exp-slim-nav-bar {
     width: 100%;
 }
 
+
 .gallery {
     border: 1px solid black;
 
     &-container {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
     }
 
     &-fullscreen {
@@ -57,10 +59,10 @@ exp-slim-nav-bar {
     }
 
     .chart-gallery-view {
-        border: 1px solid black;
-        border-radius: 4px;
-        height: 120px;
-        width: 300px;
+        // border: 1px solid black;
+        // border-radius: 4px;
+        // height: 120px;
+        // width: 300px;
 
     }
 
