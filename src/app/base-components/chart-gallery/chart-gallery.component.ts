@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnChanges, OnInit, ChangeDetectionStrategy, I
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { GalleryViewOptions, NavBarSelection, PickerTableData } from 'src/app/common/interfaces';
+import { GalleryChartMode, GalleryViewOptions, NavBarSelection, PickerTableData } from 'src/app/common/interfaces';
 import { DEFAULT_PICKER_TABLE_DATUM } from 'src/app/common/constants';
 
 const FULLSCREEN = 'fullscreen';

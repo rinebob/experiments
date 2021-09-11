@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import {PickerTableData } from '../common/interfaces';
+import { GalleryChartMode, PickerTableData } from '../common/interfaces';
 import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
 import { DEFAULT_PICKER_TABLE_DATUM, GalleryNavSelections } from '../common/constants';
 

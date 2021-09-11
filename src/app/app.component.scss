@@ -20,6 +20,11 @@
     align-items: flex-start;
   }
 
+  .mat-sidenav-content {
+    height: inherit;
+    overflow: inherit;
+  }
+
 }
 
 
