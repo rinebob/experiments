@@ -22,6 +22,7 @@ import { ChartsModule } from './charts/charts.module';
 import { BaseComponentsModule } from './base-components/base-components.module';
 import { HeaderComponent } from './header/header.component';
 import { GridComponent } from './grid/grid.component';
+import { ScrollComponent } from './scroll/scroll.component';
 
 
 
@@ -32,6 +33,7 @@ import { GridComponent } from './grid/grid.component';
     DashboardPanelComponent,
     HeaderComponent,
     GridComponent,
+    ScrollComponent,
   ],
   imports: [
     BrowserModule,

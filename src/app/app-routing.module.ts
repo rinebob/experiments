@@ -5,6 +5,7 @@ import {DashboardPanelComponent} from './dashboard/dashboard-panel/dashboard-pan
 import {DeeThreePanelComponent} from './d3/dee-three-panel/dee-three-panel.component';
 import { GamesComponent } from './games/games.component';
 import { GridComponent } from './grid/grid.component';
+import { ScrollComponent } from './scroll/scroll.component';
 
 
 
@@ -16,6 +17,7 @@ const routes: Routes = [
   {path: 'games',  loadChildren: () => import('./games/games.module').then(m => m.GamesModule)},
   {path: 'base-components',  loadChildren: () => import('./base-components/base-components.module').then(m => m.BaseComponentsModule)},
   {path: 'grid', component: GridComponent },
+  {path: 'scroll', component: ScrollComponent },
   {path: '**', component: DashboardPanelComponent},
 ];
 
