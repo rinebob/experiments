@@ -6,6 +6,22 @@ export interface NavigationLink {
     index: number;
 }
 
+export enum GalleryChartMode {
+    FULLSCREEN_MODE = 'fullscreen',
+    GALLERY_MODE = 'gallery',
+    FILMSTRIP_MAIN_MODE = 'filmstrip-main',
+    FILMSTRIP_STRIP_MODE = 'filmstrip-strip',
+}
+
+export interface ChartDimensions {
+    top?: number;
+    left?: number;
+    height?: string;
+    width?: string;
+    fullHeight?: boolean;
+    fullWidth?: boolean;
+}
+
 
 
 // Data structure for Picker Table Component
