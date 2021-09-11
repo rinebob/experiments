@@ -1,42 +1,47 @@
 
 <div class="container">
 
-
-    <div class="vert vert-container">
-
-        <div class="vert-scrollable">
-            
-            <div class="item" *ngFor="let chart of galleryData$ | async">
-            
-                {{chart.symbol}}
-            
-        
-            </div>
-        
-        </div>
-
-
-
-    
-    </div>
-    
     <div class="horz horz-container">
 
 
-        <div class="horz-scrollable">
+        <cdk-virtual-scroll-viewport orientation="horizontal" 
+                                    [itemSize]="160"
+                                    class="horz-scrollable">
             
             
-            <div class="item" *ngFor="let chart of galleryData$ | async">
+            <!-- <div class="item" *cdkVirtualFor="let chart of galleryData$ | async"> -->
+            <div class="item" *cdkVirtualFor="let item of items">
+            
+                {{item}}
+            
+        
+            </div>
+        
+        </cdk-virtual-scroll-viewport>
+
+    
+    </div>
+
+
+    <div class="vert vert-container">
+
+        <cdk-virtual-scroll-viewport class="vert-scrollable" [itemSize]="240">
+            
+            <div class="item" *cdkVirtualFor="let chart of galleryData$ | async">
             
                 {{chart.symbol}}
             
         
             </div>
         
-        </div>
+        </cdk-virtual-scroll-viewport>
+
+
 
     
     </div>
+    
+    
 
 
 </div>

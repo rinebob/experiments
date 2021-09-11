@@ -16,6 +16,8 @@ export class ScrollComponent implements OnInit {
   galleryDataBS = new BehaviorSubject<PickerTableData[]>(PICKER_TABLE_DATA);
   galleryData$: Observable<PickerTableData[]> = this.galleryDataBS;
 
+  items = Array.from({length: 100}).map((_, i) => `Dude #${i}`);
+
   constructor() { }
 
   ngOnInit(): void {
