@@ -1,1 +1,42 @@
-<p>scroll works!</p>
+
+<div class="container">
+
+
+    <div class="vert vert-container">
+
+        <div class="vert-scrollable">
+            
+            <div class="item" *ngFor="let chart of galleryData$ | async">
+            
+                {{chart.symbol}}
+            
+        
+            </div>
+        
+        </div>
+
+
+
+    
+    </div>
+    
+    <div class="horz horz-container">
+
+
+        <div class="horz-scrollable">
+            
+            
+            <div class="item" *ngFor="let chart of galleryData$ | async">
+            
+                {{chart.symbol}}
+            
+        
+            </div>
+        
+        </div>
+
+    
+    </div>
+
+
+</div>
