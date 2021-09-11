@@ -8,19 +8,25 @@
   width: 100%
 }
 
-mat-sidenav-container, mat-sidenav-content, mat-sidenav {
+  .mat-sidenav-container {
   height: 100%;
   overflow: hidden;
 
+  .mat-sidenav {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 200px;
+    align-items: flex-start;
+  }
+
+  .mat-sidenav-content {
+    height: inherit;
+    overflow: inherit;
+  }
+
 }
 
-mat-sidenav {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 200px;
-  align-items: flex-start;
-}
 
 .sidenav-links {
   // color: #24292e;
@@ -29,10 +35,6 @@ mat-sidenav {
   // text-decoration: none;
   // width: 100%;
 
-}
-
-main {
-  // padding: 10px;
 }
 
 .active {

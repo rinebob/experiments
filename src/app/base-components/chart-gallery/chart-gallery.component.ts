@@ -2,8 +2,13 @@ import { AfterViewInit, Component, OnChanges, OnInit, ChangeDetectionStrategy, I
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { GalleryViewOptions, NavBarSelection, PickerTableData } from 'src/app/common/interfaces';
+import { GalleryChartMode, GalleryViewOptions, NavBarSelection, PickerTableData } from 'src/app/common/interfaces';
 import { DEFAULT_PICKER_TABLE_DATUM } from 'src/app/common/constants';
+
+const FULLSCREEN = 'fullscreen';
+const GALLERY = 'gallery';
+const FILMSTRIP = 'filmstrip';
+
 
 @Component({
   selector: 'exp-chart-gallery',
@@ -54,12 +59,8 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    console.log('cG ngAVI container ref: ', this.viewContainer);
-    console.log('cG ngAVI fullscreenTpl ref: ', this.fullscreenTpl);
-    this.fullTpl = this.fullscreenTpl.createEmbeddedView();
-    this.galTpl = this.galleryTpl.createEmbeddedView();
-    this.stripTpl = this.filmstripTpl.createEmbeddedView();
-
+    // console.log('cG ngAVI container ref: ', this.viewContainer);
+    // console.log('cG ngAVI fullscreenTpl ref: ', this.fullscreenTpl);
   }
 
   handleNavSelection(selection: string) {
@@ -86,29 +87,44 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
 
   showFullscreen() {
     console.log('bCV sFu show fullscreen called');
-    this.showFull = true;
-    this.showGal = false;
-    this.showStrip = false;
-    this.viewContainer.clear();
-    this.viewContainer.insert(this.fullTpl);
+    this.fullTpl = this.fullscreenTpl.createEmbeddedView();
+    this.updateView(FULLSCREEN);
+    this.updateViewContainer(this.fullTpl);
+    // this.viewContainer.clear();
+    // this.viewContainer.insert(this.fullTpl);
 
   }
   showGallery() {
     console.log('bCV sG show gallery called');
-    this.showFull = false;
-    this.showGal = true;
-    this.showStrip = false;
-    this.viewContainer.clear();
-    this.viewContainer.insert(this.galTpl);
+    this.galTpl = this.galleryTpl.createEmbeddedView();
+    this.updateView(GALLERY);
+    this.updateViewContainer(this.galTpl);
+    // this.viewContainer.clear();
+    // this.viewContainer.insert(this.galTpl);
 
   }
   showFilmstrip() {
     console.log('bCV sFi show filmstrip called');
-    this.showFull = false;
-    this.showGal = false;
-    this.showStrip = true;
+    this.stripTpl = this.filmstripTpl.createEmbeddedView();
+    this.updateView(FILMSTRIP);
+    this.updateViewContainer(this.stripTpl);
+    // this.viewContainer.clear();
+    // this.viewContainer.insert(this.stripTpl);
+
+  }
+
+  updateView(view: string) {
+    console.log('cG uV view: ', view);
+    this.showFull = view === FULLSCREEN ? true : false;
+    this.showGal = view === GALLERY ? true : false;
+    this.showStrip = view === FILMSTRIP ? true : false;
+
+  }
+
+  updateViewContainer(view: ViewRef) {
+    console.log('cG uVC viewRef: ', view);
     this.viewContainer.clear();
-    this.viewContainer.insert(this.stripTpl);
+    this.viewContainer.insert(view);
 
   }
 

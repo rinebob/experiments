@@ -21,6 +21,7 @@ import { GamesModule } from './games/games.module';
 import { ChartsModule } from './charts/charts.module';
 import { BaseComponentsModule } from './base-components/base-components.module';
 import { HeaderComponent } from './header/header.component';
+import { GridComponent } from './grid/grid.component';
 
 
 
@@ -30,6 +31,7 @@ import { HeaderComponent } from './header/header.component';
     DeeThreePanelComponent,
     DashboardPanelComponent,
     HeaderComponent,
+    GridComponent,
   ],
   imports: [
     BrowserModule,

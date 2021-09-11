@@ -4,6 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import {DashboardPanelComponent} from './dashboard/dashboard-panel/dashboard-panel.component';
 import {DeeThreePanelComponent} from './d3/dee-three-panel/dee-three-panel.component';
 import { GamesComponent } from './games/games.component';
+import { GridComponent } from './grid/grid.component';
 
 
 
@@ -14,6 +15,7 @@ const routes: Routes = [
   {path: 'd3', component: DeeThreePanelComponent},
   {path: 'games',  loadChildren: () => import('./games/games.module').then(m => m.GamesModule)},
   {path: 'base-components',  loadChildren: () => import('./base-components/base-components.module').then(m => m.BaseComponentsModule)},
+  {path: 'grid', component: GridComponent },
   {path: '**', component: DashboardPanelComponent},
 ];
 

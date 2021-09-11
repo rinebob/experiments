@@ -49,13 +49,16 @@
           routerLinkActive="active">
         Base components
       </a>
+      <a mat-list-item class="sidenav-links"
+          (click)="sidenav.close()"
+          routerLink="/grid"
+          routerLinkActive="active">
+        CSS Grid
+      </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <main>
-      <router-outlet></router-outlet>
-    </main>
-
+    <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
 

@@ -5,16 +5,12 @@ exp-slim-nav-bar {
 
 
 .gallery {
-    border: 1px solid black;
-
-    &-container {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
 
     &-fullscreen {
-        height: 100vh;
+        height: 100%;
         width: 100%;
     }
 
@@ -22,72 +18,55 @@ exp-slim-nav-bar {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        height: 100vh;
-        // width: 100%;
+        
+        height: 100%;
+        padding: 2px;
+        width: 100%;
 
+        overflow-y: scroll;
     }
 
     &-filmstrip-container {
         height: 100%;
-        width: 100%;
-
-    }
-
-    &-filmstrip-main {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 80%;
-        width: 100%;
-
-    }
-
-    &-filmstrip-strip {
-        display: flex;
-        justify-content: flex-start;
-        height: 20%;
-        width: 100%;
         
-    }
-
-    .chart-fullscreen {
-        // border: 1px solid black;
-        // border-radius: 4px;
-        height: 100%;
-        width: 100%;
-
-    }
-
-    .chart-gallery-view {
-        // border: 1px solid black;
-        // border-radius: 4px;
-        // height: 120px;
-        // width: 300px;
-
-    }
-
-    .chart-filmstrip-main {
-        border: 1px solid black;
-        border-radius: 4px;
-        height: 640px;
-        width: 640px;
-
-    }
-
-    .chart-filmstrip-strip {
-        border: 1px solid black;
-        border-radius: 4px;
-        height: 100px;
-        width: 200px;
-        margin-right: 4px;
-
-    }
-
-    &-chart {
-       
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: 3fr 1fr;
+        row-gap: 10px;
         
 
+        .filmstrip {
 
+            &-main {
+                background-color: darkslateblue;
+                
+                grid-column-start: 1;
+                grid-column-end: 2;
+                grid-row-start: 1;
+                grid-row-end: 2;
+                
+            }
+
+            &-container {
+                background-color: darkslateblue;
+        
+                grid-column-start: 1;
+                grid-column-end: 2;
+                grid-row-start: 2;
+                grid-row-end: 3;
+                align-items: stretch;
+
+                overflow-x: scroll;
+            }
+
+            &-strip {
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                overflow-x: scroll;
+                width: 100%;
+                
+            }
+        }
     }
-
 }
