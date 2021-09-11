@@ -1,0 +1,62 @@
+.base-container {
+    display: grid;
+    grid-template-columns: 400px auto;
+    grid-template-rows: auto;
+    column-gap: 10px;
+    align-items: stretch;
+
+    background-color: lightgrey;
+    height: 100%;
+    padding: 10px;
+
+
+    .picker {
+        background-color: lightskyblue;
+        
+        
+
+    }
+
+    .gal-container {
+        background-color: lightskyblue;
+
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto;
+
+        .full {
+
+        }
+
+    }
+
+    .strip-container {
+        background-color: lightskyblue;
+
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: 3fr 1fr;
+        row-gap: 10px;
+
+        .main {
+            background-color: darkslateblue;
+
+            grid-column-start: 1;
+            grid-column-end: 2;
+            grid-row-start: 1;
+            grid-row-end: 2;
+
+        }
+
+        .strip {
+            background-color: darkslateblue;
+
+            grid-column-start: 1;
+            grid-column-end: 2;
+            grid-row-start: 2;
+            grid-row-end: 3;
+
+        }
+
+    }
+}
