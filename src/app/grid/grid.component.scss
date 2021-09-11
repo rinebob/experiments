@@ -17,17 +17,12 @@
 
     }
 
-    .gal-container {
+    .gallery {
         background-color: lightskyblue;
 
         display: grid;
         grid-template-columns: auto;
         grid-template-rows: auto;
-
-        .full {
-
-        }
-
     }
 
     .strip-container {
