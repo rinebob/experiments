@@ -4,11 +4,5 @@
     display: grid;
     grid-template-columns: 400px auto;
     grid-template-rows: auto;
-    
-    .gal-container {
-
-        display: grid;
-        grid-template-columns: auto;
-        grid-template-rows: auto;
-    }
+    height: calc(100% - 22px);
 }

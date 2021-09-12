@@ -9,7 +9,7 @@
         background-color: lightgrey;
         border: 1px solid blue;
         border-radius: 4px;
-        margin: 5px;
+        // margin: 5px;
         // height: 120px;
         // width: 300px;
         // height: 100%;
@@ -23,15 +23,13 @@
     }
 
     &-data {
-        // flex: 1 0 auto;
+        
 
     }
 
     &-fullscreen {
-        // height: 87vh;
-        // width: 90vw;
-        height: 87%;
-        width: 90%;
+        height: 100%;
+        width: 100%;
 
     }
 
@@ -41,17 +39,14 @@
     }
 
     &-filmstrip-main {
-        // height: 60vh;
-        // width: 90vw;
-        height: 60%;
-        width: 90%;
+        height: 100%;
+        width: 100%;
 
     }
 
     &-filmstrip-strip {
-        height: 200px;
+        height: 100%;
         width: 300px;
-
     }
 }
 
