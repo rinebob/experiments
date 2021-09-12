@@ -1,9 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
+
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { PickerTableData } from '../common/interfaces';
 import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'exp-scroll',

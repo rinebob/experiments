@@ -12,6 +12,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import { CdkScrollableModule } from '@angular/cdk/scrolling';
 
 import { AppComponent } from './app.component';
 import { AngularModule } from './angular/angular.module';
@@ -49,6 +50,7 @@ import { ScrollComponent } from './scroll/scroll.component';
     MatSlideToggleModule,
     MatTabsModule,
     MatToolbarModule,
+    CdkScrollableModule,
     ChartsModule,
     GamesModule,
     BaseComponentsModule,
