@@ -18,6 +18,7 @@ const routes: Routes = [
   {path: 'base-components',  loadChildren: () => import('./base-components/base-components.module').then(m => m.BaseComponentsModule)},
   {path: 'grid', component: GridComponent },
   {path: 'scroll', component: ScrollComponent },
+  { path: 'position-builder', loadChildren: () => import('./position-builder/position-builder.module').then(m => m.PositionBuilderModule) },
   {path: '**', component: DashboardPanelComponent},
 ];
 
