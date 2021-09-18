@@ -1,5 +1,4 @@
 <exp-slim-nav-bar [selectionOptions]="navSelections" (selection)="handleNavSelection($event)"></exp-slim-nav-bar>
-<div class="template-outlet"></div>
     
 <div #container class="gallery">
 
@@ -14,11 +13,11 @@
 
     <ng-template #gallery>
         <div class="gallery-gallery-view">
-            <exp-base-chart *ngFor="let chart of galleryData$ | async"
-                            [chartData]="chart"
-                            chartMode="gallery"
-                            class="chart-gallery-view">
-            </exp-base-chart>
+                <exp-base-chart *ngFor="let chart of galleryData$ | async"
+                    [chartData]="chart"
+                    chartMode="gallery"
+                    class="chart-gallery-view">
+                </exp-base-chart>
         </div>
     </ng-template>
 
@@ -29,15 +28,16 @@
                                 chartMode="filmstrip-main"
                                 class="chart-filmstrip-main">
                 </exp-base-chart>
-    
             </div>
             <div class="filmstrip-container">
                 <div class="filmstrip-strip">
-                    <exp-base-chart *ngFor="let chart of galleryData$ | async"
-                                    [chartData]="chart"
-                                    chartMode="filmstrip-strip"
-                                    class="galleryView gallery-chart">
-                    </exp-base-chart>
+                    <div class="filmstrip-chart" *ngFor="let chart of galleryData$ | async">
+                        <exp-base-chart 
+                                        [chartData]="chart"
+                                        chartMode="filmstrip-strip"
+                                        class="galleryView gallery-chart">
+                        </exp-base-chart>
+                    </div>
                 </div>
             </div>
         </div>
