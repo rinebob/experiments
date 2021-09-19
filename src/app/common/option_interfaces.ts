@@ -10,6 +10,7 @@ export interface OptionLeg {
     moneyness: MoneynessUnit;
     direction: Direction;
     ratio: number;
+    symbol?: OptionSymbolMetadata;
   }
   
   // ex: 20 Delta Short Strangle
@@ -26,7 +27,7 @@ export interface OptionLeg {
     dateOpened?: Date;
     expiration?: Date;
     config?: OptionSpreadConfig;
-    symbols?: string[];
+    symbols?: OptionSymbolMetadata[];
     data?: PositionPricePoint[];
   
   }
@@ -47,6 +48,11 @@ export interface OptionLeg {
     strike: number;
     expiration: Date;
     exchange: Exchange;
+  }
+
+  export interface OptionSymbolMetadata {
+    symbol: string;
+    label: string;
   }
   
   export interface OptionSymbolData {

@@ -4,7 +4,7 @@ import { DatesService } from '../services/dates.service';
 import { PositionBuilderService } from '../services/position-builder.service';
 import { nflxData } from 'src/assets/data/nflx_21-0917';
 import { tslaData } from 'src/assets/data/tsla_21-0917';
-import { OptionSpreadConfig } from '../common/option_interfaces';
+import { OptionPosition, OptionSpreadConfig } from '../common/option_interfaces';
 import * as legs from '../common/option_legs';
 import * as configs from '../common/option_configs';
 
@@ -15,37 +15,39 @@ import * as configs from '../common/option_configs';
 })
 export class PositionBuilderComponent implements OnInit {
 
-  private readonly configs: OptionSpreadConfig[] = [
+  private readonly configsList: OptionSpreadConfig[] = [
     configs.ATM_LONG_STRADDLE,
+    configs.IRON_CONDOR,
+    configs.VERTICAL_CALL_DEBIT_SPREAD,
+    configs.VERTICAL_CALL_CREDIT_SPREAD,
+    configs.TWENTY_DELTA_SHORT_STRANGLE,
+    configs.VERTICAL_PUT_DEBIT_SPREAD,
+    configs.VERTICAL_PUT_CREDIT_SPREAD,
   ];
 
+  nflxOptionPositions: OptionPosition[] = []
+  tslaOptionPositions: OptionPosition[] = []
+
   constructor(private readonly datesService: DatesService,
-    private readonly posnBuilderService: PositionBuilderService
-    ) { }
+    private readonly posnBuilderService: PositionBuilderService) { }
 
   ngOnInit(): void {
+    this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
+    this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
 
-    // this.datesService.getNow();
-    // this.datesService.getDateTimeParts(new Date(2019, 0, 1));
-    // this.datesService.generateTradingDates(new Date(2019, 0, 1), new Date());
-
-    // const nflxDates = this.posnBuilderService.generateTradingDates(nflxData);
-    const tslaDates = this.posnBuilderService.generateTradingDates(tslaData);
-
-    // console.log('pBC ngOI this.configs: ', this.configs);
-
-    // const tslaStrikes = this.posnBuilderService.generateStrikesForAllData(tslaDates, this.configs);
-
-    let tslaOptionPositions = this.posnBuilderService.generateOptionPositionObjects(tslaDates, 'TSLA', configs.ATM_LONG_STRADDLE);
-
-    tslaOptionPositions = this.posnBuilderService.generateSymbolsForPositions(tslaOptionPositions);
-
-    console.log('pBC ngOI tslaOptionPositions: ', tslaOptionPositions);
-
-
+    console.log('pBC ngOI nflxOptionPositions: ', this.nflxOptionPositions);
+    console.log('pBC ngOI tslaOptionPositions: ', this.tslaOptionPositions);
   }
 
-  
+  generateOptionPositions(symbol: string, data: any[]) {
+    let positions: OptionPosition[] = [];
+    const dates = this.posnBuilderService.generateTradingDates(data);
+    
+    for (const config of this.configsList) {
+      positions = [...positions, ...this.posnBuilderService.generateOptionPositionObjects(dates, symbol, config)];
+    }
+    positions = this.posnBuilderService.generateSymbolsForPositions(positions);
 
-
+    return positions
+  }
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { OptionLeg, OptionPosition, OptionSpreadConfig } from '../common/option_interfaces';
+import { moneynessMap, MoneynessUnit, OptionLeg, OptionPosition, OptionSpreadConfig, OptionSymbolMetadata, OptionType } from '../common/option_interfaces';
+import { monthsMap } from '../common/constants';
 
 import { DatesService } from './dates.service';
 
@@ -13,8 +14,7 @@ export class PositionBuilderService {
 
   constructor(private readonly datesService: DatesService) { }
 
-  // take a time series and create an array of trading dates with closing price
-
+  // Generate an array of trading dates with closing price
   generateTradingDates(data:any[]) {
     const tradingDates = [];
     for (const datum of data) {
@@ -34,7 +34,7 @@ export class PositionBuilderService {
 
   }
   
-
+  // Generate an array of OptionPosition object stubs
   generateOptionPositionObjects(data: any[], symbol: string, config: OptionSpreadConfig) {
     const optionPositionObjects: OptionPosition[] = [];
 
@@ -56,6 +56,7 @@ export class PositionBuilderService {
     return optionPositionObjects;
   }
 
+  // Generate an option symbol for each leg of each position
   generateSymbolsForPositions(positions: OptionPosition[]) {
 
     const updatedPositions: OptionPosition[] = [];
@@ -64,16 +65,38 @@ export class PositionBuilderService {
       const posn = {...position};
       const symbolDate = this.generateSymbolDate(posn.dateOpened, this.expirationDistance);
       const expirationDate = this.datesService.getExpirationDate(posn.dateOpened, this.expirationDistance);
+
+      // console.log('pBS gSFP symbol date, exp date: ', symbolDate, expirationDate);
       
       for (const leg of posn.config?.legs) {
+        // gets the strike and whether the leg is a put or call
         const symbolInfo = this.getSymbolInfo(leg, posn.underlyingPrice, this.strikeGap);
         // console.log('pBS gSFP leg symbolInfo: ', symbolInfo);
+
+        // generates a string representing strike price for the option symbol
         const symbolPrice = this.generateSymbolPrice(symbolInfo.strike);
         // console.log('pBS gSFP leg symbolPrice: ', symbolPrice);
-        const sym = `${position.underlying}${symbolDate}${symbolInfo.putCall}${symbolPrice}`
+        
+        // generates the actual option symbol for the leg
+        const symbol = `${position.underlying}${symbolDate}${symbolInfo.putCall}${symbolPrice}`
         // console.log('pBS gSFP leg symbol: ', sym);
+        
+        // generates a human readable label for the leg
+        const expMoLabel = monthsMap.get(expirationDate.getMonth());
+        const expDateLabel = (expirationDate.getDate()).toString().padStart(2, '0');
+        const expYrLabel = (expirationDate.getFullYear()).toString().slice(2);
+        const putCallLabel = symbolInfo.putCall === 'C' ? 'CALL' : 'PUT';
 
-        posn.symbols ? posn.symbols.push(sym) : posn.symbols = [sym];
+        const label = `${position.underlying}_${expDateLabel}${expMoLabel}_${expYrLabel}_${symbolInfo.strike}_${putCallLabel}`;
+        // console.log('pBS gSFP symbol label: ', label);
+
+        // encapsulates symbol and label
+        const symbolObject: OptionSymbolMetadata = { symbol, label };
+
+        // populates the leg with the option symbol metadata
+        leg.symbol = symbolObject;
+
+        posn.symbols ? posn.symbols.push(symbolObject) : posn.symbols = [symbolObject];
         posn.expiration = expirationDate;
       }
 
@@ -83,33 +106,40 @@ export class PositionBuilderService {
     return updatedPositions;
   }
 
+  // Get strike price and put/call designator for each leg
   getSymbolInfo(leg: OptionLeg, price: number, strikeGap: number) {
     let info = '';
-    let putCall = '';
+    let strike = 0;
     const nearest = Math.round(price);
-    let strike = Math.ceil(price / strikeGap) * strikeGap;
-
-    // console.log('pBS gS leg, price: ', leg, price);
-    // console.log('pBS gS nearest: ', nearest);
-
-    if (leg.type === 'CALL') {
-      putCall = 'C';
-      if (strike - price > strikeGap / 2) {
-        strike = strike - strikeGap;
-      }
-
-    } else {
-      putCall = 'P';
-      strike = Math.floor(price / strikeGap) * strikeGap;
-      if (price - strike > strikeGap / 2) {
-        strike = strike + strikeGap;
-      }
-
-    }
+    const putCall = leg.type === 'CALL' ? 'C' : 'P';
+    strike = this.generateStrikePriceFromMoneyness(nearest, leg.type, moneynessMap.get(leg.moneyness), this.strikeGap);
 
     return {strike, putCall};
   }
 
+  // Generate a strike price based on underlying price and moneyness
+  generateStrikePriceFromMoneyness(price: number, type: string, moneyness: number, strikeGap: number) {
+    // console.log('pBS gSPFM input price, type, moneyness, strikeGap: ', price, type, moneyness, strikeGap);
+    
+    let strike = Math.ceil(price / strikeGap) * strikeGap;
+    if (type === 'CALL') {
+      if (strike - price > strikeGap / 2) {
+        strike = strike - strikeGap;
+      }
+      strike = Math.ceil((strike + strike * moneyness) / strikeGap) * strikeGap;
+    } else {
+      strike = Math.floor(price / strikeGap) * strikeGap;
+      if (price - strike > strikeGap / 2) {
+        strike = strike + strikeGap;
+      }
+      strike = Math.floor((strike - strike * moneyness) / strikeGap) * strikeGap;
+    }
+    // console.log('pBS gSPFM output strike price: ', strike);
+
+    return strike;
+  }
+
+  // Generates a text string representing the leg's strike price for use in the option symbol
   generateSymbolPrice(price) {
     let dols = Math.trunc(price).toString();
     let cts = (price % 1).toString();
@@ -125,14 +155,12 @@ export class PositionBuilderService {
 
   }
 
+  // Generates a text string representing the leg's expiration date for use in the option symbol
   generateSymbolDate(date: Date, expDistDays: number) {
     const tradeDateMillis = date.getTime();
     const millisInADay = 24 * 60 * 60 * 1000;
     const millisToExp = expDistDays * millisInADay;
     const expMillis = tradeDateMillis + millisToExp;
-    // const expDate = new Date(todayMillis + expDistDays * millisInADay);
-
-    // getExpirationDate(tradingDate: Date, minExpDistance: number, optionSeries: string)
     
     // console.log('--------------------');
     
