@@ -1,4 +1,4 @@
-[
+export const tslaData = [
     {
         "date": "2021-04-28T00:00:00.000Z",
         "stringDate": "2021-04-28",
