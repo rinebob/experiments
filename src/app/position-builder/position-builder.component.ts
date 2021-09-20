@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { BehaviorSubject, Observable } from 'rxjs';
+
 import { DatesService } from '../services/dates.service';
 import { PositionBuilderService } from '../services/position-builder.service';
 import { nflxData } from 'src/assets/data/nflx_21-0917';
@@ -28,15 +30,18 @@ export class PositionBuilderComponent implements OnInit {
   nflxOptionPositions: OptionPosition[] = []
   tslaOptionPositions: OptionPosition[] = []
 
+  positionsBS = new BehaviorSubject<OptionPosition[]>([]);
+  positions$: Observable<OptionPosition[]> = this.positionsBS;
+
   constructor(private readonly datesService: DatesService,
     private readonly posnBuilderService: PositionBuilderService) { }
 
   ngOnInit(): void {
-    this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
-    this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
+    // this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
+    // this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
 
-    console.log('pBC ngOI nflxOptionPositions: ', this.nflxOptionPositions);
-    console.log('pBC ngOI tslaOptionPositions: ', this.tslaOptionPositions);
+    // console.log('pBC ngOI nflxOptionPositions: ', this.nflxOptionPositions);
+    // console.log('pBC ngOI tslaOptionPositions: ', this.tslaOptionPositions);
   }
 
   generateOptionPositions(symbol: string, data: any[]) {
@@ -49,5 +54,16 @@ export class PositionBuilderComponent implements OnInit {
     positions = this.posnBuilderService.generateSymbolsForPositions(positions);
 
     return positions
+  }
+
+  showConfigs(symbol: string) {
+
+    if (symbol === 'NFLX') {
+      this.positionsBS.next(this.generateOptionPositions('NFLX', nflxData));
+
+    } else {
+      this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
+
+    }
   }
 }

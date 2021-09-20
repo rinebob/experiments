@@ -1,0 +1,36 @@
+
+:host {
+    display: flex;
+    justify-content: center;
+}
+
+* {
+    border: 1px solid black;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    
+
+    &-container {
+        display: flex;
+        overflow-y: scroll;
+        
+
+    }
+
+    .posn {
+        
+        &-container {
+            background-color: lightblue;
+            border-radius: 4px;
+            height: 200px;
+            margin: 4px 10px;
+            width: 600px;
+
+
+
+        }
+    }
+}

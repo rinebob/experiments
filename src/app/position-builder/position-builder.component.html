@@ -1,1 +1,5 @@
-<p>position-builder works!</p>
+<div class="buttons">
+    <button class="button" (click)="showConfigs('TSLA')">TSLA</button>
+    <button class="button" (click)="showConfigs('NFLX')">NFLX</button>
+</div>
+<exp-posn-config-list [positions]="positions$ | async"></exp-posn-config-list>
