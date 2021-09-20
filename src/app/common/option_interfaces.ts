@@ -21,6 +21,7 @@ export interface OptionLeg {
   }
   
   export interface OptionPosition {
+    title: string;
     underlying: string;   // todo - put underlying data in an object
     underlyingPrice: number,
     underlyingIv?: number,

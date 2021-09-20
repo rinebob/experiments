@@ -40,6 +40,7 @@ export class PositionBuilderService {
 
     for (const datum of data) {
       const position: OptionPosition = {
+        title: '',
         underlying: symbol,
         underlyingPrice: datum.close,
         dateOpened: datum.date,
@@ -65,6 +66,10 @@ export class PositionBuilderService {
       const posn = {...position};
       const symbolDate = this.generateSymbolDate(posn.dateOpened, this.expirationDistance);
       const expirationDate = this.datesService.getExpirationDate(posn.dateOpened, this.expirationDistance);
+      
+      const expMoLabel = monthsMap.get(expirationDate.getMonth());
+      const expDateLabel = (expirationDate.getDate()).toString().padStart(2, '0');
+      const expYrLabel = (expirationDate.getFullYear()).toString().slice(2);
 
       // console.log('pBS gSFP symbol date, exp date: ', symbolDate, expirationDate);
       
@@ -82,9 +87,9 @@ export class PositionBuilderService {
         // console.log('pBS gSFP leg symbol: ', sym);
         
         // generates a human readable label for the leg
-        const expMoLabel = monthsMap.get(expirationDate.getMonth());
-        const expDateLabel = (expirationDate.getDate()).toString().padStart(2, '0');
-        const expYrLabel = (expirationDate.getFullYear()).toString().slice(2);
+        // const expMoLabel = monthsMap.get(expirationDate.getMonth());
+        // const expDateLabel = (expirationDate.getDate()).toString().padStart(2, '0');
+        // const expYrLabel = (expirationDate.getFullYear()).toString().slice(2);
         const putCallLabel = symbolInfo.putCall === 'C' ? 'CALL' : 'PUT';
 
         const label = `${position.underlying}_${expDateLabel}${expMoLabel}_${expYrLabel}_${symbolInfo.strike}_${putCallLabel}`;
@@ -99,6 +104,12 @@ export class PositionBuilderService {
         posn.symbols ? posn.symbols.push(symbolObject) : posn.symbols = [symbolObject];
         posn.expiration = expirationDate;
       }
+
+      // create a title / label for the position
+      // TSLA JUN 19 21 Long Straddle
+      const title = `${posn.underlying} ${expMoLabel} ${expDateLabel} ${expYrLabel} ${posn.config.name}`
+      posn.title = title;
+      console.log('pBS gSFP posn title: ', title, posn);
 
       updatedPositions.push(posn);
     }
