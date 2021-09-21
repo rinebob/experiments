@@ -6,12 +6,14 @@ import { PositionBuilderComponent } from './position-builder.component';
 import { PosnConfigListComponent } from './posn-config-list/posn-config-list.component';
 
 import { BaseComponentsModule } from '../base-components/base-components.module';
+import { PosnConfigDetailComponent } from './posn-config-detail/posn-config-detail.component';
 
 
 @NgModule({
   declarations: [
     PositionBuilderComponent,
     PosnConfigListComponent,
+    PosnConfigDetailComponent,
   ],
   imports: [
     CommonModule,
