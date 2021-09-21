@@ -1,5 +1,22 @@
-<div class="buttons">
-    <button class="button" (click)="showConfigs('TSLA')">TSLA</button>
-    <button class="button" (click)="showConfigs('NFLX')">NFLX</button>
+<div class="builder builder-container">
+
+    <div class="builder-buttons">
+        <button class="button" (click)="showConfigs('TSLA')">TSLA</button>
+        <button class="button" (click)="showConfigs('NFLX')">NFLX</button>
+    </div>
+
+
+    
+    
+    <div class="builder-list">
+        <ng-container  *ngFor="let position of positions$ | async">
+            <div class="config-item">
+                <exp-posn-config-detail [position]="position">
+                    
+                </exp-posn-config-detail>
+            </div>
+        </ng-container>
+    </div>
+
+
 </div>
-<exp-posn-config-list [positions]="positions$ | async"></exp-posn-config-list>

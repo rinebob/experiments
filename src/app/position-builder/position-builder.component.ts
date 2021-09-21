@@ -11,7 +11,7 @@ import * as legs from '../common/option_legs';
 import * as configs from '../common/option_configs';
 
 @Component({
-  selector: 'app-position-builder',
+  selector: 'exp-position-builder',
   templateUrl: './position-builder.component.html',
   styleUrls: ['./position-builder.component.scss']
 })
@@ -37,11 +37,12 @@ export class PositionBuilderComponent implements OnInit {
     private readonly posnBuilderService: PositionBuilderService) { }
 
   ngOnInit(): void {
-    // this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
-    // this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
-
-    // console.log('pBC ngOI nflxOptionPositions: ', this.nflxOptionPositions);
-    // console.log('pBC ngOI tslaOptionPositions: ', this.tslaOptionPositions);
+    // dev only for logging
+    this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
+    this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
+    console.log('pBC ngOI nflxOptionPositions: ', this.nflxOptionPositions);
+    console.log('pBC ngOI tslaOptionPositions: ', this.tslaOptionPositions);
+    
   }
 
   generateOptionPositions(symbol: string, data: any[]) {
