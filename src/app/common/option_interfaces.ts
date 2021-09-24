@@ -18,6 +18,10 @@ export interface OptionLeg {
   export interface OptionSpreadConfig {
     name: string;
     legs: OptionLeg[];
+    moneyness?: MoneynessUnit;
+    strategyName?: string;
+    direction?: Direction;
+    putCall?: OptionType;
   }
   
   export interface OptionPosition {
@@ -68,7 +72,8 @@ export interface OptionLeg {
   
   export type Direction = 'LONG' | 'SHORT';
   export type OptionType = 'CALL' | 'PUT';
-  
+  export type CreditDebit = 'CREDIT' | 'DEBIT';
+    
   export enum Exchange {
     CHICAGO_BOARD_OPTIONS_EXCHANGE = 'CBOE',
   }

@@ -1,4 +1,5 @@
 import { GalleryViewOptions } from "./interfaces";
+import { OptionPosition } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
 
@@ -49,3 +50,10 @@ export const monthsMap = new Map([
     [10, 'NOV'],
     [11, 'DEC'],
 ]);
+
+//   Default OptionPosition
+export const DEFAULT_OPTION_POSITION: OptionPosition = {
+    title: '',
+    underlying: '',
+    underlyingPrice: 0,
+}

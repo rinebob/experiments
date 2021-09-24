@@ -6,143 +6,6 @@
 import {MoneynessUnit, OptionSpreadConfig, OptionLeg } from "./option_interfaces";
 import * as legs from '../common/option_legs';
 
-// // Individual option legs that will be used to compose an
-// // option spread configuration
-
-// ///////////////// LONG CALLS //////////////////////
-// export const LONG_ONE_ATM_CALL: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.AT_THE_MONEY,
-//     type: 'CALL',
-// }
-
-// export const LONG_ONE_ATM_CALL_LONG_EXP: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.AT_THE_MONEY,
-//     type: 'CALL',
-// }
-
-// export const LONG_ONE_OTM_ONE_CALL: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_ONE,
-//     type: 'CALL',
-// }
-
-// export const LONG_ONE_OTM_TWO_CALL: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_TWO,
-//     type: 'CALL',
-// }
-
-// export const LONG_ONE_OTM_THREE_CALL: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_THREE,
-//     type: 'CALL',
-// }
-
-// ///////////////// SHORT CALLS //////////////////////
-
-// export const SHORT_ONE_ATM_CALL: OptionLeg = {
-//     direction: 'SHORT',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.AT_THE_MONEY,
-//     type: 'CALL',
-// }
-
-// export const SHORT_ONE_OTM_ONE_CALL: OptionLeg = {
-//     direction: 'SHORT',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_ONE,
-//     type: 'CALL',
-// }
-
-// export const SHORT_ONE_OTM_TWO_CALL: OptionLeg = {
-//     direction: 'SHORT',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_TWO,
-//     type: 'CALL',
-// }
-
-// export const SHORT_ONE_OTM_THREE_CALL: OptionLeg = {
-//     direction: 'SHORT',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_THREE,
-//     type: 'CALL',
-// }
-
-// ///////////////// LONG PUTS //////////////////////
-
-// export const LONG_ONE_ATM_PUT: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.AT_THE_MONEY,
-//     type: 'PUT',
-// }
-
-// export const LONG_ONE_ATM_PUT_LONG_EXP: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.AT_THE_MONEY,
-//     type: 'PUT',
-// }
-
-// export const LONG_ONE_OTM_ONE_PUT: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_ONE,
-//     type: 'PUT',
-// }
-
-// export const LONG_ONE_OTM_TWO_PUT: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_TWO,
-//     type: 'PUT',
-// }
-
-// export const LONG_ONE_OTM_THREE_PUT: OptionLeg = {
-//     direction: 'LONG',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_THREE,
-//     type: 'PUT',
-// }
-
-// ///////////////// SHORT PUTS //////////////////////
-
-// export const SHORT_ONE_ATM_PUT: OptionLeg = {
-//     direction: 'SHORT',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.AT_THE_MONEY,
-//     type: 'PUT',
-// }
-
-// export const SHORT_ONE_OTM_ONE_PUT: OptionLeg = {
-//     direction: 'SHORT',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_ONE,
-//     type: 'PUT',
-// }
-
-// export const SHORT_ONE_OTM_TWO_PUT: OptionLeg = {
-//     direction: 'SHORT',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_TWO,
-//     type: 'PUT',
-// }
-
-// export const SHORT_ONE_OTM_THREE_PUT: OptionLeg = {
-//     direction: 'SHORT',
-//     ratio: 1,
-//     moneyness: MoneynessUnit.OUT_OF_THE_MONEY_THREE,
-//     type: 'PUT',
-// }
-
-
 
 // Option spread configuration objects.  These are generic specifications that
 // are combined with an underlying stock, stock price and date to create a 
@@ -154,6 +17,9 @@ export const VERTICAL_CALL_DEBIT_SPREAD: OptionSpreadConfig = {
         legs.LONG_ONE_OTM_ONE_CALL,
         legs.SHORT_ONE_OTM_TWO_CALL
     ],
+    strategyName: 'Vertical',
+    direction: 'LONG',
+    putCall: 'CALL',
 }
 
 export const VERTICAL_CALL_CREDIT_SPREAD: OptionSpreadConfig = {
@@ -162,6 +28,9 @@ export const VERTICAL_CALL_CREDIT_SPREAD: OptionSpreadConfig = {
         legs.SHORT_ONE_OTM_TWO_CALL,
         legs.LONG_ONE_OTM_THREE_CALL,
     ],
+    strategyName: 'Vertical',
+    direction: 'SHORT',
+    putCall: 'CALL',
 }
 
 export const VERTICAL_PUT_DEBIT_SPREAD: OptionSpreadConfig = {
@@ -170,6 +39,9 @@ export const VERTICAL_PUT_DEBIT_SPREAD: OptionSpreadConfig = {
         legs.LONG_ONE_OTM_ONE_PUT,
         legs.SHORT_ONE_OTM_TWO_PUT,
     ],
+    strategyName: 'Vertical',
+    direction: 'LONG',
+    putCall: 'PUT',
 }
 
 export const VERTICAL_PUT_CREDIT_SPREAD: OptionSpreadConfig = {
@@ -178,6 +50,9 @@ export const VERTICAL_PUT_CREDIT_SPREAD: OptionSpreadConfig = {
         legs.SHORT_ONE_OTM_TWO_PUT,
         legs.LONG_ONE_OTM_THREE_PUT,
     ],
+    strategyName: 'Vertical',
+    direction: 'SHORT',
+    putCall: 'PUT',
 }
 
 export const ATM_LONG_STRADDLE: OptionSpreadConfig = {
@@ -186,6 +61,9 @@ export const ATM_LONG_STRADDLE: OptionSpreadConfig = {
         legs.LONG_ONE_ATM_CALL,
         legs.LONG_ONE_ATM_PUT,
     ],
+    moneyness: MoneynessUnit.AT_THE_MONEY,
+    strategyName: 'Straddle',
+    direction: 'LONG',
 }
 
 export const TWENTY_DELTA_SHORT_STRANGLE: OptionSpreadConfig = {
@@ -194,6 +72,9 @@ export const TWENTY_DELTA_SHORT_STRANGLE: OptionSpreadConfig = {
         legs.SHORT_ONE_OTM_THREE_CALL,
         legs.SHORT_ONE_OTM_THREE_PUT,
     ],
+    moneyness: MoneynessUnit.OUT_OF_THE_MONEY_THREE,
+    strategyName: 'Strangle',
+    direction: 'SHORT',
 }
 
 export const IRON_CONDOR: OptionSpreadConfig = {
@@ -204,6 +85,8 @@ export const IRON_CONDOR: OptionSpreadConfig = {
         legs.SHORT_ONE_OTM_TWO_PUT,
         legs.LONG_ONE_OTM_THREE_PUT,
     ],
+    strategyName: 'Iron condor',
+    direction: 'SHORT',
 }
 
 export const ATM_CALL_CALENDAR_SPREAD: OptionSpreadConfig = {
@@ -212,6 +95,9 @@ export const ATM_CALL_CALENDAR_SPREAD: OptionSpreadConfig = {
         legs.SHORT_ONE_ATM_CALL,
         legs.LONG_ONE_ATM_CALL_LONG_EXP,
     ],
+    strategyName: 'Calendar',
+    direction: 'LONG',
+    putCall: 'CALL',
 }
 
 export const ATM_PUT_CALENDAR_SPREAD: OptionSpreadConfig = {
@@ -220,6 +106,9 @@ export const ATM_PUT_CALENDAR_SPREAD: OptionSpreadConfig = {
         legs.SHORT_ONE_ATM_PUT,
         legs.LONG_ONE_ATM_PUT_LONG_EXP,
     ],
+    strategyName: 'Calendar',
+    direction: 'LONG',
+    putCall: 'PUT',
 }
 
 
