@@ -1,0 +1,36 @@
+
+
+// .position {
+//     border: 1px solid black;
+// }
+
+.config {
+
+    &-container {
+        background-color: lightblue;
+        border: 1px solid black;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-evenly;
+
+        height: 200px;
+        width: 600px;
+    }
+
+    &-left {
+        border: 1px solid black;
+        border-radius: 4px;
+        width: 50%;
+
+    }
+
+    &-right {
+        border: 1px solid black;
+        border-radius: 4px;
+        width: 50%;
+
+    }
+
+
+
+}

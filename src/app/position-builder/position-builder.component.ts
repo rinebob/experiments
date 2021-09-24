@@ -19,12 +19,12 @@ export class PositionBuilderComponent implements OnInit {
 
   private readonly configsList: OptionSpreadConfig[] = [
     configs.ATM_LONG_STRADDLE,
-    configs.IRON_CONDOR,
-    configs.VERTICAL_CALL_DEBIT_SPREAD,
-    configs.VERTICAL_CALL_CREDIT_SPREAD,
-    configs.TWENTY_DELTA_SHORT_STRANGLE,
-    configs.VERTICAL_PUT_DEBIT_SPREAD,
-    configs.VERTICAL_PUT_CREDIT_SPREAD,
+    // configs.IRON_CONDOR,
+    // configs.VERTICAL_CALL_DEBIT_SPREAD,
+    // configs.VERTICAL_CALL_CREDIT_SPREAD,
+    // configs.TWENTY_DELTA_SHORT_STRANGLE,
+    // configs.VERTICAL_PUT_DEBIT_SPREAD,
+    // configs.VERTICAL_PUT_CREDIT_SPREAD,
   ];
 
   nflxOptionPositions: OptionPosition[] = []
@@ -37,12 +37,14 @@ export class PositionBuilderComponent implements OnInit {
     private readonly posnBuilderService: PositionBuilderService) { }
 
   ngOnInit(): void {
-    // dev only for logging
-    this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
-    this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
-    console.log('pBC ngOI nflxOptionPositions: ', this.nflxOptionPositions);
-    console.log('pBC ngOI tslaOptionPositions: ', this.tslaOptionPositions);
+    this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
     
+    // dev only for logging
+    // this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
+    // this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
+    // console.log('pBC ngOI nflxOptionPositions: ', this.nflxOptionPositions);
+    // console.log('pBC ngOI tslaOptionPositions: ', this.tslaOptionPositions);
+
   }
 
   generateOptionPositions(symbol: string, data: any[]) {

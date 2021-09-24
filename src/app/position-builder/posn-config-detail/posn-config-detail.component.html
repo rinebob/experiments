@@ -1,1 +1,11 @@
-<p>yo dude - posn-config-detail works!</p>
+<div *ngIf="position$ | async as position"
+        class="config config-container">
+    <div class="config-left">
+        Title: {{position.title}}
+        Opened: {{position.dateOpened}}
+        Expires: {{position.expiration}}
+    </div>
+    <div class="config-right">
+        {{position.config.legs[0].symbol.label}}
+    </div>
+</div>
