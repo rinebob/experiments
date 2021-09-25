@@ -7,6 +7,7 @@ import { PosnConfigListComponent } from './posn-config-list/posn-config-list.com
 
 import { BaseComponentsModule } from '../base-components/base-components.module';
 import { PosnConfigDetailComponent } from './posn-config-detail/posn-config-detail.component';
+import { ConfigBuilderComponent } from './config-builder/config-builder.component';
 
 
 @NgModule({
@@ -14,6 +15,7 @@ import { PosnConfigDetailComponent } from './posn-config-detail/posn-config-deta
     PositionBuilderComponent,
     PosnConfigListComponent,
     PosnConfigDetailComponent,
+    ConfigBuilderComponent,
   ],
   imports: [
     CommonModule,
