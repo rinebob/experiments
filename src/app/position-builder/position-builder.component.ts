@@ -6,7 +6,7 @@ import { DatesService } from '../services/dates.service';
 import { PositionBuilderService } from '../services/position-builder.service';
 import { nflxData } from 'src/assets/data/nflx_21-0917';
 import { tslaData } from 'src/assets/data/tsla_21-0917';
-import { OptionPosition, OptionSpreadConfig } from '../common/option_interfaces';
+import { OptionPosition, OptionSpreadConfigBase } from '../common/option_interfaces';
 import * as legs from '../common/option_legs';
 import * as configs from '../common/option_configs';
 
@@ -17,7 +17,7 @@ import * as configs from '../common/option_configs';
 })
 export class PositionBuilderComponent implements OnInit {
 
-  private readonly configsList: OptionSpreadConfig[] = [
+  private readonly configsList: OptionSpreadConfigBase[] = [
     configs.ATM_LONG_STRADDLE,
     // configs.IRON_CONDOR,
     // configs.VERTICAL_CALL_DEBIT_SPREAD,
@@ -38,7 +38,9 @@ export class PositionBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
-    
+
+    // console.log('pB ngOI input configs list: ', [...this.configsList]);
+
     // dev only for logging
     // this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
     // this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
@@ -52,6 +54,7 @@ export class PositionBuilderComponent implements OnInit {
     const dates = this.posnBuilderService.generateTradingDates(data);
     
     for (const config of this.configsList) {
+      // console.log('pB gOP input config: ', {...config});
       positions = [...positions, ...this.posnBuilderService.generateOptionPositionObjects(dates, symbol, config)];
     }
     positions = this.posnBuilderService.generateSymbolsForPositions(positions);
