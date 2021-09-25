@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { moneynessMap, MoneynessUnit, OptionLeg, OptionPosition, OptionSpreadConfig, OptionSymbolMetadata, OptionType } from '../common/option_interfaces';
-import { monthsMap } from '../common/constants';
+import { moneynessMap, MoneynessUnit, OptionLegBase, OptionPosition, OptionSpreadConfigBase, OptionSymbolMetadata, OptionType } from '../common/option_interfaces';
+import { DAYS_MAP, MONTHS_MAP } from '../common/constants';
 
 import { DatesService } from './dates.service';
 
@@ -35,8 +35,10 @@ export class PositionBuilderService {
   }
   
   // Generate an array of OptionPosition object stubs
-  generateOptionPositionObjects(data: any[], symbol: string, config: OptionSpreadConfig) {
+  generateOptionPositionObjects(data: any[], symbol: string, config: OptionSpreadConfigBase) {
     const optionPositionObjects: OptionPosition[] = [];
+
+    // console.log('pBS gOPO input config: ', {...config});
 
     for (const datum of data) {
       const position: OptionPosition = {
@@ -44,81 +46,91 @@ export class PositionBuilderService {
         underlying: symbol,
         underlyingPrice: datum.close,
         dateOpened: datum.date,
+        dateOpenedText: this.getDateText(datum.date),
+        expDate: this.datesService.getExpirationDate(datum.date, this.expirationDistance),
         config: config,
 
       }
+      // create a title / label for the position
+      // TSLA JUN 19 21 Long Straddle
+      position.title = this.generatePositionTitle(position);
+      position.expDateText = this.getDateText(position.expDate);
 
       optionPositionObjects.push(position);
     }
 
-
     // console.log('pBS gOPO position objects: ', optionPositionObjects);
-
     return optionPositionObjects;
   }
 
-  // Generate an option symbol for each leg of each position
+  // Generate an option symbol object for each leg of each position
   generateSymbolsForPositions(positions: OptionPosition[]) {
-
     const updatedPositions: OptionPosition[] = [];
     for (const position of positions) {
-      // console.log('pBS gSFP position object: ', position);
       const posn = {...position};
+      // console.log('------------------');
+      // console.log('pBS gSFP position object start: ', posn);
+      
       const symbolDate = this.generateSymbolDate(posn.dateOpened, this.expirationDistance);
-      const expirationDate = this.datesService.getExpirationDate(posn.dateOpened, this.expirationDistance);
-      
-      const expMoLabel = monthsMap.get(expirationDate.getMonth());
-      const expDateLabel = (expirationDate.getDate()).toString().padStart(2, '0');
-      const expYrLabel = (expirationDate.getFullYear()).toString().slice(2);
-
-      // console.log('pBS gSFP symbol date, exp date: ', symbolDate, expirationDate);
-      
+            
       for (const leg of posn.config?.legs) {
-        // gets the strike and whether the leg is a put or call
-        const symbolInfo = this.getSymbolInfo(leg, posn.underlyingPrice, this.strikeGap);
-        // console.log('pBS gSFP leg symbolInfo: ', symbolInfo);
-
-        // generates a string representing strike price for the option symbol
-        const symbolPrice = this.generateSymbolPrice(symbolInfo.strike);
-        // console.log('pBS gSFP leg symbolPrice: ', symbolPrice);
-        
-        // generates the actual option symbol for the leg
-        const symbol = `${position.underlying}${symbolDate}${symbolInfo.putCall}${symbolPrice}`
-        // console.log('pBS gSFP leg symbol: ', sym);
-        
-        // generates a human readable label for the leg
-        // const expMoLabel = monthsMap.get(expirationDate.getMonth());
-        // const expDateLabel = (expirationDate.getDate()).toString().padStart(2, '0');
-        // const expYrLabel = (expirationDate.getFullYear()).toString().slice(2);
-        const putCallLabel = symbolInfo.putCall === 'C' ? 'CALL' : 'PUT';
-
-        const label = `${position.underlying}_${expDateLabel}${expMoLabel}_${expYrLabel}_${symbolInfo.strike}_${putCallLabel}`;
-        // console.log('pBS gSFP symbol label: ', label);
-
-        // encapsulates symbol and label
-        const symbolObject: OptionSymbolMetadata = { symbol, label };
-
-        // populates the leg with the option symbol metadata
-        leg.symbol = symbolObject;
-
+        const symbolObject = this.generateSymbolForLeg(leg, position.underlying, position.underlyingPrice, symbolDate, position.expDateText);
+        // console.log('pBS gSFP symbolObject: ', symbolObject);
         posn.symbols ? posn.symbols.push(symbolObject) : posn.symbols = [symbolObject];
-        posn.expiration = expirationDate;
       }
 
-      // create a title / label for the position
-      // TSLA JUN 19 21 Long Straddle
-      const title = `${posn.underlying} ${expMoLabel} ${expDateLabel} ${expYrLabel} ${posn.config.name}`
-      posn.title = title;
-      console.log('pBS gSFP posn title: ', title, posn);
-
+      // console.log('pBS gSFP position object end: ', posn);
       updatedPositions.push(posn);
     }
 
     return updatedPositions;
   }
 
+  getDateText(date: Date) {
+    let dateText = '';
+    const day = DAYS_MAP.get(date.getDay());
+    const mo = MONTHS_MAP.get(date.getMonth());
+    const dateNum = (date.getDate()).toString().padStart(2, '0');
+    const yr = (date.getFullYear()).toString().slice(2);
+
+    dateText = `${day} ${mo} ${dateNum} ${yr}`;
+
+    return dateText;
+  }
+
+  generatePositionTitle(posn: OptionPosition) {
+    return `${posn.underlying} ${posn.expDateText} ${posn.config.name}`;
+  }
+
+  // generates an option symbol object for each leg of the position
+  // optionSymbolObject {symbol: actual option symbol, label: human readable label for the symbol}
+  generateSymbolForLeg(leg: OptionLegBase, symbol: string, price: number, date: string, expDate: string) {
+    // gets strike price and put call designator
+    const symbolInfo = this.getSymbolInfo(leg, price, this.strikeGap);
+    // console.log('pBS gSFP leg symbolInfo: ', symbolInfo);
+
+    // generates a string representing strike price for the option symbol
+    const symbolPrice = this.generateSymbolPrice(symbolInfo.strike);
+    // console.log('pBS gSFP leg symbolPrice: ', symbolPrice);
+    
+    // generates the actual option symbol for the leg
+    const symb = `${symbol}${date}${symbolInfo.putCall}${symbolPrice}`
+    // console.log('pBS gSFP leg symbol: ', sym);
+    
+    // generates a human readable label for the leg
+    const putCallLabel = symbolInfo.putCall === 'C' ? 'CALL' : 'PUT';
+
+    const label = `${symbol}_${expDate}_${symbolInfo.strike}_${putCallLabel}`;
+    // console.log('pBS gSFP symbol label: ', label);
+
+    const symbObj:OptionSymbolMetadata = {symbol, label};
+
+    return symbObj;
+
+  }
+
   // Get strike price and put/call designator for each leg
-  getSymbolInfo(leg: OptionLeg, price: number, strikeGap: number) {
+  getSymbolInfo(leg: OptionLegBase, price: number, strikeGap: number) {
     let info = '';
     let strike = 0;
     const nearest = Math.round(price);
@@ -168,21 +180,7 @@ export class PositionBuilderService {
 
   // Generates a text string representing the leg's expiration date for use in the option symbol
   generateSymbolDate(date: Date, expDistDays: number) {
-    const tradeDateMillis = date.getTime();
-    const millisInADay = 24 * 60 * 60 * 1000;
-    const millisToExp = expDistDays * millisInADay;
-    const expMillis = tradeDateMillis + millisToExp;
-    
-    // console.log('--------------------');
-    
-    // console.log('pBS gSD input trading date: ', date);
-    // console.log('pBS gSD tradeDateMillis: ', tradeDateMillis);
-    // console.log('pBS gSD millisToExp: ', millisToExp);
-    // console.log('pBS gSD expmillis: ', expMillis);
-    // console.log('pBS gSD expMillis date: ', new Date(expMillis));
-    
     const expDate = this.datesService.getExpirationDate(date, expDistDays, 'MONTHLY');
-
     const yr = expDate.getFullYear().toString().slice(2);
     const mo = expDate.getMonth().toString().padStart(2, '0');
     const da = expDate.getDate().toString().padStart(2, '0');
