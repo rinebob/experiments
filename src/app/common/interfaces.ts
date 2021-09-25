@@ -43,3 +43,12 @@ export enum GalleryViewOptions {
     FILMSTRIP = 'filmstrip',
   
   } 
+
+export interface TimeParts {
+    mo: number;
+    dy: number;
+    yr: number;
+    hr: number;
+    min: number;
+    sec: number;
+}  

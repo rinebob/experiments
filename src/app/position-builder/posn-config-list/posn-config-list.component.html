@@ -1,0 +1,15 @@
+<div class="list list-container">
+    
+
+    <div class="scroll-item">
+
+        <ng-container *ngFor="let position of positions$ | async">
+            <div class="posn posn-container">
+                {{position.title}}
+            </div>
+        </ng-container>
+        
+    </div>
+    
+    
+</div>

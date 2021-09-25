@@ -1,0 +1,21 @@
+<div *ngIf="position$ | async as position"
+        class="config config-container">
+    <div class="config-left">
+        <p class="config-header config-text">{{position.dateOpenedText}}</p>
+        <p class="config-header">
+            <span class="config-text">{{position.underlying}}</span>
+            <span class="config-text">{{position.underlyingPrice}}</span>
+        </p>
+        <p class="config-text"> Position: {{position.config.name}} </p>
+        <p class="config-header">
+            <span class="config-text">Exp: {{position.expDateText}}</span>
+            <span class="config-text"> DTE: {{daysToExp > 0 ? daysToExp : 'EXP'}} </span>
+        </p>
+    </div>
+    <div class="config-right">
+        <p class="config-text">Position Legs:</p>
+        <div *ngFor="let symbol of position.symbols">
+            {{symbol.label}}
+        </div>
+    </div>
+</div>

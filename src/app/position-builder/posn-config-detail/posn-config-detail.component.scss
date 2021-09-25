@@ -1,0 +1,46 @@
+@import '../../../styles.scss';
+
+
+
+.config-container {
+    background-color: lightblue;
+    border: 1px solid black;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-evenly;
+
+    // height: 200px;
+    width: 600px;
+    
+
+    .config-left {
+        border: 1px solid black;
+        border-radius: 4px;
+        width: 50%;
+
+        .config-header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .config-text {
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 20px;
+            margin: 4px 0 0;
+            
+
+        }
+
+    }
+
+    .config-right {
+        border: 1px solid black;
+        border-radius: 4px;
+        width: 50%;
+
+    }
+
+
+
+}
