@@ -36,7 +36,7 @@ let getMonthValues = [
     [11, 'DEC'],
 ];
 
-export const monthsMap = new Map([
+export const MONTHS_MAP = new Map([
     [0, 'JAN'],
     [1, 'FEB'],
     [2, 'MAR'],
@@ -51,9 +51,21 @@ export const monthsMap = new Map([
     [11, 'DEC'],
 ]);
 
+export const DAYS_MAP = new Map([
+    [0, 'SUN'],
+    [1, 'MON'],
+    [2, 'TUE'],
+    [3, 'WED'],
+    [4, 'THU'],
+    [5, 'FRI'],
+    [6, 'SAT'],
+]);
+
 //   Default OptionPosition
 export const DEFAULT_OPTION_POSITION: OptionPosition = {
     title: '',
     underlying: '',
     underlyingPrice: 0,
 }
+
+export const MILLIS_IN_A_DAY = 24 * 60 * 60 * 1000;
