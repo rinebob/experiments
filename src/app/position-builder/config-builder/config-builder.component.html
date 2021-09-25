@@ -1,1 +1,152 @@
-<p>config-builder works!</p>
+<div class="builder-container">
+
+
+    <div class="item info-display-container">
+        <p>Info display</p>
+        <div class="info-display">
+            <p class="date">Date: <span>{{todayDate}}</span></p>
+        </div>
+    </div>
+
+    <div class="item position-preset-container">
+        <p>Position preset</p>
+        <div class="preset">
+            <label for="position-preset">Select a preset position config:</label>
+
+            <select name="position-config" id="position-config">
+                <option value="">ATM Long Straddle</option>
+                <option value="">Iron condor</option>
+                <option value="">Call debit spread</option>
+                <option value="">Put debit spread</option>
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="item leg-preset-container">
+        <p>Leg preset</p>
+        <div class="preset">
+            <label for="position-preset">Select a preset leg config:</label>
+
+            <select name="leg-config" id="leg-config">
+                <option value="">ATM Long call</option>
+                <option value="">OTM1 Long call</option>
+                <option value="">OTM2 Long call</option>
+                <option value="">OTM3 Long call</option>
+                <option value="">---------</option>
+                <option value="">ATM Long put</option>
+                <option value="">OTM1 Long put</option>
+                <option value="">OTM2 Long put</option>
+                <option value="">OTM3 Long put</option>
+                <option value="">---------</option>
+                <option value="">ATM Short call</option>
+                <option value="">OTM1 Short call</option>
+                <option value="">OTM2 Short call</option>
+                <option value="">OTM3 Short call</option>
+                <option value="">---------</option>
+                <option value="">ATM Short put</option>
+                <option value="">OTM1 Short put</option>
+                <option value="">OTM2 Short put</option>
+                <option value="">OTM3 Short put</option>
+                
+                
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="item expiration">
+        <p>Expiration</p>
+        <div class="radio-buttons">
+            <div class="radio-button"></div>1 wk
+            <div class="radio-button"></div>2 wk
+            <div class="radio-button"></div>1 mo
+            <div class="radio-button"></div>2 mo
+            <div class="radio-button"></div>3 mo
+            <div class="radio-button"></div>6 mo
+
+        </div>
+    </div>
+
+
+    <div class="item delta">
+        <p>Strike / Delta</p>
+        <div class="slider-container">
+            <form class="form">
+                <label for="delta">Delta - 0 (far OTM) to 100 (far ITM)):</label>
+                <div class="slider">
+                    <input type="range" id="delta" name="delta" min="0" max="100">
+                    <input type="submit">
+                </div>
+              </form>
+        </div>
+    </div>
+
+
+
+    <div class="item pcls-container">
+        
+        <div class="item-left put-call">
+            <p>Put / Call</p>
+            <div class="radio-buttons">
+                <div class="radio-button"></div>Put
+                <div class="radio-button"></div>Call
+            </div>
+        </div>
+
+        <div class="item-right long-short">
+            <p>Long / Short</p>
+            <div class="radio-buttons">
+                <div class="radio-button"></div>Long
+                <div class="radio-button"></div>Short
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <div class="item buttons-container">
+        <div class="spacer">
+            <p>Empty</p>
+        </div>
+        <div class="item-right">
+
+            <p>Buttons</p>
+            <div class="buttons">
+                <button>Cancel</button>
+                <button>Reset</button>
+                <button>Create Leg</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="item leg-display-container">
+        <p>Leg display</p>
+    </div>
+
+
+
+    <div class="item bottom-container">
+        <div class="item-left exit-type">
+            <p>Exit type</p>
+        </div>
+        <div class="item-right create-button">
+            <p>Create / Cancel</p>
+
+            <div class="buttons">
+                <button>Cancel</button>
+                <button>Create Config</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>

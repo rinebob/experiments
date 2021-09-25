@@ -8,6 +8,8 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 })
 export class ConfigBuilderComponent implements OnInit {
 
+  todayDate = new Date();
+
   constructor() { }
 
   ngOnInit(): void {
