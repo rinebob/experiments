@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { ExpirationDate, ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceName, TimeParts } from '../common/interfaces';
+import { ExpirationDate, ExpirationSeries, ExpirationTimeDistance, } from '../common/interfaces';
 import { DAYS_IN_A_WEEK, MILLIS_IN_A_DAY, OPTION_EXPIRATION_TIME_DISTANCES, QUARTERLY_EXPIRATION_MONTHS, STANDARD_DAYS_IN_A_MONTH } from '../common/constants';
-
-
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +49,7 @@ export class DatesService {
   // what is the date of the third thursday of the expiration month?
 
   getExpirationDate(tradingDate: Date, minExpDistance: number, optionSeries: string = 'MONTHLY') {
-    const minExpDate = new Date(tradingDate.getTime() + minExpDistance * this.millisInADay);
+    const minExpDate = new Date(tradingDate.getTime() + minExpDistance * MILLIS_IN_A_DAY);
     const thirdThursday = this.getThirdThursday(minExpDate);
     const nextExpDate = this.getThirdThursday(new Date(thirdThursday.getFullYear(), thirdThursday.getMonth() + 1, thirdThursday.getDate()));
     
@@ -72,11 +70,7 @@ export class DatesService {
 
     let numThursdays = 1;
     const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-    let testDateOfMonth = 1;
     let testDate = firstDayOfMonth;
-    
-    const dayOfFirstDay = firstDayOfMonth.getDay();
-    // console.log('dS gTT first day, date of expiration month: ', dayOfFirstDay, firstDayOfMonth);
     
     while (numThursdays < 3) {
       // console.log('------');
@@ -215,8 +209,7 @@ export class DatesService {
   // generates an ExpirationDate object for a given quarterly series (i.e. six-, nine-, twelve-month etc. series)
   generateQuarterlyExpiration(date: Date, dist: ExpirationTimeDistance) {
     console.log('dS gQE input date : ', date);
-    const currentDateMillis = date.getTime();
-
+    
     let quarterlyExpiration: ExpirationDate = {expName: dist.expName, expDate: date, expDay: 4};
     
     let nextQtrlyExpMo = date.getMonth();
