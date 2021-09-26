@@ -6,11 +6,12 @@
 
 // ex: LongOneAtmCall, ShortTwoOtm2Put
 export interface OptionLegBase {
-    type: OptionType;
-    moneyness: MoneynessUnit;
-    direction: Direction;
-    ratio: number;
-    // symbol?: OptionSymbolMetadata;
+  name: string;
+  type: OptionType;
+  moneyness: MoneynessUnit;
+  direction: Direction;
+  ratio: number;
+  // symbol?: OptionSymbolMetadata;
 }
 
 export interface OptionLegAsTraded {
