@@ -69,3 +69,10 @@ export const DEFAULT_OPTION_POSITION: OptionPosition = {
 }
 
 export const MILLIS_IN_A_DAY = 24 * 60 * 60 * 1000;
+
+export const DEFAULT_HISTORICAL_ANALYSIS_DATE = {
+    date: new Date(),
+    symbol: 'TSLA',
+    price: 600,
+    implVolty: 50,
+  };

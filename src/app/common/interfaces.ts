@@ -30,7 +30,15 @@ export interface PickerTableData {
     company: string;
     price: number;
     implVolty: number;
-  
+    date?: Date;
+}
+
+// Data structure for Historical Analysis Trading Date Selection
+export interface HistoricalAnalysisDate {
+    date: Date;
+    symbol: string;
+    price: number;
+    implVolty: number;
 }
 
 export interface NavBarSelection {
