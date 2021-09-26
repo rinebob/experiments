@@ -2,9 +2,17 @@
 
 
     <div class="item info-display-container">
-        <p>Info display</p>
-        <div class="info-display">
-            <p class="date">Date: <span>{{todayDate}}</span></p>
+        <div class="info-display" *ngIf="historicalDate$ | async as histDate">
+            
+            <div class="box">
+                <p class="data">Date: {{histDate.date.toDateString()}} </p>
+                <p class="data">Symbol: {{histDate.symbol}} </p>
+            </div>
+            <div class="box">
+                <p class="data">Close: {{histDate.price}} </p>
+                <p class="data">IV: {{histDate.implVolty}} </p>
+            </div>
+
         </div>
     </div>
 
@@ -13,11 +21,8 @@
         <div class="preset">
             <label for="position-preset">Select a preset position config:</label>
 
-            <select name="position-config" id="position-config">
-                <option value="">ATM Long Straddle</option>
-                <option value="">Iron condor</option>
-                <option value="">Call debit spread</option>
-                <option value="">Put debit spread</option>
+            <select name="leg-config" id="leg-config" *ngIf="OPTION_SPREAD_CONFIGS as configs">
+                <option *ngFor="let config of configs" value="config">{{config.name}}</option>
             </select>
 
         </div>
@@ -28,29 +33,8 @@
         <p>Leg preset</p>
         <div class="preset">
             <label for="position-preset">Select a preset leg config:</label>
-
-            <select name="leg-config" id="leg-config">
-                <option value="">ATM Long call</option>
-                <option value="">OTM1 Long call</option>
-                <option value="">OTM2 Long call</option>
-                <option value="">OTM3 Long call</option>
-                <option value="">---------</option>
-                <option value="">ATM Long put</option>
-                <option value="">OTM1 Long put</option>
-                <option value="">OTM2 Long put</option>
-                <option value="">OTM3 Long put</option>
-                <option value="">---------</option>
-                <option value="">ATM Short call</option>
-                <option value="">OTM1 Short call</option>
-                <option value="">OTM2 Short call</option>
-                <option value="">OTM3 Short call</option>
-                <option value="">---------</option>
-                <option value="">ATM Short put</option>
-                <option value="">OTM1 Short put</option>
-                <option value="">OTM2 Short put</option>
-                <option value="">OTM3 Short put</option>
-                
-                
+            <select name="leg-config" id="leg-config" *ngIf="OPTION_SPREAD_LEGS as legs">
+                <option *ngFor="let leg of legs" value="leg">{{leg.name}}</option>
             </select>
 
         </div>
