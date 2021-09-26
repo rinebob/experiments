@@ -1,17 +1,17 @@
-<div class="builder-container">
+<div class="list-container">
     
     <div class="buttons">
         <button class="button" (click)="show('TSLA')">TSLA</button>
         <button class="button" (click)="show('NFLX')">NFLX</button>
     </div>
     
-    <div class="builder-list">
+    <div class="list">
         <ng-container  *ngFor="let position of positions$ | async">
             <div class="config-item">
                 <exp-posn-config-detail [position]="position">
                     
                 </exp-posn-config-detail>
-        </div>
+            </div>
         </ng-container>
     </div>
     
