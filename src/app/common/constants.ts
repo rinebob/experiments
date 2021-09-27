@@ -1,4 +1,4 @@
-import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceName, GalleryViewOptions } from "./interfaces";
+import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, GalleryViewOptions } from "./interfaces";
 import { OptionPosition } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
@@ -80,66 +80,77 @@ export const DEFAULT_HISTORICAL_ANALYSIS_DATE = {
 // List of option expiration months to expiration
 export const OPTION_EXPIRATION_TIME_DISTANCES: ExpirationTimeDistance[] = [
 {
+    expLabel: ExpriationTimeDistanceLabel.ONE_WEEK,
     expSeries: ExpirationSeries.WEEKLY,
     expName: ExpriationTimeDistanceName.ONE_WEEK,
     expDist: 1,
     expDay: 5,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.TWO_WEEK,
     expSeries: ExpirationSeries.WEEKLY,
     expName: ExpriationTimeDistanceName.TWO_WEEK,
     expDist: 2,
     expDay: 5,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.ONE_MONTH,
     expSeries: ExpirationSeries.MONTHLY,
     expName: ExpriationTimeDistanceName.ONE_MONTH,
     expDist: 1,
     expDay: 4,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.TWO_MONTH,
     expSeries: ExpirationSeries.MONTHLY,
     expName: ExpriationTimeDistanceName.TWO_MONTH,
     expDist: 2,
     expDay: 4,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.THREE_MONTH,
     expSeries: ExpirationSeries.MONTHLY,
     expName: ExpriationTimeDistanceName.THREE_MONTH,
     expDist: 3,
     expDay: 4,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.SIX_MONTH,
     expSeries: ExpirationSeries.QUARTERLY,
     expName: ExpriationTimeDistanceName.SIX_MONTH,
     expDist: 6,
     expDay: 4,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.NINE_MONTH,
     expSeries: ExpirationSeries.QUARTERLY,
     expName: ExpriationTimeDistanceName.NINE_MONTH,
     expDist: 9,
     expDay: 4,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.TWELVE_MONTH,
     expSeries: ExpirationSeries.QUARTERLY,
     expName: ExpriationTimeDistanceName.TWELVE_MONTH,
     expDist: 12,
     expDay: 4,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.FIFTEEN_MONTH,
     expSeries: ExpirationSeries.QUARTERLY,
     expName: ExpriationTimeDistanceName.FIFTEEN_MONTH,
     expDist: 15,
     expDay: 4,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.EIGHTEEN_MONTH,
     expSeries: ExpirationSeries.QUARTERLY,
     expName: ExpriationTimeDistanceName.EIGHTEEN_MONTH,
     expDist: 18,
     expDay: 4,
 },
 {
+    expLabel: ExpriationTimeDistanceLabel.TWENTY_FOUR_MONTH,
     expSeries: ExpirationSeries.QUARTERLY,
     expName: ExpriationTimeDistanceName.TWENTY_FOUR_MONTH,
     expDist: 24,
