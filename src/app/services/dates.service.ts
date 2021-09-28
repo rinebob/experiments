@@ -14,25 +14,13 @@ export class DatesService {
     let tradingDates = [];
     let checkDate = new Date(start);
     let timeSpanDays = Math.ceil((end.getTime() - start.getTime()) / MILLIS_IN_A_DAY);
-
-    // console.log('dS gTD input start, end, days: ', start, end, days);
-    // console.log('dS gTD checkDate: ', checkDate);
-    // console.log('dS gTD timeSpanDays: ', timeSpanDays);
-    // console.log('dS gTD MILLIS_IN_A_DAY: ', MILLIS_IN_A_DAY);
-    // console.log('dS gTD currentMillis, nextMillis: ', currentMillis, nextMillis);
-
-
     for (let day = 0; day < timeSpanDays; day++) {
-      // console.log('----------------');
-      // console.log('day: ', day);
-      // console.log('dow: ', checkDate.getDay());
       
       if (checkDate.getDay() === 3) {
         tradingDates.push(checkDate)
       }
       checkDate = new Date(checkDate.getTime() + MILLIS_IN_A_DAY);
     }
-    // console.log('dS gTD trading dates array: ', tradingDates);
 
     return tradingDates;
   } 
@@ -53,44 +41,26 @@ export class DatesService {
     const thirdThursday = this.getThirdThursday(minExpDate);
     const nextExpDate = this.getThirdThursday(new Date(thirdThursday.getFullYear(), thirdThursday.getMonth() + 1, thirdThursday.getDate()));
     
-    // console.log('--------------------');
-    // console.log('dS gED open trade day, date: ', tradingDate.getDay(), tradingDate);
-    // console.log('dS gED min exp day, date: ', minExpDate.getDay(), minExpDate);
-    // console.log('dS gED third th day, date: ', thirdThursday.getDay(), thirdThursday);
-    // console.log('dS gED next exp day, date: ', nextExpDate.getDay(), nextExpDate);
-    // console.log(`dS gED using ${minExpDate < thirdThursday ? 'thirdThursday' : 'nextExpDate'} for expiration`);
-    
     return minExpDate < thirdThursday ? thirdThursday : nextExpDate;
   }
 
   getThirdThursday(date: Date) {
-    // console.log('------------------------');
-    // console.log('dS gTT input date: ', date);
-    // console.log('dS gTT input DOW, date: ', date.getDay(), date);
-
     let numThursdays = 1;
     const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
     let testDate = firstDayOfMonth;
     
     while (numThursdays < 3) {
-      // console.log('------');
-      // console.log('dS gTT in while loop. numThs, day, testDate: ', numThursdays, testDate.getDay(), testDate);
       if (testDate.getDay() === 4) {
         testDate = new Date(testDate.getTime() + MILLIS_IN_A_DAY * 7);
         numThursdays++;
         
-        // console.log('dS gTT testDate = thurs. next test date: ', testDate);
-        // console.log('dS gTT new numThurs: ', numThursdays);
-        
       } else {
         testDate = new Date(testDate.getTime() + MILLIS_IN_A_DAY);
-        // console.log('dS gTT testDate != thurs. next test date: ', testDate);
       }
     }
     
     const thirdThursOfMonth = testDate;
-    console.log('dS gTT third TOM, day: ', thirdThursOfMonth, thirdThursOfMonth.getDate(), thirdThursOfMonth.getDay());
-  
+    
     
     return thirdThursOfMonth;
   }
@@ -100,25 +70,15 @@ export class DatesService {
   // dates are either fridays (weekly) or third-thursdays (monthly/quarterly)
   // used for ConfigBuilder component UI Expiration radio button data source
   generateExpirationCalendar(date: Date) {
-    // console.log('**********************************');
-    // console.log('dS gEC expiration calendar init input date: ', date);
-    // console.log('dS gEC exp time distances: ', OPTION_EXPIRATION_TIME_DISTANCES);
-    
     let calendar: ExpirationDate[] = [];
     let expDate = date;
     
-    // generate expiration dates for next six months
     for (const dist of OPTION_EXPIRATION_TIME_DISTANCES) {
-      // console.log('===========================');
-      // console.log('dS gEC expiration calendar input date: ', date);
-      // console.log('dS gEC for dist: ', dist);
-      // get the millis for input date
       const inputDateMillis = date.getTime();
 
       switch(dist.expSeries) {
         case ExpirationSeries.WEEKLY: {
-          console.log('dS gEC case weekly');
-
+    
           const dteMillis = this.getDteMillis(dist.expDist, DAYS_IN_A_WEEK);
           const maxExpDate = this.generateMaxExpDate(inputDateMillis, dteMillis);
           expDate = this.getWeeklyExpDate(maxExpDate);
@@ -129,8 +89,7 @@ export class DatesService {
         }
         
         case ExpirationSeries.MONTHLY: {
-          console.log('dS gEC case monthly');
-
+    
           const dteMillis = this.getDteMillis(dist.expDist, STANDARD_DAYS_IN_A_MONTH);
           const maxExpDate = this.generateMaxExpDate(inputDateMillis, dteMillis);
           expDate = this.getThirdThursday(maxExpDate);
@@ -141,7 +100,7 @@ export class DatesService {
         }
         
         case ExpirationSeries.QUARTERLY: {
-          console.log('dS gEC case quarterly');
+          // console.log('dS gEC case quarterly');
 
           const dteMillis = this.getDteMillis(dist.expDist, STANDARD_DAYS_IN_A_MONTH);
           const maxExpDate = this.generateMaxExpDate(inputDateMillis, dteMillis);
@@ -153,12 +112,11 @@ export class DatesService {
         }
 
         default: {
-          // console.log('dS gEC switch default - uhhmmmm... huh?? ');
+          
         }
       }
     }
-    console.log('dS gEC final expiration calendar : ', calendar);
-
+    
     return calendar;
   }
 
@@ -172,6 +130,7 @@ export class DatesService {
 
   generateExpirationDateObject(date: Date, dist: ExpirationTimeDistance) {
     const expirationDate: ExpirationDate = {
+      expLabel: dist.expLabel,
       expName: dist.expName,
       expDate: date,
       expDay: dist.expDay,
@@ -208,9 +167,9 @@ export class DatesService {
 
   // generates an ExpirationDate object for a given quarterly series (i.e. six-, nine-, twelve-month etc. series)
   generateQuarterlyExpiration(date: Date, dist: ExpirationTimeDistance) {
-    console.log('dS gQE input date : ', date);
+    // console.log('dS gQE input date : ', date);
     
-    let quarterlyExpiration: ExpirationDate = {expName: dist.expName, expDate: date, expDay: 4};
+    let quarterlyExpiration: ExpirationDate = {expLabel: dist.expLabel, expName: dist.expName, expDate: date, expDay: 4};
     
     let nextQtrlyExpMo = date.getMonth();
     let nextQtrlyExpYr = date.getFullYear();
