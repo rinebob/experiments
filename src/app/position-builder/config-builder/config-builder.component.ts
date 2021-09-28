@@ -42,4 +42,9 @@ export class ConfigBuilderComponent implements OnChanges, OnInit {
   
   }
 
+  selectConfig(config: any) {
+
+    console.log('cB sC config dd selection: ', config);
+  }
+
 }

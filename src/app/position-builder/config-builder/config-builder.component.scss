@@ -8,7 +8,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 3fr 1fr;
-    grid-template-rows: repeat(7, 100px) auto 100px;
+    // grid-template-rows: repeat(7, 100px) auto 100px;
+    grid-template-rows: repeat(3, 100px) 200px repeat(3, 100px) auto 100px;
 
 
     .item {
@@ -92,6 +93,22 @@
 
     .expiration {
         flex-direction: column;
+
+        .series-container {
+            display: flex;
+            justify-content:stretch;
+            align-items: stretch;
+
+            height: 100%;
+            
+            .series {
+                border: 1px solid black;
+                border-radius: 4px;
+                
+                flex: 1;
+                
+            }
+        }
     }
 
     .delta {

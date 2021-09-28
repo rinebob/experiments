@@ -34,7 +34,7 @@
         <div class="preset">
             <label for="position-preset">Select a preset leg config:</label>
             <select name="leg-config" id="leg-config" *ngIf="OPTION_SPREAD_LEGS as legs">
-                <option *ngFor="let leg of legs" value="leg">{{leg.name}}</option>
+                <option *ngFor="let leg of legs" value="leg" (click)="selectConfig(value)">{{leg.name}}</option>
             </select>
 
         </div>
@@ -43,8 +43,21 @@
 
 
     <div class="item expiration">
-        <p>Expiration</p>
-        <div class="radio-buttons">
+        <p class="exp-header">Expiration</p>
+        <div class="series-container">
+
+            <div class="series wk">
+                
+            </div>
+            <div class="series mo">
+                
+            </div>
+            <div class="series qt">
+                
+            </div>
+        </div>
+        
+        <!-- <div class="radio-buttons">
             <div class="radio-button"></div>1 wk
             <div class="radio-button"></div>2 wk
             <div class="radio-button"></div>1 mo
@@ -52,7 +65,7 @@
             <div class="radio-button"></div>3 mo
             <div class="radio-button"></div>6 mo
 
-        </div>
+        </div> -->
     </div>
 
 
