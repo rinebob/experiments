@@ -70,10 +70,12 @@ export interface ExpirationTimeDistance {
 }
 
 export interface ExpirationDate {
+    expSeries: ExpirationSeries;
     expName: ExpriationTimeDistanceName;
     expLabel: ExpriationTimeDistanceLabel;
     expDate: Date;        // actual expriation date
     expDay: number;         // day of week 0(sun) to 6(sat)
+    checkboxLabel: string;
 }
 
 export enum ExpriationTimeDistanceName {

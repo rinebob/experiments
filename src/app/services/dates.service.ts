@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ExpirationDate, ExpirationSeries, ExpirationTimeDistance, } from '../common/interfaces';
-import { DAYS_IN_A_WEEK, MILLIS_IN_A_DAY, OPTION_EXPIRATION_TIME_DISTANCES, QUARTERLY_EXPIRATION_MONTHS, STANDARD_DAYS_IN_A_MONTH } from '../common/constants';
+import { DAYS_IN_A_WEEK, DAYS_MAP, MILLIS_IN_A_DAY, MONTHS_MAP, OPTION_EXPIRATION_TIME_DISTANCES, QUARTERLY_EXPIRATION_MONTHS, STANDARD_DAYS_IN_A_MONTH } from '../common/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -25,17 +25,6 @@ export class DatesService {
     return tradingDates;
   } 
   
-  // get a date that is at least minExpDistance away and is the expiration date for that option series
-  // minExpDistance = minimum number of days until expiration
-  // optionSeries = use weekly, monthly, quarterly option series
-  // find the first expiration date using the given series that is the min distance of days in the future
-  // ex:
-  // trading date = 1-6-2021 wed minExpDistance = 30 days  optionSeries = monthly
-  // monthly options expire on 3rd thursday of every month
-  // first time a third thursday of a month is more than 30 days from trading date is in february
-  // the expiration month is february
-  // what is the date of the third thursday of the expiration month?
-
   getExpirationDate(tradingDate: Date, minExpDistance: number, optionSeries: string = 'MONTHLY') {
     const minExpDate = new Date(tradingDate.getTime() + minExpDistance * MILLIS_IN_A_DAY);
     const thirdThursday = this.getThirdThursday(minExpDate);
@@ -60,8 +49,7 @@ export class DatesService {
     }
     
     const thirdThursOfMonth = testDate;
-    
-    
+        
     return thirdThursOfMonth;
   }
 
@@ -129,12 +117,22 @@ export class DatesService {
   }
 
   generateExpirationDateObject(date: Date, dist: ExpirationTimeDistance) {
+
+    const mo = MONTHS_MAP.get(date.getMonth());
+    const day = date.getDate();
+    const label = `${dist.expLabel} ${mo} ${day}`;
+
+    console.log('dS gEDO label: ', label);
+
     const expirationDate: ExpirationDate = {
+      expSeries: dist.expSeries,
       expLabel: dist.expLabel,
       expName: dist.expName,
       expDate: date,
       expDay: dist.expDay,
+      checkboxLabel: label,
     }
+   
     return expirationDate;
   }
   
@@ -143,23 +141,16 @@ export class DatesService {
     let expDate = maxExpDate;
     const maxExpDow = maxExpDate.getDay();
 
-    // if day of week equals expiration day of week (friday (5) for weekly series)
-    // then that is the exp date
     if (maxExpDow === 5) {
       expDate = maxExpDate;
 
     } else {
-      // else walk backward by dow to exp dow and that is the exp date
-      // console.log('dS gEC while loop start');
       let n = maxExpDow;
       while(n !== 5) {
-        // console.log('dS gEC in while loop.  n: ', n);
         expDate = new Date(expDate.getTime() - MILLIS_IN_A_DAY);
         n--;
         n = n < 0 ? 6 : n;
-        // console.log('dS gEC while loop end.  n: ', n);
       }
-
     }
 
     return expDate;
@@ -167,42 +158,27 @@ export class DatesService {
 
   // generates an ExpirationDate object for a given quarterly series (i.e. six-, nine-, twelve-month etc. series)
   generateQuarterlyExpiration(date: Date, dist: ExpirationTimeDistance) {
-    // console.log('dS gQE input date : ', date);
-    
-    let quarterlyExpiration: ExpirationDate = {expLabel: dist.expLabel, expName: dist.expName, expDate: date, expDay: 4};
-    
+
+    const mo = MONTHS_MAP.get(date.getMonth());
+    const day = date.getDate();
+    const label = `${dist.expLabel} ${mo} ${day}`;
+
+    let quarterlyExpiration: ExpirationDate = {expSeries: dist.expSeries, expLabel: dist.expLabel, expName: dist.expName, expDate: date, expDay: 4, checkboxLabel: label};
     let nextQtrlyExpMo = date.getMonth();
     let nextQtrlyExpYr = date.getFullYear();
     
-    // console.log('dS gQE nextQtrlyExpMo: ', nextQtrlyExpMo);
-    // console.log('dS gQE nextQtrlyExpYr: ', nextQtrlyExpYr);
-    // console.log('dS gQE exp mos: ', QUARTERLY_EXPIRATION_MONTHS);
-    
     while (!QUARTERLY_EXPIRATION_MONTHS.includes(nextQtrlyExpMo)) {
-      // console.log('dS gQE while start mo: ', nextQtrlyExpMo);
       nextQtrlyExpMo++;
-      // console.log('dS gQE mo++: ', nextQtrlyExpMo);
       if (nextQtrlyExpMo > 12) {
-        // console.log('dS gQE mo > 12 start: ', nextQtrlyExpMo);
         nextQtrlyExpMo = nextQtrlyExpMo - 12;
-        // console.log('dS gQE mo - 12: ', nextQtrlyExpMo);
         nextQtrlyExpYr = nextQtrlyExpYr + 1;
-        // console.log('dS gQE yr + 1: ', nextQtrlyExpYr);
       }
-      
     }
-    // console.log('dS gQE expDate from yr mo 1 gTT: ', nextQtrlyExpYr, nextQtrlyExpMo);
     
     let expDate = this.getThirdThursday(new Date(nextQtrlyExpYr, nextQtrlyExpMo, 1));
-
-    // console.log('dS gQE expDate result: ', expDate);
-    
-    // create object with exp name and exp date
-      quarterlyExpiration.expDate = expDate;
+    quarterlyExpiration.expDate = expDate;
 
     return quarterlyExpiration;
   }
-
-
 }
 
