@@ -16,6 +16,7 @@
         </div>
     </div>
 
+
     <div class="item position-preset-container">
         <p>Position preset</p>
         <div class="preset">
@@ -29,6 +30,7 @@
 
     </div>
 
+    
     <div class="item leg-preset-container">
         <p>Leg preset</p>
         <div class="preset">
@@ -46,26 +48,38 @@
         <p class="exp-header">Expiration</p>
         <div class="series-container">
 
+            
             <div class="series wk">
-                
+                <p>Weekly</p>
+                <div *ngFor="let exp of weeklyExp$ | async"
+                        class="date-container">
+                        <span class="cb"></span>
+                        <span class="dist">{{exp.checkboxLabel}}</span>
+                </div>
             </div>
-            <div class="series mo">
-                
-            </div>
-            <div class="series qt">
-                
-            </div>
-        </div>
         
-        <!-- <div class="radio-buttons">
-            <div class="radio-button"></div>1 wk
-            <div class="radio-button"></div>2 wk
-            <div class="radio-button"></div>1 mo
-            <div class="radio-button"></div>2 mo
-            <div class="radio-button"></div>3 mo
-            <div class="radio-button"></div>6 mo
+            
+            <div class="series mo">
+                <p>Monthly</p>
+                <div *ngFor="let exp of monthlyExp$ | async"
+                     class="date-container">
+                     <span class="cb"></span>
+                     <span class="dist">{{exp.checkboxLabel}}</span>
+                </div>
+            </div>
 
-        </div> -->
+            
+            <div class="series qt">
+                <p>Quarterly</p>
+                <div *ngFor="let exp of quarterlyExp$ | async"
+                     class="date-container">
+                     <span class="cb"></span>
+                     <span class="dist">{{exp.checkboxLabel}}</span>
+                </div>
+            </div>
+
+        
+        </div>
     </div>
 
 
