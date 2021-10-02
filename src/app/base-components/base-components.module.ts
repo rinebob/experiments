@@ -12,6 +12,7 @@ import { SlimNavBarComponent } from './slim-nav-bar/slim-nav-bar.component';
 import { BaseComponentsViewComponent } from './base-components-view.component';
 import { MdbCarouselModule } from 'mdb-angular-ui-kit/carousel';
 import { ChartGalleryComponent } from './chart-gallery/chart-gallery.component';
+import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { ChartGalleryComponent } from './chart-gallery/chart-gallery.component';
     SlimNavBarComponent,
     BaseComponentsViewComponent,
     ChartGalleryComponent,
+    ChartSettingsComponent,
   ],
   imports: [
     CommonModule,
