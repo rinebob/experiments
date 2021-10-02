@@ -1,9 +1,9 @@
-<div class="chart chart-container" *ngIf="chartData$ | async as data"
+<div class="chart-container" *ngIf="chartData$ | async as data"
     [class.chart-fullscreen]="(chartMode$ | async) === 'fullscreen'"
     [class.chart-gallery]="(chartMode$ | async) === 'gallery'"
     [class.chart-filmstrip-main]="(chartMode$ | async) === 'filmstrip-main'"
     [class.chart-filmstrip-strip]="(chartMode$ | async) === 'filmstrip-strip'">
-
+    
     <div class="chart-symbol">Symbol: {{data.symbol}}</div>
     <div class="chart-data">Company: {{data.company}}</div>
     <div class="chart-data">Price: {{data.price}}</div>
