@@ -2,12 +2,12 @@ import { AfterViewInit, Component, OnChanges, OnInit, ChangeDetectionStrategy, I
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { GalleryChartMode, GalleryViewOptions, NavBarSelection, PickerTableData } from 'src/app/common/interfaces';
+import { GalleryChartMode, GalleryViewOption, NavBarSelection, PickerTableData } from 'src/app/common/interfaces';
 import { DEFAULT_PICKER_TABLE_DATUM } from 'src/app/common/constants';
 
-const FULLSCREEN = 'fullscreen';
-const GALLERY = 'gallery';
-const FILMSTRIP = 'filmstrip';
+// const FULLSCREEN = 'fullscreen';
+// const GALLERY = 'gallery';
+// const FILMSTRIP = 'filmstrip';
 
 
 @Component({
@@ -21,15 +21,44 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   @ViewChild('fullscreen', {read: TemplateRef}) fullscreenTpl;
   @ViewChild('gallery', {read: TemplateRef}) galleryTpl;
   @ViewChild('filmstrip', {read: TemplateRef}) filmstripTpl;
-  @Input() navSelections: NavBarSelection[] = [];
-  @Input() mainChart: PickerTableData = DEFAULT_PICKER_TABLE_DATUM;
-  @Input() galleryData: PickerTableData[] = [];
+  // @Input() navSelections: NavBarSelection[] = [];
+  // @Input() gallerySelection: GalleryViewOption;
+  // @Input() mainChart: PickerTableData = DEFAULT_PICKER_TABLE_DATUM;
+  // @Input() galleryData: PickerTableData[] = [];
+  
+
+  @Input() 
+  set gallerySelection(selection: GalleryViewOption) {
+    this.gallerySelectionBS.next(selection);
+  }
+  get gallerySelection() {
+    return this.gallerySelectionBS.value;
+  }
+
+  @Input() 
+  set mainChart(data: PickerTableData) {
+    this.mainChartBS.next(data);
+  }
+  get mainChart() {
+    return this.mainChartBS.value;
+  }
+
+  @Input() 
+  set galleryData(data: PickerTableData[]) {
+    this.galleryDataBS.next(data);
+  }
+  get galleryData() {
+    return this.galleryDataBS.value;
+  }
+
+  readonly gallerySelectionBS = new BehaviorSubject<GalleryViewOption | undefined>(undefined);
+  readonly gallerySelection$: Observable<GalleryViewOption> = this.gallerySelectionBS;
+  
+  readonly mainChartBS = new BehaviorSubject<PickerTableData>(DEFAULT_PICKER_TABLE_DATUM);
+  readonly mainChart$: Observable<PickerTableData> = this.mainChartBS;
 
   readonly galleryDataBS = new BehaviorSubject<PickerTableData[]>([]);
   readonly galleryData$: Observable<PickerTableData[]> = this.galleryDataBS;
-
-  readonly mainChartBS = new BehaviorSubject<PickerTableData>(DEFAULT_PICKER_TABLE_DATUM);
-  readonly mainChart$: Observable<PickerTableData> = this.mainChartBS;
 
   fullTpl: ViewRef;
   galTpl: ViewRef;
@@ -43,14 +72,25 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['mainChart']) {
-      console.log('cG ngOC changes-mainChart: ', changes['mainChart']);
+      console.log('cG ngOC changes mainChart: ', changes['mainChart']);
       const data: PickerTableData = (changes['mainChart']).currentValue;
       this.mainChartBS.next(data);
     }
     if (changes['galleryData']) {
-      console.log('cG ngOC changes-galleryData: ', changes['galleryData']);
+      console.log('cG ngOC changes galleryData: ', changes['galleryData']);
       const data: PickerTableData[] = (changes['galleryData']).currentValue;
       this.galleryDataBS.next(data);
+    }
+    if (changes['gallerySelection']) {
+      console.log('cG ngOC changes gallerySelection: ', changes['gallerySelection'].currentValue);
+      this.gallerySelectionBS.next(changes['gallerySelection'].currentValue);
+      
+      if (this.fullscreenTpl || this.galleryTpl || this.filmstripTpl) {
+        console.log('cG ngOC changes if block for handle nav selection');
+        this.handleNavSelection(this.gallerySelectionBS.value);
+
+      }
+      
     }
 
   }
@@ -59,70 +99,56 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
+    console.log('cG ngAVI gallery selection: ', this.gallerySelectionBS.value);
+    console.log('cG ngAVI main chart BS: ', this.mainChartBS.value);
+    this.handleNavSelection(GalleryViewOption.FULLSCREEN);
     // console.log('cG ngAVI container ref: ', this.viewContainer);
     // console.log('cG ngAVI fullscreenTpl ref: ', this.fullscreenTpl);
   }
 
-  handleNavSelection(selection: string) {
-    console.log('bCV hNS selection: ', selection);
+  handleNavSelection(selection: GalleryViewOption) {
+    console.log('cG hNS selection: ', selection);
     switch(selection) { 
-      case GalleryViewOptions.FULLSCREEN: { 
+      case GalleryViewOption.FULLSCREEN: { 
         this.showFullscreen();
         break; 
      } 
-     case GalleryViewOptions.GALLERY: { 
+     case GalleryViewOption.GALLERY: { 
         this.showGallery();
         break; 
      } 
-     case GalleryViewOptions.FILMSTRIP: { 
+     case GalleryViewOption.FILMSTRIP: { 
        this.showFilmstrip();
        break; 
      }
      default: { 
-        console.log('bCV hNS default dude wtf you doin here???')
+        console.log('Cg hNS default dude wtf you doin here???')
         break; 
      } 
    } 
   }
 
   showFullscreen() {
-    console.log('bCV sFu show fullscreen called');
+    console.log('cG sFu show fullscreen called');
     this.fullTpl = this.fullscreenTpl.createEmbeddedView();
-    this.updateView(FULLSCREEN);
     this.updateViewContainer(this.fullTpl);
-    // this.viewContainer.clear();
-    // this.viewContainer.insert(this.fullTpl);
-
   }
+
   showGallery() {
-    console.log('bCV sG show gallery called');
+    console.log('cG sG show gallery called');
     this.galTpl = this.galleryTpl.createEmbeddedView();
-    this.updateView(GALLERY);
     this.updateViewContainer(this.galTpl);
-    // this.viewContainer.clear();
-    // this.viewContainer.insert(this.galTpl);
-
   }
+
   showFilmstrip() {
-    console.log('bCV sFi show filmstrip called');
+    console.log('cG sFi show filmstrip called');
     this.stripTpl = this.filmstripTpl.createEmbeddedView();
-    this.updateView(FILMSTRIP);
     this.updateViewContainer(this.stripTpl);
-    // this.viewContainer.clear();
-    // this.viewContainer.insert(this.stripTpl);
-
-  }
-
-  updateView(view: string) {
-    console.log('cG uV view: ', view);
-    this.showFull = view === FULLSCREEN ? true : false;
-    this.showGal = view === GALLERY ? true : false;
-    this.showStrip = view === FILMSTRIP ? true : false;
-
   }
 
   updateViewContainer(view: ViewRef) {
     console.log('cG uVC viewRef: ', view);
+    console.log('cG uVC viewContainer: ', this.viewContainer);
     this.viewContainer.clear();
     this.viewContainer.insert(view);
 
