@@ -1,5 +1,51 @@
 
 
+export const OHLC_INITIALIZER: OHLCData = {
+    date: new Date(Date.now()),
+    stringDate: '',
+    open: 0,
+    high: 0,
+    low: 0,
+    close: 0,
+    volume: 0,
+  }
+  
+  export interface OHLCData {
+    date: Date;
+    stringDate?: string;
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    adjustedClose?: number;
+    volume: number;
+    dividendAmount?: number;
+    splitCoefficient?: number;
+  }
+
+    // intraday intervals
+export enum TimeFrame {
+    ONE_MINUTE = '1min',
+    FIVE_MINUTE = '5min',
+    FIFTEEN_MINUTE = '15min',
+    THIRTY_MINUTE = '30min',
+    SIXTY_MINUTE = '60min',
+    DAILY = 'Daily',
+    WEEKLY = 'Weekly',
+    MONTHLY = 'Monthly',
+  }
+
+  export enum ChartType {
+    LINE = 'line',
+    BAR = 'bar',
+    CANDLESTICK = 'candlestick',
+  }
+  
+  export enum ScaleType {
+    LINEAR = 'linear',
+    LOG = 'log',
+  }
+
 export interface NavigationLink {
     label: string;
     link: string;
