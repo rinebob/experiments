@@ -1,38 +1,22 @@
 
-// :host {
-//     display: flex;
-//     justify-content: center;
-// }
 
-* {
-    border: 1px solid black;
+:host {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
+    width: 50%;
 }
 
-.list {
-    
-    &-container {
+.list-container {
+    overflow-y: scroll;
+            
+    .buttons {
         display: flex;
-        flex-direction: column;
-        // overflow-y: scroll;
-        
-
+        justify-content: flex-start;
     }
+    
 
-    .posn {
-        
-        &-container {
-            background-color: lightblue;
-            border-radius: 4px;
-            margin: 4px 10px;
-            
-            height: 100px;
-            width: 600px;
-            
-            // height: 100%;
-            // width: 100%;
-
-
-
-        }
+    .list {
+        border: 1px solid blue;
     }
 }

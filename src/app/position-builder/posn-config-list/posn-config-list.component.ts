@@ -1,4 +1,5 @@
-import { Component, Input, OnChanges, OnInit, ChangeDetectionStrategy, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, ChangeDetectionStrategy, SimpleChanges, Output } from '@angular/core';
+
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -11,7 +12,8 @@ import { OptionPosition } from 'src/app/common/option_interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PosnConfigListComponent implements OnChanges, OnInit {
-  @Input() positions:OptionPosition[]
+  @Input() positions:OptionPosition[];
+  @Output() showConfig = new EventEmitter<string>();
 
   private positionsBS = new BehaviorSubject<OptionPosition[]>([]);
   readonly positions$: Observable<OptionPosition[]> = this.positionsBS;
@@ -28,6 +30,11 @@ export class PosnConfigListComponent implements OnChanges, OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  show(symbol: string) {
+    console.log('pCL s show symbol: ', symbol);
+    this.showConfig.emit(symbol);
   }
 
 }

@@ -16,19 +16,22 @@ import * as configs from '../common/option_configs';
   styleUrls: ['./position-builder.component.scss']
 })
 export class PositionBuilderComponent implements OnInit {
-
+  
   private readonly configsList: OptionSpreadConfigBase[] = [
-    configs.ATM_LONG_STRADDLE,
-    // configs.IRON_CONDOR,
+    // configs.ATM_LONG_STRADDLE,
+    configs.IRON_CONDOR,
     // configs.VERTICAL_CALL_DEBIT_SPREAD,
     // configs.VERTICAL_CALL_CREDIT_SPREAD,
-    // configs.TWENTY_DELTA_SHORT_STRANGLE,
+    configs.TWENTY_DELTA_SHORT_STRANGLE,
     // configs.VERTICAL_PUT_DEBIT_SPREAD,
     // configs.VERTICAL_PUT_CREDIT_SPREAD,
   ];
 
-  nflxOptionPositions: OptionPosition[] = []
-  tslaOptionPositions: OptionPosition[] = []
+  optionSpreadConfigs = Object.entries(configs);
+  optionSpreadLegs = Object.entries(legs);
+
+  nflxOptionPositions: OptionPosition[] = [];
+  tslaOptionPositions: OptionPosition[] = [];
 
   positionsBS = new BehaviorSubject<OptionPosition[]>([]);
   positions$: Observable<OptionPosition[]> = this.positionsBS;
@@ -37,7 +40,11 @@ export class PositionBuilderComponent implements OnInit {
     private readonly posnBuilderService: PositionBuilderService) { }
 
   ngOnInit(): void {
-    this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
+    // this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
+
+    const expCalendar = this.datesService.generateExpirationCalendar(new Date());
+    console.log('pB ngOI expiration calendar: ', expCalendar);
+
 
     // console.log('pB ngOI input configs list: ', [...this.configsList]);
 
@@ -58,18 +65,19 @@ export class PositionBuilderComponent implements OnInit {
       positions = [...positions, ...this.posnBuilderService.generateOptionPositionObjects(dates, symbol, config)];
     }
     positions = this.posnBuilderService.generateSymbolsForPositions(positions);
+    positions.sort((a,b) => (a.dateOpened.getTime() - b.dateOpened.getTime()));
 
-    return positions
+    return positions;
   }
 
-  showConfigs(symbol: string) {
-
+  showConfig(symbol: string) {
+    console.log('pBS sC symbol: ', symbol);
     if (symbol === 'NFLX') {
       this.positionsBS.next(this.generateOptionPositions('NFLX', nflxData));
-
     } else {
       this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
-
     }
   }
+
+
 }

@@ -1,21 +1,20 @@
 
 :host {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     height: calc(100vh - 64px);
 }
 
-.builder-container {
-    overflow-y: scroll;
-            
-    .buttons {
-        display: flex;
-        justify-content: flex-start;
-    }
+.placeholder-container {
+    border: 1px solid blue;
+    height: 100%;
+    width: 50%;
     
+    
+}
 
-    .builder-list {
-        border: 1px solid blue;
-    }
+exp-config-builder {
+    border: 1px solid blue;
+    height: 100%;
+    width: 50%;
+
 }

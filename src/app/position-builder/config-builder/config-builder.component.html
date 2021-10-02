@@ -1,0 +1,163 @@
+<div class="builder-container">
+
+
+    <div class="item info-display-container">
+        <div class="info-display" *ngIf="historicalDate$ | async as histDate">
+            
+            <div class="box">
+                <p class="data">Date: {{histDate.date.toDateString()}} </p>
+                <p class="data">Symbol: {{histDate.symbol}} </p>
+            </div>
+            <div class="box">
+                <p class="data">Close: {{histDate.price}} </p>
+                <p class="data">IV: {{histDate.implVolty}} </p>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="item position-preset-container">
+        <p>Position preset</p>
+        <div class="preset">
+            <label for="position-preset">Select a preset position config:</label>
+
+            <select name="leg-config" id="leg-config" *ngIf="OPTION_SPREAD_CONFIGS as configs">
+                <option *ngFor="let config of configs" value="config">{{config.name}}</option>
+            </select>
+
+        </div>
+
+    </div>
+
+    
+    <div class="item leg-preset-container">
+        <p>Leg preset</p>
+        <div class="preset">
+            <label for="position-preset">Select a preset leg config:</label>
+            <select name="leg-config" id="leg-config" *ngIf="OPTION_SPREAD_LEGS as legs">
+                <option *ngFor="let leg of legs" value="leg" (click)="selectConfig(value)">{{leg.name}}</option>
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="item expiration">
+        <p class="exp-header">Expiration</p>
+        <div class="series-container">
+
+            
+            <div class="series wk">
+                <p>Weekly</p>
+                <div *ngFor="let exp of weeklyExp$ | async"
+                        class="date-container">
+                        <span class="cb"></span>
+                        <span class="dist">{{exp.checkboxLabel}}</span>
+                </div>
+            </div>
+        
+            
+            <div class="series mo">
+                <p>Monthly</p>
+                <div *ngFor="let exp of monthlyExp$ | async"
+                     class="date-container">
+                     <span class="cb"></span>
+                     <span class="dist">{{exp.checkboxLabel}}</span>
+                </div>
+            </div>
+
+            
+            <div class="series qt">
+                <p>Quarterly</p>
+                <div *ngFor="let exp of quarterlyExp$ | async"
+                     class="date-container">
+                     <span class="cb"></span>
+                     <span class="dist">{{exp.checkboxLabel}}</span>
+                </div>
+            </div>
+
+        
+        </div>
+    </div>
+
+
+    <div class="item delta">
+        <p>Strike / Delta</p>
+        <div class="slider-container">
+            <form class="form">
+                <label for="delta">Delta - 0 (far OTM) to 100 (far ITM)):</label>
+                <div class="slider">
+                    <input type="range" id="delta" name="delta" min="0" max="100">
+                    <input type="submit">
+                </div>
+              </form>
+        </div>
+    </div>
+
+
+
+    <div class="item pcls-container">
+        
+        <div class="item-left put-call">
+            <p>Put / Call</p>
+            <div class="radio-buttons">
+                <div class="radio-button"></div>Put
+                <div class="radio-button"></div>Call
+            </div>
+        </div>
+
+        <div class="item-right long-short">
+            <p>Long / Short</p>
+            <div class="radio-buttons">
+                <div class="radio-button"></div>Long
+                <div class="radio-button"></div>Short
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <div class="item buttons-container">
+        <div class="spacer">
+            <p>Empty</p>
+        </div>
+        <div class="item-right">
+
+            <p>Buttons</p>
+            <div class="buttons">
+                <button>Cancel</button>
+                <button>Reset</button>
+                <button>Create Leg</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="item leg-display-container">
+        <p>Leg display</p>
+    </div>
+
+
+
+    <div class="item bottom-container">
+        <div class="item-left exit-type">
+            <p>Exit type</p>
+        </div>
+        <div class="item-right create-button">
+            <p>Create / Cancel</p>
+
+            <div class="buttons">
+                <button>Cancel</button>
+                <button>Create Config</button>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
