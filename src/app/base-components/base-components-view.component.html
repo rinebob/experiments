@@ -1,13 +1,15 @@
 
 <div class="base-container">
-   
-    <div class="picker">
-        <exp-picker-table [pickerData]="pickerData$ | async"
-                        (selectedSymbol)="handleSymbolSelection($event)">
-        </exp-picker-table>
-    </div>
-    <div class="gallery">
-        <exp-chart-gallery [navSelections]="galleryNavSelections"
+    <exp-picker-table [pickerData]="pickerData$ | async"
+                    (selectedSymbol)="handleSymbolSelection($event)">
+    </exp-picker-table>
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <exp-chart-settings></exp-chart-settings>
+            <exp-slim-nav-bar [selectionOptions]="galleryNavSelections" (selection)="handleGallerySelection($event)"></exp-slim-nav-bar>
+
+        </div>
+        <exp-chart-gallery [gallerySelection]="gallerySelection$ | async"
                            [mainChart]="mainChart$ | async"
                            [galleryData]="galleryData$ | async">
         </exp-chart-gallery>
