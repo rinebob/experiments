@@ -91,7 +91,7 @@ export interface NavBarSelection {
     buttonText: string;
   }
   
-export enum GalleryViewOptions {
+export enum GalleryViewOption {
     FULLSCREEN = 'fullscreen',
     GALLERY = 'gallery',
     FILMSTRIP = 'filmstrip',
