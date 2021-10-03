@@ -1,4 +1,7 @@
-import {ChartType, ScaleType, OHLCData, OHLC_INITIALIZER, TimeFrame } from '../../common/interfaces';
+import {ChartType, ScaleType, TimeFrame } from '../../common/interfaces_chart';
+import {OHLCData, OHLC_INITIALIZER } from '../../common/interfaces';
+
+
 // Alphavantage endpoint parameters
 export enum Params {
     FUNCTION = 'function',
@@ -10,100 +13,6 @@ export enum Params {
     DATATYPE = 'datatype',
     APIKEY = 'apikey',
   }
-
-export interface Metadata {
-    information: string;
-    symbol: string;
-    last_refreshed: string;
-    output_size: string;
-    time_zone: string;
-}
-
-export interface DayChartData {
-    open: string;
-    high: string;
-    low: string;
-    close: string;
-    adjusted_close: string;
-    volume: string;
-    dividend_amount: string;
-    split_coefficient: string;
-
-}
-
-export interface FullSetting {
-    symbol: string;
-    timeFrame?: TimeFrame;
-    slice: Slice;
-    adjusted: Adjusted;
-    outputSize: OutputSize;
-    dataType: DataType;
-    chartType?: ChartType;
-    scaleType?: ScaleType;
-    startDate?: Date;
-    endDate?: Date;
-    
-  }
-   
-export interface DataSetting {
-    symbol: string;
-    timeFrame: TimeFrame;
-    slice?: Slice;
-    adjusted?: Adjusted;
-    outputSize?: OutputSize;
-    dataType?: DataType;
-}
-
-export interface DayTimeSeries {
-    [key:string] : DayChartData;
-}
-
-export interface DayResponse {
-    metadata: Metadata;
-    time_series: DayTimeSeries;
-}
-
-export interface IntradayChartData {
-    open: string;
-    high: string;
-    low: string;
-    close: string;
-    volume: string;
-}
-
-// shape of request
-  export interface AlphavantageRequest {
-    function: TimeSeriesFunction;
-    symbol: string;
-    interval?: Interval;
-    slice?: Slice;
-    adjusted?: Adjusted;
-    outputsize?: OutputSize;
-    datatype?: DataType;
-    apikey: string;
-}
-
-const intradayTimes = ['1min', '5min', '15min', '30min', '60min'];
-
-
-export interface DayRequest {
-    function: TimeSeriesFunction;
-    symbol: string;
-    outputsize?: OutputSize;
-    datatype?: DataType;
-    apikey: string;
-}
-
-export interface IntradayRequest {
-    function: TimeSeriesFunction;
-    symbol: string;
-    interval?: Interval;
-    slice?: Slice;
-    adjusted?: Adjusted;
-    outputsize?: OutputSize;
-    datatype?: DataType;
-    apikey: string;
-}
 
   // Alphavantage intraday intervals
   export enum Interval {
@@ -178,3 +87,102 @@ export interface IntradayRequest {
   }
 
  
+  // First part of AV http response
+export interface Metadata {
+    information: string;
+    symbol: string;
+    last_refreshed: string;
+    output_size: string;
+    time_zone: string;
+}
+
+// Shape of data point in daily data response
+export interface DayChartData {
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    adjusted_close: string;
+    volume: string;
+    dividend_amount: string;
+    split_coefficient: string;
+
+}
+
+// shape of data point in intraday data response
+export interface FullSetting {
+    symbol: string;
+    timeFrame?: TimeFrame;
+    slice: Slice;
+    adjusted: Adjusted;
+    outputSize: OutputSize;
+    dataType: DataType;
+    chartType?: ChartType;
+    scaleType?: ScaleType;
+    startDate?: Date;
+    endDate?: Date;
+    
+  }
+   
+export interface DataSetting {
+    symbol: string;
+    timeFrame: TimeFrame;
+    slice?: Slice;
+    adjusted?: Adjusted;
+    outputSize?: OutputSize;
+    dataType?: DataType;
+}
+
+// Data structure for daily series data points
+export interface DayTimeSeries {
+    [key:string] : DayChartData;
+}
+
+// Highest level data structure for daily series data points
+export interface DayResponse {
+    metadata: Metadata;
+    time_series: DayTimeSeries;
+}
+
+// Data structure for intraday series data points
+export interface IntradayChartData {
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    volume: string;
+}
+
+// shape of request
+  export interface AlphavantageRequest {
+    function: TimeSeriesFunction;
+    symbol: string;
+    interval?: Interval;
+    slice?: Slice;
+    adjusted?: Adjusted;
+    outputsize?: OutputSize;
+    datatype?: DataType;
+    apikey: string;
+}
+
+const intradayTimes = ['1min', '5min', '15min', '30min', '60min'];
+
+
+export interface DayRequest {
+    function: TimeSeriesFunction;
+    symbol: string;
+    outputsize?: OutputSize;
+    datatype?: DataType;
+    apikey: string;
+}
+
+export interface IntradayRequest {
+    function: TimeSeriesFunction;
+    symbol: string;
+    interval?: Interval;
+    slice?: Slice;
+    adjusted?: Adjusted;
+    outputsize?: OutputSize;
+    datatype?: DataType;
+    apikey: string;
+}
