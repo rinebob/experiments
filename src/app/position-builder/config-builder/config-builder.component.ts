@@ -4,7 +4,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { DatesService } from '../../services/dates.service';
-import { ExpirationDate, ExpirationSeries, HistoricalAnalysisDate } from '../../common/interfaces';
+import { HistoricalAnalysisDate } from '../../common/interfaces';
+import { ExpirationDate, ExpirationSeries } from '../../common/option_interfaces';
 import {DEFAULT_HISTORICAL_ANALYSIS_DATE, MONTHS_MAP, DAYS_MAP} from '../../common/constants';
 import * as legs from '../../common/option_legs';
 import * as configs from '../../common/option_configs';

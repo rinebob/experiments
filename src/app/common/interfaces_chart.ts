@@ -21,21 +21,6 @@ export enum ScaleType {
     LINEAR = 'linear',
     LOG = 'log',
 }
-
-
-export interface FullSetting {
-    symbol: string;
-    timeFrame?: TimeFrame;
-    slice: av.Slice;
-    adjusted: av.Adjusted;
-    outputSize: av.OutputSize;
-    dataType: av.DataType;
-    chartType?: ChartType;
-    scaleType?: ScaleType;
-    startDate?: Date;
-    endDate?: Date;
-    
-}
   
 export interface ChartSetting {
     chartType?: ChartType;
@@ -44,3 +29,11 @@ export interface ChartSetting {
     endDate?: Date;
 }
   
+export interface ChartDimensions {
+    top?: number;
+    left?: number;
+    height?: string;
+    width?: string;
+    fullHeight?: boolean;
+    fullWidth?: boolean;
+}
