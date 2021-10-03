@@ -1,5 +1,4 @@
-<exp-slim-nav-bar [selectionOptions]="navSelections" (selection)="handleNavSelection($event)"></exp-slim-nav-bar>
-    
+
 <div #container class="gallery">
 
     <ng-template #fullscreen>
@@ -15,8 +14,7 @@
         <div class="gallery-gallery-view">
                 <exp-base-chart *ngFor="let chart of galleryData$ | async"
                     [chartData]="chart"
-                    chartMode="gallery"
-                    class="chart-gallery-view">
+                    chartMode="gallery">
                 </exp-base-chart>
         </div>
     </ng-template>

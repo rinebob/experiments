@@ -19,7 +19,6 @@ exp-slim-nav-bar {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        height: calc(100vh - 86px); // 86px = header height + slim nav bar height
         overflow-y: scroll;
     }
 
@@ -56,6 +55,7 @@ exp-slim-nav-bar {
                 flex-wrap: nowrap;
                 justify-content: flex-start;
                 height: 100%;
+                overflow-x: scroll;
 
                 .filmstrip-chart {
                     margin: 0 4px;

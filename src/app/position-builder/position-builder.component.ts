@@ -9,6 +9,7 @@ import { tslaData } from 'src/assets/data/tsla_21-0917';
 import { OptionPosition, OptionSpreadConfigBase } from '../common/option_interfaces';
 import * as legs from '../common/option_legs';
 import * as configs from '../common/option_configs';
+import { ExpirationDate } from '../common/interfaces';
 
 @Component({
   selector: 'exp-position-builder',
@@ -41,18 +42,6 @@ export class PositionBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     // this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
-
-    const expCalendar = this.datesService.generateExpirationCalendar(new Date());
-    console.log('pB ngOI expiration calendar: ', expCalendar);
-
-
-    // console.log('pB ngOI input configs list: ', [...this.configsList]);
-
-    // dev only for logging
-    // this.nflxOptionPositions = this.generateOptionPositions('NFLX', nflxData);
-    // this.tslaOptionPositions = this.generateOptionPositions('TSLA', tslaData);
-    // console.log('pBC ngOI nflxOptionPositions: ', this.nflxOptionPositions);
-    // console.log('pBC ngOI tslaOptionPositions: ', this.tslaOptionPositions);
 
   }
 

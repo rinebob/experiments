@@ -1,7 +1,8 @@
+
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { GalleryChartMode, PickerTableData } from '../common/interfaces';
+import { GalleryChartMode, GalleryViewOption, NavBarSelection, PickerTableData } from '../common/interfaces';
 import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
 import { DEFAULT_PICKER_TABLE_DATUM, GalleryNavSelections } from '../common/constants';
 
@@ -13,6 +14,9 @@ import { DEFAULT_PICKER_TABLE_DATUM, GalleryNavSelections } from '../common/cons
 })
 export class BaseComponentsViewComponent implements OnInit {
 
+  gallerySelectionBS = new BehaviorSubject<GalleryViewOption | undefined>(undefined);
+  gallerySelection$: Observable<GalleryViewOption> = this.gallerySelectionBS;
+
   mainChartBS = new BehaviorSubject<PickerTableData>(DEFAULT_PICKER_TABLE_DATUM);
   mainChart$: Observable<PickerTableData> = this.mainChartBS;
 
@@ -22,11 +26,13 @@ export class BaseComponentsViewComponent implements OnInit {
   pickerDataBS = new BehaviorSubject<PickerTableData[]>(PICKER_TABLE_DATA);
   pickerData$: Observable<PickerTableData[]> = this.pickerDataBS;
 
-  galleryNavSelections = GalleryNavSelections
+  galleryNavSelections = GalleryNavSelections;
 
   constructor() { }
 
   ngOnInit(): void {
+    console.log('bCV ngOI handle gallery selection fullscreen');
+    this.handleGallerySelection(GalleryViewOption.FULLSCREEN)
   }
 
   handleSymbolSelection(selectedSymbol: string) {
@@ -36,6 +42,14 @@ export class BaseComponentsViewComponent implements OnInit {
   //  console.log('bCV hSS symbol data: ', symbolData);
    this.mainChartBS.next(symbolData);
 
+  }
+
+  handleGallerySelection(selection: GalleryViewOption) {
+    console.log('bCV hNS selection: ', selection);
+    console.log('bCV hNS t.gSBS initial: ', this.gallerySelectionBS.value);
+    this.gallerySelectionBS.next(selection);
+    console.log('bCV hNS t.gSBS after next: ', this.gallerySelectionBS.value);
+    
   }
 
 
