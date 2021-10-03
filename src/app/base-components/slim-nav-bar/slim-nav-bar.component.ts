@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, ChangeDetectionStrategy, Output, Input
 
 import {BehaviorSubject, Observable} from 'rxjs';
 
-import { GalleryViewOptions, NavBarSelection } from 'src/app/common/interfaces';
+import { GalleryViewOption, NavBarSelection } from 'src/app/common/interfaces';
 
 
 // interface NavBarSelection {
@@ -42,7 +42,7 @@ export class SlimNavBarComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectionOptions']) {
-      console.log('pT ngOC changes-selectionOptions: ', changes['selectionOptions']);
+      // console.log('sNB ngOC changes-selectionOptions: ', changes['selectionOptions']);
       const data: NavBarSelection[] = (changes['selectionOptions']).currentValue;
       this.navBarSelectionsBS.next(data);
       for (const datum of this.navBarSelectionsBS.value) {
@@ -58,7 +58,7 @@ export class SlimNavBarComponent implements OnInit {
   }
 
   handleClick(selection: string) {
-    console.log('sNB hC selection: ', selection);
+    // console.log('sNB hC selection: ', selection);
     this.selection.emit(selection);
   }
 
