@@ -1,8 +1,17 @@
-
-
 .base-container {
     display: grid;
     grid-template-columns: 400px auto;
     grid-template-rows: auto;
     height: calc(100% - 22px);
+}
+
+.gallery-header {
+    border: 1px solid blue;
+    border-radius: 4px;
+    height: 60px;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
