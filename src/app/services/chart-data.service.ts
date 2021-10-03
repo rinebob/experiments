@@ -6,7 +6,8 @@ import {map} from 'rxjs/operators'
 
 import * as av from '../services/av/alphavantage_utils'
 import { DataSetting, OutputSize, Slice, Adjusted, DataType } from '../services/av/av_interfaces';
-import { OHLCData, TimeFrame } from '../common/interfaces';
+import { OHLCData } from '../common/interfaces';
+import { TimeFrame } from '../common/interfaces_chart';
 import { Alphavantage_API_KEY } from 'src/secrets/secrets';
 
 @Injectable({

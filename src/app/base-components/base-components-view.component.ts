@@ -2,9 +2,13 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { GalleryChartMode, GalleryViewOption, NavBarSelection, PickerTableData } from '../common/interfaces';
-import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
+import { ChartDataService } from '../services/chart-data.service';
+
+import { GalleryChartMode, GalleryViewOption, NavBarSelection, OHLCData, PickerTableData } from '../common/interfaces';
+import { ChartSetting } from '../common/interfaces_chart';
+import { DataSetting } from '../services/av/av_interfaces';
 import { DEFAULT_PICKER_TABLE_DATUM, GalleryNavSelections } from '../common/constants';
+import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
 
 @Component({
   selector: 'vz-base-components-view',
@@ -26,17 +30,23 @@ export class BaseComponentsViewComponent implements OnInit {
   pickerDataBS = new BehaviorSubject<PickerTableData[]>(PICKER_TABLE_DATA);
   pickerData$: Observable<PickerTableData[]> = this.pickerDataBS;
 
+  mainChartDataBS = new BehaviorSubject<OHLCData[]>([]);
+  mainChartData$: Observable<OHLCData[]> = this.mainChartDataBS;
+
+  galleryChartsDataBS = new BehaviorSubject<OHLCData[]>([]);
+  galleryChartsData$: Observable<OHLCData[]> = this.galleryChartsDataBS;
+
   galleryNavSelections = GalleryNavSelections;
 
-  constructor() { }
+  constructor(private readonly chartDataService: ChartDataService) { }
 
   ngOnInit(): void {
-    console.log('bCV ngOI handle gallery selection fullscreen');
+    // console.log('bCV ngOI handle gallery selection fullscreen');
     this.handleGallerySelection(GalleryViewOption.FULLSCREEN)
   }
 
   handleSymbolSelection(selectedSymbol: string) {
-   console.log('bCV hSS selectedSymbol: ', selectedSymbol);
+  //  console.log('bCV hSS selectedSymbol: ', selectedSymbol);
    // dispatch symbol to store
    const symbolData = PICKER_TABLE_DATA.find(item => item.symbol === selectedSymbol);
   //  console.log('bCV hSS symbol data: ', symbolData);
@@ -45,11 +55,27 @@ export class BaseComponentsViewComponent implements OnInit {
   }
 
   handleGallerySelection(selection: GalleryViewOption) {
-    console.log('bCV hNS selection: ', selection);
-    console.log('bCV hNS t.gSBS initial: ', this.gallerySelectionBS.value);
+    // console.log('bCV hNS selection: ', selection);
+    // console.log('bCV hNS t.gSBS initial: ', this.gallerySelectionBS.value);
     this.gallerySelectionBS.next(selection);
-    console.log('bCV hNS t.gSBS after next: ', this.gallerySelectionBS.value);
+    // console.log('bCV hNS t.gSBS after next: ', this.gallerySelectionBS.value);
     
+  }
+
+  updateChartSettings(event: ChartSetting) {
+    // dispatch the settings to the store
+  }
+
+  updateDataSettings(event: DataSetting) {
+    // dispatch the settings to the store
+    // call get data to update chartData obs
+    this.getData(event);
+
+  }
+
+  getData(event: DataSetting) {
+    // console.log('cM gD event: ', event);
+    this.mainChartData$ = this.chartDataService.getAlphavantageOHLCData(event);
   }
 
 
