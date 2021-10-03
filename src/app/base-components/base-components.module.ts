@@ -2,7 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { MatButtonModule } from '@angular/material/button';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import {MatTableModule} from '@angular/material/table';
+
 
 import { BaseComponentsRoutingModule } from './base-components-routing.module';
 import { CarouselViewerComponent } from './carousel-viewer/carousel-viewer.component';
@@ -27,7 +32,12 @@ import { ChartSettingsComponent } from './chart-settings/chart-settings.componen
   ],
   imports: [
     CommonModule,
+    FormsModule,
     MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    ReactiveFormsModule,
     MatTableModule,
     MdbCarouselModule,
     BaseComponentsRoutingModule,

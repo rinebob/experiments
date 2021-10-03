@@ -1,0 +1,40 @@
+
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+
+    .settings-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        // height: 100px;
+        width: 100%;
+
+        .button-container {
+            margin-left: auto;
+        }
+    }
+
+   
+
+    ::ng-deep {
+        .mat-form-field-wrapper {
+            margin: 0;
+            padding-bottom: 0;
+        }
+
+        .mat-form-field {
+            font-size: 12px;
+            width: 100px;
+        }
+
+        .mat-form-field-underline {
+            bottom: 0;
+        }
+    }
+
+}
