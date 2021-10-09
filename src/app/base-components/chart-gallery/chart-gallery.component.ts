@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnChanges, OnInit, ChangeDetectionStrategy, I
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { GalleryChartMode, GalleryViewOption, NavBarSelection, PickerTableData } from 'src/app/common/interfaces';
+import { GalleryChartMode, GalleryViewOption, NavBarSelection, OHLCData, PickerTableData } from 'src/app/common/interfaces';
 import { DEFAULT_PICKER_TABLE_DATUM } from 'src/app/common/constants';
 
 // const FULLSCREEN = 'fullscreen';
@@ -29,22 +29,25 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
 
   @Input() 
   set gallerySelection(selection: GalleryViewOption) {
+    // console.log('cG @Input set gallerySelection: ', selection);
     this.gallerySelectionBS.next(selection);
   }
   get gallerySelection() {
     return this.gallerySelectionBS.value;
   }
-
+  
   @Input() 
-  set mainChart(data: PickerTableData) {
-    this.mainChartBS.next(data);
+  set mainChartData(data: OHLCData[]) {
+    // console.log('cG @Input set mainChartData: ', data);
+    this.mainChartDataBS.next(data);
   }
-  get mainChart() {
-    return this.mainChartBS.value;
+  get mainChartData() {
+    return this.mainChartDataBS.value;
   }
-
+  
   @Input() 
   set galleryData(data: PickerTableData[]) {
+    // console.log('cG @Input set galleryChart data: ', data);
     this.galleryDataBS.next(data);
   }
   get galleryData() {
@@ -56,6 +59,9 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   
   readonly mainChartBS = new BehaviorSubject<PickerTableData>(DEFAULT_PICKER_TABLE_DATUM);
   readonly mainChart$: Observable<PickerTableData> = this.mainChartBS;
+
+  readonly mainChartDataBS = new BehaviorSubject<OHLCData[]>([]);
+  readonly mainChartData$: Observable<OHLCData[]> = this.mainChartDataBS;
 
   readonly galleryDataBS = new BehaviorSubject<PickerTableData[]>([]);
   readonly galleryData$: Observable<PickerTableData[]> = this.galleryDataBS;
@@ -72,21 +78,21 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['mainChart']) {
-      console.log('cG ngOC changes mainChart: ', changes['mainChart']);
+      // console.log('cG ngOC changes mainChart: ', changes['mainChart']);
       const data: PickerTableData = (changes['mainChart']).currentValue;
       this.mainChartBS.next(data);
     }
     if (changes['galleryData']) {
-      console.log('cG ngOC changes galleryData: ', changes['galleryData']);
+      // console.log('cG ngOC changes galleryData: ', changes['galleryData']);
       const data: PickerTableData[] = (changes['galleryData']).currentValue;
       this.galleryDataBS.next(data);
     }
     if (changes['gallerySelection']) {
-      console.log('cG ngOC changes gallerySelection: ', changes['gallerySelection'].currentValue);
+      // console.log('cG ngOC changes gallerySelection: ', changes['gallerySelection'].currentValue);
       this.gallerySelectionBS.next(changes['gallerySelection'].currentValue);
       
       if (this.fullscreenTpl || this.galleryTpl || this.filmstripTpl) {
-        console.log('cG ngOC changes if block for handle nav selection');
+        // console.log('cG ngOC changes if block for handle nav selection');
         this.handleNavSelection(this.gallerySelectionBS.value);
 
       }
@@ -99,15 +105,15 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
-    console.log('cG ngAVI gallery selection: ', this.gallerySelectionBS.value);
-    console.log('cG ngAVI main chart BS: ', this.mainChartBS.value);
+    // console.log('cG ngAVI gallery selection: ', this.gallerySelectionBS.value);
+    // console.log('cG ngAVI main chart BS: ', this.mainChartBS.value);
     this.handleNavSelection(GalleryViewOption.FULLSCREEN);
     // console.log('cG ngAVI container ref: ', this.viewContainer);
     // console.log('cG ngAVI fullscreenTpl ref: ', this.fullscreenTpl);
   }
 
   handleNavSelection(selection: GalleryViewOption) {
-    console.log('cG hNS selection: ', selection);
+    // console.log('cG hNS selection: ', selection);
     switch(selection) { 
       case GalleryViewOption.FULLSCREEN: { 
         this.showFullscreen();
@@ -129,26 +135,26 @@ export class ChartGalleryComponent implements AfterViewInit, OnInit {
   }
 
   showFullscreen() {
-    console.log('cG sFu show fullscreen called');
+    // console.log('cG sFu show fullscreen called');
     this.fullTpl = this.fullscreenTpl.createEmbeddedView();
     this.updateViewContainer(this.fullTpl);
   }
 
   showGallery() {
-    console.log('cG sG show gallery called');
+    // console.log('cG sG show gallery called');
     this.galTpl = this.galleryTpl.createEmbeddedView();
     this.updateViewContainer(this.galTpl);
   }
 
   showFilmstrip() {
-    console.log('cG sFi show filmstrip called');
+    // console.log('cG sFi show filmstrip called');
     this.stripTpl = this.filmstripTpl.createEmbeddedView();
     this.updateViewContainer(this.stripTpl);
   }
 
   updateViewContainer(view: ViewRef) {
-    console.log('cG uVC viewRef: ', view);
-    console.log('cG uVC viewContainer: ', this.viewContainer);
+    // console.log('cG uVC viewRef: ', view);
+    // console.log('cG uVC viewContainer: ', this.viewContainer);
     this.viewContainer.clear();
     this.viewContainer.insert(view);
 

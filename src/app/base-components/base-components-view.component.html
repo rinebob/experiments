@@ -7,18 +7,19 @@
 
         <div class="gallery-header">
 
-            <exp-chart-settings (chartSettings)="updateChartSettings($event)"
+            <exp-chart-settings [symbol]="mainChartSymbol$ | async"
+                                (chartSettings)="updateChartSettings($event)"
                                 (dataSettings)="updateDataSettings($event)">
             </exp-chart-settings>
 
-            <exp-slim-nav-bar [selectionOptions]="galleryNavSelections"
+            <!-- <exp-slim-nav-bar [selectionOptions]="galleryNavSelections"
                               (selection)="handleGallerySelection($event)">
-            </exp-slim-nav-bar>
+            </exp-slim-nav-bar> -->
 
         </div>
         
         <exp-chart-gallery [gallerySelection]="gallerySelection$ | async"
-                           [mainChart]="mainChartData$ | async"
+                           [mainChartData]="mainChartData$ | async"
                            [galleryData]="galleryChartsData$ | async">
         </exp-chart-gallery>
     </div>
