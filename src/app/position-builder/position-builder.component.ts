@@ -9,7 +9,7 @@ import { tslaData } from 'src/assets/data/tsla_21-0917';
 import { OptionPosition, OptionSpreadConfigBase } from '../common/option_interfaces';
 import * as legs from '../common/option_legs';
 import * as configs from '../common/option_configs';
-import { ExpirationDate } from '../common/interfaces';
+import { ExpirationDate } from '../common/option_interfaces';
 
 @Component({
   selector: 'exp-position-builder',

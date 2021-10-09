@@ -2,7 +2,8 @@ import { AfterViewInit, Component, OnInit, ChangeDetectionStrategy, Input, OnCha
 
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { ChartDimensions, GalleryChartMode, PickerTableData } from 'src/app/common/interfaces';
+import { GalleryChartMode, PickerTableData } from 'src/app/common/interfaces';
+import { ChartDimensions } from 'src/app/common/interfaces_chart';
 import { DEFAULT_PICKER_TABLE_DATUM } from 'src/app/common/constants';
 import { DEFAULT_CHART_DIMENSIONS,  } from 'src/app/common/constants';
 
@@ -20,7 +21,7 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
 
   @Input()
   set chartData(data: PickerTableData) {
-    console.log('bC chartData input data: ', data);
+    // console.log('bC chartData input data: ', data);
     this.chartDataBS.next(data);
   }
   get chartData() {
@@ -29,7 +30,7 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
   
   @Input()
   set chartMode(mode: GalleryChartMode) {
-    console.log('bC chartMode input mode: ', mode);
+    // console.log('bC chartMode input mode: ', mode);
     this.chartModeBS.next(mode);
   }
   get chartMode() {
@@ -49,7 +50,7 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('bC ngOC changes: ', changes);
+    // console.log('bC ngOC changes: ', changes);
     if (changes['chartData']) {
       // console.log('bC ngOC changes-chartData: ', changes['chartData'].currentValue);
       
@@ -69,11 +70,11 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
   }
 
   ngOnInit(): void {
-    console.log('bC ngOI chart data: ', this.chartDataBS.value);
+    // console.log('bC ngOI chart data: ', this.chartDataBS.value);
   }
   
   ngAfterViewInit() {
-    console.log('bC ngAVI chart data: ', this.chartDataBS.value);
+    // console.log('bC ngAVI chart data: ', this.chartDataBS.value);
     
   }
 

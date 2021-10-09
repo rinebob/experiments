@@ -1,4 +1,6 @@
-import {DataSetting, FullSetting, OHLCData, OHLC_INITIALIZER, TimeFrame } from '../../common/interfaces';
+import { OHLCData, OHLC_INITIALIZER} from '../../common/interfaces';
+import {DataSetting, FullSetting} from '../av/av_interfaces';
+import { TimeFrame } from '../../common/interfaces_chart';
 import {IntradayChartData } from './av_interfaces';
 
 
@@ -176,7 +178,7 @@ export function generateRequestString (req: DataSetting) {
                     '&symbol=' + symbol + 
                     '&interval=' + interval + 
                     '&adjusted=' + adjusted +
-                    '&outputsize=' + OutputSize +
+                    '&outputsize=' + outputSize +
                     '&datatype=' + dataType + 
                     '&apikey=' + Alphavantage_API_KEY;
             } else {

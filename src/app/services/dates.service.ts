@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ExpirationDate, ExpirationSeries, ExpirationTimeDistance, } from '../common/interfaces';
+import { ExpirationDate, ExpirationSeries, ExpirationTimeDistance, } from '../common/option_interfaces';
 import { DAYS_IN_A_WEEK, DAYS_MAP, MILLIS_IN_A_DAY, MONTHS_MAP, OPTION_EXPIRATION_TIME_DISTANCES, QUARTERLY_EXPIRATION_MONTHS, STANDARD_DAYS_IN_A_MONTH } from '../common/constants';
 
 @Injectable({

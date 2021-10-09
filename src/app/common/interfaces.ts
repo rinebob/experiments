@@ -24,50 +24,6 @@ export const OHLC_INITIALIZER: OHLCData = {
   }
 
     // intraday intervals
-export enum TimeFrame {
-    ONE_MINUTE = '1min',
-    FIVE_MINUTE = '5min',
-    FIFTEEN_MINUTE = '15min',
-    THIRTY_MINUTE = '30min',
-    SIXTY_MINUTE = '60min',
-    DAILY = 'Daily',
-    WEEKLY = 'Weekly',
-    MONTHLY = 'Monthly',
-  }
-
-  export enum ChartType {
-    LINE = 'line',
-    BAR = 'bar',
-    CANDLESTICK = 'candlestick',
-  }
-  
-  export enum ScaleType {
-    LINEAR = 'linear',
-    LOG = 'log',
-  }
-
-export interface NavigationLink {
-    label: string;
-    link: string;
-    index: number;
-}
-
-export enum GalleryChartMode {
-    FULLSCREEN_MODE = 'fullscreen',
-    GALLERY_MODE = 'gallery',
-    FILMSTRIP_MAIN_MODE = 'filmstrip-main',
-    FILMSTRIP_STRIP_MODE = 'filmstrip-strip',
-}
-
-export interface ChartDimensions {
-    top?: number;
-    left?: number;
-    height?: string;
-    width?: string;
-    fullHeight?: boolean;
-    fullWidth?: boolean;
-}
-
 
 
 // Data structure for Picker Table Component
@@ -89,14 +45,27 @@ export interface HistoricalAnalysisDate {
 
 export interface NavBarSelection {
     buttonText: string;
-  }
+}
+
+export interface NavigationLink {
+    label: string;
+    link: string;
+    index: number;
+}
+
+export enum GalleryChartMode {
+    FULLSCREEN_MODE = 'fullscreen',
+    GALLERY_MODE = 'gallery',
+    FILMSTRIP_MAIN_MODE = 'filmstrip-main',
+    FILMSTRIP_STRIP_MODE = 'filmstrip-strip',
+}  
   
 export enum GalleryViewOption {
     FULLSCREEN = 'fullscreen',
     GALLERY = 'gallery',
     FILMSTRIP = 'filmstrip',
   
-  } 
+} 
 
 export interface TimeParts {
     mo: number;
@@ -106,54 +75,3 @@ export interface TimeParts {
     min: number;
     sec: number;
 }  
-
-export interface ExpirationTimeDistance {
-    expLabel: ExpriationTimeDistanceLabel;
-    expName: ExpriationTimeDistanceName;
-    expSeries: ExpirationSeries;
-    expDist: number;        // time units (wk, mo, qtr) to expriation
-    expDay: number;         // day of week 0(sun) to 6(sat)
-}
-
-export interface ExpirationDate {
-    expSeries: ExpirationSeries;
-    expName: ExpriationTimeDistanceName;
-    expLabel: ExpriationTimeDistanceLabel;
-    expDate: Date;        // actual expriation date
-    expDay: number;         // day of week 0(sun) to 6(sat)
-    checkboxLabel: string;
-}
-
-export enum ExpriationTimeDistanceName {
-    ONE_WEEK = 'One week',
-    TWO_WEEK = 'Two week',
-    ONE_MONTH = 'One month',
-    TWO_MONTH = 'Two month',
-    THREE_MONTH = 'Three month',
-    SIX_MONTH = 'Six month',
-    NINE_MONTH = 'Nine month',
-    TWELVE_MONTH = 'Twelve month',
-    FIFTEEN_MONTH = 'Fifteen month',
-    EIGHTEEN_MONTH = 'Eighteen month',
-    TWENTY_FOUR_MONTH = 'Twenty-four month',
-}
-
-export enum ExpriationTimeDistanceLabel {
-    ONE_WEEK = '1 wk',
-    TWO_WEEK = '2 wk',
-    ONE_MONTH = '1 mo',
-    TWO_MONTH = '2 mo',
-    THREE_MONTH = '3 mo',
-    SIX_MONTH = '6 mo',
-    NINE_MONTH = '9 mo',
-    TWELVE_MONTH = '12 mo',
-    FIFTEEN_MONTH = '15 mo',
-    EIGHTEEN_MONTH = '18 mo',
-    TWENTY_FOUR_MONTH = '24 mo',
-}
-
-export enum ExpirationSeries {
-    WEEKLY = 'Weekly',
-    MONTHLY = 'Monthly',
-    QUARTERLY = 'Quarterly',
-}
