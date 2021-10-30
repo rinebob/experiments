@@ -1,1 +1,56 @@
-<p>av-data-controls works!</p>
+
+<form [formGroup]="settingsForm" class="settings-form" (ngSubmit)="submit()">
+
+    <div class="settings-row">
+    
+        <!-- output size -->
+        <mat-form-field appearance="fill">
+            <mat-label>Output size</mat-label>
+            <mat-select formControlName="outputSize"
+                        placeholder="Output size">
+                <mat-option *ngFor="let item of outputSizes"
+                            [value]="item" >{{item}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- slice -->
+        <mat-form-field appearance="fill">
+            <mat-label>Time slice</mat-label>
+            <mat-select formControlName="slice"
+                        placeholder="Time slice">
+                <mat-option *ngFor="let item of slices"
+                            [value]="item" >{{item}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- adjusted -->
+        <mat-form-field appearance="fill">
+            <mat-label>Adjusted</mat-label>
+            <mat-select formControlName="adjusted"
+                        placeholder="Adjusted">
+                <mat-option *ngFor="let item of adjusted"
+                            [value]="item" >{{item}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <!-- data type -->
+        <mat-form-field appearance="fill">
+            <mat-label>Data type</mat-label>
+            <mat-select formControlName="dataType"
+                        placeholder="Data type">
+                <mat-option *ngFor="let item of dataTypes"
+                            [value]="item" >{{item}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        
+        <button mat-raised-button 
+                class="submit-button"
+                type="submit"
+                color="primary">
+            Submit
+        </button>
+    
+    </div>
+
+</form>

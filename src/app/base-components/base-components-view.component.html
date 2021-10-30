@@ -7,9 +7,10 @@
 
         <div class="gallery-header">
 
-            <exp-chart-settings [symbol]="mainChartSymbol$ | async"
-                                (chartSettings)="updateChartSettings($event)"
-                                (dataSettings)="updateDataSettings($event)">
+            <exp-chart-settings [iSymbol]="mainChartSymbol$ | async"
+                                (oChartSettings)="updateChartSettings($event)"
+                                (oDataSettings)="updateDataSettings($event)"
+                                (oAvDataSettings)="updateAvDataSettings($event)">
             </exp-chart-settings>
 
             <!-- <exp-slim-nav-bar [selectionOptions]="galleryNavSelections"

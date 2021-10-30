@@ -1,1 +1,12 @@
-<p>chart-controls works!</p>
+<div class="toolbar-container">
+    <button class="tool" (click)="handleZoom(ZOOM.IN)">IN</button>
+    <button class="tool" (click)="handleZoom(ZOOM.OUT)">OUT</button>
+    <button class="tool" (click)="handlePan(PAN_DISTANCE.START)">BEG</button>
+    <button class="tool" (click)="handlePan(PAN_DISTANCE.LEFT)">PGL</button>
+    <button class="tool" (click)="handlePan(PAN_DISTANCE.RIGHT)">PGR</button>
+    <button class="tool" (click)="handlePan(PAN_DISTANCE.END)">END</button>
+    <button class="tool" (click)="setScaleType(SCALE_TYPE.LINEAR)">LIN</button>
+    <button class="tool" (click)="setScaleType(SCALE_TYPE.LOG)">LOG</button>
+    <button class="tool" (click)="setChartType(CHART_TYPE.LINE)">LN</button>
+    <button class="tool" (click)="setChartType(CHART_TYPE.CANDLESTICK)">CDL</button>
+</div>

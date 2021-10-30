@@ -1,7 +1,33 @@
 import { GalleryViewOption } from "./interfaces";
+import { SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
+import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
+import { ChartType, ScaleType } from "./interfaces_chart";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
+
+export const DEFAULT_SYMBOL = 'MSFT';
+
+export const DEFAULT_CHART_SETTING = {
+    chartType: ChartType.LINE,
+    scaleType: ScaleType.LINEAR,
+    // startDate: Date;
+    // endDate: Date;
+}
+
+export const DEFAULT_SYMBOL_TIME_SETTING: SymbolTimeSetting = {
+    symbol: DEFAULT_SYMBOL,
+    timeFrame: TimeFrame.DAILY,
+    // startDate: new Date(),
+    // endDate: new Date(),
+};
+
+export const DEFAULT_AV_BASE_DATA_SETTING: av.BaseSetting = {
+  slice: av.Slice.YEAR1MONTH1,
+  adjusted: av.Adjusted.ADJUSTED,
+  outputSize: av.OutputSize.COMPACT,
+  dataType: av.DataType.JSON,
+};
 
 export const DEFAULT_CHART_DIMENSIONS = {
     top: undefined,

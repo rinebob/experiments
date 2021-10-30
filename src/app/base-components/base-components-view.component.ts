@@ -4,6 +4,8 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 import { ChartDataService } from '../services/chart-data.service';
 
+import * as av from '../services/av/av_interfaces';
+
 import { GalleryChartMode, GalleryViewOption, NavBarSelection, OHLCData, PickerTableData } from '../common/interfaces';
 import { ChartSetting } from '../common/interfaces_chart';
 import { DataSetting } from '../services/av/av_interfaces';
@@ -82,6 +84,14 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     // dispatch the settings to the store
     // call get data to update chartData obs
     this.getData(event);
+
+  }
+
+  updateAvDataSettings(event: av.BaseSetting) {
+    console.log('bCV uADS av data settings: ', event)
+    // dispatch the settings to the store
+    // call get data to update chartData obs
+    // this.getData(event);
 
   }
 
