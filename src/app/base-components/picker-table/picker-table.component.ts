@@ -14,7 +14,8 @@ import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
 })
 export class PickerTableComponent implements OnChanges, OnInit {
   @Input() pickerData: PickerTableData[] = [];
-  @Output() selectedSymbol = new EventEmitter<string>();
+  // @Output() selectedSymbol = new EventEmitter<string>();
+  @Output() selectedSymbol = new EventEmitter<PickerTableData>();
 
   // readonly dataSource: PickerTableData[] = PICKER_TABLE_DATA;
   readonly dataSource: PickerTableData[] = [];
@@ -27,7 +28,7 @@ export class PickerTableComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['pickerData']) {
-      console.log('pT ngOC changes-pickerData: ', changes['pickerData']);
+      // console.log('pT ngOC changes-pickerData: ', changes['pickerData']);
       
 
       const data: PickerTableData[] = (changes['pickerData']).currentValue;
@@ -44,7 +45,7 @@ export class PickerTableComponent implements OnChanges, OnInit {
     
   }
 
-  handleSymbolClick(symbol: string) {
+  handleSymbolClick(symbol: PickerTableData) {
     console.log('pT hSC symbol: ', symbol);
     this.selectedSymbol.emit(symbol);
 
