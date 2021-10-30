@@ -17,7 +17,8 @@ import { SlimNavBarComponent } from './slim-nav-bar/slim-nav-bar.component';
 import { BaseComponentsViewComponent } from './base-components-view.component';
 import { MdbCarouselModule } from 'mdb-angular-ui-kit/carousel';
 import { ChartGalleryComponent } from './chart-gallery/chart-gallery.component';
-import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
+// import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
+import { ChartSettingsModule } from './chart-settings/chart-settings.module';
 
 
 @NgModule({
@@ -28,7 +29,7 @@ import { ChartSettingsComponent } from './chart-settings/chart-settings.componen
     SlimNavBarComponent,
     BaseComponentsViewComponent,
     ChartGalleryComponent,
-    ChartSettingsComponent,
+    // ChartSettingsComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +42,7 @@ import { ChartSettingsComponent } from './chart-settings/chart-settings.componen
     MatTableModule,
     MdbCarouselModule,
     BaseComponentsRoutingModule,
+    ChartSettingsModule,
   ]
 })
 export class BaseComponentsModule { }

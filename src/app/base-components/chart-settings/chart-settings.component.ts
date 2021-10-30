@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -13,7 +13,8 @@ const DEFAULT_CHART_SETTING: av.FullSetting = {
   timeFrame: TimeFrame.DAILY,
   slice: av.Slice.YEAR1MONTH1,
   adjusted: av.Adjusted.ADJUSTED,
-  outputSize: av.OutputSize.COMPACT,
+  // outputSize: av.OutputSize.COMPACT,
+  outputSize: av.OutputSize.FULL,
   dataType: av.DataType.JSON,
   chartType: ChartType.LINE,
   scaleType: ScaleType.LINEAR,
@@ -29,9 +30,10 @@ const DEFAULT_CHART_SETTING: av.FullSetting = {
   styleUrls: ['./chart-settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChartSettingsComponent implements OnInit, OnDestroy {
+export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
   readonly destroy = new Subject<void>();
 
+  @Input() symbol: string;
   @Output() chartSettings = new EventEmitter<ChartSetting>();
   @Output() dataSettings = new EventEmitter<av.DataSetting>();
 
@@ -86,6 +88,18 @@ export class ChartSettingsComponent implements OnInit, OnDestroy {
 
    }
 
+  ngOnChanges(changes: SimpleChanges) {
+    // console.log('cS ngOC called.  changes: ', changes);
+    if (changes['symbol'] && changes['symbol'].currentValue) {
+      // console.log('cS ngOC changes symbol: ', changes['symbol'].currentValue);
+      const symbol = changes['symbol'].currentValue;
+      // console.log('cS ngOC symbol: ', symbol);
+      this.symbolControl.setValue(symbol);
+      this.submit();
+    }
+
+  }
+
   ngOnInit(): void {
     this.settingsForm.patchValue({
       'symbol': DEFAULT_CHART_SETTING.symbol,
@@ -109,13 +123,17 @@ export class ChartSettingsComponent implements OnInit, OnDestroy {
     const dataRequest: av.DataSetting = {
       symbol: this.settingsFormValues.symbol,
       timeFrame: this.settingsFormValues.timeFrame,
-      outputSize: this.settingsFormValues.outputSize,
-      slice: this.settingsFormValues.slice,
-      adjusted: this.settingsFormValues.adjusted,
-      dataType: this.settingsFormValues.dataType,
+      // outputSize: this.settingsFormValues.outputSize,
+      // slice: this.settingsFormValues.slice,
+      // adjusted: this.settingsFormValues.adjusted,
+      // dataType: this.settingsFormValues.dataType,
+      outputSize: DEFAULT_CHART_SETTING.outputSize,
+      slice: DEFAULT_CHART_SETTING.slice,
+      adjusted: DEFAULT_CHART_SETTING.adjusted,
+      dataType: DEFAULT_CHART_SETTING.dataType,
     };
 
-    console.log('cS gDR data request: ', dataRequest);
+    // console.log('cS gDR data request: ', dataRequest);
 
     return dataRequest;
 

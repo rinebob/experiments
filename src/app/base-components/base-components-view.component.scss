@@ -6,12 +6,16 @@
 }
 
 .gallery-header {
-    border: 1px solid blue;
-    border-radius: 4px;
-    height: 60px;
+    // border: 1px solid blue;
+    // border-radius: 4px;
+    // height: 60px;
     width: 100%;
 
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    exp-chart-settings {
+        width: 100%;
+    }
 }

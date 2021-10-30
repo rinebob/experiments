@@ -3,20 +3,27 @@
 .chart-container {
     display: flex;
     flex-direction: column;
-    justify-content: stretch;
-    background-color: lightgrey;
+    // justify-content: stretch;
+    // background-color: lightgrey;
     border: 1px solid blue;
     border-radius: 4px;
+
+    .details {
+        display: flex;
+        justify-content: flex-start;
+        
+        .chart-symbol {
+
+        
+        }
+        
+        .chart-data {
+        
+        }
+    }
     
 }
 
-.chart-symbol {
-
-}
-
-.chart-data {
-
-}
 .chart-fullscreen {
     height: 100%;
     width: 100%;
