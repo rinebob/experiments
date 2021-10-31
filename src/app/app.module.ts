@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
+import { StoreModule } from '@ngrx/store';
 
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -25,6 +26,7 @@ import { HeaderComponent } from './header/header.component';
 import { GridComponent } from './grid/grid.component';
 import { ScrollComponent } from './scroll/scroll.component';
 import { ChartSettingsModule } from './base-components/chart-settings/chart-settings.module';
+import { reducer } from './store/reducers';
 
 
 
@@ -56,6 +58,7 @@ import { ChartSettingsModule } from './base-components/chart-settings/chart-sett
     GamesModule,
     BaseComponentsModule,
     ChartSettingsModule,
+    StoreModule.forRoot({app: reducer}, {}),
   ],
   providers: [],
   bootstrap: [AppComponent]
