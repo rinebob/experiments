@@ -1,22 +1,26 @@
-import { GalleryViewOption } from "./interfaces";
+import { Equity, GalleryViewOption } from "./interfaces";
 import { SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
 import { ChartType, ScaleType } from "./interfaces_chart";
+import { Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
 
-export const DEFAULT_SYMBOL = 'MSFT';
+export const DEFAULT_EQUITY_SYMBOL = 'MSFT';
+export const DEFAULT_EQUITY: Equity = {symbol: "MSFT", company: "Microsoft"};
+export const DEFAULT_OPTION_SYMBOL = 'MSFT211219C00330000'; // dec 19 21 330 call
+export const DEFAULT_OPTION: Option = {symbol: DEFAULT_OPTION_SYMBOL};
 
 export const DEFAULT_CHART_SETTING = {
     chartType: ChartType.LINE,
     scaleType: ScaleType.LINEAR,
     // startDate: Date;
     // endDate: Date;
-}
+};
 
 export const DEFAULT_SYMBOL_TIME_SETTING: SymbolTimeSetting = {
-    symbol: DEFAULT_SYMBOL,
+    symbol: DEFAULT_EQUITY_SYMBOL,
     timeFrame: TimeFrame.DAILY,
     // startDate: new Date(),
     // endDate: new Date(),

@@ -1,5 +1,13 @@
 
 
+
+export interface Equity {
+    symbol: string;
+    company?: string;
+    exchange?: string;
+
+}
+
 export const OHLC_INITIALIZER: OHLCData = {
     date: new Date(Date.now()),
     stringDate: '',

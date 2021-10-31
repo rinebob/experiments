@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
 import { SymbolTimeSetting, TimeFrame } from '../../../common/interfaces_chart';
-import { DEFAULT_SYMBOL, DEFAULT_SYMBOL_TIME_SETTING } from 'src/app/common/constants';
+import { DEFAULT_EQUITY_SYMBOL, DEFAULT_SYMBOL_TIME_SETTING } from 'src/app/common/constants';
 
 
 import * as av from '../../../services/av/av_interfaces';
@@ -39,7 +39,7 @@ export class DataControlsComponent implements OnChanges, OnInit, OnDestroy {
   settingsFormValues: SymbolTimeSetting = DEFAULT_SYMBOL_TIME_SETTING;
   dataRequest: SymbolTimeSetting;
 
-  symbolControl = new FormControl(DEFAULT_SYMBOL);
+  symbolControl = new FormControl(DEFAULT_EQUITY_SYMBOL);
   timeFrameControl = new FormControl(TimeFrame.DAILY);
   // startDateControl = new FormControl(new Date());
   // endDateControl = new FormControl(new Date());
