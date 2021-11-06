@@ -24,42 +24,52 @@ export const initialState: AppState = {
     avDataSetting: DEFAULT_AV_BASE_DATA_SETTING,
 }
 
+const onSetEquity = on(actions.setEquity, (state: AppState,  {equity}) => {
+    console.log('r onSetEquity. equity: ', equity);
+    return  {
+        ...state,
+        equity
+    }
+});
+
+const onSetOption = on(actions.setOption, (state: AppState,  {option}) => {
+    console.log('r onSetOption. option: ', option);
+    return  {
+        ...state,
+        option
+    }
+});
+
+const onSetChartSetting = on(actions.setChartSetting, (state: AppState,  {chartSetting}) => {
+    console.log('r onSetChartSetting. chartSetting: ', chartSetting);
+    return  {
+        ...state,
+        chartSetting
+    }
+});
+
+const onSetDataSetting = on(actions.setDataSetting, (state: AppState,  {symbolTimeSetting}) => {
+    console.log('r onSetDataSetting. dataSetting: ', symbolTimeSetting);
+    return  {
+        ...state,
+        dataSetting: symbolTimeSetting
+    }
+});
+
+const onSetAvDataSetting = on(actions.setAvDataSetting, (state: AppState,  {baseSetting}) => {
+    console.log('r onSetAvDataSetting. avDataSetting: ', baseSetting);
+    return  {
+        ...state,
+        avDataSetting: baseSetting
+    }
+});
+
 export const appReducer = createReducer(
     initialState,
-    on(actions.setEquity, 
-        (state, {equity}) => ({
-            ...state,
-            equity
-        })
-    ),
-
-    on(actions.setOption,
-        (state, {option}) => ({
-            ...state,
-            option
-        })
-    ),
-
-    on(actions.setChartSetting,
-        (state, {chartSetting}) => ({
-            ...state,
-            chartSetting
-        })
-    ),
-
-    on(actions.setDataSetting,
-        (state, {symbolTimeSetting}) => ({
-            ...state,
-            dataSettings: symbolTimeSetting
-        })
-    ),
-
-    on(actions.setAvDataSetting,
-        (state, {baseSetting}) => ({
-            ...state,
-            avDataSettings: baseSetting
-
-        })
-    ),
-
+    onSetEquity,
+    onSetOption,
+    onSetChartSetting,
+    onSetDataSetting,
+    onSetAvDataSetting,
+    
 );

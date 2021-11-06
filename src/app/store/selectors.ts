@@ -27,9 +27,3 @@ export const selectAvDataSettings = createSelector(
     selectApp,
     (app) =>  app.avDataSetting
 );
-
-// export const selectEquity = (state: AppState) => state.equity;
-// export const selectOption = (state: AppState) => state.option;
-// export const selectChartSettings = (state: AppState) => state.chartSetting;
-// export const selectDataSettings = (state: AppState) => state.dataSetting;
-// export const selectAvDataSettings = (state: AppState) => state.avDataSetting;
