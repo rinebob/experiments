@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule} from '@angular/common/http';
 import {ReactiveFormsModule} from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -27,6 +28,7 @@ import { GridComponent } from './grid/grid.component';
 import { ScrollComponent } from './scroll/scroll.component';
 import { ChartSettingsModule } from './base-components/chart-settings/chart-settings.module';
 import { appReducer } from './store/reducers';
+import { AppEffects } from './store/effects';
 
 
 
@@ -59,6 +61,7 @@ import { appReducer } from './store/reducers';
     BaseComponentsModule,
     ChartSettingsModule,
     StoreModule.forRoot({app: appReducer}, {}),
+    EffectsModule.forRoot([AppEffects]),
   ],
   providers: [],
   bootstrap: [AppComponent]
