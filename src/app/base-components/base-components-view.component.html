@@ -1,7 +1,7 @@
 
 <div class="base-container">
     <exp-picker-table [pickerData]="pickerData$ | async"
-                    (selectedSymbol)="handleSymbolSelection($event)">
+                      (selectedSymbol)="handleSymbolSelection($event)">
     </exp-picker-table>
     <div class="gallery-container">
 
@@ -17,6 +17,9 @@
                               (selection)="handleGallerySelection($event)">
             </exp-slim-nav-bar> -->
 
+        </div>
+        <div *ngIf="equity$ | async as equity">
+            {{equity | json}}
         </div>
         
         <exp-chart-gallery [gallerySelection]="gallerySelection$ | async"

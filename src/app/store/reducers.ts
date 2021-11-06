@@ -5,10 +5,10 @@ import { Option } from '../common/option_interfaces';
 import { BaseSetting } from '../services/av/av_interfaces';
 import * as actions from '../store/actions';
 import { DEFAULT_EQUITY, DEFAULT_EQUITY_SYMBOL, DEFAULT_OPTION, DEFAULT_OPTION_SYMBOL, DEFAULT_CHART_SETTING, DEFAULT_SYMBOL_TIME_SETTING, DEFAULT_AV_BASE_DATA_SETTING } from '../common/constants';
-import { state } from '@angular/animations';
 
 
-export interface State {
+
+export interface AppState {
     equity: Equity;
     option: Option;
     chartSetting: ChartSetting;
@@ -16,7 +16,7 @@ export interface State {
     avDataSetting: BaseSetting;
 }
 
-export const initialState: State = {
+export const initialState: AppState = {
     equity: DEFAULT_EQUITY,
     option: DEFAULT_OPTION,
     chartSetting: DEFAULT_CHART_SETTING,
@@ -24,7 +24,7 @@ export const initialState: State = {
     avDataSetting: DEFAULT_AV_BASE_DATA_SETTING,
 }
 
-export const reducer = createReducer(
+export const appReducer = createReducer(
     initialState,
     on(actions.setEquity, 
         (state, {equity}) => ({

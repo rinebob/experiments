@@ -26,7 +26,7 @@ import { HeaderComponent } from './header/header.component';
 import { GridComponent } from './grid/grid.component';
 import { ScrollComponent } from './scroll/scroll.component';
 import { ChartSettingsModule } from './base-components/chart-settings/chart-settings.module';
-import { reducer } from './store/reducers';
+import { appReducer } from './store/reducers';
 
 
 
@@ -58,7 +58,7 @@ import { reducer } from './store/reducers';
     GamesModule,
     BaseComponentsModule,
     ChartSettingsModule,
-    StoreModule.forRoot({app: reducer}, {}),
+    StoreModule.forRoot({app: appReducer}, {}),
   ],
   providers: [],
   bootstrap: [AppComponent]
