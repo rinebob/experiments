@@ -62,11 +62,11 @@ export interface OptionQuote {
 
 export interface Option {
   symbol: string;
-  type: OptionType;
-  underlying: string;
-  strike: number;
-  expiration: Date;
-  exchange: Exchange;
+  type?: OptionType;
+  underlying?: string;
+  strike?: number;
+  expiration?: Date;
+  exchange?: Exchange;
 }
 
 export interface OptionSymbolMetadata {

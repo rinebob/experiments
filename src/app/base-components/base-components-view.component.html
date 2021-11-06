@@ -1,21 +1,39 @@
 
 <div class="base-container">
     <exp-picker-table [pickerData]="pickerData$ | async"
-                    (selectedSymbol)="handleSymbolSelection($event)">
+                      (selectedSymbol)="handleSymbolSelection($event)">
     </exp-picker-table>
     <div class="gallery-container">
 
         <div class="gallery-header">
 
-            <exp-chart-settings [symbol]="mainChartSymbol$ | async"
-                                (chartSettings)="updateChartSettings($event)"
-                                (dataSettings)="updateDataSettings($event)">
+            <exp-chart-settings [iChartSettings]="chartSetting$ | async"
+                                [iDataSettings]="dataSetting$ | async"
+                                [iAvDataSettings]="avDataSetting$ | async"
+                                (oChartSettings)="updateChartSettings($event)"
+                                (oDataSettings)="updateDataSettings($event)"
+                                (oAvDataSettings)="updateAvDataSettings($event)">
             </exp-chart-settings>
 
             <!-- <exp-slim-nav-bar [selectionOptions]="galleryNavSelections"
                               (selection)="handleGallerySelection($event)">
             </exp-slim-nav-bar> -->
 
+        </div>
+        <div *ngIf="equity$ | async as equity">
+            {{equity | json}}
+        </div>
+        <div *ngIf="option$ | async as option">
+            {{option | json}}
+        </div>
+        <div *ngIf="chartSetting$ | async as chartSetting">
+            {{chartSetting | json}}
+        </div>
+        <div *ngIf="dataSetting$ | async as dataSetting">
+            {{dataSetting | json}}
+        </div>
+        <div *ngIf="avDataSetting$ | async as avDataSetting">
+            {{avDataSetting | json}}
         </div>
         
         <exp-chart-gallery [gallerySelection]="gallerySelection$ | async"

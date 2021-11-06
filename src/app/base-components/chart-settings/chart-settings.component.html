@@ -1,104 +1,22 @@
-<exp-chart-controls></exp-chart-controls>
-<exp-data-controls></exp-data-controls>
-<exp-av-data-controls></exp-av-data-controls>
+
+<div class="data-controls">
 
 
-<form [formGroup]="settingsForm" class="settings-form" (ngSubmit)="submit()">
+    <!-- Symbol, timeFrame -->
+    <exp-data-controls [settings]="dataSettings$ | async"
+                       (dataSettings)="handleDataSettingsChange($event)">
+    </exp-data-controls>
 
-    <!-- <div class="settings-header">Data settings</div> -->
-    <div class="settings-row">
-        <mat-form-field appearance="fill">
-            <mat-label>Symbol</mat-label>
-            <input matInput type="text"
-                    formControlName="symbol"
-                    placeholder="Ticker">
-        </mat-form-field>
-        
-        <!-- Time frame -->
-        <mat-form-field appearance="fill">
-            <mat-label>Timeframe</mat-label>
-            <mat-select formControlName="timeFrame"
-                        placeholder="Time frame">
-                <mat-option *ngFor="let item of timeframes"
-                            [value]="item" >{{item}}</mat-option>
-            </mat-select>
-        </mat-form-field>
-    
-        <!-- output size -->
-        <!-- <mat-form-field appearance="fill">
-            <mat-label>Output size</mat-label>
-            <mat-select formControlName="outputSize"
-                        placeholder="Output size">
-                <mat-option *ngFor="let item of outputSizes"
-                            [value]="item" >{{item}}</mat-option>
-            </mat-select>
-        </mat-form-field> -->
+    <!-- Alphavantage API specific settings -->
+    <exp-av-data-controls [settings]="avDataSettings$ | async"
+                          (avDataSettings)="handleAvDataSettingsChange($event)">
+    </exp-av-data-controls>
 
-        <!-- slice -->
-        <!-- <mat-form-field appearance="fill">
-            <mat-label>Time slice</mat-label>
-            <mat-select formControlName="slice"
-                        placeholder="Time slice">
-                <mat-option *ngFor="let item of slices"
-                            [value]="item" >{{item}}</mat-option>
-            </mat-select>
-        </mat-form-field> -->
+</div>
 
-        <!-- adjusted -->
-        <!-- <mat-form-field appearance="fill">
-            <mat-label>Adjusted</mat-label>
-            <mat-select formControlName="adjusted"
-                        placeholder="Adjusted">
-                <mat-option *ngFor="let item of adjusted"
-                            [value]="item" >{{item}}</mat-option>
-            </mat-select>
-        </mat-form-field> -->
+<exp-chart-controls (pan)="handlePan($event)"
+                    (zoom)="handleZoom($event)"
+                    (updateChartType)="setChartType($event)"
+                    (updateScaleType)="setScaleType($event)">
+</exp-chart-controls>
 
-        <!-- data type -->
-        <!-- <mat-form-field appearance="fill">
-            <mat-label>Data type</mat-label>
-            <mat-select formControlName="dataType"
-                        placeholder="Data type">
-                <mat-option *ngFor="let item of dataTypes"
-                            [value]="item" >{{item}}</mat-option>
-            </mat-select>
-        </mat-form-field> -->
-
-    <!-- </div>
-    <div class="settings-header">Chart settings</div>
-    <div class="settings-row"> -->
-
-         <!-- chart type -->
-         <!-- <mat-form-field appearance="fill">
-            <mat-label>Chart type</mat-label>
-            <mat-select formControlName="chartType"
-                        placeholder="Chart type">
-                <mat-option *ngFor="let item of chartTypes"
-                            [value]="item" >{{item}}</mat-option>
-            </mat-select>
-        </mat-form-field> -->
-    
-        <!-- scale type -->
-        <!-- <mat-form-field appearance="fill">
-            <mat-label>Scale type</mat-label>
-            <mat-select formControlName="scaleType"
-                        placeholder="Scale type">
-                <mat-option *ngFor="let item of scaleTypes"
-                            [value]="item" >{{item}}</mat-option>
-            </mat-select>
-        </mat-form-field> -->
-
-        <div class="button-container">
-            <button mat-raised-button 
-                    class="submit-button"
-                    type="submit"
-                    color="primary">
-                Submit
-            </button>
-        </div>
-        
-       
-
-    </div>
-
-</form>

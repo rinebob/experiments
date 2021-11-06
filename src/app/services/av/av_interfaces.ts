@@ -1,4 +1,5 @@
-import {ChartType, ScaleType, TimeFrame } from '../../common/interfaces_chart';
+import {ChartType, ScaleType } from '../../common/interfaces_chart';
+import { TimeFrame } from '../../common/interfaces_chart';
 import {OHLCData, OHLC_INITIALIZER } from '../../common/interfaces';
 
 
@@ -122,7 +123,14 @@ export interface FullSetting {
     startDate?: Date;
     endDate?: Date;
     
-  }
+}
+
+export interface BaseSetting {
+  slice?: Slice;
+  adjusted?: Adjusted;
+  outputSize?: OutputSize;
+  dataType?: DataType;
+}
    
 export interface DataSetting {
     symbol: string;
