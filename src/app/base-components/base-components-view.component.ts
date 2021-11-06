@@ -47,6 +47,7 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
   galleryNavSelections = GalleryNavSelections;
 
   equity$: Observable<Equity> = this.store.select(selectors.selectEquity);
+  equityData$: Observable<OHLCData[]> = this.store.select(selectors.selectEquityData);
   option$: Observable<Option> = this.store.select(selectors.selectOption);
   chartSetting$: Observable<ChartSetting> = this.store.select(selectors.selectChartSettings);
   dataSetting$: Observable<DataSetting> = this.store.select(selectors.selectDataSettings);
@@ -63,6 +64,10 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     this.handleGallerySelection(GalleryViewOption.FULLSCREEN);
 
     this.equity$.pipe(takeUntil(this.destroy)).subscribe(equity => console.log('bCV ngOI equity: ', equity));
+    this.equityData$.pipe(takeUntil(this.destroy)).subscribe(equityData => {
+      console.log('bCV ngOI equityData:')
+      console.table(equityData);
+    });
     this.option$.pipe(takeUntil(this.destroy)).subscribe(option => console.log('bCV ngOI option: ', option));
     this.chartSetting$.pipe(takeUntil(this.destroy)).subscribe(chartSetting => console.log('bCV ngOI chartSetting: ', chartSetting));
     this.dataSetting$.pipe(takeUntil(this.destroy)).subscribe(dataSetting => console.log('bCV ngOI dataSetting: ', dataSetting));
@@ -115,7 +120,7 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     this.store.dispatch(actions.setDataSetting({symbolTimeSetting}));
     
     // call get data to update chartData obs
-    // this.getData(event);
+    this.getData(symbolTimeSetting);
     
   }
   
@@ -132,9 +137,14 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
 
   }
 
-  getData(event: DataSetting) {
-    console.log('bCV gD event: ', event);
-    this.mainChartData$ = this.chartDataService.getAlphavantageOHLCData(event);
+  getData(dataSetting: DataSetting) {
+    console.log('bCV gD dataSetting: ', dataSetting);
+    // old way - pre ngrx
+    // this.mainChartData$ = this.chartDataService.getAlphavantageOHLCData(event);
+
+    // with ngrx
+    // dispatch fetchEquityData action with data setting object as payload
+    this.store.dispatch(actions.fetchEquityData({dataSetting}));
     
   }
 

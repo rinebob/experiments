@@ -1,14 +1,15 @@
 
 import { createAction, props } from '@ngrx/store';
 
-import { Equity } from '../common/interfaces';
+import { Equity, OHLCData } from '../common/interfaces';
 import { Option } from '../common/option_interfaces';
 import { ChartSetting, SymbolTimeSetting } from '../common/interfaces_chart';
-import { BaseSetting } from '../services/av/av_interfaces';
+import { BaseSetting, DataSetting } from '../services/av/av_interfaces';
 
 export const fetchEquityData = createAction(
-    '[Data service] Fetch Equity Data',
-    props<{equity: Equity}>()
+    '[bCV updateDataSettings] Fetch Equity Data',
+    // props<{equity: Equity}>()
+    props<{dataSetting: DataSetting}>()
 );
 
 export const fetchOptionData = createAction(
@@ -19,6 +20,11 @@ export const fetchOptionData = createAction(
 export const setEquity = createAction(
     '[Chart setting] Set equity',
     props<{equity: Equity}>()
+);
+
+export const setEquityData = createAction(
+    '[e onFetchEquityData] Set equity data',
+    props<{equityData: OHLCData[]}>()
 );
 
 export const setOption = createAction(
@@ -32,7 +38,7 @@ export const setChartSetting = createAction(
 );
 
 export const setDataSetting = createAction(
-    '[Data setting] Set data settings',
+    '[bCV updateDataSetting ] Set data settings',
     props<{symbolTimeSetting: SymbolTimeSetting}>()
 );
 

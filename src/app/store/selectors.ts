@@ -8,6 +8,11 @@ export const selectEquity = createSelector(
     (app) =>  app.equity
 );
 
+export const selectEquityData = createSelector(
+    selectApp,
+    (app) =>  app.equityData
+);
+
 export const selectOption = createSelector(
     selectApp,
     (app) =>  app.option

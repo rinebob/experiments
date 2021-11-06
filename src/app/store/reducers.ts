@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { Equity } from '../common/interfaces';
+import { Equity, OHLCData } from '../common/interfaces';
 import { ChartSetting, SymbolTimeSetting } from '../common/interfaces_chart';
 import { Option } from '../common/option_interfaces';
 import { BaseSetting } from '../services/av/av_interfaces';
@@ -14,6 +14,7 @@ export interface AppState {
     chartSetting: ChartSetting;
     dataSetting: SymbolTimeSetting;
     avDataSetting: BaseSetting;
+    equityData: OHLCData[];
 }
 
 export const initialState: AppState = {
@@ -22,6 +23,7 @@ export const initialState: AppState = {
     chartSetting: DEFAULT_CHART_SETTING,
     dataSetting: DEFAULT_SYMBOL_TIME_SETTING,
     avDataSetting: DEFAULT_AV_BASE_DATA_SETTING,
+    equityData: [],
 }
 
 const onSetEquity = on(actions.setEquity, (state: AppState,  {equity}) => {
@@ -29,6 +31,14 @@ const onSetEquity = on(actions.setEquity, (state: AppState,  {equity}) => {
     return  {
         ...state,
         equity
+    }
+});
+
+const onSetEquityData = on(actions.setEquityData, (state: AppState,  {equityData}) => {
+    console.log('r onSetEquityData. equityData: ', equityData);
+    return  {
+        ...state,
+        equityData
     }
 });
 
@@ -67,6 +77,7 @@ const onSetAvDataSetting = on(actions.setAvDataSetting, (state: AppState,  {base
 export const appReducer = createReducer(
     initialState,
     onSetEquity,
+    onSetEquityData,
     onSetOption,
     onSetChartSetting,
     onSetDataSetting,
