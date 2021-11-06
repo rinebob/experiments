@@ -55,28 +55,28 @@ export class DataControlsComponent implements OnChanges, OnInit, OnDestroy {
     this.settingsForm.valueChanges.pipe(takeUntil(this.destroy))
       .subscribe(values => {
         this.settingsFormValues = values;
-        // console.log('cS ctor t.sFV values: ', this.settingsFormValues);
+        console.log('dC ctor t.sFV values: ', this.settingsFormValues);
         this.dataRequest = this.generateDataRequest();
-        // console.log('cS ctor generated request: ', this.dataRequest);
+        console.log('dC ctor generated request: ', this.dataRequest);
         
       });
 
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // console.log('cS ngOC called.  changes: ', changes);
+    // console.log('dC ngOC called.  changes: ', changes);
     if (changes['symbol'] && changes['symbol'].currentValue) {
-      // console.log('cS ngOC changes symbol: ', changes['symbol'].currentValue);
+      // console.log('dC ngOC changes symbol: ', changes['symbol'].currentValue);
       const symbol = changes['symbol'].currentValue;
-      // console.log('cS ngOC symbol: ', symbol);
+      // console.log('dC ngOC symbol: ', symbol);
       this.symbolControl.setValue(symbol);
       // this.submit();
     }
 
     if (changes['settings'] && changes['settings'].currentValue) {
-      // console.log('cS ngOC changes settings: ', changes['settings'].currentValue);
+      // console.log('dC ngOC changes settings: ', changes['settings'].currentValue);
       const settings = changes['settings'].currentValue;
-      // console.log('cS ngOC settings: ', settings);
+      // console.log('dC ngOC settings: ', settings);
       this.symbolControl.setValue(settings.symbol);
       this.timeFrameControl.setValue(settings.timeFrame);
     }
@@ -104,7 +104,7 @@ export class DataControlsComponent implements OnChanges, OnInit, OnDestroy {
       
     };
 
-    // console.log('cS gDR data request: ', dataRequest);
+    // console.log('dC gDR data request: ', dataRequest);
 
     return dataRequest;
 

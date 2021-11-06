@@ -17,7 +17,6 @@ import * as av from '../../services/av/av_interfaces';
 export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
   readonly destroy = new Subject<void>();
 
-  @Input() iSymbol: string;
   @Input() iChartSettings: ChartSetting = DEFAULT_CHART_SETTING;
   @Input() iDataSettings: SymbolTimeSetting = DEFAULT_SYMBOL_TIME_SETTING;
   @Input() iAvDataSettings: av.BaseSetting = DEFAULT_AV_BASE_DATA_SETTING;
@@ -40,6 +39,23 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log('cS ngOC changes: ', changes);
+
+    if (changes['iChartSettings'] && changes['iChartSettings'].currentValue) {
+      this.chartSettingsBS.next(changes['iChartSettings'].currentValue);
+      
+      
+    }
+    if (changes['iDataSettings'] && changes['iDataSettings'].currentValue) {
+      this.dataSettingsBS.next(changes['iDataSettings'].currentValue);
+      
+      
+    }
+    if (changes['iAvDataSettings'] && changes['iAvDataSettings'].currentValue) {
+      this.avDataSettingsBS.next(changes['iAvDataSettings'].currentValue);
+      
+
+    }
   
   }
 
@@ -62,32 +78,46 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
 
   }
 
-  setScaleType(scaleType: ScaleType) {
-    console.log('cS sST scale type: ', scaleType);
-    
-    this.handleChartSettingsChange(this.chartSettingsBS.value);
-  }
-  
   setChartType(chartType: ChartType) {
     console.log('cS sCT chart type: ', chartType);
+    const setting = {...this.chartSettingsBS.value}
+    setting.chartType = chartType;
+    
+    this.handleChartSettingsChange(setting);
 
-    this.handleChartSettingsChange(this.chartSettingsBS.value);
 
   }
 
+
+  setScaleType(scaleType: ScaleType) {
+    console.log('cS sST scale type: ', scaleType);
+    const setting = {...this.chartSettingsBS.value}
+    setting.scaleType = scaleType;
+    
+    this.handleChartSettingsChange(setting);
+  }
+  
+  
   handleChartSettingsChange(settings: ChartSetting) {
-    console.log('cS hDSC called');
-    // console.log('cS hDSC called new settings: ', settings);
-
+    console.log('cS hCSC called.  chart settings: ', settings);
+    this.chartSettingsBS.next(settings);
+    this.oChartSettings.emit(settings);
+    
   }
-
+  
   handleDataSettingsChange(settings: SymbolTimeSetting) {
-    console.log('cS hDSC new settings: ', settings);
-
+    console.log('cS hDSC called.  data settings: ', settings);
+    this.dataSettingsBS.next(settings);
+    this.oDataSettings.emit(settings);
+    
+    
   }
-
+  
   handleAvDataSettingsChange(settings: av.BaseSetting) {
-    console.log('cS hADSC new av settings: ', settings);
+    console.log('cS hADSC called.  av settings: ', settings);
+    
+    this.avDataSettingsBS.next(settings);
+    this.oAvDataSettings.emit(settings);
 
   }
 

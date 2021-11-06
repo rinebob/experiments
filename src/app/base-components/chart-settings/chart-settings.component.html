@@ -9,10 +9,14 @@
 
     <!-- Alphavantage API specific settings -->
     <exp-av-data-controls [settings]="avDataSettings$ | async"
-                          (dataSettings)="handleAvDataSettingsChange($event)">
+                          (avDataSettings)="handleAvDataSettingsChange($event)">
     </exp-av-data-controls>
 
 </div>
 
-<exp-chart-controls></exp-chart-controls>
+<exp-chart-controls (pan)="handlePan($event)"
+                    (zoom)="handleZoom($event)"
+                    (updateChartType)="setChartType($event)"
+                    (updateScaleType)="setScaleType($event)">
+</exp-chart-controls>
 

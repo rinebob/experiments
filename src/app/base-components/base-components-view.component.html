@@ -7,7 +7,9 @@
 
         <div class="gallery-header">
 
-            <exp-chart-settings [iSymbol]="mainChartSymbol$ | async"
+            <exp-chart-settings [iChartSettings]="chartSetting$ | async"
+                                [iDataSettings]="dataSetting$ | async"
+                                [iAvDataSettings]="avDataSetting$ | async"
                                 (oChartSettings)="updateChartSettings($event)"
                                 (oDataSettings)="updateDataSettings($event)"
                                 (oAvDataSettings)="updateAvDataSettings($event)">
@@ -20,6 +22,18 @@
         </div>
         <div *ngIf="equity$ | async as equity">
             {{equity | json}}
+        </div>
+        <div *ngIf="option$ | async as option">
+            {{option | json}}
+        </div>
+        <div *ngIf="chartSetting$ | async as chartSetting">
+            {{chartSetting | json}}
+        </div>
+        <div *ngIf="dataSetting$ | async as dataSetting">
+            {{dataSetting | json}}
+        </div>
+        <div *ngIf="avDataSetting$ | async as avDataSetting">
+            {{avDataSetting | json}}
         </div>
         
         <exp-chart-gallery [gallerySelection]="gallerySelection$ | async"

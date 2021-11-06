@@ -46,19 +46,19 @@ export class AvDataControlsComponent implements OnChanges, OnInit, OnDestroy {
     this.settingsForm.valueChanges.pipe(takeUntil(this.destroy))
       .subscribe(values => {
         this.settingsFormValues = values;
-        // console.log('cS ctor t.sFV values: ', this.settingsFormValues);
-        // this.dataRequest = this.generateDataRequest();
-        // console.log('cS ctor generated request: ', this.dataRequest);
+        // console.log('aDC ctor t.sFV values: ', this.settingsFormValues);
+        this.dataRequest = this.generateDataRequest();
+        console.log('aDC ctor generated request: ', this.dataRequest);
         
       });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // console.log('aDC ngOC called.  changes: ', changes);
+    console.log('aDC ngOC changes: ', changes);
     if (changes['settings'] && changes['settings'].currentValue) {
-      // console.log('cS ngOC changes settings: ', changes['settings'].currentValue);
+      // console.log('aDC ngOC changes settings: ', changes['settings'].currentValue);
       const settings = changes['settings'].currentValue;
-      // console.log('cS ngOC settings: ', settings);
+      // console.log('aDC ngOC settings: ', settings);
       this.updateFormValues(settings);
       this.dataSettingsBS.next(settings);
       
@@ -97,16 +97,15 @@ export class AvDataControlsComponent implements OnChanges, OnInit, OnDestroy {
       
       
     };
-    // console.log('cS gDR data request: ', dataRequest);
+    // console.log('aDC gDR data request: ', dataRequest);
     return dataRequest;
   }
 
   
 
   submit() {
-    // const dataRequest = this.generateDataRequest();
     this.avDataSettings.emit(this.dataRequest);
-    // console.log('cS submit form submitted.  Data request: ', this.dataRequest);
+    console.log('aDC submit. form submitted.  Data request: ', this.dataRequest);
   }
 
 }

@@ -101,6 +101,7 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
   updateChartSettings(chartSetting: ChartSetting) {
     // dispatch the settings to the store
     // or dispatch directly from ChartSettings component
+    console.log('bCV uADS dispatch chartSetting: ', chartSetting);
 
     this.store.dispatch(actions.setChartSetting({chartSetting}));
   }
@@ -109,15 +110,18 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     // dispatch the settings to the store
     // or dispatch directly from ChartSettings component
 
+    console.log('bCV uDS dispatch dataSetting: ', symbolTimeSetting);
+    
     this.store.dispatch(actions.setDataSetting({symbolTimeSetting}));
     
     // call get data to update chartData obs
     // this.getData(event);
-
+    
   }
-
+  
   updateAvDataSettings(baseSetting: av.BaseSetting) {
-    console.log('bCV uADS av data settings: ', baseSetting)
+    console.log('bCV uADS update av data settings called. dispatch to store');
+    
     // dispatch the settings to the store
     // or dispatch directly from ChartSettings component
 
