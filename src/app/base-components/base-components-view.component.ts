@@ -1,7 +1,8 @@
 
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit,  } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 
 import { ChartDataService } from '../services/chart-data.service';
 
@@ -15,7 +16,6 @@ import { Option } from '../common/option_interfaces';
 import { BaseSetting, DataSetting } from '../services/av/av_interfaces';
 import { DEFAULT_PICKER_TABLE_DATUM, GalleryNavSelections } from '../common/constants';
 import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'vz-base-components-view',
@@ -50,14 +50,29 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
   equityData$: Observable<OHLCData[]> = this.store.select(selectors.selectEquityData);
   option$: Observable<Option> = this.store.select(selectors.selectOption);
   chartSetting$: Observable<ChartSetting> = this.store.select(selectors.selectChartSettings);
-  dataSetting$: Observable<DataSetting> = this.store.select(selectors.selectDataSettings);
-  avDataSetting$: Observable<BaseSetting> = this.store.select(selectors.selectAvDataSettings);
+  symbolTimeSetting$: Observable<SymbolTimeSetting> = this.store.select(selectors.selectSymbolTimeSettings);
+  avBaseSetting$: Observable<BaseSetting> = this.store.select(selectors.selectAvBaseSettings);
 
   constructor(private readonly chartDataService: ChartDataService,
               private readonly store: Store) {
     // this.mainChartData$.pipe(takeUntil(this.destroy))
     // .subscribe(data => console.log('bCV ctor mainChartData$: ', data));
-   }
+
+    combineLatest([this.symbolTimeSetting$, this.avBaseSetting$]).pipe(
+      map(([symbolTimeSetting, avBaseSetting] ) => {
+        const dataSetting =  {...symbolTimeSetting, ...avBaseSetting}
+        // this.store.dispatch(actions.fetchEquityData({dataSetting})) 
+        console.log('bCV ctor combLatest.  dataSetting: ', dataSetting)
+        return dataSetting;
+
+
+      })
+      // switchMap(dataSetting => {
+      //   this.store.dispatch(actions.fetchEquityData({dataSetting})) 
+      // })
+    ).subscribe(dataSetting => this.store.dispatch(actions.fetchEquityData({dataSetting})) );
+      
+    }
 
   ngOnInit(): void {
     // console.log('bCV ngOI handle gallery selection fullscreen');d
@@ -70,8 +85,8 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     });
     this.option$.pipe(takeUntil(this.destroy)).subscribe(option => console.log('bCV ngOI option: ', option));
     this.chartSetting$.pipe(takeUntil(this.destroy)).subscribe(chartSetting => console.log('bCV ngOI chartSetting: ', chartSetting));
-    this.dataSetting$.pipe(takeUntil(this.destroy)).subscribe(dataSetting => console.log('bCV ngOI dataSetting: ', dataSetting));
-    this.avDataSetting$.pipe(takeUntil(this.destroy)).subscribe(avDataSetting => console.log('bCV ngOI avDataSetting: ', avDataSetting));
+    this.symbolTimeSetting$.pipe(takeUntil(this.destroy)).subscribe(dataSetting => console.log('bCV ngOI dataSetting: ', dataSetting));
+    this.avBaseSetting$.pipe(takeUntil(this.destroy)).subscribe(avDataSetting => console.log('bCV ngOI avDataSetting: ', avDataSetting));
 
   }
 
@@ -111,26 +126,26 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     this.store.dispatch(actions.setChartSetting({chartSetting}));
   }
 
-  updateDataSettings(symbolTimeSetting: SymbolTimeSetting) {
+  updateSymbolTimeSettings(symbolTimeSetting: SymbolTimeSetting) {
     // dispatch the settings to the store
     // or dispatch directly from ChartSettings component
 
-    console.log('bCV uDS dispatch dataSetting: ', symbolTimeSetting);
+    console.log('bCV uDS dispatch symbolTimeSetting: ', symbolTimeSetting);
     
-    this.store.dispatch(actions.setDataSetting({symbolTimeSetting}));
+    this.store.dispatch(actions.setSymbolTimeSetting({symbolTimeSetting}));
     
     // call get data to update chartData obs
-    this.getData(symbolTimeSetting);
+    // this.getData(symbolTimeSetting);
     
   }
   
-  updateAvDataSettings(baseSetting: av.BaseSetting) {
-    console.log('bCV uADS update av data settings called. dispatch to store');
+  updateAvBaseSettings(baseSetting: av.BaseSetting) {
+    console.log('bCV uADS dispatch baseSetting: ', baseSetting);
     
     // dispatch the settings to the store
     // or dispatch directly from ChartSettings component
 
-    this.store.dispatch(actions.setAvDataSetting({baseSetting}));
+    this.store.dispatch(actions.setAvBaseSetting({baseSetting}));
 
     // call get data to update chartData obs
     // this.getData(event);

@@ -16,7 +16,7 @@ export class AvDataControlsComponent implements OnChanges, OnInit, OnDestroy {
   readonly destroy = new Subject<void>();
 
   @Input() settings: av.BaseSetting = DEFAULT_AV_BASE_DATA_SETTING;
-  @Output() avDataSettings = new EventEmitter<av.BaseSetting>();
+  @Output() avBaseSettings = new EventEmitter<av.BaseSetting>();
 
   dataSettingsBS = new BehaviorSubject<av.BaseSetting>(DEFAULT_AV_BASE_DATA_SETTING);
   dataSettings$: Observable<av.BaseSetting> = this.dataSettingsBS;
@@ -48,13 +48,13 @@ export class AvDataControlsComponent implements OnChanges, OnInit, OnDestroy {
         this.settingsFormValues = values;
         // console.log('aDC ctor t.sFV values: ', this.settingsFormValues);
         this.dataRequest = this.generateDataRequest();
-        console.log('aDC ctor generated request: ', this.dataRequest);
+        // console.log('aDC ctor generated request: ', this.dataRequest);
         
       });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('aDC ngOC changes: ', changes);
+    // console.log('aDC ngOC changes: ', changes);
     if (changes['settings'] && changes['settings'].currentValue) {
       // console.log('aDC ngOC changes settings: ', changes['settings'].currentValue);
       const settings = changes['settings'].currentValue;
@@ -104,7 +104,7 @@ export class AvDataControlsComponent implements OnChanges, OnInit, OnDestroy {
   
 
   submit() {
-    this.avDataSettings.emit(this.dataRequest);
+    this.avBaseSettings.emit(this.dataRequest);
     console.log('aDC submit. form submitted.  Data request: ', this.dataRequest);
   }
 

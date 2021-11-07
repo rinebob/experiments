@@ -39,6 +39,8 @@ export class ChartDataService {
 
   getAlphavantageOHLCData(settings: DataSetting): Observable<OHLCData[]> {
     const reqString = av.generateRequestString(settings);
+    console.log('cDS gAOD input settings: ', settings);
+    console.log('cDS gAOD reqString: ', reqString);
 
     //=============================
     // working code - DO NOT DELETE

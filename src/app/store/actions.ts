@@ -7,8 +7,7 @@ import { ChartSetting, SymbolTimeSetting } from '../common/interfaces_chart';
 import { BaseSetting, DataSetting } from '../services/av/av_interfaces';
 
 export const fetchEquityData = createAction(
-    '[bCV updateDataSettings] Fetch Equity Data',
-    // props<{equity: Equity}>()
+    '[bCV ctor] Fetch Equity Data',
     props<{dataSetting: DataSetting}>()
 );
 
@@ -37,13 +36,13 @@ export const setChartSetting = createAction(
     props<{chartSetting: ChartSetting}>()
 );
 
-export const setDataSetting = createAction(
-    '[bCV updateDataSetting ] Set data settings',
+export const setSymbolTimeSetting = createAction(
+    '[bCV updateDataSetting ] Set symbol time settings',
     props<{symbolTimeSetting: SymbolTimeSetting}>()
 );
 
-export const setAvDataSetting = createAction(
-    '[Av data setting] Set Av data settings',
+export const setAvBaseSetting = createAction(
+    '[Av data setting] Set Av bata settings',
     props<{baseSetting: BaseSetting}>()
 );
 

@@ -3,13 +3,13 @@
 
 
     <!-- Symbol, timeFrame -->
-    <exp-data-controls [settings]="dataSettings$ | async"
-                       (dataSettings)="handleDataSettingsChange($event)">
+    <exp-data-controls [settings]="symbolTimeSettings$ | async"
+                       (symbolTimeSettings)="handleSymbolTimeSettingsChange($event)">
     </exp-data-controls>
 
     <!-- Alphavantage API specific settings -->
-    <exp-av-data-controls [settings]="avDataSettings$ | async"
-                          (avDataSettings)="handleAvDataSettingsChange($event)">
+    <exp-av-data-controls [settings]="avBaseSettings$ | async"
+                          (avBaseSettings)="handleAvBaseSettingsChange($event)">
     </exp-av-data-controls>
 
 </div>

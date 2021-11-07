@@ -18,18 +18,18 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
   readonly destroy = new Subject<void>();
 
   @Input() iChartSettings: ChartSetting = DEFAULT_CHART_SETTING;
-  @Input() iDataSettings: SymbolTimeSetting = DEFAULT_SYMBOL_TIME_SETTING;
-  @Input() iAvDataSettings: av.BaseSetting = DEFAULT_AV_BASE_DATA_SETTING;
+  @Input() iSymbolTimeSettings: SymbolTimeSetting = DEFAULT_SYMBOL_TIME_SETTING;
+  @Input() iAvBaseSettings: av.BaseSetting = DEFAULT_AV_BASE_DATA_SETTING;
   @Output() oChartSettings = new EventEmitter<ChartSetting>();
-  @Output() oDataSettings = new EventEmitter<SymbolTimeSetting>();
-  @Output() oAvDataSettings = new EventEmitter<av.BaseSetting>();
+  @Output() oSymbolTimeSettings = new EventEmitter<SymbolTimeSetting>();
+  @Output() oAvBaseSettings = new EventEmitter<av.BaseSetting>();
 
   chartSettingsBS = new BehaviorSubject<ChartSetting>(DEFAULT_CHART_SETTING);
   chartSettings$: Observable<ChartSetting> = this.chartSettingsBS;
-  dataSettingsBS = new BehaviorSubject<SymbolTimeSetting>(DEFAULT_SYMBOL_TIME_SETTING);
-  dataSettings$: Observable<SymbolTimeSetting> = this.dataSettingsBS;
-  avDataSettingsBS = new BehaviorSubject<av.BaseSetting>(DEFAULT_AV_BASE_DATA_SETTING);
-  avDataSettings$: Observable<av.BaseSetting> = this.avDataSettingsBS;
+  symbolTimeSettingsBS = new BehaviorSubject<SymbolTimeSetting>(DEFAULT_SYMBOL_TIME_SETTING);
+  symbolTimeSettings$: Observable<SymbolTimeSetting> = this.symbolTimeSettingsBS;
+  avBaseSettingsBS = new BehaviorSubject<av.BaseSetting>(DEFAULT_AV_BASE_DATA_SETTING);
+  avBaseSettings$: Observable<av.BaseSetting> = this.avBaseSettingsBS;
   
   chartRequest: ChartSetting;
   dataRequest: av.DataSetting;
@@ -46,13 +46,13 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
       
       
     }
-    if (changes['iDataSettings'] && changes['iDataSettings'].currentValue) {
-      this.dataSettingsBS.next(changes['iDataSettings'].currentValue);
+    if (changes['iSymbolTimeSettings'] && changes['iSymbolTimeSettings'].currentValue) {
+      this.symbolTimeSettingsBS.next(changes['iSymbolTimeSettings'].currentValue);
       
       
     }
-    if (changes['iAvDataSettings'] && changes['iAvDataSettings'].currentValue) {
-      this.avDataSettingsBS.next(changes['iAvDataSettings'].currentValue);
+    if (changes['iAvBaseSettings'] && changes['iAvBaseSettings'].currentValue) {
+      this.avBaseSettingsBS.next(changes['iAvBaseSettings'].currentValue);
       
 
     }
@@ -105,19 +105,19 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
     
   }
   
-  handleDataSettingsChange(settings: SymbolTimeSetting) {
+  handleSymbolTimeSettingsChange(settings: SymbolTimeSetting) {
     console.log('cS hDSC called.  data settings: ', settings);
-    this.dataSettingsBS.next(settings);
-    this.oDataSettings.emit(settings);
+    this.symbolTimeSettingsBS.next(settings);
+    this.oSymbolTimeSettings.emit(settings);
     
     
   }
   
-  handleAvDataSettingsChange(settings: av.BaseSetting) {
+  handleAvBaseSettingsChange(settings: av.BaseSetting) {
     console.log('cS hADSC called.  av settings: ', settings);
     
-    this.avDataSettingsBS.next(settings);
-    this.oAvDataSettings.emit(settings);
+    this.avBaseSettingsBS.next(settings);
+    this.oAvBaseSettings.emit(settings);
 
   }
 
