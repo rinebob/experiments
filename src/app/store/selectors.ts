@@ -23,12 +23,12 @@ export const selectChartSettings = createSelector(
     (app) =>  app.chartSetting
 );
 
-export const selectDataSettings = createSelector(
+export const selectSymbolTimeSettings = createSelector(
     selectApp,
-    (app) =>  app.dataSetting
+    (app) =>  app.symbolTimeSetting
 );
 
-export const selectAvDataSettings = createSelector(
+export const selectAvBaseSettings = createSelector(
     selectApp,
-    (app) =>  app.avDataSetting
+    (app) =>  app.avBaseSetting
 );

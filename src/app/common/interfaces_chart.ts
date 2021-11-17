@@ -76,3 +76,11 @@ export enum PanDistance {
     END = 'end',
 
 }
+
+export interface ChartMoveEvent {
+    numDataPoints: number;
+    startIndex: number;
+    endIndex: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}

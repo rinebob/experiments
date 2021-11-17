@@ -2,8 +2,8 @@
     <button class="tool" (click)="handleZoom(ZOOM.IN)">IN</button>
     <button class="tool" (click)="handleZoom(ZOOM.OUT)">OUT</button>
     <button class="tool" (click)="handlePan(PAN_DISTANCE.START)">BEG</button>
-    <button class="tool" (click)="handlePan(PAN_DISTANCE.LEFT)">PGL</button>
-    <button class="tool" (click)="handlePan(PAN_DISTANCE.RIGHT)">PGR</button>
+    <button class="tool" [disabled]="!hasPreviousPage()" (click)="handlePan(PAN_DISTANCE.LEFT)">PGL</button>
+    <button class="tool" [disabled]="!hasNextPage()"(click)="handlePan(PAN_DISTANCE.RIGHT)">PGR</button>
     <button class="tool" (click)="handlePan(PAN_DISTANCE.END)">END</button>
     <button class="tool" (click)="setScaleType(SCALE_TYPE.LINEAR)">LIN</button>
     <button class="tool" (click)="setScaleType(SCALE_TYPE.LOG)">LOG</button>

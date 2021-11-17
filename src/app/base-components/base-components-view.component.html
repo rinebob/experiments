@@ -7,12 +7,14 @@
 
         <div class="gallery-header">
 
-            <exp-chart-settings [iChartSettings]="chartSetting$ | async"
-                                [iDataSettings]="dataSetting$ | async"
-                                [iAvDataSettings]="avDataSetting$ | async"
+            <exp-chart-settings [numDataPoints]="(equityData$ | async).length"
+                                [iChartSettings]="chartSetting$ | async"
+                                [iSymbolTimeSettings]="symbolTimeSetting$ | async"
+                                [iAvBaseSettings]="avBaseSetting$ | async"
+                                (oChartMoveEvent)="handleChartMoveEvent($event)"
                                 (oChartSettings)="updateChartSettings($event)"
-                                (oDataSettings)="updateDataSettings($event)"
-                                (oAvDataSettings)="updateAvDataSettings($event)">
+                                (oSymbolTimeSettings)="updateSymbolTimeSettings($event)"
+                                (oAvBaseSettings)="updateAvBaseSettings($event)">
             </exp-chart-settings>
 
             <!-- <exp-slim-nav-bar [selectionOptions]="galleryNavSelections"
@@ -20,25 +22,29 @@
             </exp-slim-nav-bar> -->
 
         </div>
-        <div *ngIf="equity$ | async as equity">
-            {{equity | json}}
-        </div>
-        <div *ngIf="option$ | async as option">
+        <!-- <div *ngIf="symbolTimeSetting$ | async as symbolTimeSetting">
+            {{symbolTimeSetting | json}}
+        </div> -->
+        <!-- <div *ngIf="option$ | async as option">
             {{option | json}}
         </div>
         <div *ngIf="chartSetting$ | async as chartSetting">
             {{chartSetting | json}}
         </div>
-        <div *ngIf="dataSetting$ | async as dataSetting">
-            {{dataSetting | json}}
+        <div *ngIf="symbolTimeSetting$ | async as symbolTimeSetting">
+            {{symbolTimeSetting | json}}
         </div>
-        <div *ngIf="avDataSetting$ | async as avDataSetting">
-            {{avDataSetting | json}}
-        </div>
+        <div *ngIf="avBaseSetting$ | async as avBaseSetting">
+            {{avBaseSetting | json}}
+        </div> -->
         
-        <exp-chart-gallery [gallerySelection]="gallerySelection$ | async"
-                           [mainChartData]="mainChartData$ | async"
+        <!-- [mainChartData]="mainChartData$ | async" -->
+        <!-- <exp-chart-gallery [gallerySelection]="gallerySelection$ | async"
+                           [mainChartData]="equityData$ | async"
                            [galleryData]="galleryChartsData$ | async">
+        </exp-chart-gallery> -->
+
+        <exp-chart-gallery [mainChartData]="equityData$ | async">
         </exp-chart-gallery>
     </div>
 </div>

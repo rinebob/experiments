@@ -12,8 +12,8 @@ export interface AppState {
     equity: Equity;
     option: Option;
     chartSetting: ChartSetting;
-    dataSetting: SymbolTimeSetting;
-    avDataSetting: BaseSetting;
+    symbolTimeSetting: SymbolTimeSetting;
+    avBaseSetting: BaseSetting;
     equityData: OHLCData[];
 }
 
@@ -21,8 +21,8 @@ export const initialState: AppState = {
     equity: DEFAULT_EQUITY,
     option: DEFAULT_OPTION,
     chartSetting: DEFAULT_CHART_SETTING,
-    dataSetting: DEFAULT_SYMBOL_TIME_SETTING,
-    avDataSetting: DEFAULT_AV_BASE_DATA_SETTING,
+    symbolTimeSetting: DEFAULT_SYMBOL_TIME_SETTING,
+    avBaseSetting: DEFAULT_AV_BASE_DATA_SETTING,
     equityData: [],
 }
 
@@ -58,19 +58,19 @@ const onSetChartSetting = on(actions.setChartSetting, (state: AppState,  {chartS
     }
 });
 
-const onSetDataSetting = on(actions.setDataSetting, (state: AppState,  {symbolTimeSetting}) => {
-    console.log('r onSetDataSetting. dataSetting: ', symbolTimeSetting);
+const onSetSymbolTimeSetting = on(actions.setSymbolTimeSetting, (state: AppState,  {symbolTimeSetting}) => {
+    console.log('r onSetSymbolTimeSetting. symbolTimeSetting: ', symbolTimeSetting);
     return  {
         ...state,
-        dataSetting: symbolTimeSetting
+        symbolTimeSetting: symbolTimeSetting
     }
 });
 
-const onSetAvDataSetting = on(actions.setAvDataSetting, (state: AppState,  {baseSetting}) => {
-    console.log('r onSetAvDataSetting. avDataSetting: ', baseSetting);
+const onSetAvBaseSetting = on(actions.setAvBaseSetting, (state: AppState,  {baseSetting}) => {
+    console.log('r onSetAvBaseSetting. baseSetting: ', baseSetting);
     return  {
         ...state,
-        avDataSetting: baseSetting
+        avBaseSetting: baseSetting
     }
 });
 
@@ -80,7 +80,7 @@ export const appReducer = createReducer(
     onSetEquityData,
     onSetOption,
     onSetChartSetting,
-    onSetDataSetting,
-    onSetAvDataSetting,
+    onSetSymbolTimeSetting,
+    onSetAvBaseSetting,
     
 );

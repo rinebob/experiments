@@ -31,7 +31,7 @@ export class DataControlsComponent implements OnChanges, OnInit, OnDestroy {
 
   @Input() symbol: string;
   @Input() settings: SymbolTimeSetting = DEFAULT_SYMBOL_TIME_SETTING;
-  @Output() dataSettings = new EventEmitter<SymbolTimeSetting>();
+  @Output() symbolTimeSettings = new EventEmitter<SymbolTimeSetting>();
 
   readonly timeframes = Object.values(TimeFrame);
 
@@ -55,9 +55,9 @@ export class DataControlsComponent implements OnChanges, OnInit, OnDestroy {
     this.settingsForm.valueChanges.pipe(takeUntil(this.destroy))
       .subscribe(values => {
         this.settingsFormValues = values;
-        console.log('dC ctor t.sFV values: ', this.settingsFormValues);
+        // console.log('dC ctor t.sFV values: ', this.settingsFormValues);
         this.dataRequest = this.generateDataRequest();
-        console.log('dC ctor generated request: ', this.dataRequest);
+        // console.log('dC ctor generated request: ', this.dataRequest);
         
       });
 
@@ -112,7 +112,7 @@ export class DataControlsComponent implements OnChanges, OnInit, OnDestroy {
 
   submit() {
     // const dataRequest = this.generateDataRequest();
-    this.dataSettings.emit(this.dataRequest);
+    this.symbolTimeSettings.emit(this.dataRequest);
     console.log('dC s data controls form submitted.  Data request: ', this.dataRequest);
   }
 
