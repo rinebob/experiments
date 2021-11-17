@@ -16,6 +16,7 @@ const routes: Routes = [
   {path: 'd3', component: DeeThreePanelComponent},
   {path: 'games',  loadChildren: () => import('./games/games.module').then(m => m.GamesModule)},
   {path: 'base-components',  loadChildren: () => import('./base-components/base-components.module').then(m => m.BaseComponentsModule)},
+  {path: 'simple-chart',  loadChildren: () => import('./simple-chart/simple-chart.module').then(m => m.SimpleChartModule)},
   {path: 'grid', component: GridComponent },
   {path: 'scroll', component: ScrollComponent },
   { path: 'position-builder', loadChildren: () => import('./position-builder/position-builder.module').then(m => m.PositionBuilderModule) },

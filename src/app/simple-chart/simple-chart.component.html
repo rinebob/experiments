@@ -1,1 +1,10 @@
-<p>simple-chart works!</p>
+
+<exp-chart-controls [numDataPoints]="numDataPoints"
+                    (moveChart)="handleMoveChart($event)">
+</exp-chart-controls>
+<!-- [numDataPoints]="numDataPoints"  -->
+<exp-base-chart 
+                [chartData]="chartData$ | async"
+                chartMode="fullscreen"
+                class="chart-fullscreen">
+</exp-base-chart>
