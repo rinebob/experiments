@@ -29,7 +29,7 @@ export const DEFAULT_SYMBOL_TIME_SETTING: SymbolTimeSetting = {
 export const DEFAULT_AV_BASE_DATA_SETTING: av.BaseSetting = {
   slice: av.Slice.YEAR1MONTH1,
   adjusted: av.Adjusted.ADJUSTED,
-  outputSize: av.OutputSize.COMPACT,
+  outputSize: av.OutputSize.FULL,
   dataType: av.DataType.JSON,
 };
 
@@ -195,3 +195,23 @@ export const STANDARD_DAYS_IN_A_MONTH = 30;
 export const DAYS_IN_A_WEEK = 7;
 export const TWO_CALENDAR_WEEKS = 14;
 
+export const DEFAULT_CHART_MOVE_EVENT = {
+    numDataPoints: 0,
+    startIndex: 0,
+    endIndex: 0,
+    hasNextPage: false,
+    hasPreviousPage: false,
+}
+
+export const ZOOM_LEVELS = new Map([
+  [1, 0.001],
+  [2, 0.005],
+  [3, 0.01],
+  [4, 0.025],
+  [5, 0.1],
+  [6, 0.25],
+  [7, 0.5],
+  [8, 1.0],
+]);
+
+export const DEFAULT_ZOOM_LEVEL = 4;

@@ -3,19 +3,19 @@
 
 
     <!-- Symbol, timeFrame -->
-    <exp-data-controls [settings]="symbolTimeSettings$ | async"
+    <!-- <exp-data-controls [settings]="symbolTimeSettings$ | async"
                        (symbolTimeSettings)="handleSymbolTimeSettingsChange($event)">
-    </exp-data-controls>
+    </exp-data-controls> -->
 
     <!-- Alphavantage API specific settings -->
-    <exp-av-data-controls [settings]="avBaseSettings$ | async"
+    <!-- <exp-av-data-controls [settings]="avBaseSettings$ | async"
                           (avBaseSettings)="handleAvBaseSettingsChange($event)">
-    </exp-av-data-controls>
+    </exp-av-data-controls> -->
 
 </div>
 
-<exp-chart-controls (pan)="handlePan($event)"
-                    (zoom)="handleZoom($event)"
+<exp-chart-controls [numDataPoints]="numDataPoints$ | async"
+                    (moveChart)="handleChartMoveEvent($event)"
                     (updateChartType)="setChartType($event)"
                     (updateScaleType)="setScaleType($event)">
 </exp-chart-controls>

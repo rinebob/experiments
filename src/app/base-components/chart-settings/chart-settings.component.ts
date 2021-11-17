@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
-import { ChartSetting, ChartType, ScaleType} from '../../common/interfaces_chart';
+import { ChartMoveEvent, ChartSetting, ChartType, ScaleType} from '../../common/interfaces_chart';
 import { PanDistance, SymbolTimeSetting, TimeFrame, Zoom } from '../../common/interfaces_chart';
 import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DEFAULT_SYMBOL_TIME_SETTING } from 'src/app/common/constants';
 import * as av from '../../services/av/av_interfaces';
@@ -17,12 +17,14 @@ import * as av from '../../services/av/av_interfaces';
 export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
   readonly destroy = new Subject<void>();
 
+  @Input() numDataPoints = 0;
   @Input() iChartSettings: ChartSetting = DEFAULT_CHART_SETTING;
   @Input() iSymbolTimeSettings: SymbolTimeSetting = DEFAULT_SYMBOL_TIME_SETTING;
   @Input() iAvBaseSettings: av.BaseSetting = DEFAULT_AV_BASE_DATA_SETTING;
   @Output() oChartSettings = new EventEmitter<ChartSetting>();
   @Output() oSymbolTimeSettings = new EventEmitter<SymbolTimeSetting>();
   @Output() oAvBaseSettings = new EventEmitter<av.BaseSetting>();
+  @Output() oChartMoveEvent = new EventEmitter<ChartMoveEvent>();
 
   chartSettingsBS = new BehaviorSubject<ChartSetting>(DEFAULT_CHART_SETTING);
   chartSettings$: Observable<ChartSetting> = this.chartSettingsBS;
@@ -30,6 +32,9 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
   symbolTimeSettings$: Observable<SymbolTimeSetting> = this.symbolTimeSettingsBS;
   avBaseSettingsBS = new BehaviorSubject<av.BaseSetting>(DEFAULT_AV_BASE_DATA_SETTING);
   avBaseSettings$: Observable<av.BaseSetting> = this.avBaseSettingsBS;
+
+  numDataPointsBS = new BehaviorSubject<number>(0);
+  numDataPoints$: Observable<number> = this.numDataPointsBS;
   
   chartRequest: ChartSetting;
   dataRequest: av.DataSetting;
@@ -39,7 +44,15 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('cS ngOC changes: ', changes);
+    // console.log('cS ngOC changes: ', changes);
+    
+    if (changes['numDataPoints'] && changes['numDataPoints'].currentValue) {
+      // console.log('cS ngOC changes[numDataPoints].currentValue: ', changes['numDataPoints'].currentValue);
+      this.numDataPointsBS.next(changes['numDataPoints'].currentValue);
+      
+      
+      
+    }
 
     if (changes['iChartSettings'] && changes['iChartSettings'].currentValue) {
       this.chartSettingsBS.next(changes['iChartSettings'].currentValue);
@@ -48,6 +61,7 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
     }
     if (changes['iSymbolTimeSettings'] && changes['iSymbolTimeSettings'].currentValue) {
       this.symbolTimeSettingsBS.next(changes['iSymbolTimeSettings'].currentValue);
+      // console.log('cS ngOC STS changes: ', changes['iSymbolTimeSettings'].currentValue);
       
       
     }
@@ -68,15 +82,20 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
     this.destroy.complete();
   }
 
-  handleZoom(zoom: Zoom) {
-    console.log('cS hP handle zoom: ', zoom);
-
+  handleChartMoveEvent(event: ChartMoveEvent) {
+    // console.log('cS hP handle chart move.  event: ', event);
+    this.oChartMoveEvent.emit(event);
   }
 
-  handlePan(panDistance: PanDistance) {
-    console.log('cS hP handle pan: ', panDistance);
+  // handleZoom(zoom: Zoom) {
+  //   console.log('cS hP handle zoom: ', zoom);
 
-  }
+  // }
+
+  // handlePan(panDistance: PanDistance) {
+  //   console.log('cS hP handle pan: ', panDistance);
+
+  // }
 
   setChartType(chartType: ChartType) {
     console.log('cS sCT chart type: ', chartType);
