@@ -19,7 +19,7 @@ export const OHLC_INITIALIZER: OHLCData = {
   }
   
   export interface OHLCData {
-    date: Date;
+    date: Date | string;
     stringDate?: string;
     open: number;
     high: number;

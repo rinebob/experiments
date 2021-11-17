@@ -88,29 +88,6 @@ export enum Params {
   }
 
  
-  // First part of AV http response
-export interface Metadata {
-    information: string;
-    symbol: string;
-    last_refreshed: string;
-    output_size: string;
-    time_zone: string;
-}
-
-// Shape of data point in daily data response
-export interface DayChartData {
-    open: string;
-    high: string;
-    low: string;
-    close: string;
-    adjusted_close: string;
-    volume: string;
-    dividend_amount: string;
-    split_coefficient: string;
-
-}
-
-// shape of data point in intraday data response
 export interface FullSetting {
     symbol: string;
     timeFrame?: TimeFrame;
@@ -139,6 +116,29 @@ export interface DataSetting {
     adjusted?: Adjusted;
     outputSize?: OutputSize;
     dataType?: DataType;
+}
+
+
+  // First part of AV http response
+  export interface Metadata {
+    information: string;
+    symbol: string;
+    last_refreshed: string;
+    output_size: string;
+    time_zone: string;
+}
+
+// Shape of data point in daily data response
+export interface DayChartData {
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    adjusted_close: string;
+    volume: string;
+    dividend_amount: string;
+    split_coefficient: string;
+
 }
 
 // Data structure for daily series data points
