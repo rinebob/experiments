@@ -7,6 +7,7 @@ import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/inte
 import { ChartDimensions } from 'src/app/common/interfaces_chart';
 import { DEFAULT_PICKER_TABLE_DATUM } from 'src/app/common/constants';
 import { DEFAULT_CHART_DIMENSIONS,  } from 'src/app/common/constants';
+import {MSFTData} from '../../../assets/data/MSFT_21-1112';
 
 @Component({
   selector: 'exp-base-chart',
@@ -20,10 +21,9 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
   // @Input() chartMode: GalleryChartMode = GalleryChartMode.FULLSCREEN_MODE;
   // @Input() chartDimensions: ChartDimensions = DEFAULT_CHART_DIMENSIONS;
   
-
   @Input()
   set chartData(data: OHLCData[]) {
-    // console.log('bC chartData input data: ', data);
+    // console.log('bC chartData input data[0]: ', data[0]);
     this.chartDataBS.next(data);
   }
   get chartData() {
@@ -57,11 +57,12 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
     if (changes['chartData']) {
       // console.log('bC ngOC changes-chartData: ', changes['chartData'].currentValue);
       
-
+      
       const data: OHLCData[] = (changes['chartData']).currentValue;
       this.chartDataBS.next(data);
       if (data) {
         
+        // console.log('bC ngOC calling create svg and draw chart');
         this.createSvg();
         this.drawChart(this.chartDataBS.value);
       }
@@ -79,6 +80,12 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
 
   ngOnInit(): void {
     // console.log('bC ngOI chart data: ', this.chartDataBS.value);
+    // console.log('bC ngOI set chartData if BS.v.length = 0');
+    if (this.chartDataBS.value.length == 0) {
+      // console.log('bC ngOI BS.v.length = 0 setting chart data');
+      this.chartDataBS.next(MSFTData);
+
+    }
   }
   
   ngAfterViewInit() {
@@ -98,12 +105,12 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
   }
 
   drawChart(data: any[]) {
-    console.log('bC dC data: ', data);
+    console.log('bC dC data[0]: ', data[0]);
     // find data range
-    const xMin = d3.min(this.chartDataBS.value, d => {return d['date']});
-    const xMax = d3.max(this.chartDataBS.value, d => {return d['date']});
-    const yMin = d3.min(this.chartDataBS.value, d => {return d['close']});
-    const yMax = d3.max(this.chartDataBS.value, d => {return d['close']});
+    const xMax = d3.max(data, d => {return d['date']});
+    const xMin = d3.min(data, d => {return d['date']});
+    const yMin = d3.min(data, d => {return d['close']});
+    const yMax = d3.max(data, d => {return d['close']});
 
     // chart scales
     const xScale = d3

@@ -43,6 +43,10 @@ import { ChartSettingsModule } from './chart-settings/chart-settings.module';
     MdbCarouselModule,
     BaseComponentsRoutingModule,
     ChartSettingsModule,
+  ],
+  exports: [
+    BaseChartComponent,
+    PickerTableComponent,
   ]
 })
 export class BaseComponentsModule { }
