@@ -36,6 +36,7 @@ export class ChartControlsComponent implements OnInit {
   numDataPts = 0
   currentZoomLevel = DEFAULT_ZOOM_LEVEL;
   previousZoomLevel = DEFAULT_ZOOM_LEVEL;
+  numZoomLevels = ZOOM_LEVELS.size;
 
   constructor() { }
 
