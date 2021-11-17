@@ -11,7 +11,7 @@ import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
 
 import { Equity, GalleryChartMode, GalleryViewOption, NavBarSelection, OHLCData, PickerTableData } from '../common/interfaces';
-import { ChartSetting, SymbolTimeSetting } from '../common/interfaces_chart';
+import { ChartMoveEvent, ChartSetting, SymbolTimeSetting, TimeFrame } from '../common/interfaces_chart';
 import { Option } from '../common/option_interfaces';
 import { BaseSetting, DataSetting } from '../services/av/av_interfaces';
 import { DEFAULT_PICKER_TABLE_DATUM, GalleryNavSelections } from '../common/constants';
@@ -62,7 +62,7 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
       map(([symbolTimeSetting, avBaseSetting] ) => {
         const dataSetting =  {...symbolTimeSetting, ...avBaseSetting}
         // this.store.dispatch(actions.fetchEquityData({dataSetting})) 
-        console.log('bCV ctor combLatest.  dataSetting: ', dataSetting)
+        // console.log('bCV ctor combLatest.  dataSetting: ', dataSetting)
         return dataSetting;
 
 
@@ -70,7 +70,11 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
       // switchMap(dataSetting => {
       //   this.store.dispatch(actions.fetchEquityData({dataSetting})) 
       // })
-    ).subscribe(dataSetting => this.store.dispatch(actions.fetchEquityData({dataSetting})) );
+    ).subscribe(
+      dataSetting => {
+        // console.log('bCV ctor dispatch fetch equity data.  dataSetting: ', dataSetting);
+        this.store.dispatch(actions.fetchEquityData({dataSetting})) 
+      });
       
     }
 
@@ -78,15 +82,15 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     // console.log('bCV ngOI handle gallery selection fullscreen');d
     this.handleGallerySelection(GalleryViewOption.FULLSCREEN);
 
-    this.equity$.pipe(takeUntil(this.destroy)).subscribe(equity => console.log('bCV ngOI equity: ', equity));
-    this.equityData$.pipe(takeUntil(this.destroy)).subscribe(equityData => {
-      console.log('bCV ngOI equityData:')
-      console.table(equityData);
-    });
-    this.option$.pipe(takeUntil(this.destroy)).subscribe(option => console.log('bCV ngOI option: ', option));
-    this.chartSetting$.pipe(takeUntil(this.destroy)).subscribe(chartSetting => console.log('bCV ngOI chartSetting: ', chartSetting));
-    this.symbolTimeSetting$.pipe(takeUntil(this.destroy)).subscribe(dataSetting => console.log('bCV ngOI dataSetting: ', dataSetting));
-    this.avBaseSetting$.pipe(takeUntil(this.destroy)).subscribe(avDataSetting => console.log('bCV ngOI avDataSetting: ', avDataSetting));
+    // this.equity$.pipe(takeUntil(this.destroy)).subscribe(equity => console.log('bCV ngOI equity: ', equity));
+    // this.equityData$.pipe(takeUntil(this.destroy)).subscribe(equityData => {
+      // console.log('bCV ngOI equityData length: ', equityData.length)
+      // console.table(equityData);
+    // });
+    // this.option$.pipe(takeUntil(this.destroy)).subscribe(option => console.log('bCV ngOI option: ', option));
+    // this.chartSetting$.pipe(takeUntil(this.destroy)).subscribe(chartSetting => console.log('bCV ngOI chartSetting: ', chartSetting));
+    // this.symbolTimeSetting$.pipe(takeUntil(this.destroy)).subscribe(dataSetting => console.log('bCV ngOI dataSetting: ', dataSetting));
+    // this.avBaseSetting$.pipe(takeUntil(this.destroy)).subscribe(avDataSetting => console.log('bCV ngOI avDataSetting: ', avDataSetting));
 
   }
 
@@ -95,16 +99,20 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     this.destroy.complete();
   }
 
-  handleSymbolSelection(selectedSymbol: string) {
+  // handleSymbolSelection(selectedSymbol: string) {
+  handleSymbolSelection(selectedSymbol: SymbolTimeSetting) {
   //  console.log('bCV hSS selectedSymbol: ', selectedSymbol);
    // dispatch symbol to store
   //  const symbolData = PICKER_TABLE_DATA.find(item => item.symbol === selectedSymbol);
    console.log('bCV hSS selectedSymbol: ', selectedSymbol);
-   this.mainChartSymbolBS.next(selectedSymbol);
+   this.mainChartSymbolBS.next(selectedSymbol.symbol);
 
-   // convert PickerTableData object to Equity object
-   // dispatch equity to store
-  //  this.store.dispatch(actions.setEquity())
+   const symbolTime: SymbolTimeSetting = {
+     symbol: selectedSymbol.symbol,
+     timeFrame: TimeFrame.DAILY
+   };
+
+   this.updateSymbolTimeSettings(symbolTime);
   
 
   }
@@ -116,6 +124,11 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     this.gallerySelectionBS.next(GalleryViewOption.FULLSCREEN);
     // console.log('bCV hNS t.gSBS after next: ', this.gallerySelectionBS.value);
     
+  }
+
+  handleChartMoveEvent(event: ChartMoveEvent) {
+    // console.log('bCV hCME chart move event: ', event);
+
   }
 
   updateChartSettings(chartSetting: ChartSetting) {
@@ -130,7 +143,7 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     // dispatch the settings to the store
     // or dispatch directly from ChartSettings component
 
-    console.log('bCV uDS dispatch symbolTimeSetting: ', symbolTimeSetting);
+    console.log('bCV uSTS dispatch symbolTimeSetting: ', symbolTimeSetting);
     
     this.store.dispatch(actions.setSymbolTimeSetting({symbolTimeSetting}));
     
