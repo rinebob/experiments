@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import {MatSliderModule} from '@angular/material/slider';
 
 import { ChartSettingsComponent } from './chart-settings.component';
 import { ChartControlsComponent } from './chart-controls/chart-controls.component';
@@ -28,6 +29,7 @@ import { AvDataControlsComponent } from './av-data-controls/av-data-controls.com
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatSliderModule,
   ],
   exports: [
     AvDataControlsComponent,

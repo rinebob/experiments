@@ -1,4 +1,11 @@
 
+.controls-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    margin-top: 50px;
+}
 
 .toolbar-container {
     display: flex;
@@ -9,5 +16,16 @@
         font-size: 10px;
         // height: 20px;
         // width: 20px;
+    }
+}
+
+mat-slider {
+
+    width: 500px;
+
+    ::ng-deep {
+        .mat-slider-horizontal {
+            width: 500px;
+        }
     }
 }

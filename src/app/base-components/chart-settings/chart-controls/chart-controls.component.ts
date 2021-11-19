@@ -4,6 +4,7 @@ import { ChartMoveEvent, ChartType, ScaleType, PanDistance, Zoom } from 'src/app
 import {DEFAULT_CHART_MOVE_EVENT, DEFAULT_ZOOM_LEVEL, ZOOM_LEVELS} from '../../../common/constants';
 
 import { BehaviorSubject } from 'rxjs';
+import { MatSliderChange } from '@angular/material/slider';
 
 @Component({
   selector: 'exp-chart-controls',
@@ -14,10 +15,16 @@ import { BehaviorSubject } from 'rxjs';
 export class ChartControlsComponent implements OnInit {
   @Input() 
   set numDataPoints(numPoints: number) {
-    console.log('cC @input num data points: ', numPoints);
-    this.numDataPts = numPoints;
+    // console.log('cC @input num data points: ', numPoints);
+    this._numDataPoints = numPoints;
+    this.updateSlider(numPoints);
     this.initializeChartMoveConfig(numPoints);
+    this.sendChartConfig();
   };
+  get numDataPoints() {
+    return this._numDataPoints;
+  }
+  private _numDataPoints = 0;
 
   @Output() moveChart = new EventEmitter<ChartMoveEvent>();
   @Output() updateChartType = new EventEmitter<ChartType>();
@@ -33,19 +40,29 @@ export class ChartControlsComponent implements OnInit {
   currentIndex = 0;
   previousIndex = 0;
   pageSize = 0;
-  numDataPts = 0
+  // numDataPoints = 0
   currentZoomLevel = DEFAULT_ZOOM_LEVEL;
   previousZoomLevel = DEFAULT_ZOOM_LEVEL;
   numZoomLevels = ZOOM_LEVELS.size;
 
+  // slider params
+  max = 0;
+  min = 0;
+  step = 0;
+  thumbLabel = true;
+  tickInterval = 0;
+  sliderValue = 0;
+
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    
+  }
 
   initializeChartMoveConfig(numPoints: number) {
     console.log('cC iCMS num data points: ', numPoints);
     this.pageSize = Math.round(numPoints * ZOOM_LEVELS.get(this.currentZoomLevel));
-    console.log('cC iCMS initialized pageSize: ', this.pageSize);
+    // console.log('cC iCMS initialized pageSize: ', this.pageSize);
     this.previousIndex = Math.round(numPoints - numPoints * ZOOM_LEVELS.get(this.currentZoomLevel));
     this.currentIndex = this.previousIndex;
 
@@ -57,15 +74,38 @@ export class ChartControlsComponent implements OnInit {
     move.hasPreviousPage = true;
 
     this.chartMoveConfigBS.next(move);
-    this.sendChartConfig();
     
-    console.log('cC iCMS initialized chart move object: ', move);
-    console.log('cC iCMS chart moveBS val: ', this.chartMoveConfigBS.value);
+    
+    
+    // console.log('cC iCMS initialized chart move object: ', move);
+    // console.log('cC iCMS chart moveBS val: ', this.chartMoveConfigBS.value);
     
   }
 
+  updateSlider(numPts: number, divisor = 10) {
+    this.max = numPts;
+    this.step = numPts / divisor;
+    this.tickInterval = numPts / divisor;
+    console.log('cC iS slider params max/step/tickInt: ', this.max, this.step, this.tickInterval);
+  }
+
+  handleSliderChange(change: MatSliderChange) {
+    this.sliderValue = change.value;
+    console.log('cC hSC slider change.  value: ', change.value);
+
+  }
+
+  formatSliderLabel(value: number) {
+    if (value >= 100) {
+      return Math.round(value / 100);
+    }
+
+    return value;
+  }
+  
+
   handlePan(panDistance: PanDistance) {
-    console.log('cC hP panDistance: ', panDistance);
+    // console.log('cC hP panDistance: ', panDistance);
 
     let index = 0;
     
@@ -80,24 +120,24 @@ export class ChartControlsComponent implements OnInit {
         break;
     
       case PanDistance.RIGHT:
-        index = Math.min(this.currentIndex + this.pageSize, this.numDataPts);
+        index = Math.min(this.currentIndex + this.pageSize, this.numDataPoints);
         break;
     
       case PanDistance.END: 
-        index = this.numDataPts - this.pageSize;
+        index = this.numDataPoints - this.pageSize;
         break;
      
       default: console.log('cC hP default.  Doh!  no pan distance dude!  WTF???');
     }
 
     this.updateChartMoveConfig(index);
-    console.log('cC hP final zoom config: ', this.chartMoveConfigBS.value);
+    // console.log('cC hP final zoom config: ', this.chartMoveConfigBS.value);
     this.sendChartConfig();
   }
 
   handleZoom(zoom: Zoom) {
-    console.log('cC hZ zoom: ', zoom);
-    console.log('cC hZ initial zoomLevel/multiplier: ', this.currentZoomLevel, ZOOM_LEVELS.get(this.currentZoomLevel));
+    // console.log('cC hZ zoom: ', zoom);
+    // console.log('cC hZ initial zoomLevel/multiplier: ', this.currentZoomLevel, ZOOM_LEVELS.get(this.currentZoomLevel));
     
     const center = this.currentIndex + this.pageSize / 2;
     let newIndex = 0;
@@ -107,33 +147,33 @@ export class ChartControlsComponent implements OnInit {
     switch (zoom) {
       case Zoom.IN:
         newZoom = Math.max(this.currentZoomLevel - 1, 1);
-        console.log('cD hZ zoom in updated zoom level: ', newZoom);
+        console.log('cC hZ zoom in updated zoom level: ', newZoom);
 
         newPageSize = this.updatePageSize(newZoom);
-        console.log('cD hZ updated pageSize: ', newPageSize);
+        console.log('cC hZ updated pageSize: ', newPageSize);
         
         newIndex = center - newPageSize / 2;
-        console.log('cD hZ zoom in newIndex: ', newIndex);
+        console.log('cC hZ zoom in newIndex: ', newIndex);
         
         break;
         
         case Zoom.OUT: 
         
         newZoom = Math.min(this.currentZoomLevel + 1, ZOOM_LEVELS.size);
-        console.log('cD hZ updated zoom level: ', newZoom);
+        console.log('cC hZ updated zoom level: ', newZoom);
         
         newPageSize = this.updatePageSize(newZoom);
-        console.log('cD hZ updated pageSize: ', newPageSize);
+        console.log('cC hZ updated pageSize: ', newPageSize);
         
         const maybeStart = center - newPageSize / 2;
         const maybeEnd = center + newPageSize / 2;
-        console.log('cD hZ zoom out maybeStart maybeEnd: ', maybeStart, maybeEnd);
+        console.log('cC hZ zoom out maybeStart maybeEnd: ', maybeStart, maybeEnd);
         
         newIndex = maybeStart < 0 ? 0 : maybeStart;
-        console.log('cD hZ zoom out start newIndex: ', newIndex);
+        console.log('cC hZ zoom out start newIndex: ', newIndex);
 
-        newIndex = maybeEnd > this.numDataPts ? this.numDataPts - newPageSize : newIndex;
-        console.log('cD hZ zoom out end newIndex: ', newIndex);
+        newIndex = maybeEnd > this.numDataPoints ? this.numDataPoints - newPageSize : newIndex;
+        console.log('cC hZ zoom out end newIndex: ', newIndex);
 
         break;
      
@@ -143,12 +183,12 @@ export class ChartControlsComponent implements OnInit {
 
     this.updateChartMoveConfig(newIndex);
     this.updateZoomLevel(newZoom);
-    console.log('cC hP final zoom config: ', this.chartMoveConfigBS.value);
+    // console.log('cC hP final zoom config: ', this.chartMoveConfigBS.value);
     this.sendChartConfig();
   }
 
   hasNextPage(): boolean {
-    return this.currentIndex + this.pageSize + 1 < this.numDataPts ? true : false;
+    return this.currentIndex + this.pageSize + 1 < this.numDataPoints ? true : false;
   }
 
   hasPreviousPage(): boolean {
@@ -156,9 +196,9 @@ export class ChartControlsComponent implements OnInit {
   }
 
   updatePageSize(newZoom: number): number {
-    console.log('cD uPS new zoom level/mult: ', newZoom, ZOOM_LEVELS.get(newZoom));
-    const pageSize = Math.round(this.numDataPts * ZOOM_LEVELS.get(newZoom));
-    console.log('cD uPS updated page size: ', pageSize);
+    // console.log('cC uPS new zoom level/mult: ', newZoom, ZOOM_LEVELS.get(newZoom));
+    const pageSize = Math.round(this.numDataPoints * ZOOM_LEVELS.get(newZoom));
+    // console.log('cC uPS updated page size: ', pageSize);
     this.pageSize = pageSize;
 
     return pageSize;
@@ -182,16 +222,17 @@ export class ChartControlsComponent implements OnInit {
 
   sendChartConfig() {
     this.moveChart.emit(this.chartMoveConfigBS.value);
+    // console.log('cC sCC emitted chartMoveConfig: ', this.chartMoveConfigBS.value);
   }
   
   setChartType(chartType: ChartType) {
-    console.log('cC sCT chart type: ', chartType);
+    // console.log('cC sCT chart type: ', chartType);
     this.updateChartType.emit(chartType);
     
   }
   
   setScaleType(scaleType: ScaleType) {
-    console.log('cC sST scale type: ', scaleType);
+    // console.log('cC sST scale type: ', scaleType);
     this.updateScaleType.emit(scaleType);
 
   }
