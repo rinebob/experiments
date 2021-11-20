@@ -3,7 +3,7 @@ import { Component, ChangeDetectionStrategy, Input, OnInit, Output, EventEmitter
 import { ChartMoveEvent, ChartType, ScaleType, PanDistance, Zoom } from 'src/app/common/interfaces_chart';
 import {DEFAULT_CHART_MOVE_EVENT, DEFAULT_ZOOM_LEVEL, ZOOM_LEVELS} from '../../../common/constants';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MatSliderChange } from '@angular/material/slider';
 
 @Component({
@@ -17,7 +17,6 @@ export class ChartControlsComponent implements OnInit {
   set numDataPoints(numPoints: number) {
     // console.log('cC @input num data points: ', numPoints);
     this._numDataPoints = numPoints;
-    this.updateSlider(numPoints);
     this.initializeChartMoveConfig(numPoints);
     this.sendChartConfig();
   };
@@ -31,6 +30,7 @@ export class ChartControlsComponent implements OnInit {
   @Output() updateScaleType = new EventEmitter<ScaleType>();
 
   chartMoveConfigBS = new BehaviorSubject<ChartMoveEvent>(DEFAULT_CHART_MOVE_EVENT);
+  chartMoveConfig$:Observable<ChartMoveEvent> = this.chartMoveConfigBS;
   
   readonly CHART_TYPE = ChartType;
   readonly SCALE_TYPE = ScaleType;
@@ -49,9 +49,10 @@ export class ChartControlsComponent implements OnInit {
   max = 0;
   min = 0;
   step = 0;
-  thumbLabel = true;
+  thumbLabel = false;
   tickInterval = 0;
-  sliderValue = 0;
+  startSliderValue = 0;
+  endSliderValue = 0;
 
   constructor() { }
 
@@ -61,10 +62,11 @@ export class ChartControlsComponent implements OnInit {
 
   initializeChartMoveConfig(numPoints: number) {
     console.log('cC iCMS num data points: ', numPoints);
-    this.pageSize = Math.round(numPoints * ZOOM_LEVELS.get(this.currentZoomLevel));
+    const currentIndex = Math.round(numPoints - numPoints * ZOOM_LEVELS.get(this.currentZoomLevel));
+    const pageSize = Math.round(numPoints * ZOOM_LEVELS.get(this.currentZoomLevel));
     // console.log('cC iCMS initialized pageSize: ', this.pageSize);
-    this.previousIndex = Math.round(numPoints - numPoints * ZOOM_LEVELS.get(this.currentZoomLevel));
-    this.currentIndex = this.previousIndex;
+    this.currentIndex = currentIndex;
+    this.previousIndex = currentIndex;
 
     const move = {...DEFAULT_CHART_MOVE_EVENT};
     move.numDataPoints = numPoints;
@@ -74,25 +76,66 @@ export class ChartControlsComponent implements OnInit {
     move.hasPreviousPage = true;
 
     this.chartMoveConfigBS.next(move);
+
+    this.pageSize = pageSize;
     
-    
+    this.initializeSlider(numPoints, currentIndex, pageSize)
     
     // console.log('cC iCMS initialized chart move object: ', move);
     // console.log('cC iCMS chart moveBS val: ', this.chartMoveConfigBS.value);
     
   }
 
-  updateSlider(numPts: number, divisor = 10) {
+  initializeSlider(numPts: number, currentIndex: number, pageSize: number, stepFactor = 100, tickFactor = 100) {
     this.max = numPts;
-    this.step = numPts / divisor;
-    this.tickInterval = numPts / divisor;
+    this.step = Math.round(numPts / stepFactor);
+    this.tickInterval = Math.round(numPts / tickFactor);
+    this.startSliderValue = currentIndex;
+    this.endSliderValue = currentIndex + pageSize;
     console.log('cC iS slider params max/step/tickInt: ', this.max, this.step, this.tickInterval);
+    console.log('cC iS slider params start/end: ', currentIndex, currentIndex + pageSize);
   }
 
   handleSliderChange(change: MatSliderChange) {
-    this.sliderValue = change.value;
-    console.log('cC hSC slider change.  value: ', change.value);
+    const source = change.source._elementRef.nativeElement.id;
+    let startIndex: number, endIndex:number = 0;
+    const currentStart = this.chartMoveConfigBS.value.startIndex;
+    const currentEnd = this.chartMoveConfigBS.value.endIndex;
+    console.log('cC hSC current start/end: ', currentStart, currentEnd);
 
+    if (source === 'start') {
+      this.startSliderValue = change.value;
+      console.log('cC hSC source = start');
+      startIndex = change.value;
+      endIndex = currentEnd
+      if (startIndex > currentEnd) {
+        console.log('cC hSC startInd > curEnd');
+        endIndex = startIndex + this.step;
+        
+      }
+      this.endSliderValue = endIndex;
+    } else {
+      this.endSliderValue = change.value;
+      console.log('cC hSC source = end');
+      endIndex = change.value;
+      startIndex = currentStart;
+      if (endIndex < currentStart) {
+        console.log('cC hSC endIndex < curStart');
+        startIndex = endIndex - this.step;
+        
+      }
+      this.startSliderValue = startIndex;
+
+    }
+
+    this.pageSize = endIndex - startIndex;
+
+    this.currentZoomLevel = this.determineZoomLevel(startIndex, endIndex);
+    
+    console.log('cC hSC slider change.  value/source: ', change.value, change.source._elementRef.nativeElement.id);
+    console.log('cC hSC slider change.  prev start/end | new start/end: ', currentStart, currentEnd, ' | ', startIndex, endIndex);
+        
+    this.updateChartMoveConfig(startIndex, endIndex)
   }
 
   formatSliderLabel(value: number) {
@@ -103,69 +146,84 @@ export class ChartControlsComponent implements OnInit {
     return value;
   }
   
-
   handlePan(panDistance: PanDistance) {
-    // console.log('cC hP panDistance: ', panDistance);
+    console.log('cC hP panDistance: ', panDistance);
 
-    let index = 0;
+    let startIndex: number, endIndex: number = 0;
     
     switch (panDistance) {
       case PanDistance.START: 
-        // this.currentIndex = 0;
-        index = 0;
+        startIndex = 0;
+        endIndex = this.pageSize;
         break;
 
       case PanDistance.LEFT: 
-        index = Math.max(this.currentIndex - this.pageSize, 0);
+        startIndex = Math.max(this.currentIndex - this.pageSize, 0);
+        endIndex = startIndex + this.pageSize;
         break;
     
       case PanDistance.RIGHT:
-        index = Math.min(this.currentIndex + this.pageSize, this.numDataPoints);
+        endIndex = Math.min(this.currentIndex + this.pageSize * 2, this.numDataPoints);
+        startIndex = endIndex - this.pageSize;
         break;
     
       case PanDistance.END: 
-        index = this.numDataPoints - this.pageSize;
+        startIndex = this.numDataPoints - this.pageSize;
+        endIndex = this.numDataPoints;
         break;
      
       default: console.log('cC hP default.  Doh!  no pan distance dude!  WTF???');
     }
 
-    this.updateChartMoveConfig(index);
-    // console.log('cC hP final zoom config: ', this.chartMoveConfigBS.value);
+    this.updateChartMoveConfig(startIndex, endIndex);
+    this.updateSliderControls(startIndex, endIndex);
+    // console.log('cC hP final pan config: ', this.chartMoveConfigBS.value);
     this.sendChartConfig();
   }
 
   handleZoom(zoom: Zoom) {
     // console.log('cC hZ zoom: ', zoom);
-    // console.log('cC hZ initial zoomLevel/multiplier: ', this.currentZoomLevel, ZOOM_LEVELS.get(this.currentZoomLevel));
+    console.log('cC hZ initial zoomLevel/multiplier: ', this.currentZoomLevel, ZOOM_LEVELS.get(this.currentZoomLevel));
     
     const center = this.currentIndex + this.pageSize / 2;
-    let newIndex = 0;
-    let newZoom = 0;
-    let newPageSize = 0;
+    const anchor = this.currentIndex + this.pageSize;
+    let startZoom, newIndex, newZoom, newPageSize = 0;
+    
     
     switch (zoom) {
       case Zoom.IN:
-        newZoom = Math.max(this.currentZoomLevel - 1, 1);
+        // startZoom = Math.floor(this.currentZoomLevel);
+        startZoom = Math.floor(this.currentZoomLevel - .01);
+        console.log('cC hZ in start zoom: ', startZoom);
+        
+        // newZoom = Math.max(startZoom - 1, 1);
+        newZoom = Math.max(startZoom, 1);
         console.log('cC hZ zoom in updated zoom level: ', newZoom);
-
+        
         newPageSize = this.updatePageSize(newZoom);
         console.log('cC hZ updated pageSize: ', newPageSize);
         
-        newIndex = center - newPageSize / 2;
+        // newIndex = center - newPageSize / 2;
+        newIndex = anchor - newPageSize;
         console.log('cC hZ zoom in newIndex: ', newIndex);
         
         break;
         
         case Zoom.OUT: 
+        console.log('cC hZ out start zoom: ', startZoom);
+        // startZoom = Math.ceil(this.currentZoomLevel);
+        startZoom = Math.ceil(this.currentZoomLevel + .01);
         
-        newZoom = Math.min(this.currentZoomLevel + 1, ZOOM_LEVELS.size);
+        // newZoom = Math.min(startZoom + 1, ZOOM_LEVELS.size);
+        newZoom = Math.min(startZoom, ZOOM_LEVELS.size);
         console.log('cC hZ updated zoom level: ', newZoom);
         
         newPageSize = this.updatePageSize(newZoom);
         console.log('cC hZ updated pageSize: ', newPageSize);
         
-        const maybeStart = center - newPageSize / 2;
+        // const maybeStart = center - newPageSize / 2;
+        const maybeStart = anchor - newPageSize;
+        
         const maybeEnd = center + newPageSize / 2;
         console.log('cC hZ zoom out maybeStart maybeEnd: ', maybeStart, maybeEnd);
         
@@ -183,6 +241,7 @@ export class ChartControlsComponent implements OnInit {
 
     this.updateChartMoveConfig(newIndex);
     this.updateZoomLevel(newZoom);
+    this.updateSliderControls(newIndex, newIndex + newPageSize);
     // console.log('cC hP final zoom config: ', this.chartMoveConfigBS.value);
     this.sendChartConfig();
   }
@@ -204,20 +263,67 @@ export class ChartControlsComponent implements OnInit {
     return pageSize;
   }
 
-  updateChartMoveConfig(index: number) {
-    const currentIndex = Math.round(index);
+  updateChartMoveConfig(start: number, end?:number) {
+    console.log('cC uCMC start/end: ', start, end);
+    const currentIndex = Math.round(start);
     this.currentIndex = currentIndex;
+    const moveEnd = end ? end : Math.min(currentIndex + this.pageSize, this.numDataPoints);
     const move = {...this.chartMoveConfigBS.value};
     move.startIndex = currentIndex;
-    move.endIndex = currentIndex + this.pageSize;
+    move.endIndex = Math.round(moveEnd);
     move.hasNextPage = this.hasNextPage();
     move.hasPreviousPage = this.hasPreviousPage();
 
     this.chartMoveConfigBS.next(move);
+    console.log('cC hP final config: ', this.chartMoveConfigBS.value);
+  }
+  
+  updateSliderControls(start: number, end: number) {
+    console.log('cC uSC start / end: ', start, end);
+    this.startSliderValue = start;
+    this.endSliderValue = end;
   }
 
   updateZoomLevel(zoomLevel: number) {
     this.currentZoomLevel = zoomLevel;
+  }
+
+  determineZoomLevel(start: number, end: number): number {
+    // max zoom level
+    let newZoom = 8;
+
+    const numPts = end - start;
+    // zoom level is ratio of (end - start) / num data points
+    const ratio = (end - start) / this.numDataPoints;
+    // this is the value in the ZoomLevels key-value pair
+    // find where this is in the zoom levels map
+    let first = 0;
+
+    for (const [key, value] of ZOOM_LEVELS.entries()) {
+      // start at the lowest zoom level see how many points this is
+      // if less than numPts go to next zoom level 
+      if (value * this.numDataPoints < numPts) {
+        first = key;
+        console.log('cC dZL key: ', key);
+      } else {
+        break;
+      }
+
+    }
+
+
+    newZoom = first + ratio;
+
+
+    // return the next lowest zoom level (key) with the ratio appended
+    // ex: start 100 end 200 num pts 500 ratio is .20 ((200-100)/500)
+    // .2 is between ZoomLevels 3 & 4  [3, 0.01], [4, 0.025],
+    // return 3.2
+
+    // just return a number
+    // next button click will floor/celing based on zoom direction
+    console.log('cC dZL start/end/newslider zoom level: ',start, end, newZoom);
+    return newZoom;
   }
 
   sendChartConfig() {

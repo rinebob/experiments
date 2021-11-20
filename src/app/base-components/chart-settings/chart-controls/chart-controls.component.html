@@ -12,14 +12,33 @@
         <button class="tool" (click)="setChartType(CHART_TYPE.CANDLESTICK)">CDL</button>
     </div>
     <div class="slider-container">
-        <mat-slider [displayWith]="formatSliderLabel"
+        <mat-slider id=start
+                    color="primary"
+                    [displayWith]="formatSliderLabel"
                     [max]="max"
                     [min]="min"
                     [step]="step"
                     [thumbLabel]="thumbLabel"
                     [tickInterval]="tickInterval"
-                    [(ngModel)]="sliderValue"
+                    [(ngModel)]="startSliderValue"
+                    (change)="handleSliderChange($event)">
+        </mat-slider>
+        <mat-slider id=end
+                    color="primary"
+                    [displayWith]="formatSliderLabel"
+                    [max]="max"
+                    [min]="min"
+                    [step]="step"
+                    [thumbLabel]="thumbLabel"
+                    [tickInterval]="tickInterval"
+                    [(ngModel)]="endSliderValue"
                     (change)="handleSliderChange($event)">
         </mat-slider>
     </div>
+</div>
+<div class="values-container" *ngIf="chartMoveConfig$ | async as config">
+    <p class="value">Start: {{config.startIndex}}</p>
+    <p class="value">End: {{config.endIndex}}</p>
+    <p class="value">Page size: {{pageSize}}</p>
+    <p class="value">Zoom level: {{currentZoomLevel}}</p>
 </div>

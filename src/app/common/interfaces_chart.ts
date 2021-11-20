@@ -84,3 +84,13 @@ export interface ChartMoveEvent {
     hasNextPage: boolean;
     hasPreviousPage: boolean;
 }
+
+export interface ChartMoveResult {
+    currentIndex: number;
+    previousIndex: number
+    currentZoomLevel: number;
+    previousZoomLevel: number;
+    currentPageSize: number;
+    previousPageSize: number;
+    
+}
