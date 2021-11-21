@@ -28,6 +28,7 @@ export class ChartControlsComponent implements OnInit {
   @Output() moveChart = new EventEmitter<ChartMoveEvent>();
   @Output() updateChartType = new EventEmitter<ChartType>();
   @Output() updateScaleType = new EventEmitter<ScaleType>();
+  @Output() getData = new EventEmitter<void>();
 
   chartMoveConfigBS = new BehaviorSubject<ChartMoveEvent>(DEFAULT_CHART_MOVE_EVENT);
   chartMoveConfig$:Observable<ChartMoveEvent> = this.chartMoveConfigBS;
@@ -61,6 +62,7 @@ export class ChartControlsComponent implements OnInit {
   }
 
   initializeChartMoveConfig(numPoints: number) {
+    console.log('======================================');
     console.log('cC iCMS num data points: ', numPoints);
     const currentIndex = Math.round(numPoints - numPoints * ZOOM_LEVELS.get(this.currentZoomLevel));
     const pageSize = Math.round(numPoints * ZOOM_LEVELS.get(this.currentZoomLevel));
@@ -101,30 +103,43 @@ export class ChartControlsComponent implements OnInit {
     let startIndex: number, endIndex:number = 0;
     const currentStart = this.chartMoveConfigBS.value.startIndex;
     const currentEnd = this.chartMoveConfigBS.value.endIndex;
+    console.log('---------------------------------');
     console.log('cC hSC current start/end: ', currentStart, currentEnd);
-
+    
     if (source === 'start') {
       this.startSliderValue = change.value;
-      console.log('cC hSC source = start');
+      console.log('cC hSC source = start.  slider value: ', change.value);
+      
       startIndex = change.value;
       endIndex = currentEnd
+      console.log('cC hSC initial updated start/end: ', startIndex, endIndex);
+      
       if (startIndex > currentEnd) {
         console.log('cC hSC startInd > curEnd');
         endIndex = startIndex + this.step;
+        console.log('cC hSC revised end: ', endIndex);
         
       }
       this.endSliderValue = endIndex;
+      console.log('cC hSC start control final start/end: ', startIndex, endIndex);
+    
     } else {
       this.endSliderValue = change.value;
-      console.log('cC hSC source = end');
+      console.log('cC hSC source = end.  slider value: ', change.value);
+    
       endIndex = change.value;
       startIndex = currentStart;
+      console.log('cC hSC initial updated start/end: ', startIndex, endIndex);
+    
       if (endIndex < currentStart) {
         console.log('cC hSC endIndex < curStart');
         startIndex = endIndex - this.step;
+        console.log('cC hSC revised end: ', endIndex);
         
       }
+    
       this.startSliderValue = startIndex;
+      console.log('cC hSC end control final start/end: ', startIndex, endIndex);
 
     }
 
@@ -135,7 +150,8 @@ export class ChartControlsComponent implements OnInit {
     console.log('cC hSC slider change.  value/source: ', change.value, change.source._elementRef.nativeElement.id);
     console.log('cC hSC slider change.  prev start/end | new start/end: ', currentStart, currentEnd, ' | ', startIndex, endIndex);
         
-    this.updateChartMoveConfig(startIndex, endIndex)
+    this.updateChartMoveConfig(startIndex, endIndex);
+    this.sendChartConfig();
   }
 
   formatSliderLabel(value: number) {
@@ -147,6 +163,7 @@ export class ChartControlsComponent implements OnInit {
   }
   
   handlePan(panDistance: PanDistance) {
+    console.log('---------------------------------');
     console.log('cC hP panDistance: ', panDistance);
 
     let startIndex: number, endIndex: number = 0;
@@ -182,6 +199,7 @@ export class ChartControlsComponent implements OnInit {
   }
 
   handleZoom(zoom: Zoom) {
+    console.log('---------------------------------');
     // console.log('cC hZ zoom: ', zoom);
     console.log('cC hZ initial zoomLevel/multiplier: ', this.currentZoomLevel, ZOOM_LEVELS.get(this.currentZoomLevel));
     
@@ -210,9 +228,9 @@ export class ChartControlsComponent implements OnInit {
         break;
         
         case Zoom.OUT: 
-        console.log('cC hZ out start zoom: ', startZoom);
         // startZoom = Math.ceil(this.currentZoomLevel);
         startZoom = Math.ceil(this.currentZoomLevel + .01);
+        console.log('cC hZ out start zoom: ', startZoom);
         
         // newZoom = Math.min(startZoom + 1, ZOOM_LEVELS.size);
         newZoom = Math.min(startZoom, ZOOM_LEVELS.size);
@@ -340,7 +358,12 @@ export class ChartControlsComponent implements OnInit {
   setScaleType(scaleType: ScaleType) {
     // console.log('cC sST scale type: ', scaleType);
     this.updateScaleType.emit(scaleType);
-
+    
+  }
+  
+  requestData() {
+    console.log('cC rD request data called');
+    this.getData.emit();
   }
 
 }

@@ -35,10 +35,11 @@
                     (change)="handleSliderChange($event)">
         </mat-slider>
     </div>
+    <button class="tool" (click)="requestData()">Get data</button>
 </div>
 <div class="values-container" *ngIf="chartMoveConfig$ | async as config">
     <p class="value">Start: {{config.startIndex}}</p>
     <p class="value">End: {{config.endIndex}}</p>
     <p class="value">Page size: {{pageSize}}</p>
-    <p class="value">Zoom level: {{currentZoomLevel}}</p>
+    <p class="value">Zoom level: {{currentZoomLevel.toFixed(3)}}</p>
 </div>
