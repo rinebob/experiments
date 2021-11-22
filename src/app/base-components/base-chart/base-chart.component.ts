@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import * as d3 from 'd3';
 
 import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/interfaces';
-import { ChartDimensions } from 'src/app/common/interfaces_chart';
+import { ChartDimensions, ChartType, ScaleType } from 'src/app/common/interfaces_chart';
 import { DEFAULT_PICKER_TABLE_DATUM } from 'src/app/common/constants';
 import { DEFAULT_CHART_DIMENSIONS,  } from 'src/app/common/constants';
 import {MSFTData} from '../../../assets/data/MSFT_21-1112';
@@ -39,6 +39,9 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
     return this.chartModeBS.value;
   }
 
+  @Input() chartType = ChartType.LINE;
+  @Input() scaleType = ScaleType.LOG;
+
   readonly chartDataBS = new BehaviorSubject<OHLCData[]>([]);
   readonly chartData$: Observable<OHLCData[]> = this.chartDataBS;
 
@@ -53,16 +56,13 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges) {
-    // console.log('bC ngOC changes: ', changes);
-    if (changes['chartData']) {
+    console.log('bC ngOC changes: ', changes);
+    if (changes['chartData'] && changes['chartData'].currentValue) {
       // console.log('bC ngOC changes-chartData: ', changes['chartData'].currentValue);
-      
-      
       const data: OHLCData[] = (changes['chartData']).currentValue;
       this.chartDataBS.next(data);
       if (data) {
-        
-        // console.log('bC ngOC calling create svg and draw chart');
+        console.log('bC ngOC calling create svg and draw chart');
         this.createSvg();
         this.drawChart(this.chartDataBS.value);
       }
@@ -70,10 +70,16 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
 
     if (changes['chartMode']) {
       // console.log('bC ngOC changes-chartMode: ', changes['chartMode']);
-      
-
       const data: GalleryChartMode = (changes['chartMode']).currentValue;
       this.chartModeBS.next(data);
+    }
+
+    if (changes['scaleType'] || changes['chartType']) {
+      
+        console.log('bC ngOC scale or chart type change. calling create svg and draw chart');
+        this.createSvg();
+        this.drawChart(this.chartDataBS.value);
+      
     }
 
   }
@@ -93,7 +99,7 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
     
   }
 
-  createSvg() {
+  private createSvg() {
     d3.select("svg").remove();
     this.svg = d3.select('#chartHost')
     .append('svg')
@@ -104,59 +110,125 @@ export class BaseChartComponent implements AfterViewInit, OnChanges, OnInit {
 
   }
 
-  drawChart(data: any[]) {
-    console.log('bC dC data[0]: ', data[0]);
-    // find data range
-    const xMax = d3.max(data, d => {return d['date']});
-    const xMin = d3.min(data, d => {return d['date']});
-    const yMin = d3.min(data, d => {return d['close']});
-    const yMax = d3.max(data, d => {return d['close']});
+  private generateExtents(data: OHLCData[]) {
+    const xMax = d3.max(data, d => d['date']);
+    const xMin = d3.min(data, d => d['date']);
+    const yMin = d3.min(data, d => d['close']);
+    const yMax = d3.max(data, d => d['close']);
 
-    // chart scales
-    const xScale = d3
+    return {xMax, xMin, yMax, yMin};
+
+  }
+
+  private generateXAxis(min: number, max: number) {
+    const xAxis = d3
     .scaleTime()
-    .domain([xMin, xMax])
+    .domain([min, max])
     .range([0, this.width]);
 
-    const yScale = d3
-    .scaleLinear()
-    .domain([yMin - 5, yMax])
-    .range([this.height, 0]);
+    return xAxis;
+  }
 
-    const line = d3
-    .line()
-    .x(d => {
-      return xScale(d['date']);
-    })
-    .y(d => {
-      return yScale(d['close']);
-    });
+  private generateYAxis(min: number, max: number) {
+    let yAxis;
 
+    switch(this.scaleType) {
+      case ScaleType.LINEAR:
+
+        yAxis = d3
+          .scaleLinear()
+          .domain([min - 5, max])
+          .range([this.height, 0]);
+        break;
+
+      case ScaleType.LOG:
+        yAxis = d3
+          .scaleLog()
+          .domain([min - 5, max])
+          .range([this.height, 0]);
+        break;
+
+      default: console.log('bC gYA default.  ummm... dude... no scale type... WTF???')
+    }
+
+
+    return yAxis;
+  }
+
+  private generateDataDisplay(xAxis, yAxis) {
+    // console.log('bC gDD data display axes: ', xAxis, yAxis);
+    let dataDisplay;
+
+    switch(this.chartType) {
+      case ChartType.LINE:
+        
+        dataDisplay = d3
+          .line()
+          .x(d => xAxis(d['date']))
+          .y(d => yAxis(d['close']));
+      
+        break;
+
+      case ChartType.BAR:
+        
+        break;
+
+      case ChartType.CANDLESTICK:
+
+        break;
+
+      default: console.log('bC gYA default.  ummm... dude... no y axis type... WTF???');
+    }
+
+    return dataDisplay;
+  }
+
+  private appendXAxis(xAxis) {
     this.svg
-    .append('g')
-    .attr('id', 'xAxis')
-    .attr('transform', `translate(0, ${this.height})`)
-    .call(d3.axisBottom(xScale));
+      .append('g')
+      .attr('id', 'xAxis')
+      .attr('transform', `translate(0, ${this.height})`)
+      .call(d3.axisBottom(xAxis));
 
+  }
+
+  private appendYAxis(yAxis) {
     this.svg
     .append('g')
     .attr('id', 'yAxis')
     .attr('transform', `translate(${this.width}, 0)`)
-    .call(d3.axisRight(yScale));
+    .call(d3.axisRight(yAxis));
 
-    this.svg
-    .append('path')
-    .data([this.chartDataBS.value])
-    .style('fill', 'none')
-    .attr('id', 'priceChart')
-    .attr('stroke', 'steelblue')
-    .attr('stroke-width', '1.5')
-    .attr('d', line);
-
-
-    
   }
 
+  private appendDataDisplay(dataDisplay) {
+    this.svg
+      .append('path')
+      .data([this.chartDataBS.value])
+      .style('fill', 'none')
+      .attr('id', 'priceChart')
+      .attr('stroke', 'steelblue')
+      .attr('stroke-width', '1.5')
+      .attr('d', dataDisplay);
 
+  }
 
+  private drawChart(data: OHLCData[]) {
+    console.log('bC dC data[0]: ', data[0]);
+    // find data range
+    const {xMax, xMin, yMax, yMin} = this.generateExtents(data);
+
+    // chart scales
+    const xAxis = this.generateXAxis(xMin, xMax);
+    const yAxis = this.generateYAxis(yMin, yMax);
+
+    // actual data rendering
+    const dataDisplay = this.generateDataDisplay(xAxis, yAxis);
+
+    this.appendXAxis(xAxis);
+
+    this.appendYAxis(yAxis);
+
+    this.appendDataDisplay(dataDisplay);
+  }
 }

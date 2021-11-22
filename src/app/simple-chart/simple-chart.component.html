@@ -1,11 +1,14 @@
 
 <exp-chart-controls [numDataPoints]="numDataPoints"
                     (moveChart)="handleMoveChart($event)"
+                    (updateChartType)="handleUpdateChartType($event)"
+                    (updateScaleType)="handleUpdateScaleType($event)"
                     (getData)="getData()">
 </exp-chart-controls>
 <!-- [numDataPoints]="numDataPoints"  -->
-<exp-base-chart 
-                [chartData]="chartData$ | async"
+<exp-base-chart [chartData]="chartData$ | async"
+                [chartType]="chartType$ | async"
+                [scaleType]="scaleType$ | async"
                 chartMode="fullscreen"
                 class="chart-fullscreen">
 </exp-base-chart>

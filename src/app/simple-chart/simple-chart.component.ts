@@ -3,16 +3,23 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ChartMoveEvent, SymbolTimeSetting, TimeFrame } from '../common/interfaces_chart'
+import { ChartMoveEvent, ChartType, ScaleType, SymbolTimeSetting, TimeFrame } from '../common/interfaces_chart'
 import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
 import { DEFAULT_AV_BASE_DATA_SETTING} from '../common/constants';
 
-import {MSFTData} from '../../assets/data/MSFT_21-1112';
+// import {MSFTData} from '../../assets/data/MSFT_21-1112';
 import {MSFTData_sample} from '../../assets/data/MSFT_21-1112_sample';
 
-const DATA_SOURCE = MSFTData;
+// const DATA_SOURCE = MSFTData;
+
+const SYMBOL = 'AAPL';
+const DATA_SETTING:SymbolTimeSetting = {
+  symbol: SYMBOL,
+  timeFrame: TimeFrame.DAILY,
+  ...DEFAULT_AV_BASE_DATA_SETTING,
+};
 
 
 @Component({
@@ -31,6 +38,12 @@ export class SimpleChartComponent implements OnDestroy, OnInit {
   chartDataBS = new BehaviorSubject<OHLCData[]>([]);
   chartData$: Observable<OHLCData[]> = this.chartDataBS;
 
+  chartTypeBS = new BehaviorSubject<ChartType>(ChartType.LINE);
+  chartType$: Observable<ChartType> = this.chartTypeBS;
+
+  scaleTypeBS = new BehaviorSubject<ScaleType>(ScaleType.LOG);
+  scaleType$: Observable<ScaleType> = this.scaleTypeBS;
+
   numDataPoints = 0;
   
   constructor(private readonly store: Store) {
@@ -48,11 +61,7 @@ export class SimpleChartComponent implements OnDestroy, OnInit {
    }
 
   ngOnInit(): void {
-    // this.chartDataBS.next(DATA_SOURCE);
-    // this.numDataPoints = this.chartDataBS.value.length;
-    // console.log('sC ngOI chartData[0] / len: ', this.chartDataBS.value[0], this.chartDataBS.value.length);
-    // console.log('sC ngOI chartData: ', this.chartDataBS.value);
-
+    this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 
   ngOnDestroy() {
@@ -68,10 +77,19 @@ export class SimpleChartComponent implements OnDestroy, OnInit {
 
   }
 
+  handleUpdateChartType(chartType: ChartType) {
+    console.log('sC hUCT chart type: ', chartType);
+    this.chartTypeBS.next(chartType);
+
+  }
+
+  handleUpdateScaleType(scaleType: ScaleType) {
+    console.log('sC hUST scale type: ', scaleType);
+    this.scaleTypeBS.next(scaleType);
+  }
+
   getDataRangeSelection(startInd: number, endInd: number): OHLCData[] {
     console.log('sC gDRS st/end: ', startInd, endInd);
-    // const selection = DATA_SOURCE.slice(startInd, endInd);
-    // const selection = this.chartDataBS.value.slice(startInd, endInd);
     const selection = this.allDataBS.value.slice(startInd, endInd);
     console.log('sC gDRS selection: ', selection);
 
@@ -80,13 +98,8 @@ export class SimpleChartComponent implements OnDestroy, OnInit {
   }
 
   getData() {
-    const dataSetting:SymbolTimeSetting = {
-      symbol: 'TSLA',
-      timeFrame: TimeFrame.DAILY,
-      ...DEFAULT_AV_BASE_DATA_SETTING,
-    };
-    console.log('sC rD get data called.  dataSetting: ', dataSetting);
-    this.store.dispatch(actions.sCgDfetchEquityData({dataSetting}));
+    console.log('sC rD get data called.  dataSetting: ', DATA_SETTING);
+    this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 
 }
