@@ -94,3 +94,14 @@ export interface ChartMoveResult {
     previousPageSize: number;
     
 }
+
+export interface DomRectCoordinates {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+}

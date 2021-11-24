@@ -1,14 +1,31 @@
+<!-- <div class="spacer">
+    
+</div> -->
 
-<exp-chart-controls [numDataPoints]="numDataPoints"
-                    (moveChart)="handleMoveChart($event)"
-                    (updateChartType)="handleUpdateChartType($event)"
-                    (updateScaleType)="handleUpdateScaleType($event)"
-                    (getData)="getData()">
-</exp-chart-controls>
-<!-- [numDataPoints]="numDataPoints"  -->
-<exp-base-chart [chartData]="chartData$ | async"
-                [chartType]="chartType$ | async"
-                [scaleType]="scaleType$ | async"
-                chartMode="fullscreen"
-                class="chart-fullscreen">
-</exp-base-chart>
+<div #simpleChartContainer class="simple-chart-container">
+
+    <exp-chart-controls [numDataPoints]="numDataPoints"
+                        (moveChart)="handleMoveChart($event)"
+                        (updateChartType)="handleUpdateChartType($event)"
+                        (updateScaleType)="handleUpdateScaleType($event)"
+                        (getData)="getData()">
+    </exp-chart-controls>
+    
+
+    <div class="base-chart-container">
+
+        <exp-base-chart #baseChart
+                        [containerDimensions]="chartContainerDimensions$ | async"
+                        [chartData]="chartData$ | async"
+                        [chartType]="chartType$ | async"
+                        [scaleType]="scaleType$ | async"
+                        chartMode="fullscreen"
+                        class="chart-fullscreen">
+        </exp-base-chart>
+
+    </div>
+
+</div>
+<!-- <div class="spacer">
+
+</div> -->

@@ -1,5 +1,5 @@
 import { Equity, GalleryViewOption } from "./interfaces";
-import { SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
+import { DomRectCoordinates, SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
 import { ChartType, ScaleType } from "./interfaces_chart";
@@ -203,15 +203,46 @@ export const DEFAULT_CHART_MOVE_EVENT = {
     hasPreviousPage: false,
 }
 
-export const ZOOM_LEVELS = new Map([
-  [1, 0.001],
-  [2, 0.005],
-  [3, 0.01],
-  [4, 0.025],
-  [5, 0.1],
-  [6, 0.25],
-  [7, 0.5],
-  [8, 1.0],
-]);
+// export const ZOOM_LEVELS = new Map([
+//   [1, 0.001],
+//   [2, 0.005],
+//   [3, 0.01],
+//   [4, 0.025],
+//   [5, 0.1],
+//   [6, 0.25],
+//   [7, 0.5],
+//   [8, 1.0],
+// ]);
 
-export const DEFAULT_ZOOM_LEVEL = 4;
+export const ZOOM_LEVELS = new Map([
+    [1, 0.01],
+    [2, 0.05],
+    [3, 0.1],
+    [4, 0.2],
+    [5, 0.4],
+    [6, 0.6],
+    [7, 0.8],
+    [8, 1.0],
+  ]);
+
+// export const ZOOM_LEVELS = new Map([
+//     [1, 0.01],
+//     [2, 0.05],
+//     [3, 0.1],
+//     [4, 0.25],
+//     [5, 0.5],
+//     [6, 0.75],
+//   ]);
+
+export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
+
+export const DOM_RECT_COORDS_INITIALIZER:DomRectCoordinates = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
+}

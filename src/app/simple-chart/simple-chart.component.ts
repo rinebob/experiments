@@ -1,20 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ChartMoveEvent, ChartType, ScaleType, SymbolTimeSetting, TimeFrame } from '../common/interfaces_chart'
+import { ChartMoveEvent, ChartType, DomRectCoordinates, ScaleType, SymbolTimeSetting, TimeFrame } from '../common/interfaces_chart'
 import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
-import { DEFAULT_AV_BASE_DATA_SETTING} from '../common/constants';
+import { DEFAULT_AV_BASE_DATA_SETTING, DOM_RECT_COORDS_INITIALIZER} from '../common/constants';
 
-// import {MSFTData} from '../../assets/data/MSFT_21-1112';
-import {MSFTData_sample} from '../../assets/data/MSFT_21-1112_sample';
-
-// const DATA_SOURCE = MSFTData;
-
-const SYMBOL = 'AAPL';
+const SYMBOL = 'SPY';
 const DATA_SETTING:SymbolTimeSetting = {
   symbol: SYMBOL,
   timeFrame: TimeFrame.DAILY,
@@ -28,8 +23,11 @@ const DATA_SETTING:SymbolTimeSetting = {
   styleUrls: ['./simple-chart.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SimpleChartComponent implements OnDestroy, OnInit {
+export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
   readonly destroy = new Subject();
+  // @ViewChild('baseChart', {read: ElementRef}) baseChart: HTMLElement;
+  @ViewChild('baseChart', {read: ElementRef}) baseChart: ElementRef;
+  @ViewChild('simpleChartContainer', {read: ElementRef}) simpleChartContainer: ElementRef;
 
   equityData$: Observable<OHLCData[]> = this.store.select(selectors.selectEquityData);
 
@@ -44,6 +42,9 @@ export class SimpleChartComponent implements OnDestroy, OnInit {
   scaleTypeBS = new BehaviorSubject<ScaleType>(ScaleType.LOG);
   scaleType$: Observable<ScaleType> = this.scaleTypeBS;
 
+  chartContainerDimensionsBS = new BehaviorSubject<DomRectCoordinates>(DOM_RECT_COORDS_INITIALIZER);
+  chartContainerDimensions$: Observable<DomRectCoordinates> = this.chartContainerDimensionsBS;
+
   numDataPoints = 0;
   
   constructor(private readonly store: Store) {
@@ -51,11 +52,9 @@ export class SimpleChartComponent implements OnDestroy, OnInit {
     .subscribe(
       data => {
         this.chartDataBS.next(data);
-        // this.numDataPoints = this.chartDataBS.value.length;
-        console.log('sC ctor num data pts / t.eD$[0]: ', this.numDataPoints, data[0]);
         this.allDataBS.next(data);
         this.numDataPoints = this.allDataBS.value.length;
-        console.log('sC ctor num data pts / t.aDBS[0]: ', this.numDataPoints, data[0]);
+        // console.log('sC ctor num data pts / t.aDBS[0]: ', this.numDataPoints, data[0]);
       }
     );
    }
@@ -69,17 +68,38 @@ export class SimpleChartComponent implements OnDestroy, OnInit {
     this.destroy.complete();
   }
 
+  ngAfterViewInit() {
+    console.log('sC ngAVI base chart: ', this.simpleChartContainer);
+    const {x, y, height, width} = this.simpleChartContainer.nativeElement.getBoundingClientRect();
+    const domRect:DomRectCoordinates = this.simpleChartContainer.nativeElement.getBoundingClientRect();
+    console.log('sC ngAVI simpleChartContainer x/y/width/height: ', x, y, width, height);
+    console.log('sC ngAVI simpleChartContainer domRect: ', domRect);
+    const coords: DomRectCoordinates = {
+      x: domRect.x,
+      y: domRect.y,
+      height: domRect.height,
+      width: domRect.width,
+      top: domRect.top,
+      bottom: domRect.bottom,
+      right: domRect.right,
+      left: domRect.left,
+     };
+    console.log('sC ngAVI coords: ', coords);
+    this.chartContainerDimensionsBS.next(coords);
+  }
+
   handleMoveChart(move: ChartMoveEvent) {
-    console.log('sC hMC move: ', move);
+    // console.log('sC hMC move: ', move);
     const data = this.getDataRangeSelection(move.startIndex, move.endIndex);
     this.chartDataBS.next(data);
-    console.log('sC hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
+    // console.log('sC hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
 
   }
 
   handleUpdateChartType(chartType: ChartType) {
-    console.log('sC hUCT chart type: ', chartType);
+    // console.log('sC hUCT chart type: ', chartType);
     this.chartTypeBS.next(chartType);
+    console.log('sC hUCT t.baseChart: ', this.baseChart);
 
   }
 
@@ -89,16 +109,16 @@ export class SimpleChartComponent implements OnDestroy, OnInit {
   }
 
   getDataRangeSelection(startInd: number, endInd: number): OHLCData[] {
-    console.log('sC gDRS st/end: ', startInd, endInd);
+    // console.log('sC gDRS st/end: ', startInd, endInd);
     const selection = this.allDataBS.value.slice(startInd, endInd);
-    console.log('sC gDRS selection: ', selection);
+    // console.log('sC gDRS selection: ', selection);
 
     return selection;
 
   }
 
   getData() {
-    console.log('sC rD get data called.  dataSetting: ', DATA_SETTING);
+    // console.log('sC rD get data called.  dataSetting: ', DATA_SETTING);
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 
