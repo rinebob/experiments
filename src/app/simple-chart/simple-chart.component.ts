@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ChartMoveEvent, ChartType, DomRectCoordinates, ScaleType, SymbolTimeSetting, TimeFrame } from '../common/interfaces_chart'
+import { ChartMoveEvent, ChartType, DomRectCoordinates, PanDistance, ScaleType, SymbolTimeSetting, TimeFrame, VerticalAdjustment } from '../common/interfaces_chart'
 import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
@@ -15,6 +15,8 @@ const DATA_SETTING:SymbolTimeSetting = {
   timeFrame: TimeFrame.DAILY,
   ...DEFAULT_AV_BASE_DATA_SETTING,
 };
+
+const VERTICAL_ADJUSTMENT_FACTOR = 0.25;
 
 
 @Component({
@@ -44,6 +46,9 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
   chartContainerDimensionsBS = new BehaviorSubject<DomRectCoordinates>(DOM_RECT_COORDS_INITIALIZER);
   chartContainerDimensions$: Observable<DomRectCoordinates> = this.chartContainerDimensionsBS;
+
+  verticalScaleFactorBS = new BehaviorSubject<number>(1);
+  verticalScaleFactor$: Observable<number> = this.verticalScaleFactorBS
 
   numDataPoints = 0;
   
@@ -88,12 +93,23 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
     this.chartContainerDimensionsBS.next(coords);
   }
 
+  handleVerticalAdjustment(adjustment: VerticalAdjustment) {
+    console.log('sC hVA vert adjustment: ', adjustment);
+    const currentVertFactor = this.verticalScaleFactorBS.value;
+    const adj = adjustment === VerticalAdjustment.VERT_CONTRACT ? VERTICAL_ADJUSTMENT_FACTOR : -VERTICAL_ADJUSTMENT_FACTOR;
+    
+    const newVertFactor = currentVertFactor + adj;
+    console.log('sC hVA existing/new vert adjustment: ', currentVertFactor, newVertFactor);
+    this.verticalScaleFactorBS.next(newVertFactor);
+    console.log('sC hVA t.vSFBS.value: ', this.verticalScaleFactorBS.value);
+
+  }
+
   handleMoveChart(move: ChartMoveEvent) {
     // console.log('sC hMC move: ', move);
     const data = this.getDataRangeSelection(move.startIndex, move.endIndex);
     this.chartDataBS.next(data);
     // console.log('sC hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
-
   }
 
   handleUpdateChartType(chartType: ChartType) {

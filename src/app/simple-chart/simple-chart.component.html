@@ -6,6 +6,7 @@
 
     <exp-chart-controls [numDataPoints]="numDataPoints"
                         (moveChart)="handleMoveChart($event)"
+                        (verticalAdjustment)="handleVerticalAdjustment($event)"
                         (updateChartType)="handleUpdateChartType($event)"
                         (updateScaleType)="handleUpdateScaleType($event)"
                         (getData)="getData()">
@@ -19,6 +20,7 @@
                         [chartData]="chartData$ | async"
                         [chartType]="chartType$ | async"
                         [scaleType]="scaleType$ | async"
+                        [verticalScaleFactor]="verticalScaleFactor$ | async"
                         chartMode="fullscreen"
                         class="chart-fullscreen">
         </exp-base-chart>

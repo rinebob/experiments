@@ -10,7 +10,7 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        align-items: flex-start;
+        align-items: center;
         overflow-y: auto;
         
         exp-chart-controls {
@@ -18,11 +18,16 @@
         }
 
         .base-chart-container {
+            // border: 1px solid black;
+            // border-radius: 4px;
+            box-sizing: border-box;
             display: flex;
             justify-content: center;
             height: calc(100vh - 128px);        // 128px = top bar + chart controls heights
-            width: 100%;
-            overflow-x: hidden;
+            // margin: 20px;
+            width: calc(100% - 40px);
+            // width: 100%;
+            overflow: hidden;
         }
     }
     

@@ -38,6 +38,15 @@ export interface ChartDimensions {
     fullWidth?: boolean;
 }
 
+export interface ChartPanelDimensions {
+    svgDim: {width: number; height: number};
+    mainChartDim: {width: number; height: number};
+    indicatorDim: {width: number; height: number};
+    chartAnchor: {right: number; down: number};
+    xAxisAnchor: {right: number; down: number};
+    yAxisAnchor: {right: number; down: number};
+}
+
 export enum TimeFrame {
     ONE_MINUTE = '1min',
     FIVE_MINUTE = '5min',
@@ -74,7 +83,11 @@ export enum PanDistance {
     LEFT = 'left',
     RIGHT = 'right',
     END = 'end',
+}
 
+export enum VerticalAdjustment {
+    VERT_EXPAND = 'vert_expand',
+    VERT_CONTRACT = 'vert_contract',
 }
 
 export interface ChartMoveEvent {

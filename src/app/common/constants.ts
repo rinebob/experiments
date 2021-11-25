@@ -2,7 +2,7 @@ import { Equity, GalleryViewOption } from "./interfaces";
 import { DomRectCoordinates, SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
-import { ChartType, ScaleType } from "./interfaces_chart";
+import { ChartPanelDimensions, ChartType, ScaleType } from "./interfaces_chart";
 import { Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
@@ -216,12 +216,12 @@ export const DEFAULT_CHART_MOVE_EVENT = {
 
 export const ZOOM_LEVELS = new Map([
     [1, 0.01],
-    [2, 0.05],
-    [3, 0.1],
-    [4, 0.2],
-    [5, 0.4],
-    [6, 0.6],
-    [7, 0.8],
+    [2, 0.025],
+    [3, 0.05],
+    [4, 0.1],
+    [5, 0.25],
+    [6, 0.5],
+    [7, 0.75],
     [8, 1.0],
   ]);
 
@@ -246,3 +246,21 @@ export const DOM_RECT_COORDS_INITIALIZER:DomRectCoordinates = {
     bottom: 0,
     left: 0
 }
+
+export const CHART_MARGINS = {
+    top: 50,
+    right: 50,
+    bottom: 50,
+    left: 50,
+    gutter: 50,
+
+};
+
+export const CHART_PANEL_DIMENSIONS_INITIALIZER: ChartPanelDimensions = {
+    svgDim: {width: 0, height: 0},
+    mainChartDim: {width: 0, height: 0},
+    indicatorDim: {width: 0, height: 0},
+    chartAnchor: {right: 0, down: 0},
+    xAxisAnchor: {right: 0, down: 0},
+    yAxisAnchor: {right: 0, down: 0},  
+  }
