@@ -6,8 +6,13 @@ import { Option } from '../common/option_interfaces';
 import { ChartSetting, SymbolTimeSetting } from '../common/interfaces_chart';
 import { BaseSetting, DataSetting } from '../services/av/av_interfaces';
 
-export const fetchEquityData = createAction(
+export const bCVctorfetchEquityData = createAction(
     '[bCV ctor] Fetch Equity Data',
+    props<{dataSetting: DataSetting}>()
+);
+
+export const sCgDfetchEquityData = createAction(
+    '[sC gD] Fetch Equity Data',
     props<{dataSetting: DataSetting}>()
 );
 

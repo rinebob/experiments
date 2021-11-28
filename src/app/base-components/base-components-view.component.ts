@@ -73,7 +73,7 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
     ).subscribe(
       dataSetting => {
         // console.log('bCV ctor dispatch fetch equity data.  dataSetting: ', dataSetting);
-        this.store.dispatch(actions.fetchEquityData({dataSetting})) 
+        this.store.dispatch(actions.bCVctorfetchEquityData({dataSetting})) 
       });
       
     }
@@ -172,7 +172,7 @@ export class BaseComponentsViewComponent implements OnDestroy, OnInit {
 
     // with ngrx
     // dispatch fetchEquityData action with data setting object as payload
-    this.store.dispatch(actions.fetchEquityData({dataSetting}));
+    this.store.dispatch(actions.bCVctorfetchEquityData({dataSetting}));
     
   }
 
