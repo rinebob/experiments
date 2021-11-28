@@ -29,6 +29,7 @@ import { ScrollComponent } from './scroll/scroll.component';
 import { ChartSettingsModule } from './base-components/chart-settings/chart-settings.module';
 import { appReducer } from './store/reducers';
 import { AppEffects } from './store/effects';
+import { SimpleChartModule } from './simple-chart/simple-chart.module';
 
 
 
@@ -62,6 +63,7 @@ import { AppEffects } from './store/effects';
     ChartSettingsModule,
     StoreModule.forRoot({app: appReducer}, {}),
     EffectsModule.forRoot([AppEffects]),
+    SimpleChartModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

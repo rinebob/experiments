@@ -1,8 +1,8 @@
 import { Equity, GalleryViewOption } from "./interfaces";
-import { SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
+import { DomRectCoordinates, SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
-import { ChartType, ScaleType } from "./interfaces_chart";
+import { ChartPanelDimensions, ChartSetting, ChartType, ScaleType } from "./interfaces_chart";
 import { Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
@@ -12,9 +12,12 @@ export const DEFAULT_EQUITY: Equity = {symbol: "MSFT", company: "Microsoft"};
 export const DEFAULT_OPTION_SYMBOL = 'MSFT211219C00330000'; // dec 19 21 330 call
 export const DEFAULT_OPTION: Option = {symbol: DEFAULT_OPTION_SYMBOL};
 
-export const DEFAULT_CHART_SETTING = {
-    chartType: ChartType.LINE,
-    scaleType: ScaleType.LINEAR,
+export const VERTICAL_ADJUSTMENT_FACTOR = 0.25;
+
+export const DEFAULT_CHART_SETTING: ChartSetting = {
+    chartType: ChartType.CANDLESTICK,
+    scaleType: ScaleType.LOG,
+    verticalScaleFactor: 2.5,
     // startDate: Date;
     // endDate: Date;
 };
@@ -203,15 +206,65 @@ export const DEFAULT_CHART_MOVE_EVENT = {
     hasPreviousPage: false,
 }
 
-export const ZOOM_LEVELS = new Map([
-  [1, 0.001],
-  [2, 0.005],
-  [3, 0.01],
-  [4, 0.025],
-  [5, 0.1],
-  [6, 0.25],
-  [7, 0.5],
-  [8, 1.0],
-]);
+// export const ZOOM_LEVELS = new Map([
+//   [1, 0.001],
+//   [2, 0.005],
+//   [3, 0.01],
+//   [4, 0.025],
+//   [5, 0.1],
+//   [6, 0.25],
+//   [7, 0.5],
+//   [8, 1.0],
+// ]);
 
-export const DEFAULT_ZOOM_LEVEL = 4;
+export const ZOOM_LEVELS = new Map([
+    [1, 0.01],
+    [2, 0.025],
+    [3, 0.05],
+    [4, 0.1],
+    [5, 0.25],
+    [6, 0.5],
+    [7, 0.75],
+    [8, 1.0],
+  ]);
+
+// export const ZOOM_LEVELS = new Map([
+//     [1, 0.01],
+//     [2, 0.05],
+//     [3, 0.1],
+//     [4, 0.25],
+//     [5, 0.5],
+//     [6, 0.75],
+//   ]);
+
+export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
+// export const DEFAULT_ZOOM_LEVEL = 3;
+
+export const DOM_RECT_COORDS_INITIALIZER:DomRectCoordinates = {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0
+}
+
+export const CHART_MARGINS = {
+    top: 50,
+    right: 50,
+    bottom: 50,
+    left: 50,
+    gutter: 50,
+
+};
+
+export const CHART_PANEL_DIMENSIONS_INITIALIZER: ChartPanelDimensions = {
+    svgDim: {width: 0, height: 0},
+    mainChartDim: {width: 0, height: 0},
+    indicatorDim: {width: 0, height: 0},
+    chartAnchor: {right: 0, down: 0},
+    xAxisAnchor: {right: 0, down: 0},
+    yAxisAnchor: {right: 0, down: 0},  
+  }

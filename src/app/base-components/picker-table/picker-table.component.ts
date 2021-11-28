@@ -3,6 +3,7 @@ import { Component, EventEmitter, OnChanges, OnInit, ChangeDetectionStrategy, Ou
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import {PickerTableData} from '../../common/interfaces';
+import { Equity } from '../../common/interfaces';
 import { PICKER_TABLE_DATA } from 'src/assets/picker-table-data';
 
 
@@ -41,8 +42,21 @@ export class PickerTableComponent implements OnChanges, OnInit {
   }
 
   ngOnInit(): void {
+    // this.createEquitiesList(this.dataSourceBS.value);
    
     
+  }
+
+  createEquitiesList(data: PickerTableData[]) {
+    const equities = [];
+
+    data.forEach(element => {
+      const equity: Equity = {symbol: element.symbol, company: element.company };
+      equities.push(equity);
+      
+    });
+
+    console.log('pT cEL equities list: ', equities);
   }
 
   handleSymbolClick(symbol: PickerTableData) {

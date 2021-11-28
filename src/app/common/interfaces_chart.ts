@@ -25,6 +25,7 @@ export enum ScaleType {
 export interface ChartSetting {
     chartType?: ChartType;
     scaleType?: ScaleType;
+    verticalScaleFactor?: number;
     startDate?: Date;
     endDate?: Date;
 }
@@ -36,6 +37,15 @@ export interface ChartDimensions {
     width?: string;
     fullHeight?: boolean;
     fullWidth?: boolean;
+}
+
+export interface ChartPanelDimensions {
+    svgDim: {width: number; height: number};
+    mainChartDim: {width: number; height: number};
+    indicatorDim: {width: number; height: number};
+    chartAnchor: {right: number; down: number};
+    xAxisAnchor: {right: number; down: number};
+    yAxisAnchor: {right: number; down: number};
 }
 
 export enum TimeFrame {
@@ -74,7 +84,11 @@ export enum PanDistance {
     LEFT = 'left',
     RIGHT = 'right',
     END = 'end',
+}
 
+export enum VerticalAdjustment {
+    VERT_EXPAND = 'vert_expand',
+    VERT_CONTRACT = 'vert_contract',
 }
 
 export interface ChartMoveEvent {
@@ -83,4 +97,25 @@ export interface ChartMoveEvent {
     endIndex: number;
     hasNextPage: boolean;
     hasPreviousPage: boolean;
+}
+
+export interface ChartMoveResult {
+    currentIndex: number;
+    previousIndex: number
+    currentZoomLevel: number;
+    previousZoomLevel: number;
+    currentPageSize: number;
+    previousPageSize: number;
+    
+}
+
+export interface DomRectCoordinates {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
 }

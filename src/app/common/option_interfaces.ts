@@ -47,7 +47,7 @@ export interface OptionPosition {
   expDateText?: string;
   config?: OptionSpreadConfigBase;
   symbols?: OptionSymbolMetadata[];
-  data?: PositionPricePoint[];
+  data?: PositionPricePoint[];    // TODO - normalize to separate table
 
 }
 

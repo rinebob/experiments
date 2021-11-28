@@ -17,7 +17,6 @@ import { SlimNavBarComponent } from './slim-nav-bar/slim-nav-bar.component';
 import { BaseComponentsViewComponent } from './base-components-view.component';
 import { MdbCarouselModule } from 'mdb-angular-ui-kit/carousel';
 import { ChartGalleryComponent } from './chart-gallery/chart-gallery.component';
-// import { ChartSettingsComponent } from './chart-settings/chart-settings.component';
 import { ChartSettingsModule } from './chart-settings/chart-settings.module';
 
 
@@ -29,20 +28,23 @@ import { ChartSettingsModule } from './chart-settings/chart-settings.module';
     SlimNavBarComponent,
     BaseComponentsViewComponent,
     ChartGalleryComponent,
-    // ChartSettingsComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    ReactiveFormsModule,
     MatTableModule,
     MdbCarouselModule,
     BaseComponentsRoutingModule,
     ChartSettingsModule,
+  ],
+  exports: [
+    BaseChartComponent,
+    PickerTableComponent,
   ]
 })
 export class BaseComponentsModule { }
