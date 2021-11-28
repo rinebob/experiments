@@ -7,7 +7,7 @@ import { ChartMoveEvent, ChartType, DomRectCoordinates, PanDistance, ScaleType, 
 import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
-import { DEFAULT_AV_BASE_DATA_SETTING, DOM_RECT_COORDS_INITIALIZER} from '../common/constants';
+import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DOM_RECT_COORDS_INITIALIZER, VERTICAL_ADJUSTMENT_FACTOR} from '../common/constants';
 
 const SYMBOL = 'SPY';
 const DATA_SETTING:SymbolTimeSetting = {
@@ -15,9 +15,6 @@ const DATA_SETTING:SymbolTimeSetting = {
   timeFrame: TimeFrame.DAILY,
   ...DEFAULT_AV_BASE_DATA_SETTING,
 };
-
-const VERTICAL_ADJUSTMENT_FACTOR = 0.25;
-
 
 @Component({
   selector: 'exp-simple-chart',
@@ -33,21 +30,20 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
   equityData$: Observable<OHLCData[]> = this.store.select(selectors.selectEquityData);
 
-
   allDataBS = new BehaviorSubject<OHLCData[]>([])
   chartDataBS = new BehaviorSubject<OHLCData[]>([]);
   chartData$: Observable<OHLCData[]> = this.chartDataBS;
 
-  chartTypeBS = new BehaviorSubject<ChartType>(ChartType.LINE);
+  chartTypeBS = new BehaviorSubject<ChartType>(DEFAULT_CHART_SETTING.chartType);
   chartType$: Observable<ChartType> = this.chartTypeBS;
 
-  scaleTypeBS = new BehaviorSubject<ScaleType>(ScaleType.LOG);
+  scaleTypeBS = new BehaviorSubject<ScaleType>(DEFAULT_CHART_SETTING.scaleType);
   scaleType$: Observable<ScaleType> = this.scaleTypeBS;
 
   chartContainerDimensionsBS = new BehaviorSubject<DomRectCoordinates>(DOM_RECT_COORDS_INITIALIZER);
   chartContainerDimensions$: Observable<DomRectCoordinates> = this.chartContainerDimensionsBS;
 
-  verticalScaleFactorBS = new BehaviorSubject<number>(1);
+  verticalScaleFactorBS = new BehaviorSubject<number>(DEFAULT_CHART_SETTING.verticalScaleFactor);
   verticalScaleFactor$: Observable<number> = this.verticalScaleFactorBS
 
   numDataPoints = 0;

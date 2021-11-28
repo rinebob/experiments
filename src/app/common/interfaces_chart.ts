@@ -25,6 +25,7 @@ export enum ScaleType {
 export interface ChartSetting {
     chartType?: ChartType;
     scaleType?: ScaleType;
+    verticalScaleFactor?: number;
     startDate?: Date;
     endDate?: Date;
 }

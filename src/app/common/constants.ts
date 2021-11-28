@@ -2,7 +2,7 @@ import { Equity, GalleryViewOption } from "./interfaces";
 import { DomRectCoordinates, SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
-import { ChartPanelDimensions, ChartType, ScaleType } from "./interfaces_chart";
+import { ChartPanelDimensions, ChartSetting, ChartType, ScaleType } from "./interfaces_chart";
 import { Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
@@ -12,9 +12,12 @@ export const DEFAULT_EQUITY: Equity = {symbol: "MSFT", company: "Microsoft"};
 export const DEFAULT_OPTION_SYMBOL = 'MSFT211219C00330000'; // dec 19 21 330 call
 export const DEFAULT_OPTION: Option = {symbol: DEFAULT_OPTION_SYMBOL};
 
-export const DEFAULT_CHART_SETTING = {
-    chartType: ChartType.LINE,
-    scaleType: ScaleType.LINEAR,
+export const VERTICAL_ADJUSTMENT_FACTOR = 0.25;
+
+export const DEFAULT_CHART_SETTING: ChartSetting = {
+    chartType: ChartType.CANDLESTICK,
+    scaleType: ScaleType.LOG,
+    verticalScaleFactor: 2.5,
     // startDate: Date;
     // endDate: Date;
 };
@@ -235,6 +238,7 @@ export const ZOOM_LEVELS = new Map([
 //   ]);
 
 export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
+// export const DEFAULT_ZOOM_LEVEL = 3;
 
 export const DOM_RECT_COORDS_INITIALIZER:DomRectCoordinates = {
     x: 0,
