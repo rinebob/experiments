@@ -8,6 +8,7 @@
     display: inline-block;
     position: relative;
     width: 100%;
+    padding: 20px;
     // padding-bottom: 100%;
     vertical-align: top;
     // overflow: hidden;
@@ -71,17 +72,42 @@
     }
 
     path.candle.body {
-        stroke-width: 0;
+        stroke-width: .5;
     }
 
     path.candle.up {
         fill: #00AA00;
-        stroke: #00AA00;
+        // stroke: #00AA00;
+        stroke: #000;
+        // stroke-width: 1;
     }
 
     path.candle.down {
         fill: #FF0000;
-        stroke: #FF0000;
+        // stroke: #FF0000;
+        stroke: #000;
+        // stroke-width: 1;
+    }
+
+    .yScale.annotation.right path {
+        fill: #FF0000;
+    }
+
+    .xScale.annotation path {
+        fill: #DDD80E;
+    }
+
+    .crosshair {
+        cursor: crosshair;
+    }
+
+    .crosshair path.wire {
+        stroke: #DDDDDD;
+        stroke-dasharray: 1, 1;
+    }
+
+    .crosshair .axisannotation path {
+        fill: #DDDDDD;
     }
 
 
