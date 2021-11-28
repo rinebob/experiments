@@ -2,7 +2,7 @@ import {Component, EventEmitter, HostBinding, OnInit, Output} from '@angular/cor
 import {FormControl} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {OverlayContainer} from '@angular/cdk/overlay';
-import { visVolMenuConfig, experimentsMenuConfig } from './common/main_menu_config';
+import { visVolTopLevelMenu, experimentsMenu } from './common/main_menu_config';
 
 @Component({
   selector: 'exp-root',
@@ -12,8 +12,8 @@ import { visVolMenuConfig, experimentsMenuConfig } from './common/main_menu_conf
 export class AppComponent  implements OnInit{
   title = 'Experiments';
   opened: boolean;
-  visvolMenuConfig = visVolMenuConfig;
-  experimentsMenuConfig = experimentsMenuConfig;
+  visvolMenuConfig = visVolTopLevelMenu;
+  experimentsMenuConfig = experimentsMenu;
 
   @HostBinding('class') className = '';
 

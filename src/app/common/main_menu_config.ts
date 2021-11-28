@@ -63,7 +63,7 @@ export const visVolAnalysisMenu = [
 ];
 
 
-export const experimentsMenuConfig = [
+export const experimentsMenu = [
     {
         label: 'Angular',
         route: '/angular',
