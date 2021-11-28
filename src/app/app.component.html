@@ -1,78 +1,29 @@
-<!-- <mat-toolbar (click)="sidenav.toggle()" color="primary">
-  <button
-    mat-icon-button
-    (click)="menuClick.emit()">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <h2>{{title}}</h2>
-  <div (click)="$event.stopPropagation()">
-  <mat-icon>brightness_5</mat-icon>
-  <mat-slide-toggle [formControl]="toggleControl">
-  </mat-slide-toggle>
-  <mat-icon>bedtime</mat-icon>
-  </div>
-</mat-toolbar> -->
 <exp-header (menuIconClick)="sidenav.toggle()"></exp-header>
 
 <mat-sidenav-container>
-  <!--  mode="push"-->
    
   <mat-sidenav #sidenav mode="side">
     <mat-nav-list>
-      <a mat-list-item class="sidenav-links"
+
+      <ng-container *ngFor="let config of visvolMenuConfig">
+        <a mat-list-item class="sidenav-links"
           (click)="sidenav.close()"
-          routerLink="/dashboard"
+          routerLink="{{config.route}}"
           routerLinkActive="active">
-        Dashboard
+        {{config.label}}
       </a>
-      <a mat-list-item class="sidenav-links"
+      </ng-container>
+
+      <ng-container *ngFor="let config of experimentsMenuConfig">
+        <a mat-list-item class="sidenav-links"
           (click)="sidenav.close()"
-          routerLink="/angular"
+          routerLink="{{config.route}}"
           routerLinkActive="active">
-        Angular
+        {{config.label}}
       </a>
-      <a mat-list-item class="sidenav-links"
-          (click)="sidenav.close()"
-          routerLink="/d3"
-          routerLinkActive="active">
-        D3
-      </a>
-      <!-- <a mat-list-item class="sidenav-links"
-          (click)="sidenav.close()"
-          routerLink="/games"
-          routerLinkActive="active">
-        Games
-      </a> -->
-      <a mat-list-item class="sidenav-links"
-          (click)="sidenav.close()"
-          routerLink="/base-components"
-          routerLinkActive="active">
-        Base components
-      </a>
-      <a mat-list-item class="sidenav-links"
-          (click)="sidenav.close()"
-          routerLink="/simple-chart"
-          routerLinkActive="active">
-        Simple chart
-      </a>
-      <a mat-list-item class="sidenav-links"
-          (click)="sidenav.close()"
-          routerLink="/position-builder"
-          routerLinkActive="active">
-        Position builder
-      </a>
-      <a mat-list-item class="sidenav-links"
-          (click)="sidenav.close()"
-          routerLink="/grid"
-          routerLinkActive="active">
-        CSS Grid
-      </a>
-      <a mat-list-item class="sidenav-links"
-          (click)="sidenav.close()"
-          routerLink="/scroll"
-          routerLinkActive="active">
-        CDK Scrolling
-      </a>
+
+      </ng-container>
+      
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
