@@ -10,6 +10,7 @@ import { EffectsModule } from '@ngrx/effects';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
+import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -31,8 +32,6 @@ import { appReducer } from './store/reducers';
 import { AppEffects } from './store/effects';
 import { SimpleChartModule } from './simple-chart/simple-chart.module';
 
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -52,6 +51,7 @@ import { SimpleChartModule } from './simple-chart/simple-chart.module';
     MatButtonModule,
     MatIconModule,
     MatListModule,
+    MatMenuModule,
     MatSidenavModule,
     MatSlideToggleModule,
     MatTabsModule,
@@ -64,6 +64,9 @@ import { SimpleChartModule } from './simple-chart/simple-chart.module';
     StoreModule.forRoot({app: appReducer}, {}),
     EffectsModule.forRoot([AppEffects]),
     SimpleChartModule,
+    // VisvolModule,
+    // ExperimentsModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

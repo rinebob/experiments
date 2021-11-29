@@ -2,7 +2,8 @@ import {Component, EventEmitter, HostBinding, OnInit, Output} from '@angular/cor
 import {FormControl} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {OverlayContainer} from '@angular/cdk/overlay';
-import { visVolTopLevelMenu, experimentsMenu } from './common/main_menu_config';
+import { experimentsMenu, visvolMenu, visVolAnalysisMenu, visvolPortfolioMenu, visvolOpportunitiesMenu, visVolTopLevelMenu,  } from './common/main_menu_config';
+import { MenuConfig } from './common/interfaces';
 
 @Component({
   selector: 'exp-root',
@@ -12,8 +13,12 @@ import { visVolTopLevelMenu, experimentsMenu } from './common/main_menu_config';
 export class AppComponent  implements OnInit{
   title = 'Experiments';
   opened: boolean;
-  visvolMenuConfig = visVolTopLevelMenu;
-  experimentsMenuConfig = experimentsMenu;
+  visvolTopLevelMenu: MenuConfig[] = visVolTopLevelMenu;
+  visvolMenu: MenuConfig[] = visvolMenu;
+  visvolPortfolioMenu = visvolPortfolioMenu;
+  visvolOpportunitiesMenu = visvolOpportunitiesMenu;
+  visvolAnalysisMenu = visVolAnalysisMenu;
+  experimentsMenu = experimentsMenu;
 
   @HostBinding('class') className = '';
 
@@ -32,7 +37,10 @@ export class AppComponent  implements OnInit{
       // } else {
       //   this.overlay.getContainerElement().classList.remove(darkClassName);
       // }
-    })
+    });
+
+    // console.log('a visvolTopLevelMenu: ', this.visvolTopLevelMenu);
+    // console.log('a visvolMenu: ', this.visvolMenu);
   }
 
 }

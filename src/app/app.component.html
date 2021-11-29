@@ -5,23 +5,24 @@
   <mat-sidenav #sidenav mode="side">
     <mat-nav-list>
 
-      <ng-container *ngFor="let config of visvolMenuConfig">
-        <a mat-list-item class="sidenav-links"
+      <ng-container *ngFor="let item of visvolMenu">
+        <a mat-list-item 
+          class="sidenav-links"
           (click)="sidenav.close()"
-          routerLink="{{config.route}}"
+          routerLink="{{item.route}}"
           routerLinkActive="active">
-        {{config.label}}
+        {{item.label}}
       </a>
       </ng-container>
 
-      <ng-container *ngFor="let config of experimentsMenuConfig">
-        <a mat-list-item class="sidenav-links"
+      <ng-container *ngFor="let config of experimentsMenu">
+        <a mat-list-item 
+          class="sidenav-links"
           (click)="sidenav.close()"
           routerLink="{{config.route}}"
           routerLinkActive="active">
-        {{config.label}}
-      </a>
-
+          {{config.label}}
+        </a>
       </ng-container>
       
     </mat-nav-list>
