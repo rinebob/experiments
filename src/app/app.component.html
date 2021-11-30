@@ -5,7 +5,8 @@
   <mat-sidenav #sidenav mode="side">
     <mat-nav-list>
 
-      <ng-container *ngFor="let item of visvolMenu">
+      <!-- <ng-container *ngFor="let item of visvolMenu"> -->
+        <ng-container *ngFor="let item of interimMenu">
         <a mat-list-item 
           class="sidenav-links"
           (click)="sidenav.close()"
@@ -15,7 +16,7 @@
       </a>
       </ng-container>
 
-      <ng-container *ngFor="let config of experimentsMenu">
+      <!-- <ng-container *ngFor="let config of experimentsMenu">
         <a mat-list-item 
           class="sidenav-links"
           (click)="sidenav.close()"
@@ -23,7 +24,7 @@
           routerLinkActive="active">
           {{config.label}}
         </a>
-      </ng-container>
+      </ng-container> -->
       
     </mat-nav-list>
   </mat-sidenav>

@@ -14,21 +14,24 @@ import {AppComponent} from './app.component';
 //   {path: 'dashboard', component: DashboardPanelComponent},
 //   {path: 'd3', component: DeeThreePanelComponent},
 //   {path: 'games',  loadChildren: () => import('./games/games.module').then(m => m.GamesModule)},
-//   {path: 'base-components',  loadChildren: () => import('./base-components/base-components.module').then(m => m.BaseComponentsModule)},
-//   {path: 'simple-chart',  loadChildren: () => import('./simple-chart/simple-chart.module').then(m => m.SimpleChartModule)},
+  // {path: 'base-components',  loadChildren: () => import('./base-components/base-components.module').then(m => m.BaseComponentsModule)},
+  // {path: 'simple-chart',  loadChildren: () => import('./simple-chart/simple-chart.module').then(m => m.SimpleChartModule)},
 //   {path: 'grid', component: GridComponent },
 //   {path: 'scroll', component: ScrollComponent },
-//   { path: 'position-builder', loadChildren: () => import('./position-builder/position-builder.module').then(m => m.PositionBuilderModule) },
+  // { path: 'position-builder', loadChildren: () => import('./position-builder/position-builder.module').then(m => m.PositionBuilderModule) },
 //   {path: '**', component: DashboardPanelComponent},
 // ];
 
 
 
 const routes: Routes = [
-  {path: '', redirectTo: '/visvol', pathMatch: 'full'},
+  { path: '', redirectTo: '/visvol', pathMatch: 'full'},
+  { path: 'position-builder', loadChildren: () => import('./position-builder/position-builder.module').then(m => m.PositionBuilderModule) },
+  { path: 'simple-chart',  loadChildren: () => import('./simple-chart/simple-chart.module').then(m => m.SimpleChartModule) },
+  { path: 'base-components',  loadChildren: () => import('./base-components/base-components.module').then(m => m.BaseComponentsModule) },
   { path: 'visvol', loadChildren: () => import('./visvol/visvol.module').then(m => m.VisvolModule) },
   { path: 'experiments', loadChildren: () => import('./experiments/experiments.module').then(m => m.ExperimentsModule) },
-  {path: '**', component: AppComponent},
+  { path: '**', component: AppComponent},
 ];
 
 @NgModule({

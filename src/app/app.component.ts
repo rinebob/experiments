@@ -2,7 +2,7 @@ import {Component, EventEmitter, HostBinding, OnInit, Output} from '@angular/cor
 import {FormControl} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {OverlayContainer} from '@angular/cdk/overlay';
-import { experimentsMenu, visvolMenu, visVolAnalysisMenu, visvolPortfolioMenu, visvolOpportunitiesMenu, visVolTopLevelMenu,  } from './common/main_menu_config';
+import { experimentsMenu, interimMenu, visvolMenu, visVolAnalysisMenu, visvolPortfolioMenu, visvolOpportunitiesMenu, visVolTopLevelMenu,  } from './common/main_menu_config';
 import { MenuConfig } from './common/interfaces';
 
 @Component({
@@ -13,6 +13,7 @@ import { MenuConfig } from './common/interfaces';
 export class AppComponent  implements OnInit{
   title = 'Experiments';
   opened: boolean;
+  interimMenu: MenuConfig[] = interimMenu;
   visvolTopLevelMenu: MenuConfig[] = visVolTopLevelMenu;
   visvolMenu: MenuConfig[] = visvolMenu;
   visvolPortfolioMenu = visvolPortfolioMenu;

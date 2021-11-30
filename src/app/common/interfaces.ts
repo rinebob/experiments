@@ -84,4 +84,10 @@ export interface TimeParts {
     sec: number;
 }
 
+export interface MenuConfig {
+    label: string;
+    route: string;
+    triggerFor?: string;
+}
+
 
