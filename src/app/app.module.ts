@@ -58,9 +58,6 @@ import { SimpleChartModule } from './simple-chart/simple-chart.module';
     StoreModule.forRoot({app: appReducer}, {}),
     EffectsModule.forRoot([AppEffects]),
     SimpleChartModule,
-    // VisvolModule,
-    // ExperimentsModule,
-    
   ],
   providers: [],
   bootstrap: [AppComponent]
