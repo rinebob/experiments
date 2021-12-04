@@ -29,6 +29,12 @@ export const OHLC_INITIALIZER: OHLCData = {
     volume: number;
     dividendAmount?: number;
     splitCoefficient?: number;
+    stochastic?: Stochastic;
+  }
+
+  export interface Stochastic {
+      k: number;
+      d: number;
   }
 
     // intraday intervals
@@ -82,6 +88,12 @@ export interface TimeParts {
     hr: number;
     min: number;
     sec: number;
+}
+
+export interface MenuConfig {
+    label: string;
+    route: string;
+    triggerFor?: string;
 }
 
 

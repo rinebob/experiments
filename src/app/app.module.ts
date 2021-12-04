@@ -10,6 +10,7 @@ import { EffectsModule } from '@ngrx/effects';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
+import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -18,10 +19,7 @@ import { CdkScrollableModule } from '@angular/cdk/scrolling';
 
 import { AppComponent } from './app.component';
 import { AngularModule } from './angular/angular.module';
-import { DeeThreePanelComponent } from './d3/dee-three-panel/dee-three-panel.component';
-import { DashboardPanelComponent } from './dashboard/dashboard-panel/dashboard-panel.component';
 import { GamesModule } from './games/games.module';
-import { ChartsModule } from './charts/charts.module';
 import { BaseComponentsModule } from './base-components/base-components.module';
 import { HeaderComponent } from './header/header.component';
 import { GridComponent } from './grid/grid.component';
@@ -31,13 +29,9 @@ import { appReducer } from './store/reducers';
 import { AppEffects } from './store/effects';
 import { SimpleChartModule } from './simple-chart/simple-chart.module';
 
-
-
 @NgModule({
   declarations: [
     AppComponent,
-    DeeThreePanelComponent,
-    DashboardPanelComponent,
     HeaderComponent,
     GridComponent,
     ScrollComponent,
@@ -52,12 +46,12 @@ import { SimpleChartModule } from './simple-chart/simple-chart.module';
     MatButtonModule,
     MatIconModule,
     MatListModule,
+    MatMenuModule,
     MatSidenavModule,
     MatSlideToggleModule,
     MatTabsModule,
     MatToolbarModule,
     CdkScrollableModule,
-    ChartsModule,
     GamesModule,
     BaseComponentsModule,
     ChartSettingsModule,

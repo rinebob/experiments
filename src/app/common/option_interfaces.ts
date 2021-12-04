@@ -84,6 +84,15 @@ export interface PositionPricePoint {
   price: number;
 }
 
+export interface BlackScholesInputs {
+  S0: number;   // S0 - price of underlying security ($)
+  X: number;    // X - option strike price ($)
+  s: number;    // s - implied volatility (% / yr as decimal) (s = sigma)
+  t: number;    // t - time to expiration (percent of the year as decimal (i.e. 3 mo = .25 year))
+  r: number;    // r - risk free interest rate (% / yr as decimal)
+  q: number;    // q - dividend yield (% / yr as decimal).  If stock pays no dividend enter zero
+}
+
 export type Direction = 'LONG' | 'SHORT';
 export type OptionType = 'CALL' | 'PUT';
 export type CreditDebit = 'CREDIT' | 'DEBIT';

@@ -1,0 +1,17 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { BlackScholesRoutingModule } from './black-scholes-routing.module';
+import { BlackScholesComponent } from './black-scholes.component';
+
+
+@NgModule({
+  declarations: [
+    BlackScholesComponent
+  ],
+  imports: [
+    CommonModule,
+    BlackScholesRoutingModule
+  ]
+})
+export class BlackScholesModule { }

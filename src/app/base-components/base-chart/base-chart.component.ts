@@ -3,12 +3,15 @@ import { AfterViewChecked, AfterViewInit, Component, OnInit, ChangeDetectionStra
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as d3 from 'd3';
 import * as techan from 'techan';
+import * as fc from 'd3fc';
 
 import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/interfaces';
 import { ChartDimensions, ChartPanelDimensions, ChartType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
 import { CHART_MARGINS, CHART_PANEL_DIMENSIONS_INITIALIZER, DEFAULT_CHART_SETTING, DEFAULT_PICKER_TABLE_DATUM, DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
 import { DEFAULT_CHART_DIMENSIONS,  } from 'src/app/common/constants';
 import {MSFTData_start_99_1101} from '../../../assets/data/MSFT_21-1112';
+import { MSFTData_sample } from 'src/assets/data/MSFT_21-1112_sample';
+
 
 // height of ChartControls component
 const CONTROLS_HEIGHT = 50;
@@ -92,6 +95,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   timeAnnotation: techan.plot.axisannotation;
   crosshair: techan.plot.crosshair;
   coordsText: d3.svg.Text;
+  mergedData: OHLCData[] = [];
   
   constructor() { }
 
@@ -158,6 +162,8 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   ngOnInit(): void {
+    this.testd3fc();
+    
   }
   
   ngAfterViewInit() {
@@ -166,6 +172,41 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   ngAfterViewChecked() {
+  }
+
+  testd3fc() {
+    // this.chartDataBS.next(MSFTData_sample);
+    // const dataGenerator = fc.randomFinancial().startDate(new Date(MSFTData_sample[0].date));
+    const stochasticAlgorithm = fc.indicatorStochasticOscillator().kPeriod(28);
+    // console.log('bC tFC dataGenerator: ', dataGenerator);
+    // const fakeData = dataGenerator(MSFTData_sample.length);
+    // const fakeData = stochasticAlgorithm(MSFTData_sample);
+    const fakeData = stochasticAlgorithm(this.chartData);
+    // console.log('bC tFC fakeData: ', fakeData);
+    // console.log('bC tFC data length: ', MSFTData_sample.length);
+
+    // const mergedData = [];
+    // MSFTData_sample.map((d, i) => {
+    const chartData = [...this.chartData];
+    chartData.map((d, i) => {
+      const datum = {...d};
+      datum['stochastic'] = fakeData[i];
+      // console.log('bC tD datum: ', datum);
+      // console.log('bC tD fakeData[i]: ', fakeData[i].k, fakeData[i].d);
+      if (fakeData[i].k === undefined) {fakeData[i].k = 0}
+      if (fakeData[i].d === undefined) {fakeData[i].d = 0}
+      // console.log('bC fakeData[i] after zero set: ', fakeData[i].k, fakeData[i].d);
+      this.mergedData.push({...datum});
+    
+    });
+
+    console.table(this.mergedData['stochastic']);
+
+    // console.log('bC stoch data: ', fakeData);
+    // console.log('bC merged data: ', this.mergedData);
+
+   
+
   }
 
   generateCrosshairsWithAnnotations() {
@@ -383,6 +424,8 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
     const xMax = Math.ceil(d3.max(data, d => d['date']));
     let yMin = d3.min(data, d => d['low']);
     let yMax = d3.max(data, d => d['high']);
+    // let yMin = d3.min(data, d => d.stochastic.d);
+    // let yMax = d3.max(data, d => d.stochastic.d);
     console.log('bC gE pre adjust yMax, yMin: ', yMax, yMin);
     
     const center = yMax - ((yMax - yMin) / 2);
@@ -438,7 +481,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       case ScaleType.LOG:
         yAxis = d3
           .scaleLog()
-          .domain([Math.max(yMin, 0.1), yMax])
+          .domain([Math.max(yMin, 1), yMax])
           .range([this.containerDimsBS.value.height - this.margin.top - this.margin.bottom, 0]);
         break;
 
@@ -449,7 +492,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
     return yAxis;
   }
 
-  private generateDataDisplay(xAxis, yAxis) {
+  private generateDataDisplay(xScale, yScale) {
     // console.log('bC gDD data display axes: ', xAxis, yAxis);
     let dataDisplay;
 
@@ -459,8 +502,11 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
         
         dataDisplay = d3
           .line()
-          .x(d => xAxis(d['date']))
-          .y(d => yAxis(d['close']));
+          .x(d => xScale(d['date']))
+          .y(d => yScale(d['close']));
+          // .y(d => yScale(d['stochastic'].d));
+          // .y(d => yScale(d.stochastic.d));
+
       
         break;
 
@@ -478,15 +524,41 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
         
         dataDisplay = techan.plot
           .candlestick()
-          .xScale(xAxis)
-          .yScale(yAxis);
+          .xScale(xScale)
+          .yScale(yScale);
 
         break;
+
 
       default: console.log('bC gYA default.  ummm... dude... no y axis type... WTF???');
     }
 
+    // console.log('bC gDD dataDisplay: ', dataDisplay);
+
     return dataDisplay;
+  }
+
+  generateStochastic(xScale, yScale) {
+    const stochastic = fc.indicatorStochasticOscillator()
+      .xScale(xScale)
+      .yScale(yScale)
+
+    // const stochData = stochastic(MSFTData_sample);
+    // console.log('bC gS stoch data dude! : ', stochData);
+
+    return stochastic;
+  }
+
+  appendStochastic(stochastic) {
+    this.g
+    .append('path')
+    .data([this.chartData])
+    .style('fill', 'none')
+    .attr('id', 'stochastic')
+    .attr('transform', `translate(${this.margin.left}, 0)`)
+    // .attr('stroke', 'steelblue')
+    // .attr('stroke-width', '1.5')
+    .attr('d', stochastic);
   }
 
   private appendLabels() {
@@ -549,7 +621,8 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
     // this.svg
     this.g
       .append('path')
-      .data([this.chartData])
+      // .data([this.chartData])
+      .data([this.mergedData])
       .style('fill', 'none')
       .attr('id', 'priceChart')
       .attr('transform', `translate(${this.margin.left}, 0)`)
@@ -571,6 +644,8 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
     // actual data rendering
     const dataDisplay = this.generateDataDisplay(xScale, yScale);
+    // const stochastic = this.generateStochastic(xScale, yScale);
+
 
     const xAxis = this.appendXAxis(xScale);
 
