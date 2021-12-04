@@ -1,6 +1,10 @@
 import {ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { OHLCData } from 'src/app/common/interfaces';
 
 import { BlackScholesInputs } from '../../../common/option_interfaces';
+
+import { MSFTData_sample } from '../../../../assets/data/MSFT_21-1112_sample';
+import * as fc from 'd3fc';
 
 
 
@@ -22,45 +26,51 @@ export class BlackScholesComponent implements OnInit {
   q = 0;      // q - dividend yield (% / yr as decimal).  If stock pays no dividend enter zero
 
   inputs: BlackScholesInputs[] = [
-    { S0: 100,
+    {
+      S0: 100,
       X: 100,
       s: .25,
-      t: .25,
+      t: .15,
       r: .02,
       q: 0,
     },
-    { S0: 100,
+    {
+      S0: 103,
+      X: 100,
+      s: .3,
+      t: .145,
+      r: .02,
+      q: 0,
+    },
+    {
+      S0: 105,
       X: 100,
       s: .35,
-      t: .25,
+      t: .14,
       r: .02,
       q: 0,
     },
-    { S0: 100,
+    {
+      S0: 107,
+      X: 100,
+      s: .4,
+      t: .135,
+      r: .02,
+      q: 0,
+    },
+    {
+      S0: 109,
       X: 100,
       s: .45,
-      t: .25,
+      t: .13,
       r: .02,
       q: 0,
     },
-    { S0: 100,
+    {
+      S0: 111,
       X: 100,
-      s: .55,
-      t: .25,
-      r: .02,
-      q: 0,
-    },
-    { S0: 100,
-      X: 100,
-      s: .65,
-      t: .25,
-      r: .02,
-      q: 0,
-    },
-    { S0: 100,
-      X: 100,
-      s: .75,
-      t: .25,
+      s: .5,
+      t: .125,
       r: .02,
       q: 0,
     },
@@ -70,10 +80,51 @@ export class BlackScholesComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log('test dist cmtvNormalDis: ', this.cmtvNormalDis(2, 0, 1));
-    console.log('test dist2 normalCdf: ', this.normalCdf(2, 0, 1));
-    this.logPrices(this.inputs);
+
+    this.generateStochastics(MSFTData_sample, 50, 10);
+
+    // console.log('test dist cmtvNormalDis: ', this.cmtvNormalDis(2, 0, 1));
+    // console.log('test dist2 normalCdf: ', this.normalCdf(2, 0, 1));
+    // this.logPrices(this.inputs);
   }
+
+  // =====================================
+  // STOCHASTIC CALCULATOR
+
+  // input data set, lookback period (n - calendar days) and smoothing factor (x - num periods)
+  // output same data set with %K and %D lines added
+
+  // %K = (current close - lowest low)/(highest high - lowest low) * 100
+  // %D = x per ma of %K
+  // all price ranges are over the last n days
+
+  generateStochastics(data: OHLCData[], n: number, x: number) {
+    console.log('bS gS input data[0], n, x: ', data[0], n, x)
+    const newData: OHLCData[] = [];
+    
+    for (const datum of data ) {
+      // let i;
+      // const currentClose = datum.close;
+      // const lowestLow = 
+
+
+      
+      
+      
+      
+      
+      
+      // console.log('bS gS input datum close: ', datum.close)
+    }
+
+
+
+    return newData;
+    
+  }
+
+// ==============================================
+//  BLACK-SCHOLES CALCULATOR FUNCTIONS
 
 
 //    WolframAlpha
@@ -108,10 +159,8 @@ export class BlackScholesComponent implements OnInit {
     let sign = 1;
     if (z < 0) sign = -1;
 
-        return (1/2)*(1+sign*erf);
+    return (1/2)*(1+sign*erf);
   }
-
-
 
   // from math.ucla.edu/~tom/distributions/normal.html
   // function normalcdf(X){   //HASTINGS.  MAX ERROR = .000001
@@ -121,6 +170,7 @@ export class BlackScholesComponent implements OnInit {
   //   if (X>0) {
   //     Prob=1-Prob
   //   }
+  //  // from the wrapper
   //   Prob=round(100000*Prob)/100000;
   //   return Prob
   // } 
@@ -137,7 +187,6 @@ export class BlackScholesComponent implements OnInit {
 
     return prob;
   }
-
   
   // call price = S0 * e^-qt * N(d1) - X * e-rt * N(d2)
   // put price = X * e^-rt * N(-d2) - S0 * e^-qt * N(-d1)
@@ -171,6 +220,7 @@ export class BlackScholesComponent implements OnInit {
     console.log('Nmd1: ', Nmd1, 'Nmd2: ', Nmd2, ' eqt: ', eqt, ' ert: ', ert);
     console.log(' eqt: ', eqt, ' ert: ', ert);
     console.log('call price: ', callPrice, ' put price: ', putPrice);
+    console.log('long straddle price: ', callPrice + putPrice);
 
     return { callPrice, putPrice }
 }
@@ -181,5 +231,7 @@ export class BlackScholesComponent implements OnInit {
       this.getCallAndPutPrice(input);
     }
   }
+
+  // ============================================== 
 
 }
