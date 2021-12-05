@@ -241,3 +241,13 @@ export function generateRequestString (req: DataSetting) {
     
 
 }
+
+export function convertDates(data: OHLCData[]) {
+    const newData:OHLCData[] = [];
+    for (const datum of data) {
+        const newDate = typeof datum.date === 'string' ? new Date(datum.date) : datum.date;
+        newData.push({...datum, date: newDate});
+    }
+    
+    return newData;
+}
