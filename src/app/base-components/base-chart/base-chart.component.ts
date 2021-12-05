@@ -448,37 +448,37 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   private generateXScale(xMin: number, xMax: number) {
-    const x = d3
+    const xScale = d3
       .scaleTime()
       .domain([xMin, xMax])
       .range([0, this.containerDimsBS.value.width - this.margin.left - this.margin.right]);
 
-    return x;
+    return xScale;
   }
   
   generateFinanceTimeXScale() {
-    const x = techan.scale
+    const xScale = techan.scale
       .financetime()
       .range([0, this.containerDimsBS.value.width - this.margin.right]);
     
-    return x;
+    return xScale;
   }
 
   private generateYScale(yMin: number, yMax: number) {
     console.log('bC gYA yMin: ', yMin);
-    let yAxis;
+    let yScale;
 
     switch(this.scaleType) {
       case ScaleType.LINEAR:
 
-        yAxis = d3
+        yScale = d3
           .scaleLinear()
           .domain([yMin, yMax])
           .range([this.containerDimsBS.value.height - this.margin.top - this.margin.bottom, 0]);
         break;
 
       case ScaleType.LOG:
-        yAxis = d3
+        yScale = d3
           .scaleLog()
           .domain([Math.max(yMin, 1), yMax])
           .range([this.containerDimsBS.value.height - this.margin.top - this.margin.bottom, 0]);
@@ -488,7 +488,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
     }
 
 
-    return yAxis;
+    return yScale;
   }
 
   private generateDataDisplay(xScale, yScale) {
