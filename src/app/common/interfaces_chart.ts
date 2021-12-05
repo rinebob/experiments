@@ -15,11 +15,17 @@ export enum ChartType {
     LINE = 'line',
     BAR = 'bar',
     CANDLESTICK = 'candlestick',
+    // RENKO = 'renko',
+    // HEIKEN_ASHI = 'heiken-ashi',
+    // RANGE_BAR = 'range-bar',
 }
 
 export enum ScaleType {
     LINEAR = 'linear',
     LOG = 'log',
+    DATE = 'date',
+    FINANCE_DATE = 'finance-date',
+    PERCENT_CHANGE = 'percent-change',
 }
   
 export interface ChartSetting {
@@ -119,3 +125,66 @@ export interface DomRectCoordinates {
     bottom: number;
     left: number;
 }
+
+export interface ChartPanelConfig {
+    dimensions: any;
+    title: string;
+    description: string;
+    panes: ChartPaneConfig[];
+    layout: any;
+}
+
+export interface ChartPaneConfig {
+    xAxisConfig: AxisConfig;
+    yAxisConfig: AxisConfig;
+    seriesConfigs?: ChartSeriesConfig[];
+    indicatorConfigs?: SeriesConfig[];
+
+}
+
+// A ChartSeries is any data series.  Can be price or an indicator
+// series like a MA or RSI
+export interface ChartSeriesConfig {
+    chartType: ChartType;
+    series: SeriesConfig;
+    color: any;
+    thickness: any;
+
+}
+
+export interface AxisConfig {
+    type: ScaleType;
+    location: ScaleLocation;
+}
+
+export interface SeriesConfig {
+    type: Series;
+    title?: string;
+    options?: {};
+}
+
+export enum Series {
+    PRICE = 'price',
+    VOLUME = 'volume',
+    SMA = 'SMA',
+    EMA = 'EMA',
+    MACD = 'MACD',
+    RSI = 'RSI',
+    STOCHASTIC = 'Stochastic',
+
+}
+
+export enum ScaleLocation {
+    TOP = 'top',
+    RIGHT = 'right',
+    BOTTOM = 'bottom',
+    LEFT = 'left',
+}
+
+export interface PaneExtents {
+    xMin: number;
+    yMin: number;
+    xMax: number;
+    yMax: number;
+}
+

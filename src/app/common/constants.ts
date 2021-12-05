@@ -2,7 +2,7 @@ import { Equity, GalleryViewOption } from "./interfaces";
 import { DomRectCoordinates, SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
-import { ChartPanelDimensions, ChartSetting, ChartType, ScaleType } from "./interfaces_chart";
+import { ChartPanelDimensions, ChartSetting, ChartType, Series, ScaleType } from "./interfaces_chart";
 import { Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
@@ -268,3 +268,11 @@ export const CHART_PANEL_DIMENSIONS_INITIALIZER: ChartPanelDimensions = {
     xAxisAnchor: {right: 0, down: 0},
     yAxisAnchor: {right: 0, down: 0},  
   }
+
+  export const INDICATOR_OPTIONS = new Map([
+      [Series.SMA, {period: 9}],
+      [Series.EMA, {period: 9}],
+      [Series.MACD, {fast: 12, slow: 26, smoother: 9}],
+      [Series.RSI, {period: 14}],
+      [Series.STOCHASTIC, {k: 14, d: 9}],
+  ]);
