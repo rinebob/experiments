@@ -31,6 +31,8 @@ export class ChartDataService {
     return response;
   }
 
+  
+
 //  const dataRequest: DataSetting =  {
 //     symbol: "TSLA",
 //     timeFrame: TimeFrame.DAILY,

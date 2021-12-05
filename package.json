@@ -30,6 +30,7 @@
     "angular-black-scholes": "^0.2.2",
     "black-scholes-js": "0.0.7",
     "d3": "^7.1.1",
+    "d3fc": "^15.2.4",
     "mdb-angular-ui-kit": "^1.0.0",
     "ngx-toastr": "^13.1.0",
     "opcalc": "^0.2.1",

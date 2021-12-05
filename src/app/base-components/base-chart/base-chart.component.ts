@@ -373,7 +373,6 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   //   .attr('height', (this.dimsBS.value.height))
   //   .append('g');
   // }
-
   // private createSvg() {
   //   d3.select("svg").remove();
   //   this.svg = d3.select('#svgDiv')
