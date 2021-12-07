@@ -5,10 +5,11 @@ import * as d3 from 'd3';
 import * as techan from 'techan';
 import * as fc from 'd3fc';
 
+import { ChartGeneratorService } from 'src/app/services/chart-gen/chart-generator.service';
 import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/interfaces';
 import { ChartDimensions, ChartPanelDimensions, ChartType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
 import { CHART_MARGINS, CHART_PANEL_DIMENSIONS_INITIALIZER, DEFAULT_CHART_SETTING, DEFAULT_PICKER_TABLE_DATUM, DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
-import { DEFAULT_CHART_DIMENSIONS,  } from 'src/app/common/constants';
+import { DEFAULT_CHART_DIMENSIONS, INITIAL_CHART_PANEL_CONFIG, PANE_HEIGHT_MATRIX, SIMPLE_CHART_PANEL_CONFIG} from 'src/app/common/constants';
 import {MSFTData_start_99_1101} from '../../../assets/data/MSFT_21-1112';
 import { MSFTData_sample } from 'src/assets/data/MSFT_21-1112_sample';
 
@@ -34,16 +35,8 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   @Input()
   set containerDimensions(dimensions: DomRectCoordinates) {
     console.log('bC chartDimensions input: ', dimensions);
-    const dims = {...dimensions};
-    // console.log('bC dims: ', dims);
-    // console.log('bC dimensions.height: ', dimensions.height);
-    const height = Math.floor(dimensions['height'] - CONTROLS_HEIGHT);
-    const width = Math.floor(dimensions['width']);
-    // console.log('bC adjusted height/width: ', height, width);
-    this.containerDimsBS.next({...dimensions, height, width});
-    const chartPanelDimensions = this.calculateChartDimensions(this.containerDimsBS.value);
-    this.chartPanelDimsBS.next(chartPanelDimensions);
-    // console.log('bC t.dimsBS.value: ', this.dimsBS.value);
+    const allDimensions = this.setContainerDimensions(dimensions);
+    this.chartPanelDimsBS.next(allDimensions);
 
   }
   get containerDimensions() {
@@ -52,7 +45,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   
   @Input()
   set chartData(data: OHLCData[]) {
-    console.log('bC chartData input data[0]: ', data[0]);
+    // console.log('bC chartData input data[0]: ', data[0]);
     this.chartDataBS.next(data);
     this.draw(data)
   }
@@ -97,7 +90,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   coordsText: d3.svg.Text;
   mergedData: OHLCData[] = [];
   
-  constructor() { }
+  constructor(private readonly chartGenSvc: ChartGeneratorService) { }
 
   ngOnChanges(changes: SimpleChanges) {
     // console.log('bC ngOC changes: ', changes);
@@ -106,6 +99,16 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       console.log('bC ngOC changes-containerDimensions: ', changes['containerDimensions'].currentValue);
       // this.draw(this.chartDataBS.value);
       this.draw(this.chartData);
+
+      SIMPLE_CHART_PANEL_CONFIG.dimensions = this.chartPanelDimsBS.value;
+      console.log('bC ngOI calling CGS generatePanel. init panel config: ', SIMPLE_CHART_PANEL_CONFIG)
+      console.table(SIMPLE_CHART_PANEL_CONFIG.dimensions)
+      this.chartGenSvc.generatePanel(this.chartData, SIMPLE_CHART_PANEL_CONFIG);
+
+      // INITIAL_CHART_PANEL_CONFIG.dimensions = this.chartPanelDimsBS.value;
+      // console.log('bC ngOI calling CGS generatePanel. init panel config: ', INITIAL_CHART_PANEL_CONFIG)
+      // console.table(INITIAL_CHART_PANEL_CONFIG.dimensions)
+      // this.chartGenSvc.generatePanel(this.chartData, INITIAL_CHART_PANEL_CONFIG);
     }
 
     if (changes['chartData'] && changes['chartData'].currentValue) {
@@ -162,8 +165,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   ngOnInit(): void {
-    this.testd3fc();
-    
+    // this.testd3fc();
   }
   
   ngAfterViewInit() {
@@ -172,6 +174,20 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   ngAfterViewChecked() {
+  }
+
+  setContainerDimensions(dimensions) {
+    const dims = {...dimensions};
+    // console.log('bC dims: ', dims);
+    // console.log('bC dimensions.height: ', dimensions.height);
+    const height = Math.floor(dimensions['height'] - CONTROLS_HEIGHT);
+    const width = Math.floor(dimensions['width']);
+    // console.log('bC adjusted height/width: ', height, width);
+    this.containerDimsBS.next({...dimensions, height, width});
+    const chartPanelDimensions = this.calculateChartPanelDimensions(this.containerDimsBS.value);
+    // this.chartPanelDimsBS.next(chartPanelDimensions);
+    // console.log('bC t.dimsBS.value: ', this.dimsBS.value);
+    return chartPanelDimensions;
   }
 
   testd3fc() {
@@ -316,7 +332,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
     }
   }
 
-  calculateChartDimensions(hostDimensions: DomRectCoordinates) {
+  calculateChartPanelDimensions(hostDimensions: DomRectCoordinates) {
     
     console.log('bC cCD hostDimensions arg: ', hostDimensions)
 
@@ -345,13 +361,13 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       down: 0,
     };
 
-    console.log('bC cCD output dimensions:');
-    console.log('svgDim w h: ', svgDim.width, svgDim.height);
-    console.log('mainChartDim w h: ', mainChartDim.width, mainChartDim.height);
-    console.log('indicatorDim w h: ', indicatorDim.width, indicatorDim.height);
-    console.log('chartAnchor r d: ', chartAnchor.right, chartAnchor.down);
-    console.log('xAxisAnchor r d: ', xAxisAnchor.right, xAxisAnchor.down);
-    console.log('yAxisAnchor r d: ',yAxisAnchor.right, yAxisAnchor.down);
+    // console.log('bC cCD output dimensions:');
+    // console.log('svgDim w h: ', svgDim.width, svgDim.height);
+    // console.log('mainChartDim w h: ', mainChartDim.width, mainChartDim.height);
+    // console.log('indicatorDim w h: ', indicatorDim.width, indicatorDim.height);
+    // console.log('chartAnchor r d: ', chartAnchor.right, chartAnchor.down);
+    // console.log('xAxisAnchor r d: ', xAxisAnchor.right, xAxisAnchor.down);
+    // console.log('yAxisAnchor r d: ',yAxisAnchor.right, yAxisAnchor.down);
 
     const chartPanelDims: ChartPanelDimensions = {
       svgDim: {...svgDim},
@@ -418,14 +434,14 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   private generateExtents(data: OHLCData[]) {
-    console.log('bC gE vert scale factor: ', this.verticalScaleFactor);
+    // console.log('bC gE vert scale factor: ', this.verticalScaleFactor);
     const xMin = Math.floor(d3.min(data, d => d['date']));
     const xMax = Math.ceil(d3.max(data, d => d['date']));
     let yMin = d3.min(data, d => d['low']);
     let yMax = d3.max(data, d => d['high']);
     // let yMin = d3.min(data, d => d.stochastic.d);
     // let yMax = d3.max(data, d => d.stochastic.d);
-    console.log('bC gE pre adjust yMax, yMin: ', yMax, yMin);
+    // console.log('bC gE pre adjust yMax, yMin: ', yMax, yMin);
     
     const center = yMax - ((yMax - yMin) / 2);
     const height = yMax - yMin;
@@ -440,7 +456,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
     // yMin = maybeYMin > 0 ? maybeYMin : yMin;
     // yMax = maybeYMin > 0 ? maybeYMax : newHeight;
     
-    console.log('bC gE post adjust yMax, yMin: ', yMax, yMin);
+    // console.log('bC gE post adjust yMax, yMin: ', yMax, yMin);
     const extents = {xMax, xMin, yMax, yMin}
 
     return {...extents};
@@ -465,7 +481,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   private generateYScale(yMin: number, yMax: number) {
-    console.log('bC gYA yMin: ', yMin);
+    // console.log('bC gYA yMin: ', yMin);
     let yScale;
 
     switch(this.scaleType) {

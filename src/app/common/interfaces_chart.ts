@@ -21,6 +21,7 @@ export enum ChartType {
 }
 
 export enum ScaleType {
+    NONE = 'none',
     LINEAR = 'linear',
     LOG = 'log',
     DATE = 'date',
@@ -126,42 +127,6 @@ export interface DomRectCoordinates {
     left: number;
 }
 
-export interface ChartPanelConfig {
-    dimensions: any;
-    title: string;
-    description: string;
-    panes: ChartPaneConfig[];
-    layout: any;
-}
-
-export interface ChartPaneConfig {
-    xAxisConfig: AxisConfig;
-    yAxisConfig: AxisConfig;
-    seriesConfigs?: ChartSeriesConfig[];
-    indicatorConfigs?: SeriesConfig[];
-
-}
-
-// A ChartSeries is any data series.  Can be price or an indicator
-// series like a MA or RSI
-export interface ChartSeriesConfig {
-    chartType: ChartType;
-    series: SeriesConfig;
-    color: any;
-    thickness: any;
-
-}
-
-export interface AxisConfig {
-    type: ScaleType;
-    location: ScaleLocation;
-}
-
-export interface SeriesConfig {
-    type: Series;
-    title?: string;
-    options?: {};
-}
 
 export enum Series {
     PRICE = 'price',
@@ -175,16 +140,81 @@ export enum Series {
 }
 
 export enum ScaleLocation {
+    NONE = 'none',
     TOP = 'top',
     RIGHT = 'right',
     BOTTOM = 'bottom',
     LEFT = 'left',
 }
 
+export enum PaneType {
+    CHART = 'chart',
+    INDICATOR = 'indicator'
+}
+
+
+export interface ChartPanelConfig {
+    dimensions?: any;
+    title?: string;
+    description?: string;
+    panes?: ChartPaneConfig[];
+    layout?: any;
+}
+
+export interface ChartPaneConfig {
+    paneNumber?: number;
+    title?: string;
+    description?: string;
+    paneType?: PaneType;
+    seriesConfigs?: ChartSeriesConfig[];
+    annotationsConfigs?: any;
+    paneDimensions?: PaneDimension;
+
+}
+
+export interface AxisConfig {
+    type?: ScaleType;
+    location?: ScaleLocation;
+}
+
+// A ChartSeries is any data series.  Can be price or an indicator
+// series like a MA or RSI
+export interface ChartSeriesConfig {
+    seriesType: Series;
+    title?: string;
+    options?: {};
+    xAxisConfig: AxisConfig;
+    yAxisConfig: AxisConfig;
+    displayConfig: SeriesDisplayConfig;
+}
+
+export interface SeriesDisplayConfig {
+    chartType: ChartType;
+    color?: any;
+    thickness?: any;
+
+}
+
+
 export interface PaneExtents {
     xMin: number;
     yMin: number;
     xMax: number;
     yMax: number;
+}
+
+export interface TranslationCoord {
+    right: number;
+    down: number;
+}
+
+export interface PaneDimension {
+    width: number;
+    height: number;
+    paneOrigin: TranslationCoord;
+    topAxisOrigin: TranslationCoord;
+    rightAxisOrigin: TranslationCoord;
+    bottomAxisOrigin: TranslationCoord;
+    leftAxisOrigin: TranslationCoord;
 }
 

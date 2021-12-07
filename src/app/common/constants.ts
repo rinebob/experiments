@@ -1,8 +1,8 @@
 import { Equity, GalleryViewOption } from "./interfaces";
-import { DomRectCoordinates, SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
+import { ChartPanelConfig, DomRectCoordinates, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
-import { ChartPanelDimensions, ChartSetting, ChartType, Series, ScaleType } from "./interfaces_chart";
+import { ChartPanelDimensions, ChartSetting, ChartType, PaneType, Series, ScaleType } from "./interfaces_chart";
 import { Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
@@ -276,3 +276,99 @@ export const CHART_PANEL_DIMENSIONS_INITIALIZER: ChartPanelDimensions = {
       [Series.RSI, {period: 14}],
       [Series.STOCHASTIC, {k: 14, d: 9}],
   ]);
+
+export const SIMPLE_CHART_PANEL_CONFIG: ChartPanelConfig = {
+    panes: [
+        {
+            title: 'Main chart pane', description: 'Hey it\'s the big one with all the squiggly lines...', 
+            paneType: PaneType.CHART,
+            paneNumber: 1,
+            seriesConfigs: [
+                {
+                    seriesType: Series.PRICE,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+            ]
+        },
+    ],
+};
+
+export const INITIAL_CHART_PANEL_CONFIG: ChartPanelConfig = {
+    panes: [
+        {
+            title: 'Main chart pane', description: 'Hey it\'s the big one with all the squiggly lines...',
+            paneType: PaneType.CHART,
+            paneNumber: 1,
+            seriesConfigs: [
+                {
+                    seriesType: Series.PRICE,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+                {
+                    seriesType: Series.VOLUME,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.LEFT},
+                    displayConfig: {chartType: ChartType.BAR}
+                },
+                {
+                    seriesType: Series.SMA,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.NONE},
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+            ]
+        },
+        {
+            title: 'Indicator pane one', description: 'Hey just what it says dude, indicator pane one...',
+            paneType: PaneType.INDICATOR,
+            paneNumber: 2,
+            seriesConfigs: [
+                {
+                    seriesType: Series.MACD,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+                {
+                    seriesType: Series.RSI,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
+                    displayConfig: {chartType: ChartType.CANDLESTICK}
+                },
+                
+            ]
+        },
+        {
+            title: 'Indicator pane two', description: 'Jeez this again dude?? wtf it\'s indicator pane two!',
+            paneType: PaneType.INDICATOR,
+            paneNumber: 3,
+            seriesConfigs: [
+                {
+                    seriesType: Series.STOCHASTIC,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
+                    displayConfig: {chartType: ChartType.BAR}
+                },
+                {
+                    seriesType: Series.EMA,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+                
+            ]
+        },
+    ],
+};
+
+export const PANE_HEIGHT_MATRIX = new Map([
+    [1, {chart: 100, indicator: 100}],
+    [2, {chart: 75, indicator: 25}],
+    [3, {chart: 60, indicator: 20}],
+    [4, {chart: 40, indicator: 20}],
+]);
+
