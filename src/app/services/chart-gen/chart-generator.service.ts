@@ -2,45 +2,280 @@ import { Injectable } from '@angular/core';
 import { axisBottom } from 'd3fc';
 import { config } from 'rxjs';
 
+import * as d3 from 'd3';
+
 import { OHLCData } from 'src/app/common/interfaces';
-import { AxisConfig, ChartPaneConfig, ChartPanelConfig, ChartSeriesConfig, ChartType, PaneExtents, ScaleType, Series } from 'src/app/common/interfaces_chart';
+import { AxisConfig, ChartPaneConfig, ChartPanelConfig, ChartSeriesConfig, ChartType, DomRectCoordinates, PaneExtents, PaneLayout, PanelDetails, PaneType, RenderablePane, RenderablePanel, ScaleLocation, ScaleType, Series, TranslationCoord } from 'src/app/common/interfaces_chart';
+import { PANE_HEIGHT_MATRIX} from '../../common/constants';
 import * as utils from './chart_generator_utils';
+
+
+const AXIS_THICKNESS = 20;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChartGeneratorService {
 
+  private svg;
+  private g;
+
   constructor() { }
 
+  // rename to generateRenderablePanel
   generatePanel(data: OHLCData[], panelConfig: ChartPanelConfig) {
+    // console.log('cGS gPanel input data[0], panelConfig: ', data[0], panelConfig);
+    console.log('cGS gPanel input panelConfig.containerDims:');
+    console.table(panelConfig.containerDims);
 
-    console.log('cGS gPanel input data[0], panelConfig: ', data[0], panelConfig);
-    // create root group node for entire panel
-    const root = document.createElement('g');
 
-    // for each pane of panelConfig panes
+    const panelDetails = this.generatePanelDetails(panelConfig);
+    panelConfig.details = {...panelDetails};
+    let nextOrigin = {...panelConfig.details.panelOrigin};
+
+    const renderablePanel: RenderablePanel = {
+      panelConfig: panelConfig,
+      panesMap: new Map<number, RenderablePane>()
+    };
+
+    // create root svg node for entire panel
+    const renderPanel = d3.create('svg')
+      .attr('width', panelConfig.containerDims.width)
+      .attr('height', panelConfig.containerDims.height)
+      .attr('id', panelConfig.title);
+
+    // call the for of on each ChartPaneConfig object in the panelConfig.panes property
     for (const pane of panelConfig.panes) {
-      // generate pane
-      const chartPane = this.generatePane(data, pane);
+      console.log('-----------------------------------------------');
+      console.log('cGS genPanel pane number: ', pane.paneNumber);
+        
+      const paneLayout = this.generatePaneLayout(pane, nextOrigin, panelConfig.containerDims, panelConfig.details)
+      nextOrigin = {right: nextOrigin.right, down: nextOrigin.down + paneLayout.fullPaneHeight};
 
-      // append each pane to the node in the proper location
-      // root.append(chartPane);
+      // const renderItem = this.generateRenderItem(data, pane, paneLayout)
+      const renderItem = this.generateTestRenderItem(pane, paneLayout, panelDetails);
+
+      // const itemWidth = renderItem._groups[0].viewportElement.clientWidth;
+      // const itemHeight = renderItem._groups[0].viewportElement.clientHeight;
+      
+      
+      const item = renderItem._groups[0];
+      console.log('cGS gP item: ', item)
+
+      for (const [key, value] of Object.entries(item)) {
+        console.log('cGS gP item key: ', key)
+        console.log('cGS gP item value: ', value)
+
+      }
+
+
+      renderPanel.append(() => renderItem.node());
+
+      const renderablePane: RenderablePane = {
+        layout: paneLayout,
+        renderItem,
+        config: panelConfig,
+      };
+      renderablePanel.panesMap.set(pane.paneNumber, renderablePane);
     }
-    // return the entire panel to the calling component
-    return root;
+    
+    renderablePanel.renderPanel = renderPanel;
+    
+    // console.log('cGS generatePanel final renderPanel object: ', renderPanel);
+    // console.log('cGS generatePanel final renderablePanel object: ', renderablePanel);
+    
+    return renderablePanel;
   }
 
-  generatePane(data: OHLCData[], paneConfig: ChartPaneConfig) {
+  generatePanelDetails(panelConfig: ChartPanelConfig) {
+    // console.log('cGS genPanelDeets panelConfig.panes: ', panelConfig.panes);
+    console.log('cGS genPanelDeets input container w/h: ', panelConfig.containerDims.height, panelConfig.containerDims.height);
+
+    let chartPresent = false;
+    let chartHeight, chartPaneHeight, numIndicatorPanes, indicatorHeight, singleIndicatorPaneHeight, 
+    chartIndWidth, fullPaneWidth; 
+    
+    const panelHeight = panelConfig.containerDims.height - panelConfig.containerDims.margin.top - panelConfig.containerDims.margin.bottom;
+    const panelWidth = panelConfig.containerDims.width - panelConfig.containerDims.margin.left - panelConfig.containerDims.margin.right;
+
+    // initialize panelOrigin and nextOrigin vars as TranslationCoord objects
+    const panelOrigin: TranslationCoord = {
+      right: panelConfig.containerDims.margin.left,
+      down: panelConfig.containerDims.margin.top
+    };
+
+    for (const pane of panelConfig.panes) {
+      // console.log('cGS genPanelDeets paneType: ', pane.paneType);
+      if (pane.paneType === PaneType.CHART) {
+        chartPresent = true;
+        break;
+      }
+    }
+
+    if (chartPresent) {
+      numIndicatorPanes = panelConfig.panes.length - 1;
+      chartPaneHeight = Math.floor((PANE_HEIGHT_MATRIX.get(panelConfig.panes.length) * panelHeight));
+      chartHeight = chartPaneHeight - (AXIS_THICKNESS * 2);
+      const remainingHeight = panelHeight - chartPaneHeight;
+
+      singleIndicatorPaneHeight = Math.floor(remainingHeight / numIndicatorPanes);
+      indicatorHeight = singleIndicatorPaneHeight - (AXIS_THICKNESS * 2);
+
+    } else {
+      numIndicatorPanes = panelConfig.panes.length;
+      chartPaneHeight = 0;
+      chartHeight = 0;
+      singleIndicatorPaneHeight = Math.floor(panelConfig.containerDims.height / numIndicatorPanes);
+      indicatorHeight = singleIndicatorPaneHeight - (AXIS_THICKNESS * 2);
+
+    }
+
+    fullPaneWidth = panelConfig.containerDims.width - panelConfig.containerDims.margin.left - panelConfig.containerDims.margin.right;
+    chartIndWidth = fullPaneWidth - (AXIS_THICKNESS * 2);
+
+    // panelHeight = panelHeight + indicatorHeight;
+    // panelWidth = panelConfig.containerDims.width + (AXIS_THICKNESS * 2);
+    
+    const panelDetails: PanelDetails = {
+      panelOrigin,
+      chartPresent,
+      chartHeight,
+      chartPaneHeight,
+      numIndicatorPanes,
+      indicatorHeight,
+      singleIndicatorPaneHeight,
+      chartIndWidth,
+      fullPaneWidth,
+      panelHeight,
+      panelWidth,
+    }
+
+    console.log('cGS genPanelDeets final panel details:');
+    console.table(panelDetails);
+
+
+    return panelDetails;
+
+  }
+
+  generatePaneLayout(config: ChartPaneConfig, origin: TranslationCoord, container: DomRectCoordinates, details: PanelDetails) {
+    // console.log('cGS gPL origin/config/container: ', origin, config, container);
+    // const width = container.width - container.margin.left - container.margin.right;
+    const fullPaneHeight = config.paneType === PaneType.CHART ? details.chartPaneHeight : details.singleIndicatorPaneHeight;
+    const chartIndHeight = config.paneType === PaneType.CHART ? details.chartHeight : details.indicatorHeight;
+    
+    const paneLayout: PaneLayout = {
+      fullPaneWidth: details.fullPaneWidth,
+      fullPaneHeight,
+      chartIndHeight,
+      chartIndWidth: details.chartIndWidth,
+      paneOrigin: {right: origin.right + AXIS_THICKNESS, down: origin.down + AXIS_THICKNESS},
+      topAxisOrigin: {right: origin.right + AXIS_THICKNESS, down: origin.down},
+      rightAxisOrigin: {right: origin.right + details.fullPaneWidth - AXIS_THICKNESS, down: origin.down + AXIS_THICKNESS},
+      bottomAxisOrigin: {right: origin.right + AXIS_THICKNESS, down: origin.down + AXIS_THICKNESS + chartIndHeight},
+      leftAxisOrigin: {right: origin.right, down: origin.down + AXIS_THICKNESS},
+
+    };
+    console.log('cGS gPL final pane layout pane number: ', config.paneNumber);
+    console.table(paneLayout);
+
+    return paneLayout;
+
+
+  }
+
+  generateTestRenderItem(paneConfig: ChartPaneConfig, layout: PaneLayout, details: PanelDetails) {
+    console.log('cGS gTRI paneConfig: ', paneConfig);
+    // console.log('cGS gTRI layout:');
+    // console.table(layout);
+    
+    // create pane root group node
+    // const renderItem = d3.create('svg')
+    //   .attr('id', paneConfig.title);
+    const renderItem = d3.create('svg:g')
+      .attr('id', paneConfig.title);
+
+    console.log('cGS gTRI root svg: ', renderItem);
+
+    // for each series of paneConfig series
+    for (const config of paneConfig.seriesConfigs) {
+
+         // create chart/indicator rect
+      const pane = renderItem.append('rect')
+        .attr('height', layout.chartIndHeight)
+        .attr('width', layout.chartIndWidth)
+        .attr('fill', 'blue')
+        .attr('stroke', 'yellow')
+        .attr('id', `${config.seriesType}-pane-${paneConfig.paneNumber}`)
+        // .attr('x', layout.paneOrigin.right)
+        // .attr('y', layout.paneOrigin.down)
+        .attr('transform', `translate(${layout.paneOrigin.right}, ${layout.paneOrigin.down})`);
+
+        console.log('cGS gTRI chart/ind pane: ', pane);
+      
+      if (config.xAxisConfig) {
+
+        const xAxisLocation = config.xAxisConfig.location;
+        const xAxisTransform = xAxisLocation === ScaleLocation.TOP ? layout.topAxisOrigin : layout.bottomAxisOrigin;
+        console.log('cGS gTRI xAxis location/transform: ', xAxisLocation, xAxisTransform)
+
+          // generate x axis rect
+        const xAxisRect = renderItem.append('rect')
+          .attr('height', AXIS_THICKNESS)
+          .attr('width', details.chartIndWidth)
+          .attr('fill', 'green')
+          .attr('stroke', 'white')
+          .attr('id', `${config.seriesType}-xAxis-${paneConfig.paneNumber}`)
+          // .attr('x', xAxisTransform.right)
+          // .attr('y', xAxisTransform.down)
+          .attr('transform', `translate(${xAxisTransform.right}, ${xAxisTransform.down})`);
+
+        // console.log('cGS gTRI xAxisRect:');
+        // console.table(xAxisRect);
+
+      }
+
+      if (config.yAxisConfig) {
+        const yAxisLocation = config.yAxisConfig.location;
+        const yAxisTransform = yAxisLocation == ScaleLocation.LEFT ? layout.leftAxisOrigin : layout.rightAxisOrigin;
+
+        console.log('cGS gTRI yAxis location/transform: ', yAxisLocation, yAxisTransform)
+        
+        // generate y axis rect
+        const yAxisRect = renderItem.append('rect')
+          .attr('height', layout.chartIndHeight)
+          .attr('width', AXIS_THICKNESS)
+          .attr('fill', 'red')
+          .attr('stroke', 'black')
+          .attr('id', `${config.seriesType}-yAxis-${paneConfig.paneNumber}`)
+          // .attr('x', yAxisTransform.right)
+          // .attr('y', yAxisTransform.down)
+          .attr('transform', `translate(${yAxisTransform.right}, ${yAxisTransform.down})`);
+          
+          // console.log('cGS gTRI yAxisRect:');
+          // console.log(yAxisRect);
+      }
+    }
+
+    console.log('cGS gTRI final renderItem: ', renderItem);
+
+    return renderItem;
+  }
+
+  generateRenderItem(data: OHLCData[], paneConfig: ChartPaneConfig, layout: PaneLayout) {
+    
     console.log('-----------------------------------------------');
     console.log('cGS gPane paneConfig: ', paneConfig);
+    console.log('cGS gPane layout:');
+    console.table(layout);
     // create pane root group node
-    const pane = document.createElement('g');
+    const renderItem = document.createElement('g');
 
     // generate pane dimensions
-    const extents: PaneExtents = utils.generateExtents(data);
-    console.log('cGS gPane output extents:');
-    console.table({...extents});
+    // const extents: PaneExtents = utils.generateExtents(data);
+    // console.log('cGS gPane output extents:');
+    // console.table({...extents});
+
 
     const seriesToRender = [];
 
@@ -48,33 +283,32 @@ export class ChartGeneratorService {
     for (const config of paneConfig.seriesConfigs) {
 
       // generate x axis
-      const xAxis = this.generateXAxis(extents, config.xAxisConfig);
+      // const xAxis = this.generateXAxis(extents, config.xAxisConfig);
       // append x axis
       // pane.append(xAxis);
       
       // generate y axis
-      const yAxis = this.generateYAxis(extents, config.yAxisConfig)
+      // const yAxis = this.generateYAxis(extents, config.yAxisConfig)
       // append y axis
       // pane.append(yAxis);
 
       // generate series
-      const seriesData = this.generateSeriesData(config, data);
+      // const seriesData = this.generateSeriesData(config, data);
       
       // append series
 
       // const render = this.generateSeriesRender(seriesData);
-      const render = this.generateSeriesRender(data, config.displayConfig.chartType);
+      // const render = this.generateSeriesRender(data, config.displayConfig.chartType);
 
       // pane.append(render);
 
-      seriesToRender.push(render);
+      // seriesToRender.push(render);
 
     }
     // generate annotations
     // append annotations
 
-    // return the pane group node 
-    return pane;
+    return renderItem;
   }
 
   generateXAxis(extents: PaneExtents, config: AxisConfig) {

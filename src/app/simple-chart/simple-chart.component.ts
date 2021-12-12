@@ -27,6 +27,7 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
   // @ViewChild('baseChart', {read: ElementRef}) baseChart: HTMLElement;
   @ViewChild('baseChart', {read: ElementRef}) baseChart: ElementRef;
   @ViewChild('simpleChartContainer', {read: ElementRef}) simpleChartContainer: ElementRef;
+  @ViewChild('baseChartContainer', {read: ElementRef}) baseChartContainer: ElementRef;
 
   equityData$: Observable<OHLCData[]> = this.store.select(selectors.selectEquityData);
 
@@ -70,11 +71,18 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngAfterViewInit() {
-    console.log('sC ngAVI base chart: ', this.simpleChartContainer);
-    const {x, y, height, width} = this.simpleChartContainer.nativeElement.getBoundingClientRect();
-    const domRect:DomRectCoordinates = this.simpleChartContainer.nativeElement.getBoundingClientRect();
-    console.log('sC ngAVI simpleChartContainer x/y/width/height: ', x, y, width, height);
-    console.log('sC ngAVI simpleChartContainer domRect: ', domRect);
+    // console.log('sC ngAVI base chart: ', this.simpleChartContainer);
+    // const {x, y, height, width} = this.simpleChartContainer.nativeElement.getBoundingClientRect();
+    // const domRect:DomRectCoordinates = this.simpleChartContainer.nativeElement.getBoundingClientRect();
+    // console.log('sC ngAVI simpleChartContainer x/y/width/height: ', x, y, width, height);
+    // console.log('sC ngAVI simpleChartContainer domRect: ', domRect);
+
+    const {x, y, height, width} = this.baseChartContainer.nativeElement.getBoundingClientRect();
+    const domRect:DomRectCoordinates = this.baseChartContainer.nativeElement.getBoundingClientRect();
+    
+    console.log('sC ngAVI baseChartContainer x/y/width/height: ', x, y, width, height);
+    console.log('sC ngAVI baseChartContainer domRect: ', domRect);
+    
     const coords: DomRectCoordinates = {
       x: domRect.x,
       y: domRect.y,
@@ -85,7 +93,7 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
       right: domRect.right,
       left: domRect.left,
      };
-    console.log('sC ngAVI coords: ', coords);
+    // console.log('sC ngAVI coords: ', coords);
     this.chartContainerDimensionsBS.next(coords);
   }
 
@@ -95,7 +103,7 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
     const adj = adjustment === VerticalAdjustment.VERT_CONTRACT ? VERTICAL_ADJUSTMENT_FACTOR : -VERTICAL_ADJUSTMENT_FACTOR;
     
     const newVertFactor = currentVertFactor + adj;
-    console.log('sC hVA existing/new vert adjustment: ', currentVertFactor, newVertFactor);
+    // console.log('sC hVA existing/new vert adjustment: ', currentVertFactor, newVertFactor);
     this.verticalScaleFactorBS.next(newVertFactor);
     console.log('sC hVA t.vSFBS.value: ', this.verticalScaleFactorBS.value);
 

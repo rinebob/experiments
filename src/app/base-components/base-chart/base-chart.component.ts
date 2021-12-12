@@ -9,7 +9,7 @@ import { ChartGeneratorService } from 'src/app/services/chart-gen/chart-generato
 import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/interfaces';
 import { ChartDimensions, ChartPanelDimensions, ChartType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
 import { CHART_MARGINS, CHART_PANEL_DIMENSIONS_INITIALIZER, DEFAULT_CHART_SETTING, DEFAULT_PICKER_TABLE_DATUM, DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
-import { DEFAULT_CHART_DIMENSIONS, INITIAL_CHART_PANEL_CONFIG, PANE_HEIGHT_MATRIX, SIMPLE_CHART_PANEL_CONFIG} from 'src/app/common/constants';
+import { DEFAULT_CHART_DIMENSIONS, DEFAULT_MARGIN_CONFIG, INITIAL_CHART_PANEL_CONFIG, PANE_HEIGHT_MATRIX, SIMPLE_CHART_PANEL_CONFIG} from 'src/app/common/constants';
 import {MSFTData_start_99_1101} from '../../../assets/data/MSFT_21-1112';
 import { MSFTData_sample } from 'src/assets/data/MSFT_21-1112_sample';
 
@@ -78,7 +78,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   private svg;
   private g;  // group element that is appended to the svg.  We'll append everything to this element
 
-  private margin = { top: 50, right: 100, bottom: 50, left: 100, buffer: 50, gutter: 20, factor: .9 };
+  private margin = DEFAULT_MARGIN_CONFIG;
  
   xScale: d3.svg.Scale;
   yScale: d3.svg.Scale;
@@ -96,19 +96,51 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
     // console.log('bC ngOC changes: ', changes);
     if (changes['containerDimensions'] && changes['containerDimensions'].currentValue) {
       
-      console.log('bC ngOC changes-containerDimensions: ', changes['containerDimensions'].currentValue);
+      console.log('bC ngOC changes-containerDimensions: ');
+      console.table(changes['containerDimensions'].currentValue);
+      console.log('bC ngOC changes-containerDimensions: ');
+      console.table(this.containerDimsBS.value);
       // this.draw(this.chartDataBS.value);
-      this.draw(this.chartData);
+      // this.draw(this.chartData);
 
-      SIMPLE_CHART_PANEL_CONFIG.dimensions = this.chartPanelDimsBS.value;
-      console.log('bC ngOI calling CGS generatePanel. init panel config: ', SIMPLE_CHART_PANEL_CONFIG)
-      console.table(SIMPLE_CHART_PANEL_CONFIG.dimensions)
-      this.chartGenSvc.generatePanel(this.chartData, SIMPLE_CHART_PANEL_CONFIG);
+      // *******************************
+      // Chart Generator Service call - SIMPLE CONFIG
+      // SIMPLE_CHART_PANEL_CONFIG.containerDims = this.containerDimsBS.value;
+      // console.log('bC ngOI calling CGS generatePanel. init panel config: ', SIMPLE_CHART_PANEL_CONFIG)
+      // console.table(SIMPLE_CHART_PANEL_CONFIG.containerDims)
+      // this.chartGenSvc.generatePanel(this.chartData, SIMPLE_CHART_PANEL_CONFIG);
 
-      // INITIAL_CHART_PANEL_CONFIG.dimensions = this.chartPanelDimsBS.value;
+      // *******************************
+      // Chart Generator Service call - FULL CONFIG
+      INITIAL_CHART_PANEL_CONFIG.containerDims = this.containerDimsBS.value;
       // console.log('bC ngOI calling CGS generatePanel. init panel config: ', INITIAL_CHART_PANEL_CONFIG)
-      // console.table(INITIAL_CHART_PANEL_CONFIG.dimensions)
-      // this.chartGenSvc.generatePanel(this.chartData, INITIAL_CHART_PANEL_CONFIG);
+      // console.table(INITIAL_CHART_PANEL_CONFIG.containerDims)
+
+      if (this.containerDimsBS.value.height > 0 && this.containerDimsBS.value.width > 0) {
+        const renderablePanel = this.chartGenSvc.generatePanel(this.chartData, INITIAL_CHART_PANEL_CONFIG);
+
+        console.log('bC ngOC returned renderablePanel: ', renderablePanel);
+
+        // this.g = d3.select('#svgDiv')
+                // .append('svg')
+        // // .attr('top', this.margin.buffer)
+        // // .attr('left', this.margin.buffer)
+        // .attr('width', this.chartPanelDimsBS.value.svgDim.width)
+        // .attr('height', this.chartPanelDimsBS.value.svgDim.height)
+        // .append('g');
+
+        d3.select('svg').remove();
+        this.g = d3.select('#testDiv')
+          .attr('top', this.containerDimsBS.value.margin.top)
+          .attr('left', this.containerDimsBS.value.margin.left)
+          .attr('width', this.containerDimsBS.value.width)
+          .attr('height', this.containerDimsBS.value.height)
+          .append(() => renderablePanel.renderPanel.node());
+          // .append(renderablePanel.renderPanel);
+        
+
+      }
+
     }
 
     if (changes['chartData'] && changes['chartData'].currentValue) {
@@ -176,17 +208,23 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   ngAfterViewChecked() {
   }
 
-  setContainerDimensions(dimensions) {
-    const dims = {...dimensions};
+  setContainerDimensions(dimensions: DomRectCoordinates) {
+    // const dims = {...dimensions};
     // console.log('bC dims: ', dims);
     // console.log('bC dimensions.height: ', dimensions.height);
-    const height = Math.floor(dimensions['height'] - CONTROLS_HEIGHT);
+    const height = Math.floor(dimensions['height']);
     const width = Math.floor(dimensions['width']);
     // console.log('bC adjusted height/width: ', height, width);
-    this.containerDimsBS.next({...dimensions, height, width});
+
+    // this gets passed to ChartGeneratorService to set the ChartPanel Coordinates
+    this.containerDimsBS.next({...dimensions, height, width, margin: DEFAULT_MARGIN_CONFIG});
+
+    // Used for current BaseChart component implementation
     const chartPanelDimensions = this.calculateChartPanelDimensions(this.containerDimsBS.value);
     // this.chartPanelDimsBS.next(chartPanelDimensions);
     // console.log('bC t.dimsBS.value: ', this.dimsBS.value);
+
+    // pushed to chartPanelDimsBS
     return chartPanelDimensions;
   }
 

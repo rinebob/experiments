@@ -1,5 +1,5 @@
 import { Equity, GalleryViewOption } from "./interfaces";
-import { ChartPanelConfig, DomRectCoordinates, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
+import { ChartPanelConfig, DomRectCoordinates, MarginConfig, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
 import { ChartPanelDimensions, ChartSetting, ChartType, PaneType, Series, ScaleType } from "./interfaces_chart";
@@ -335,7 +335,7 @@ export const INITIAL_CHART_PANEL_CONFIG: ChartPanelConfig = {
                 },
                 {
                     seriesType: Series.RSI,
-                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                    // xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
                     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
                     displayConfig: {chartType: ChartType.CANDLESTICK}
                 },
@@ -355,7 +355,47 @@ export const INITIAL_CHART_PANEL_CONFIG: ChartPanelConfig = {
                 },
                 {
                     seriesType: Series.EMA,
-                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                    // xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+                
+            ]
+        },
+        {
+            title: 'Indicator pane three', description: 'Indicator pane three dude...',
+            paneType: PaneType.INDICATOR,
+            paneNumber: 4,
+            seriesConfigs: [
+                {
+                    seriesType: Series.STOCHASTIC,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
+                    displayConfig: {chartType: ChartType.BAR}
+                },
+                {
+                    seriesType: Series.EMA,
+                    // xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+                
+            ]
+        },
+        {
+            title: 'Indicator pane four', description: 'Indicator pane four dude...',
+            paneType: PaneType.INDICATOR,
+            paneNumber: 5,
+            seriesConfigs: [
+                {
+                    seriesType: Series.STOCHASTIC,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
+                    displayConfig: {chartType: ChartType.BAR}
+                },
+                {
+                    seriesType: Series.EMA,
+                    // xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
                     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
                     displayConfig: {chartType: ChartType.LINE}
                 },
@@ -365,10 +405,29 @@ export const INITIAL_CHART_PANEL_CONFIG: ChartPanelConfig = {
     ],
 };
 
-export const PANE_HEIGHT_MATRIX = new Map([
-    [1, {chart: 100, indicator: 100}],
-    [2, {chart: 75, indicator: 25}],
-    [3, {chart: 60, indicator: 20}],
-    [4, {chart: 40, indicator: 20}],
+export const PANE_HEIGHT_MATRIX = new Map<number, number>([
+    [1, 1],
+    [2, 0.75],
+    [3, 0.60],
+    [4, 0.40],
+    [5, 0.33],
 ]);
+
+// export const PANE_HEIGHT_MATRIX = new Map<number, number>([
+//     [1, .75],
+//     [2, 0.5],
+//     [3, 0.35],
+//     [4, 0.25],
+//     [5, 0.1],
+// ]);
+
+export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    buffer: 20,
+    gutter: 20,
+    factor: .9,
+};
 

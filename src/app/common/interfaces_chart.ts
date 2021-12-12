@@ -125,6 +125,17 @@ export interface DomRectCoordinates {
     right: number;
     bottom: number;
     left: number;
+    margin?: MarginConfig;
+}
+
+export interface MarginConfig {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+    buffer?: number;
+    gutter?: number;
+    factor?: number;
 }
 
 
@@ -154,22 +165,38 @@ export enum PaneType {
 
 
 export interface ChartPanelConfig {
-    dimensions?: any;
+    containerDims?: DomRectCoordinates,
+    panelDims?: ChartPanelDimensions;
     title?: string;
     description?: string;
     panes?: ChartPaneConfig[];
-    layout?: any;
+    details?: PanelDetails;
+    
+}
+
+export interface PanelDetails {
+    panelOrigin?: TranslationCoord;
+    chartPresent: boolean;
+    chartHeight: number,                    // height of chart pane itself w/o axes
+    chartPaneHeight?: number;               // height of chart pane with axes
+    numIndicatorPanes: number;
+    indicatorHeight: number;               // height of indicator pane w/o axes
+    singleIndicatorPaneHeight?: number;    // height of one indicator pane with axes
+    chartIndWidth?: number;                 // width of a chart/indicator without axes
+    fullPaneWidth?: number;                 // width of a chart/indicator with axes
+    panelHeight?: number;                   // sum of chartPanelHeight + all singleIndicatorPaneHeight s
+    panelWidth?: number;                    // sum of pane width + total width of axes
+    
 }
 
 export interface ChartPaneConfig {
-    paneNumber?: number;
+    paneNumber?: number;    // what position among all panes stacked top to bottom 1, 2, 3 etc.
     title?: string;
     description?: string;
     paneType?: PaneType;
     seriesConfigs?: ChartSeriesConfig[];
     annotationsConfigs?: any;
-    paneDimensions?: PaneDimension;
-
+    
 }
 
 export interface AxisConfig {
@@ -183,9 +210,9 @@ export interface ChartSeriesConfig {
     seriesType: Series;
     title?: string;
     options?: {};
-    xAxisConfig: AxisConfig;
-    yAxisConfig: AxisConfig;
-    displayConfig: SeriesDisplayConfig;
+    xAxisConfig?: AxisConfig;
+    yAxisConfig?: AxisConfig;
+    displayConfig?: SeriesDisplayConfig;
 }
 
 export interface SeriesDisplayConfig {
@@ -208,13 +235,29 @@ export interface TranslationCoord {
     down: number;
 }
 
-export interface PaneDimension {
-    width: number;
-    height: number;
+export interface PaneLayout {
+    fullPaneWidth: number;
+    fullPaneHeight: number;
+    chartIndHeight: number;
+    chartIndWidth: number;
     paneOrigin: TranslationCoord;
     topAxisOrigin: TranslationCoord;
     rightAxisOrigin: TranslationCoord;
     bottomAxisOrigin: TranslationCoord;
     leftAxisOrigin: TranslationCoord;
 }
+
+export interface RenderablePane {
+    layout?: PaneLayout;
+    renderItem?: any;    // this will be the HTML group element for this pane that will be appended to the root svg/group
+    config?: ChartPaneConfig;
+}
+
+// this is the final output from the main chart panel gen svc
+export interface RenderablePanel {
+    panelConfig?: ChartPanelConfig;
+    panesMap?: Map<number, RenderablePane>;
+    renderPanel?: any;
+}
+
 
