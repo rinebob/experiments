@@ -9,7 +9,8 @@ import { ChartGeneratorService } from 'src/app/services/chart-gen/chart-generato
 import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/interfaces';
 import { ChartDimensions, ChartPanelDimensions, ChartType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
 import { CHART_MARGINS, CHART_PANEL_DIMENSIONS_INITIALIZER, DEFAULT_CHART_SETTING, DEFAULT_PICKER_TABLE_DATUM, DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
-import { DEFAULT_CHART_DIMENSIONS, DEFAULT_MARGIN_CONFIG, INITIAL_CHART_PANEL_CONFIG, PANE_HEIGHT_MATRIX, SIMPLE_CHART_PANEL_CONFIG} from 'src/app/common/constants';
+import { DEFAULT_CHART_DIMENSIONS, DEFAULT_MARGIN_CONFIG, PANE_HEIGHT_MATRIX} from 'src/app/common/constants';
+import { INITIAL_CHART_PANEL_CONFIG, SIMPLE_CHART_PANEL_CONFIG} from 'src/app/common/chart_configs';
 import {MSFTData_start_99_1101} from '../../../assets/data/MSFT_21-1112';
 import { MSFTData_sample } from 'src/assets/data/MSFT_21-1112_sample';
 
