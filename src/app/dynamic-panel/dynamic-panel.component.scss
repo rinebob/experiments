@@ -1,0 +1,47 @@
+
+:host {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    .dynamic-panel-container {
+        // background-color: skyblue;
+        background-color:darkslategrey;
+        // background-color:#181C27;
+        
+        height: calc(100vh - 64px);     // 64px = height of top nav bar
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        overflow-y: auto;
+        
+        exp-chart-controls {
+            width: 100%;
+        }
+
+        .base-chart-container {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            height: calc(100vh - 128px);        // 128px = top bar + chart controls heights
+            width: calc(100vw - 40px);
+            overflow: hidden;
+        }
+    }
+    
+    .spacer {
+        width: 500px;
+        height: 100%;
+        border: 1px solid black;
+        height: calc(100vh - 64px);
+    }
+    
+    // exp-base-chart {
+    //     height: calc(100vh - 128px);
+    //     max-height: calc(100vh - 128px);
+    //     // width: 100%;
+    // }
+}
+

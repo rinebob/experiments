@@ -16,6 +16,7 @@
     <div #baseChartContainer class="base-chart-container">
 
         <exp-base-chart #baseChart
+                        [chartPanelConfig]="chartPanelConfig$ | async"
                         [containerDimensions]="chartContainerDimensions$ | async"
                         [chartData]="chartData$ | async"
                         [chartType]="chartType$ | async"

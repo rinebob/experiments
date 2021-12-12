@@ -3,11 +3,12 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ChartMoveEvent, ChartType, DomRectCoordinates, PanDistance, ScaleType, SymbolTimeSetting, TimeFrame, VerticalAdjustment } from '../common/interfaces_chart'
+import { ChartMoveEvent, ChartPanelConfig, ChartType, DomRectCoordinates, PanDistance, ScaleType, SymbolTimeSetting, TimeFrame, VerticalAdjustment } from '../common/interfaces_chart'
 import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
 import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DOM_RECT_COORDS_INITIALIZER, VERTICAL_ADJUSTMENT_FACTOR} from '../common/constants';
+import { INITIAL_CHART_PANEL_CONFIG, SIMPLE_CHART_PANEL_CONFIG} from 'src/app/common/chart_configs';
 
 const SYMBOL = 'SPY';
 const DATA_SETTING:SymbolTimeSetting = {
@@ -31,9 +32,13 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
   equityData$: Observable<OHLCData[]> = this.store.select(selectors.selectEquityData);
 
-  allDataBS = new BehaviorSubject<OHLCData[]>([])
+  allDataBS = new BehaviorSubject<OHLCData[]>([]);
+
   chartDataBS = new BehaviorSubject<OHLCData[]>([]);
   chartData$: Observable<OHLCData[]> = this.chartDataBS;
+
+  chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(SIMPLE_CHART_PANEL_CONFIG);
+  chartPanelConfig$: Observable<ChartPanelConfig> = this.chartPanelConfigBS;
 
   chartTypeBS = new BehaviorSubject<ChartType>(DEFAULT_CHART_SETTING.chartType);
   chartType$: Observable<ChartType> = this.chartTypeBS;
@@ -62,6 +67,7 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
    }
 
   ngOnInit(): void {
+    this.chartPanelConfigBS.next(SIMPLE_CHART_PANEL_CONFIG);
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 
@@ -71,12 +77,10 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngAfterViewInit() {
-    // console.log('sC ngAVI base chart: ', this.simpleChartContainer);
-    // const {x, y, height, width} = this.simpleChartContainer.nativeElement.getBoundingClientRect();
-    // const domRect:DomRectCoordinates = this.simpleChartContainer.nativeElement.getBoundingClientRect();
-    // console.log('sC ngAVI simpleChartContainer x/y/width/height: ', x, y, width, height);
-    // console.log('sC ngAVI simpleChartContainer domRect: ', domRect);
+    this.chartContainerDimensionsBS.next(this.generateDomRectCoordinates());
+  }
 
+  generateDomRectCoordinates() {
     const {x, y, height, width} = this.baseChartContainer.nativeElement.getBoundingClientRect();
     const domRect:DomRectCoordinates = this.baseChartContainer.nativeElement.getBoundingClientRect();
     
@@ -92,9 +96,11 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
       bottom: domRect.bottom,
       right: domRect.right,
       left: domRect.left,
-     };
+    };
+  
     // console.log('sC ngAVI coords: ', coords);
-    this.chartContainerDimensionsBS.next(coords);
+    return coords;
+
   }
 
   handleVerticalAdjustment(adjustment: VerticalAdjustment) {

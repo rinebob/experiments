@@ -236,6 +236,7 @@ export interface TranslationCoord {
 }
 
 export interface PaneLayout {
+    paneNumber: number;
     fullPaneWidth: number;
     fullPaneHeight: number;
     chartIndHeight: number;

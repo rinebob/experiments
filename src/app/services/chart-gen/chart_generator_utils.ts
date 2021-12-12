@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import * as fc from 'd3fc';
 
 import { OHLCData } from 'src/app/common/interfaces';
-import { AxisConfig, ChartPaneConfig, ChartSeriesConfig, ChartType, Series, PaneExtents } from 'src/app/common/interfaces_chart';
+import { AxisConfig, ChartPaneConfig, ChartSeriesConfig, ChartType, DomRectCoordinates, Series, PaneExtents, ScaleType, TranslationCoord, ScaleLocation, PaneLayout } from 'src/app/common/interfaces_chart';
 
 export function generateExtents(data: OHLCData[]) {
     console.log('cGSU gE input data[0]: ', data[0]);
@@ -30,50 +30,77 @@ export function generateExtents(data: OHLCData[]) {
     // return extents;
 }
 
-export function generateXScale(xMin: number, xMax: number) {
-    console.log('cGSU gXS input x min/max ', xMin, xMax);
-    const scale = {};
-    return scale;
-//     const xScale = d3
-//     .scaleTime()
-//     .domain([xMin, xMax])
-//     .range([0, this.containerDimsBS.value.width - this.margin.left - this.margin.right]);
-
-//   return xScale;
+export function generateXScale(xMin: number, xMax: number, width: number) {
+    console.log('cGSU gXS input x min/max/w ', xMin, xMax, width);
+    const xScale = d3
+    .scaleTime()
+    .domain([xMin, xMax])
+    .range([0, width]);
+    
+    console.log('cGSU gXS final xScale: ', xScale);
+    return xScale;
 }
 
-export function generateYScale(yMin: number, yMax: number) {
-    console.log('cGSU gYS input y min/max ', yMin, yMax);
-    const scale = {};
-    return scale;
-}
+export function generateLinearYScale(yMin: number, yMax: number, height: number) {
+    console.log('cGSU gLinYS input y min/max/h ', yMin, yMax, height);
+    const yScale = d3
+        .scaleLinear()
+        .domain([yMin, yMax])
+        .range([height, 0]);
 
-export function generateLinearYAxis(yScale) {
-    console.log('cGSU gLiYA input yScale', yScale);
-    const axis = {};
-    return axis;
-}
-
-export function generateLogYAxis(yScale) {
-    console.log('cGSU gLgYA input yScale', yScale);
-    const axis = {};
-    return axis;
+        console.log('cGSU gLinYS final yScale: ', yScale);
+        return yScale;
 
 }
 
-export function generatePercentChangeYAxis(yScale) {
-    console.log('cGSU gPCCYA input yScale', yScale);
-    const axis = {};
-    return axis;
+export function generateLogYScale(yMin: number, yMax: number, height: number) {
+    console.log('cGSU gLogYS input y min/max/h ', yMin, yMax, height);
+    const yScale = d3
+        .scaleLog()
+        .domain([yMin, yMax])
+        .range([height, 0]);
+
+    console.log('cGSU gLogYS final yScale: ', yScale);
+    return yScale;
+
+
+
 }
 
-export function generateDateXAxis(xScale) {
-    console.log('cGSU gDA input xScale', xScale);
-    const axis = {};
-    return axis;
+export function generateYAxis(yScale, layout: PaneLayout, seriesType: string, paneNumber: number, location: ScaleLocation) {
+    console.log('cGSU gYA input yScale/origin/seriesType/paneNumber/location', yScale, layout, seriesType, paneNumber, location);
+
+    const axis = location === ScaleLocation.LEFT ? d3.axisLeft(yScale) : d3.axisRight(yScale);
+    const origin = location === ScaleLocation.LEFT ? layout.leftAxisOrigin : layout.rightAxisOrigin;
+
+    const yAxis = d3.create('svg:g')
+        .attr('id', `${seriesType}-yAxis-${paneNumber}`)
+        .attr('transform', `translate(${origin.right}, ${origin.down})`)
+        .call(axis);
+
+    return yAxis;
+
+
+
 }
 
-export function generateFinanceTimeXAxis(xScale) {
+export function generateDateXAxis(xScale, layout: PaneLayout, seriesType: Series, paneNumber: number, location: ScaleLocation) {
+    console.log('cGSU gDXA input xScale/origin/seriesType/paneNumber/location', xScale, layout, seriesType, paneNumber, location);
+
+    const axis = location === ScaleLocation.TOP ? d3.axisTop(xScale) : d3.axisBottom(xScale);
+    const origin = location === ScaleLocation.TOP ? layout.topAxisOrigin : layout.bottomAxisOrigin;
+    console.log('cGU gDXA origin: ', origin);
+
+    const dateXAxis = d3.create('svg:g')
+        .attr('id', `${seriesType}-xAxis-${paneNumber}`)
+        .attr('transform', `translate(${origin.right}, ${origin.down})`)
+        .call(axis);
+
+    return dateXAxis;
+    
+}
+
+export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
     console.log('cGSU gFTA input xScale', xScale);
     const axis = {};
     return axis;

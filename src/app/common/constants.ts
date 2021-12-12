@@ -304,3 +304,5 @@ export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
     factor: .9,
 };
 
+export const AXIS_THICKNESS = 20;
+
