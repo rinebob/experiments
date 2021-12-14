@@ -11,6 +11,10 @@ export const interimMenu = [
         route: 'simple-chart',
     },
     {
+        label: 'Dynamic panel',
+        route: 'dynamic-panel',
+    },
+    {
         label: 'Base components',
         route: 'base-components',
     },

@@ -17,17 +17,16 @@ const DATA_SETTING:SymbolTimeSetting = {
   ...DEFAULT_AV_BASE_DATA_SETTING,
 };
 
+
 @Component({
-  selector: 'exp-simple-chart',
-  templateUrl: './simple-chart.component.html',
-  styleUrls: ['./simple-chart.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'exp-dynamic-panel',
+  templateUrl: './dynamic-panel.component.html',
+  styleUrls: ['./dynamic-panel.component.scss']
 })
-export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
+export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit {
   readonly destroy = new Subject();
-  // @ViewChild('baseChart', {read: ElementRef}) baseChart: HTMLElement;
   @ViewChild('baseChart', {read: ElementRef}) baseChart: ElementRef;
-  @ViewChild('simpleChartContainer', {read: ElementRef}) simpleChartContainer: ElementRef;
+  @ViewChild('dynamicPanelContainer', {read: ElementRef}) dynamicPanelContainer: ElementRef;
   @ViewChild('baseChartContainer', {read: ElementRef}) baseChartContainer: ElementRef;
 
   equityData$: Observable<OHLCData[]> = this.store.select(selectors.selectEquityData);
@@ -54,21 +53,27 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
 
   numDataPoints = 0;
   
-  constructor(private readonly store: Store) {
+
+  constructor(private readonly store: Store) { 
     this.equityData$.pipe(takeUntil(this.destroy))
     .subscribe(
       data => {
         this.chartDataBS.next(data);
         this.allDataBS.next(data);
         this.numDataPoints = this.allDataBS.value.length;
-        // console.log('sC ctor num data pts / t.aDBS[0]: ', this.numDataPoints, data[0]);
+        console.log('dP ctor num data pts / t.aDBS[0]: ', this.numDataPoints, data[0]);
       }
     );
-   }
+  }
 
   ngOnInit(): void {
-    this.chartPanelConfigBS.next(SIMPLE_CHART_PANEL_CONFIG);
+    // this.chartPanelConfigBS.next(SIMPLE_CHART_PANEL_CONFIG);
+    this.chartPanelConfigBS.next(INITIAL_CHART_PANEL_CONFIG);
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
+  }
+
+  ngAfterViewInit() {
+    this.chartContainerDimensionsBS.next(this.generateDomRectCoordinates());
   }
 
   ngOnDestroy() {
@@ -76,16 +81,12 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
     this.destroy.complete();
   }
 
-  ngAfterViewInit() {
-    this.chartContainerDimensionsBS.next(this.generateDomRectCoordinates());
-  }
-
   generateDomRectCoordinates() {
     const {x, y, height, width} = this.baseChartContainer.nativeElement.getBoundingClientRect();
     const domRect:DomRectCoordinates = this.baseChartContainer.nativeElement.getBoundingClientRect();
     
-    console.log('sC ngAVI baseChartContainer x/y/width/height: ', x, y, width, height);
-    console.log('sC ngAVI baseChartContainer domRect: ', domRect);
+    console.log('dP ngAVI baseChartContainer x/y/width/height: ', x, y, width, height);
+    console.log('dP ngAVI baseChartContainer domRect: ', domRect);
     
     const coords: DomRectCoordinates = {
       x: domRect.x,
@@ -98,53 +99,54 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
       left: domRect.left,
     };
   
-    // console.log('sC ngAVI coords: ', coords);
+    // console.log('dP ngAVI coords: ', coords);
     return coords;
 
   }
 
+  
   handleVerticalAdjustment(adjustment: VerticalAdjustment) {
-    console.log('sC hVA vert adjustment: ', adjustment);
+    console.log('dP hVA vert adjustment: ', adjustment);
     const currentVertFactor = this.verticalScaleFactorBS.value;
     const adj = adjustment === VerticalAdjustment.VERT_CONTRACT ? VERTICAL_ADJUSTMENT_FACTOR : -VERTICAL_ADJUSTMENT_FACTOR;
     
     const newVertFactor = currentVertFactor + adj;
-    // console.log('sC hVA existing/new vert adjustment: ', currentVertFactor, newVertFactor);
+    // console.log('dP hVA existing/new vert adjustment: ', currentVertFactor, newVertFactor);
     this.verticalScaleFactorBS.next(newVertFactor);
-    console.log('sC hVA t.vSFBS.value: ', this.verticalScaleFactorBS.value);
+    console.log('dP hVA t.vSFBS.value: ', this.verticalScaleFactorBS.value);
 
   }
 
   handleMoveChart(move: ChartMoveEvent) {
-    // console.log('sC hMC move: ', move);
+    // console.log('dP hMC move: ', move);
     const data = this.getDataRangeSelection(move.startIndex, move.endIndex);
     this.chartDataBS.next(data);
-    // console.log('sC hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
+    // console.log('dP hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
   }
 
   handleUpdateChartType(chartType: ChartType) {
-    // console.log('sC hUCT chart type: ', chartType);
+    // console.log('dP hUCT chart type: ', chartType);
     this.chartTypeBS.next(chartType);
-    console.log('sC hUCT t.baseChart: ', this.baseChart);
+    console.log('dP hUCT t.baseChart: ', this.baseChart);
 
   }
 
   handleUpdateScaleType(scaleType: ScaleType) {
-    console.log('sC hUST scale type: ', scaleType);
+    console.log('dP hUST scale type: ', scaleType);
     this.scaleTypeBS.next(scaleType);
   }
 
   getDataRangeSelection(startInd: number, endInd: number): OHLCData[] {
-    // console.log('sC gDRS st/end: ', startInd, endInd);
+    // console.log('dP gDRS st/end: ', startInd, endInd);
     const selection = this.allDataBS.value.slice(startInd, endInd);
-    // console.log('sC gDRS selection: ', selection);
+    // console.log('dP gDRS selection: ', selection);
 
     return selection;
 
   }
 
   getData() {
-    // console.log('sC rD get data called.  dataSetting: ', DATA_SETTING);
+    // console.log('dP rD get data called.  dataSetting: ', DATA_SETTING);
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 

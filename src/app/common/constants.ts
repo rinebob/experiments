@@ -1,8 +1,8 @@
 import { Equity, GalleryViewOption } from "./interfaces";
-import { DomRectCoordinates, SymbolTimeSetting, TimeFrame } from "./interfaces_chart";
+import { ChartPanelConfig, DomRectCoordinates, MarginConfig, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
-import { ChartPanelDimensions, ChartSetting, ChartType, ScaleType } from "./interfaces_chart";
+import { ChartPanelDimensions, ChartSetting, ChartType, PaneType, Series, ScaleType } from "./interfaces_chart";
 import { Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
@@ -268,3 +268,41 @@ export const CHART_PANEL_DIMENSIONS_INITIALIZER: ChartPanelDimensions = {
     xAxisAnchor: {right: 0, down: 0},
     yAxisAnchor: {right: 0, down: 0},  
   }
+
+  export const INDICATOR_OPTIONS = new Map([
+      [Series.SMA, {period: 9}],
+      [Series.EMA, {period: 9}],
+      [Series.MACD, {fast: 12, slow: 26, smoother: 9}],
+      [Series.RSI, {period: 14}],
+      [Series.STOCHASTIC, {k: 14, d: 9}],
+  ]);
+
+
+export const PANE_HEIGHT_MATRIX = new Map<number, number>([
+    [1, 1],
+    [2, 0.75],
+    [3, 0.60],
+    [4, 0.40],
+    [5, 0.33],
+]);
+
+// export const PANE_HEIGHT_MATRIX = new Map<number, number>([
+//     [1, .75],
+//     [2, 0.5],
+//     [3, 0.35],
+//     [4, 0.25],
+//     [5, 0.1],
+// ]);
+
+export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    buffer: 20,
+    gutter: 20,
+    factor: .9,
+};
+
+export const AXIS_THICKNESS = 20;
+

@@ -15,11 +15,18 @@ export enum ChartType {
     LINE = 'line',
     BAR = 'bar',
     CANDLESTICK = 'candlestick',
+    // RENKO = 'renko',
+    // HEIKEN_ASHI = 'heiken-ashi',
+    // RANGE_BAR = 'range-bar',
 }
 
 export enum ScaleType {
+    NONE = 'none',
     LINEAR = 'linear',
     LOG = 'log',
+    DATE = 'date',
+    FINANCE_DATE = 'finance-date',
+    PERCENT_CHANGE = 'percent-change',
 }
   
 export interface ChartSetting {
@@ -118,4 +125,140 @@ export interface DomRectCoordinates {
     right: number;
     bottom: number;
     left: number;
+    margin?: MarginConfig;
 }
+
+export interface MarginConfig {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+    buffer?: number;
+    gutter?: number;
+    factor?: number;
+}
+
+
+export enum Series {
+    PRICE = 'price',
+    VOLUME = 'volume',
+    SMA = 'SMA',
+    EMA = 'EMA',
+    MACD = 'MACD',
+    RSI = 'RSI',
+    STOCHASTIC = 'Stochastic',
+
+}
+
+export enum ScaleLocation {
+    NONE = 'none',
+    TOP = 'top',
+    RIGHT = 'right',
+    BOTTOM = 'bottom',
+    LEFT = 'left',
+}
+
+export enum PaneType {
+    CHART = 'chart',
+    INDICATOR = 'indicator'
+}
+
+
+export interface ChartPanelConfig {
+    containerDims?: DomRectCoordinates,
+    panelDims?: ChartPanelDimensions;
+    title?: string;
+    description?: string;
+    panes?: ChartPaneConfig[];
+    details?: PanelDetails;
+    
+}
+
+export interface PanelDetails {
+    panelOrigin?: TranslationCoord;
+    chartPresent: boolean;
+    chartHeight: number,                    // height of chart pane itself w/o axes
+    chartPaneHeight?: number;               // height of chart pane with axes
+    numIndicatorPanes: number;
+    indicatorHeight: number;               // height of indicator pane w/o axes
+    singleIndicatorPaneHeight?: number;    // height of one indicator pane with axes
+    chartIndWidth?: number;                 // width of a chart/indicator without axes
+    fullPaneWidth?: number;                 // width of a chart/indicator with axes
+    panelHeight?: number;                   // sum of chartPanelHeight + all singleIndicatorPaneHeight s
+    panelWidth?: number;                    // sum of pane width + total width of axes
+    
+}
+
+export interface ChartPaneConfig {
+    paneNumber?: number;    // what position among all panes stacked top to bottom 1, 2, 3 etc.
+    title?: string;
+    description?: string;
+    paneType?: PaneType;
+    seriesConfigs?: ChartSeriesConfig[];
+    annotationsConfigs?: any;
+    
+}
+
+export interface AxisConfig {
+    type?: ScaleType;
+    location?: ScaleLocation;
+}
+
+// A ChartSeries is any data series.  Can be price or an indicator
+// series like a MA or RSI
+export interface ChartSeriesConfig {
+    seriesType: Series;
+    title?: string;
+    options?: {};
+    xAxisConfig?: AxisConfig;
+    yAxisConfig?: AxisConfig;
+    displayConfig?: SeriesDisplayConfig;
+}
+
+export interface SeriesDisplayConfig {
+    chartType: ChartType;
+    color?: any;
+    thickness?: any;
+
+}
+
+
+export interface PaneExtents {
+    xMin: number;
+    yMin: number;
+    xMax: number;
+    yMax: number;
+}
+
+export interface TranslationCoord {
+    right: number;
+    down: number;
+}
+
+export interface PaneLayout {
+    paneNumber: number;
+    fullPaneWidth: number;
+    fullPaneHeight: number;
+    chartIndHeight: number;
+    chartIndWidth: number;
+    paneOrigin: TranslationCoord;
+    topAxisOrigin: TranslationCoord;
+    rightAxisOrigin: TranslationCoord;
+    bottomAxisOrigin: TranslationCoord;
+    leftAxisOrigin: TranslationCoord;
+}
+
+export interface RenderablePane {
+    layout?: PaneLayout;
+    renderItem?: any;    // this will be the HTML group element for this pane that will be appended to the root svg/group
+    config?: ChartPaneConfig;
+}
+
+// this is the final output from the main chart panel gen svc
+export interface RenderablePanel {
+    panelConfig?: ChartPanelConfig;
+    panesMap?: Map<number, RenderablePane>;
+    renderPanel?: any;
+}
+
+

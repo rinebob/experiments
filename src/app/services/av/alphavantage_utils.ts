@@ -233,7 +233,7 @@ export function generateRequestString (req: DataSetting) {
           
       }
 
-      console.log('aV eRI request string: ', reqString);
+    //   console.log('aV eRI request string: ', reqString);
 
 
     return reqString;
