@@ -3,7 +3,7 @@ import { ChartPanelConfig, DomRectCoordinates, MarginConfig, ScaleLocation, Symb
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
 import { ChartPanelDimensions, ChartSetting, ChartType, PaneType, Series, ScaleType } from "./interfaces_chart";
-import { Option } from "./option_interfaces";
+import { BlackScholesInputs, Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
 
@@ -306,3 +306,52 @@ export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
 
 export const AXIS_THICKNESS = 20;
 
+// We will always use calendar days for Black-Scholes and other calculations
+export const DAYS_IN_A_YEAR = 365;
+
+export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
+    {
+      S0: 100, X: 100, s: .25, t: .15, r: .02, q: 0,
+    },
+    {
+      S0: 103,
+      X: 100,
+      s: .3,
+      t: .145,
+      r: .02,
+      q: 0,
+    },
+    {
+      S0: 105,
+      X: 100,
+      s: .35,
+      t: .14,
+      r: .02,
+      q: 0,
+    },
+    {
+      S0: 107,
+      X: 100,
+      s: .4,
+      t: .135,
+      r: .02,
+      q: 0,
+    },
+    {
+      S0: 109,
+      X: 100,
+      s: .45,
+      t: .13,
+      r: .02,
+      q: 0,
+    },
+    {
+      S0: 111,
+      X: 100,
+      s: .5,
+      t: .125,
+      r: .02,
+      q: 0,
+    },
+    
+  ];

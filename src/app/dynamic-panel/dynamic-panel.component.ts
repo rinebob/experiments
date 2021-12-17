@@ -67,8 +67,9 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   }
 
   ngOnInit(): void {
-    // this.chartPanelConfigBS.next(SIMPLE_CHART_PANEL_CONFIG);
-    this.chartPanelConfigBS.next(INITIAL_CHART_PANEL_CONFIG);
+    this.chartPanelConfigBS.next(SIMPLE_CHART_PANEL_CONFIG);
+    // this.chartPanelConfigBS.next(INITIAL_CHART_PANEL_CONFIG);
+    // TODO: copy/rename this action for this caller and register with effect
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 
@@ -82,10 +83,10 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   }
 
   generateDomRectCoordinates() {
-    const {x, y, height, width} = this.baseChartContainer.nativeElement.getBoundingClientRect();
+    // const {x, y, height, width} = this.baseChartContainer.nativeElement.getBoundingClientRect();
     const domRect:DomRectCoordinates = this.baseChartContainer.nativeElement.getBoundingClientRect();
     
-    console.log('dP ngAVI baseChartContainer x/y/width/height: ', x, y, width, height);
+    // console.log('dP ngAVI baseChartContainer x/y/width/height: ', x, y, width, height);
     console.log('dP ngAVI baseChartContainer domRect: ', domRect);
     
     const coords: DomRectCoordinates = {

@@ -120,7 +120,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       // PRIOR PROTOTYPE IMPLEMENTATION TO DRAW A CHART
       // WILL BE DEPRECATED WHEN CHART GEN SVC IS COMPLETE
       // this.draw(this.chartDataBS.value);
-      // this.draw(this.chartData);
+      this.draw(this.chartData);
 
       // *******************************
       // CHART GENERATOR SERVICE CALL
@@ -133,16 +133,18 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       // this.runChartGeneratorServiceUtils();
 
       if (this.containerDimsBS.value.height > 0 && this.containerDimsBS.value.width > 0) {
-        const renderablePanel = this.chartGenSvc.generatePanel(this.chartData, this.chartPanelConfig);
-        console.log('bC ngOC returned renderablePanel: ', renderablePanel);
 
-        d3.select('svg').remove();
-        this.g = d3.select('#testDiv')
-          .attr('top', this.containerDimsBS.value.margin.top)
-          .attr('left', this.containerDimsBS.value.margin.left)
-          .attr('width', this.containerDimsBS.value.width)
-          .attr('height', this.containerDimsBS.value.height)
-          .append(() => renderablePanel.renderPanel.node());
+        // const renderablePanel = this.chartGenSvc.generatePanel(this.chartData, this.chartPanelConfig);
+        
+        // console.log('bC ngOC returned renderablePanel: ', renderablePanel);
+
+        // d3.select('svg').remove();
+        // this.g = d3.select('#testDiv')
+        //   .attr('top', this.containerDimsBS.value.margin.top)
+        //   .attr('left', this.containerDimsBS.value.margin.left)
+        //   .attr('width', this.containerDimsBS.value.width)
+        //   .attr('height', this.containerDimsBS.value.height)
+        //   .append(() => renderablePanel.renderPanel.node());
       }
 
     }

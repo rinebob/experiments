@@ -5,7 +5,7 @@ import { OHLCData } from 'src/app/common/interfaces';
 import { AxisConfig, ChartPaneConfig, ChartSeriesConfig, ChartType, DomRectCoordinates, Series, PaneExtents, ScaleType, TranslationCoord, ScaleLocation, PaneLayout } from 'src/app/common/interfaces_chart';
 
 export function generateExtents(data: OHLCData[]) {
-    console.log('cGSU gE input data[0]: ', data[0]);
+    // console.log('cGSU gE input data[0]: ', data[0]);
     // const extents: PaneExtents = {xMin: 0, yMin: 0, xMax: 0, yMax: 0};
 
     const xMin = Math.floor(d3.min(data, d => d['date']));
@@ -31,36 +31,36 @@ export function generateExtents(data: OHLCData[]) {
 }
 
 export function generateXScale(xMin: number, xMax: number, width: number) {
-    console.log('cGSU gXS input x min/max/w ', xMin, xMax, width);
+    // console.log('cGSU gXS input x min/max/w ', xMin, xMax, width);
     const xScale = d3
     .scaleTime()
     .domain([xMin, xMax])
     .range([0, width]);
     
-    console.log('cGSU gXS final xScale: ', xScale);
+    // console.log('cGSU gXS final xScale: ', xScale);
     return xScale;
 }
 
 export function generateLinearYScale(yMin: number, yMax: number, height: number) {
-    console.log('cGSU gLinYS input y min/max/h ', yMin, yMax, height);
+    // console.log('cGSU gLinYS input y min/max/h ', yMin, yMax, height);
     const yScale = d3
         .scaleLinear()
         .domain([yMin, yMax])
         .range([height, 0]);
 
-        console.log('cGSU gLinYS final yScale: ', yScale);
+        // console.log('cGSU gLinYS final yScale: ', yScale);
         return yScale;
 
 }
 
 export function generateLogYScale(yMin: number, yMax: number, height: number) {
-    console.log('cGSU gLogYS input y min/max/h ', yMin, yMax, height);
+    // console.log('cGSU gLogYS input y min/max/h ', yMin, yMax, height);
     const yScale = d3
         .scaleLog()
         .domain([yMin, yMax])
         .range([height, 0]);
 
-    console.log('cGSU gLogYS final yScale: ', yScale);
+    // console.log('cGSU gLogYS final yScale: ', yScale);
     return yScale;
 
 
@@ -68,7 +68,7 @@ export function generateLogYScale(yMin: number, yMax: number, height: number) {
 }
 
 export function generateYAxis(yScale, layout: PaneLayout, seriesType: string, paneNumber: number, location: ScaleLocation) {
-    console.log('cGSU gYA input yScale/origin/seriesType/paneNumber/location', yScale, layout, seriesType, paneNumber, location);
+    // console.log('cGSU gYA input yScale/origin/seriesType/paneNumber/location', yScale, layout, seriesType, paneNumber, location);
 
     const axis = location === ScaleLocation.LEFT ? d3.axisLeft(yScale) : d3.axisRight(yScale);
     const origin = location === ScaleLocation.LEFT ? layout.leftAxisOrigin : layout.rightAxisOrigin;
@@ -85,11 +85,11 @@ export function generateYAxis(yScale, layout: PaneLayout, seriesType: string, pa
 }
 
 export function generateDateXAxis(xScale, layout: PaneLayout, seriesType: Series, paneNumber: number, location: ScaleLocation) {
-    console.log('cGSU gDXA input xScale/origin/seriesType/paneNumber/location', xScale, layout, seriesType, paneNumber, location);
+    // console.log('cGSU gDXA input xScale/origin/seriesType/paneNumber/location', xScale, layout, seriesType, paneNumber, location);
 
     const axis = location === ScaleLocation.TOP ? d3.axisTop(xScale) : d3.axisBottom(xScale);
     const origin = location === ScaleLocation.TOP ? layout.topAxisOrigin : layout.bottomAxisOrigin;
-    console.log('cGU gDXA origin: ', origin);
+    // console.log('cGU gDXA origin: ', origin);
 
     const dateXAxis = d3.create('svg:g')
         .attr('id', `${seriesType}-xAxis-${paneNumber}`)
@@ -101,27 +101,65 @@ export function generateDateXAxis(xScale, layout: PaneLayout, seriesType: Series
 }
 
 export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
-    console.log('cGSU gFTA input xScale', xScale);
+    // console.log('cGSU gFTA input xScale', xScale);
     const axis = {};
     return axis;
 }
 
-export function generateLineSeries(data: OHLCData[]) {
-    console.log('cGSU gLS input data[0]', data[0]);
-    const series = {};
-    return series;
+// line series needs extents, xScale and yScale
+// get those here based on data
+// generateXScale(xMin: number, xMax: number, width: number)
+// xScale, yScale, series, paneNumber
+export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Series, paneNumber: number, origin: TranslationCoord) {
+    console.log('cGSU gLS input x/yScale/series/paneNumber', yScale, series, paneNumber);
+    console.table(data.slice(0,10));
+
+         
+    // dataDisplay = d3
+    // .line()
+    // .x(d => xScale(d['date']))
+    // .y(d => yScale(d['close']));
+    // // .y(d => yScale(d['stochastic'].d));
+    // // .y(d => yScale(d.stochastic.d));
+
+
+    const lineSeriesFn = d3.line()
+        .x(d => xScale(d['date']))
+        .y(d => yScale(d['close']));
+        // .y(d => yScale(d.series));  // ohlc v sma rsi etc
+        
+    console.log('cGSU gLS output line series', lineSeriesFn);
+
+    // const dateXAxis = d3.create('svg:g')
+    //     .attr('id', `${seriesType}-xAxis-${paneNumber}`)
+    //     .attr('transform', `translate(${origin.right}, ${origin.down})`)
+    //     .call(axis);
+
+    const lineSeries = d3.create('svg:g')
+        .append('path')
+        .data(data)
+        .attr('id', `${series}-data-${paneNumber}`)
+        .attr('transform', `translate(${origin.right}, ${origin.down})`)
+        .style('fill', 'none')
+        .attr('stroke', 'darkblue')
+        .attr('stroke-width', '1.5')
+        .attr('d', lineSeriesFn);
+
+
+    return lineSeries;
+    
 }
 
-export function generateCandlestickSeries(data: OHLCData[]) {
+export function generateCandlestickSeries(data: OHLCData[], series:Series, paneNumber: number) {
     console.log('cGSU gCS input data[0]', data[0]);
-    const series = {};
-    return series;
+    // const series = {};
+    // return series;
 }
 
-export function generateBarSeries(data: OHLCData[]) {
+export function generateBarSeries(data: OHLCData[], series:Series) {
     console.log('cGSU gBS input data[0]', data[0]);
-    const series = {};
-    return series;
+    // const series = {};
+    // return series;
 }
 
 export function generateSMA(data: OHLCData[]) {
