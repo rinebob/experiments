@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: 'simple-chart',  loadChildren: () => import('./simple-chart/simple-chart.module').then(m => m.SimpleChartModule) },
   { path: 'base-components',  loadChildren: () => import('./base-components/base-components.module').then(m => m.BaseComponentsModule) },
   { path: 'visvol', loadChildren: () => import('./visvol/visvol.module').then(m => m.VisvolModule) },
-  { path: 'experiments', loadChildren: () => import('./experiments/experiments.module').then(m => m.ExperimentsModule) },
+  { path: 'exp', loadChildren: () => import('./experiments/experiments.module').then(m => m.ExperimentsModule) },
   { path: 'dynamic-panel', loadChildren: () => import('./dynamic-panel/dynamic-panel.module').then(m => m.DynamicPanelModule) },
   { path: '**', component: AppComponent},
 ];
