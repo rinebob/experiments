@@ -42,7 +42,7 @@ export function generateXScale(xMin: number, xMax: number, width: number) {
 }
 
 export function generateLinearYScale(yMin: number, yMax: number, height: number) {
-    // console.log('cGSU gLinYS input y min/max/h ', yMin, yMax, height);
+    console.log('cGSU gLinYS input y min/max/h ', yMin, yMax, height);
     const yScale = d3
         .scaleLinear()
         .domain([yMin, yMax])
@@ -54,7 +54,7 @@ export function generateLinearYScale(yMin: number, yMax: number, height: number)
 }
 
 export function generateLogYScale(yMin: number, yMax: number, height: number) {
-    // console.log('cGSU gLogYS input y min/max/h ', yMin, yMax, height);
+    console.log('cGSU gLogYS input y min/max/h ', yMin, yMax, height);
     const yScale = d3
         .scaleLog()
         .domain([yMin, yMax])
@@ -68,10 +68,14 @@ export function generateLogYScale(yMin: number, yMax: number, height: number) {
 }
 
 export function generateYAxis(yScale, layout: PaneLayout, seriesType: string, paneNumber: number, location: ScaleLocation) {
-    // console.log('cGSU gYA input yScale/origin/seriesType/paneNumber/location', yScale, layout, seriesType, paneNumber, location);
+    console.log('cGSU gYA input seriesType/paneNumber/location/layout',seriesType, paneNumber, location);
+    console.log('cGSU gYA input yScale range/domain', yScale.range(), yScale.domain());
+    console.table(layout);
 
     const axis = location === ScaleLocation.LEFT ? d3.axisLeft(yScale) : d3.axisRight(yScale);
     const origin = location === ScaleLocation.LEFT ? layout.leftAxisOrigin : layout.rightAxisOrigin;
+
+    console.log('cGSU gYA yScale origin: ', origin);
 
     const yAxis = d3.create('svg:g')
         .attr('id', `${seriesType}-yAxis-${paneNumber}`)
@@ -111,7 +115,8 @@ export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
 // generateXScale(xMin: number, xMax: number, width: number)
 // xScale, yScale, series, paneNumber
 export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Series, paneNumber: number, origin: TranslationCoord) {
-    console.log('cGSU gLS input x/yScale/series/paneNumber', yScale, series, paneNumber);
+    console.log('cGSU gLS input series/paneNumber/origin', series, paneNumber, origin);
+    console.log('cGSU gLS input yScale range/domain', yScale.range(), yScale.domain());
     console.table(data.slice(0,10));
 
          
@@ -128,7 +133,7 @@ export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Seri
         .y(d => yScale(d['close']));
         // .y(d => yScale(d.series));  // ohlc v sma rsi etc
         
-    console.log('cGSU gLS output line series', lineSeriesFn);
+    // console.log('cGSU gLS output line series fn', lineSeriesFn);
 
     // const dateXAxis = d3.create('svg:g')
     //     .attr('id', `${seriesType}-xAxis-${paneNumber}`)
@@ -137,7 +142,7 @@ export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Seri
 
     const lineSeries = d3.create('svg:g')
         .append('path')
-        .data(data)
+        .data([data])
         .attr('id', `${series}-data-${paneNumber}`)
         .attr('transform', `translate(${origin.right}, ${origin.down})`)
         .style('fill', 'none')
@@ -145,6 +150,7 @@ export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Seri
         .attr('stroke-width', '1.5')
         .attr('d', lineSeriesFn);
 
+    // console.log('cGSU gLS output line series: ', lineSeries);
 
     return lineSeries;
     

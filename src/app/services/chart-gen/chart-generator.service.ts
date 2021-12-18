@@ -267,7 +267,8 @@ export class ChartGeneratorService {
   generateRenderItem(data: OHLCData[], paneConfig: ChartPaneConfig, layout: PaneLayout) {
     
     console.log('-----------------------------------------------');
-    console.log('cGS gPane paneConfig: ', paneConfig);
+    console.log('cGS gPane paneConfig:');
+    console.table(paneConfig);
     // console.log('cGS gPane layout:');
     // console.table(layout);
     
@@ -278,11 +279,12 @@ export class ChartGeneratorService {
     // generate pane dimensions
     const extents: PaneExtents = utils.generateExtents(data);
     // console.log('cGS gPane output extents:');
-    // console.table({...extents});
+    console.table({...extents});
 
     // for each series of paneConfig series array
     for (const config of paneConfig.seriesConfigs) {
-      console.log('cGS gPane series config: ', config);
+      console.log('cGS gPane series config:');
+      console.table(config);
 
       // generate x axis if present
       if (config.xAxisConfig.type !== ScaleType.NONE) {
@@ -349,6 +351,7 @@ export class ChartGeneratorService {
   }
 
   generateYScale(yMin: number, yMax: number, chartIndHeight: number, scaleType: ScaleType) {
+    console.log('cGS gYS input yMin/yMax/chartIndHeight/scaleType: ', yMin, yMax, chartIndHeight, scaleType);
 
     let yScale: d3.Scale;
 
@@ -373,7 +376,10 @@ export class ChartGeneratorService {
   }
 
   generateYAxis(extents: PaneExtents, layout: PaneLayout, config: ChartSeriesConfig, paneConfig: ChartPaneConfig) {
-    // console.log('cGS gYA input extents, axis config: ', extents, config, layout);
+    console.log('cGS gYA input axis config/layout/extents:');
+    console.table(config);
+    console.table(layout);
+    console.table(extents);
     let yAxis: d3.Axis;
     let yScale: d3.Scale;
     
@@ -450,7 +456,7 @@ export class ChartGeneratorService {
     
     const extents: PaneExtents = utils.generateExtents(data);
     const xScale = utils.generateXScale(extents.xMin, extents.xMax, layout.chartIndWidth);
-    const yScale = this.generateYScale(extents.yMin, extents.yMax, layout.chartIndWidth, config.yAxisConfig.type);
+    const yScale = this.generateYScale(extents.yMin, extents.yMax, layout.chartIndHeight, config.yAxisConfig.type);
     
     let render;
     

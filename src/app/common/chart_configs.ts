@@ -10,6 +10,7 @@ export const SIMPLE_CHART_PANEL_CONFIG: ChartPanelConfig = {
                 {
                     seriesType: Series.PRICE,
                     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    // yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
                     yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
                     displayConfig: {chartType: ChartType.LINE}
                 },
@@ -31,18 +32,18 @@ export const INITIAL_CHART_PANEL_CONFIG: ChartPanelConfig = {
                     yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
                     displayConfig: {chartType: ChartType.LINE}
                 },
-                {
-                    seriesType: Series.VOLUME,
-                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
-                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.LEFT},
-                    displayConfig: {chartType: ChartType.BAR}
-                },
-                {
-                    seriesType: Series.SMA,
-                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
-                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.NONE},
-                    displayConfig: {chartType: ChartType.LINE}
-                },
+                // {
+                //     seriesType: Series.VOLUME,
+                //     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                //     yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.LEFT},
+                //     displayConfig: {chartType: ChartType.BAR}
+                // },
+                // {
+                //     seriesType: Series.SMA,
+                //     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.NONE},
+                //     yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.NONE},
+                //     displayConfig: {chartType: ChartType.LINE}
+                // },
             ]
         },
         {
@@ -51,8 +52,9 @@ export const INITIAL_CHART_PANEL_CONFIG: ChartPanelConfig = {
             paneNumber: 2,
             seriesConfigs: [
                 {
-                    seriesType: Series.MACD,
+                    seriesType: Series.PRICE,
                     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    // yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
                     yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
                     displayConfig: {chartType: ChartType.LINE}
                 },
@@ -71,10 +73,11 @@ export const INITIAL_CHART_PANEL_CONFIG: ChartPanelConfig = {
             paneNumber: 3,
             seriesConfigs: [
                 {
-                    seriesType: Series.STOCHASTIC,
+                    seriesType: Series.PRICE,
                     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
-                    yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
-                    displayConfig: {chartType: ChartType.BAR}
+                    // yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
+                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
+                    displayConfig: {chartType: ChartType.LINE}
                 },
                 // {
                 //     seriesType: Series.EMA,
@@ -85,45 +88,50 @@ export const INITIAL_CHART_PANEL_CONFIG: ChartPanelConfig = {
                 
             ]
         },
-        // {
-        //     title: 'Indicator pane three', description: 'Indicator pane three dude...',
-        //     paneType: PaneType.INDICATOR,
-        //     paneNumber: 4,
-        //     seriesConfigs: [
-        //         {
-        //             seriesType: Series.STOCHASTIC,
-        //             xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
-        //             yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
-        //             displayConfig: {chartType: ChartType.BAR}
-        //         },
-        //         // {
-        //         //     seriesType: Series.EMA,
-        //         //     xAxisConfig: {type: ScaleType.NONE, location: ScaleLocation.NONE},
-        //         //     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
-        //         //     displayConfig: {chartType: ChartType.LINE}
-        //         // },
+        {
+            title: 'Indicator pane three', description: 'Indicator pane three dude...',
+            paneType: PaneType.INDICATOR,
+            paneNumber: 4,
+            seriesConfigs: [
+                {
+                    // seriesType: Series.STOCHASTIC,
+                    seriesType: Series.PRICE,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
+                    // displayConfig: {chartType: ChartType.BAR}
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+                // {
+                //     seriesType: Series.EMA,
+                //     xAxisConfig: {type: ScaleType.NONE, location: ScaleLocation.NONE},
+                //     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
+                //     displayConfig: {chartType: ChartType.LINE}
+                // },
                 
-        //     ]
-        // },
-        // {
-        //     title: 'Indicator pane four', description: 'Indicator pane four dude...',
-        //     paneType: PaneType.INDICATOR,
-        //     paneNumber: 5,
-        //     seriesConfigs: [
-        //         {
-        //             seriesType: Series.STOCHASTIC,
-        //             xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
-        //             yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
-        //             displayConfig: {chartType: ChartType.BAR}
-        //         },
-        //         // {
-        //         //     seriesType: Series.EMA,
-        //         //     xAxisConfig: {type: ScaleType.NONE, location: ScaleLocation.NONE},
-        //         //     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
-        //         //     displayConfig: {chartType: ChartType.LINE}
-        //         // },
+            ]
+        },
+        {
+            title: 'Indicator pane four', description: 'Indicator pane four dude...',
+            paneType: PaneType.INDICATOR,
+            paneNumber: 5,
+            seriesConfigs: [
+                {
+                    // seriesType: Series.STOCHASTIC,
+                    seriesType: Series.PRICE,
+                    xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
+                    // yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
+                    yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
+                    // displayConfig: {chartType: ChartType.BAR}
+                    displayConfig: {chartType: ChartType.LINE}
+                },
+                // {
+                //     seriesType: Series.EMA,
+                //     xAxisConfig: {type: ScaleType.NONE, location: ScaleLocation.NONE},
+                //     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.LEFT},
+                //     displayConfig: {chartType: ChartType.LINE}
+                // },
                 
-        //     ]
-        // },
+            ]
+        },
     ],
 };

@@ -46,7 +46,8 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
   @Input()
   set containerDimensions(dimensions: DomRectCoordinates) {
-    // console.log('bC chartDimensions input: ', dimensions);
+    console.log('bC chartDimensions input:');
+    console.table(dimensions);
     const allDimensions = this.setContainerDimensions(dimensions);
     this.chartPanelDimsBS.next(allDimensions);
 
@@ -59,7 +60,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   set chartData(data: OHLCData[]) {
     // console.log('bC chartData input data[0]: ', data[0]);
     this.chartDataBS.next(data);
-    this.draw(data)
+    // this.draw(data)
   }
   get chartData() {
     return this.chartDataBS.value;
@@ -95,6 +96,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
   private margin = DEFAULT_MARGIN_CONFIG;
  
+ 
   xScale: d3.svg.Scale;
   yScale: d3.svg.Scale;
   xAxis: d3.svg.Axis;
@@ -120,7 +122,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       // PRIOR PROTOTYPE IMPLEMENTATION TO DRAW A CHART
       // WILL BE DEPRECATED WHEN CHART GEN SVC IS COMPLETE
       // this.draw(this.chartDataBS.value);
-      this.draw(this.chartData);
+      // this.draw(this.chartData);
 
       // *******************************
       // CHART GENERATOR SERVICE CALL
@@ -134,17 +136,17 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
       if (this.containerDimsBS.value.height > 0 && this.containerDimsBS.value.width > 0) {
 
-        // const renderablePanel = this.chartGenSvc.generatePanel(this.chartData, this.chartPanelConfig);
+        const renderablePanel = this.chartGenSvc.generatePanel(this.chartData, this.chartPanelConfig);
         
         // console.log('bC ngOC returned renderablePanel: ', renderablePanel);
 
-        // d3.select('svg').remove();
-        // this.g = d3.select('#testDiv')
-        //   .attr('top', this.containerDimsBS.value.margin.top)
-        //   .attr('left', this.containerDimsBS.value.margin.left)
-        //   .attr('width', this.containerDimsBS.value.width)
-        //   .attr('height', this.containerDimsBS.value.height)
-        //   .append(() => renderablePanel.renderPanel.node());
+        d3.select('svg').remove();
+        this.g = d3.select('#testDiv')
+          .attr('top', this.containerDimsBS.value.margin.top)
+          .attr('left', this.containerDimsBS.value.margin.left)
+          .attr('width', this.containerDimsBS.value.width)
+          .attr('height', this.containerDimsBS.value.height)
+          .append(() => renderablePanel.renderPanel.node());
       }
 
     }
@@ -244,7 +246,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
   calculateChartPanelDimensions(hostDimensions: DomRectCoordinates) {
     
-    console.log('bC cCD hostDimensions arg: ', hostDimensions)
+    // console.log('bC cCD hostDimensions arg: ', hostDimensions)
 
     const svgDim = {width: hostDimensions.width, height: hostDimensions.height};
     
