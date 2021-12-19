@@ -22,6 +22,7 @@ export class ChartGeneratorService {
 
   // rename to generateRenderablePanel
   generatePanel(data: OHLCData[], panelConfig: ChartPanelConfig) {
+    console.log('cGS gPanel start: ');
     // console.log('cGS gPanel input data[0], panelConfig: ', data[0], panelConfig);
     // console.log('cGS gPanel input panelConfig.containerDims:');
     // console.table(panelConfig.containerDims);
@@ -44,8 +45,8 @@ export class ChartGeneratorService {
 
     // call the for of on each ChartPaneConfig object in the panelConfig.panes property
     for (const pane of panelConfig.panes) {
-      // console.log('-----------------------------------------------');
-      // console.log('cGS genPanel pane number: ', pane.paneNumber);
+      console.log('-----------------------------------------------');
+      console.log('cGS genPanel pane number: ', pane.paneNumber);
         
       const paneLayout = this.generatePaneLayout(pane, nextOrigin, panelConfig.containerDims, panelConfig.details)
       nextOrigin = {right: nextOrigin.right, down: nextOrigin.down + paneLayout.fullPaneHeight};
@@ -266,9 +267,10 @@ export class ChartGeneratorService {
   generateRenderItem(data: OHLCData[], paneConfig: ChartPaneConfig, layout: PaneLayout) {
     
     console.log('-----------------------------------------------');
-    console.log('cGS gPane paneConfig: ', paneConfig);
-    console.log('cGS gPane layout:');
-    console.table(layout);
+    console.log('cGS gPane paneConfig:');
+    console.table(paneConfig);
+    // console.log('cGS gPane layout:');
+    // console.table(layout);
     
     // create pane root group node
     const renderItem = d3.create('svg:g')
@@ -276,100 +278,116 @@ export class ChartGeneratorService {
 
     // generate pane dimensions
     const extents: PaneExtents = utils.generateExtents(data);
-    console.log('cGS gPane output extents:');
+    // console.log('cGS gPane output extents:');
     console.table({...extents});
 
-
-    const seriesToRender = [];
-
-    // for each series of paneConfig series
+    // for each series of paneConfig series array
     for (const config of paneConfig.seriesConfigs) {
-      console.log('cGS gPane series config: ', config);
+      console.log('cGS gPane series config:');
+      console.table(config);
 
       // generate x axis if present
       if (config.xAxisConfig.type !== ScaleType.NONE) {
         const xAxis = this.generateXAxis(extents, layout, config, paneConfig);
-        console.log('cGS gRI final xAxis: ', xAxis);
+        // console.log('cGS gRI final xAxis: ', xAxis);
 
         renderItem.append(() => xAxis.node());
-        
-        // append x axis
       }
       
             
       // generate y axis if present
       if (config.yAxisConfig.type !== ScaleType.NONE) {
         const yAxis = this.generateYAxis(extents, layout, config, paneConfig);
-        console.log('cGS gRI final yAxis: ', yAxis);
-
-        renderItem.append(() => yAxis.node());
+        // console.log('cGS gRI final yAxis: ', yAxis);
         
-        // append y axis
+        renderItem.append(() => yAxis.node());
       }
       
+      // generate indicator series data (price data is ohlcv)
+      // now there are series types for all of ohlc 
+      // and 'price' but that will be deprecated
+
+      // const series = this.generateSeriesData(config, data);
+      // console.log('cGS gRI generated series: ', series);
+
+      // how to handle the existing ohlcv data object and the newly
+      // created indicator data?
+      // look at what comes back...
+
+      // const seriesRender = this.generateSeriesRender(data, config.displayConfig.chartType, config.seriesType, paneConfig.paneNumber, layout);
+      const seriesRender = this.generateSeriesRender(data, config, paneConfig.paneNumber, layout);
+
       
-      // generate series
-      // const seriesData = this.generateSeriesData(config, data);
+      // // append series render item
+      renderItem.append(() => seriesRender.node());
+
+      // generate and append annotations
       
-      // append series
-
-      // const render = this.generateSeriesRender(seriesData);
-      // const render = this.generateSeriesRender(data, config.displayConfig.chartType);
-
-      // pane.append(render);
-
-      // seriesToRender.push(render);
-
     }
-    // generate annotations
-    // append annotations
 
     return renderItem;
   }
 
   generateXAxis(extents: PaneExtents, layout: PaneLayout, config: ChartSeriesConfig, paneConfig: ChartPaneConfig) {
-    console.log('cGS gXA input extents, layout, axis config: ', extents, layout, config);
+    // console.log('cGS gXA input extents, layout, axis config: ', extents, layout, config);
     let axis:d3.Axis;
-    // switch case for config AxisType
-    // nearly always will be date axis 
-    // call the util method
     const xScale = utils.generateXScale(extents.xMin, extents.xMax, layout.chartIndWidth);
     
     switch(config.xAxisConfig.type) {
       case ScaleType.DATE: 
       // genDateXAxis needs axis origin also
         axis = utils.generateDateXAxis(xScale, layout, config.seriesType, paneConfig.paneNumber, config.xAxisConfig.location);
-        console.log('cGS gXA genDateAxis final axis: ', axis);
+        // console.log('cGS gXA genDateAxis final axis: ', axis);
         
         return utils.generateDateXAxis(xScale, layout, config.seriesType, paneConfig.paneNumber, config.xAxisConfig.location);
       
-
-      
       case ScaleType.FINANCE_DATE: 
         // axis = utils.generateFinanceTimeXAxis(xScale);
-        console.log('cGS gXA genFinTimeAxis axis - no op for now');
+        // console.log('cGS gXA genFinTimeAxis axis - no op for now');
         // return utils.generateFinanceTimeXAxis(xScale);
 
         break;
     }
+  }
 
-    // return axis;
+  generateYScale(yMin: number, yMax: number, chartIndHeight: number, scaleType: ScaleType) {
+    console.log('cGS gYS input yMin/yMax/chartIndHeight/scaleType: ', yMin, yMax, chartIndHeight, scaleType);
+
+    let yScale: d3.Scale;
+
+    switch(scaleType) {
+      case ScaleType.LINEAR: 
+        yScale = utils.generateLinearYScale(yMin, yMax, chartIndHeight);
+        
+        // console.log('cGS gYS output linear yScale: ', yScale);
+
+      break;
+
+      case ScaleType.LOG: 
+        yScale = utils.generateLogYScale(yMin, yMax, chartIndHeight);
+        
+        // console.log('cGS gYS output log yScale: ', yScale);
+      
+      break;
+    }
+
+    return yScale;
 
   }
 
   generateYAxis(extents: PaneExtents, layout: PaneLayout, config: ChartSeriesConfig, paneConfig: ChartPaneConfig) {
-    console.log('cGS gYA input extents, axis config: ', extents, config, layout);
+    console.log('cGS gYA input axis config/layout/extents:');
+    console.table(config);
+    console.table(layout);
+    console.table(extents);
     let yAxis: d3.Axis;
     let yScale: d3.Scale;
-    // switch case for config AxisType
-    // linear, log, percent change
-    // call the util method
-
+    
     switch(config.yAxisConfig.type) {
       case ScaleType.LINEAR: 
         yScale = utils.generateLinearYScale(extents.yMin, extents.yMax, layout.chartIndHeight);
         // axis = utils.generateLinearYAxis(yScale, layout.paneOrigin, config.seriesType, paneConfig.paneNumber, config.yAxisConfig.location);
-        console.log('cGS gYA output linear yScale: ', yScale);
+        // console.log('cGS gYA output linear yScale: ', yScale);
 
         break;
 
@@ -377,7 +395,7 @@ export class ChartGeneratorService {
         yScale = utils.generateLogYScale(extents.yMin, extents.yMax, layout.chartIndHeight);
         // axis = utils.generateLogYAxis(yScale, layout.paneOrigin, config.seriesType, paneConfig.paneNumber, config.yAxisConfig.location);
 
-        console.log('cGS gYA output log yScale: ', yScale);
+        // console.log('cGS gYA output log yScale: ', yScale);
         
         break;
         
@@ -387,7 +405,7 @@ export class ChartGeneratorService {
     }
       
     yAxis = utils.generateYAxis(yScale, layout, config.seriesType, paneConfig.paneNumber, config.yAxisConfig.location);
-    console.log('cGS gYA output yAxis: ', yAxis);
+    // console.log('cGS gYA output yAxis: ', yAxis);
 
     return yAxis;
   }
@@ -432,28 +450,37 @@ export class ChartGeneratorService {
 
   }
 
-  generateSeriesRender(data: OHLCData[], type: ChartType) {
-    console.log('cGS gSR input chart type, data[0]: ', type, data[0]);
-    let render = {};
-    switch(type) {
+  // generateSeriesRender(data: OHLCData[], type: ChartType, series: Series, paneNumber: number, layout: PaneLayout) {
+  generateSeriesRender(data: OHLCData[], config: ChartSeriesConfig, paneNumber: number, layout: PaneLayout) {
+    console.log('cGS gSR pane/series: ', paneNumber, config.seriesType);
+    
+    const extents: PaneExtents = utils.generateExtents(data);
+    const xScale = utils.generateXScale(extents.xMin, extents.xMax, layout.chartIndWidth);
+    const yScale = this.generateYScale(extents.yMin, extents.yMax, layout.chartIndHeight, config.yAxisConfig.type);
+    
+    let render;
+    
+    switch(config.displayConfig.chartType) {
       case ChartType.LINE: 
-        render = utils.generateLineSeries(data);
+        render = utils.generateLineSeries(data, xScale, yScale, config.seriesType, paneNumber, layout.paneOrigin);
 
         break;
 
       case ChartType.CANDLESTICK: 
-        render = utils.generateCandlestickSeries(data);
+        // render = utils.generateCandlestickSeries(data, series, paneNumber);
         
 
         break;
 
       case ChartType.BAR: 
-        render = utils.generateBarSeries(data);
+        // render = utils.generateBarSeries(data, series, paneNumber);
 
         break;
 
       default: ;
     }
+
+    console.log('cGS gSR OUTPUT RENDER ITEM: ', render);
 
     return render;
   }

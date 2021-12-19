@@ -140,6 +140,10 @@ export interface MarginConfig {
 
 
 export enum Series {
+    OPEN = 'open',
+    HIGH = 'high',
+    LOW = 'low',
+    CLOSE = 'close',
     PRICE = 'price',
     VOLUME = 'volume',
     SMA = 'SMA',

@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: 'vv', loadChildren: () => import('./vv/vv.module').then(m => m.VvModule) },
   { path: 'ang', loadChildren: () => import('./ang/ang.module').then(m => m.AngModule) },
   { path: 'd-three', loadChildren: () => import('./d-three/d-three.module').then(m => m.DThreeModule) },
+  { path: 'd3fc', loadChildren: () => import('./d3fc/d3fc.module').then(m => m.D3fcModule) },
   { path: '**', component: ExperimentsComponent },
 
 ];
