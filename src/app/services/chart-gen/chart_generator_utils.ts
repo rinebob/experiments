@@ -213,3 +213,43 @@ export function generateStochastic(data: OHLCData[]) {
 // export function generateIndicatorSeries(data: OHLCData[], xScale, yScale, config: IndicatorConfig) {
 
 // }
+
+export function mergeArrayData(into, from, label) {
+    // console.log('cGU mAD input into/from: ', into[0], from[0]);
+    // console.log('cGU mAD input from[0]/value: ', from[0], from[0].value);
+    
+    const output = into.map((d, i) => {
+        const datum = {...d};
+
+        // console.log('cGU mD i/from[i]: ', i, from[i]);
+        datum[`${label}`] = from[i];
+      
+      return {...datum};
+    });
+
+    console.log('cGU mD output:');
+    console.table(output.slice(0,20));
+    
+    return output;
+}
+
+export function mergeObjectData(into, from) {
+    console.log('cGU mOD input into/from: ', into[0], from[0]);
+    console.log('cGU mD input from[0].key/value: ', from[0].key, from[0].value);
+    
+    const output = into.map((d, i) => {
+      const datum = {...d};
+
+      for (const [key, value] of Object.entries(from[i])) {
+        // console.log('cGU mD key/value: ', key, value);
+        datum[`${key}`] = value;
+      }
+
+      return {...datum};
+    });
+
+    console.log('cGU mD output:');
+    console.table(output.slice(0,20));
+    
+    return output;
+}
