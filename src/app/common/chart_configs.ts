@@ -12,7 +12,9 @@ export const SIMPLE_CHART_PANEL_CONFIG: ChartPanelConfig = {
                     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
                     // yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
                     yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
-                    displayConfig: {chartType: ChartType.LINE}
+                    // displayConfig: {chartType: ChartType.LINE}
+                    // displayConfig: {chartType: ChartType.CANDLESTICK}
+                    displayConfig: {chartType: ChartType.BAR}
                 },
             ]
         },

@@ -237,8 +237,8 @@ export const ZOOM_LEVELS = new Map([
 //     [6, 0.75],
 //   ]);
 
-export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
-// export const DEFAULT_ZOOM_LEVEL = 3;
+// export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
+export const DEFAULT_ZOOM_LEVEL = 2;
 
 export const DOM_RECT_COORDS_INITIALIZER:DomRectCoordinates = {
     x: 0,

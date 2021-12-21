@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { axisBottom } from 'd3fc';
-import { config } from 'rxjs';
+import { BehaviorSubject, config } from 'rxjs';
 
 import * as d3 from 'd3';
 
@@ -8,6 +8,7 @@ import { OHLCData } from 'src/app/common/interfaces';
 import { AxisConfig, ChartPaneConfig, ChartPanelConfig, ChartSeriesConfig, ChartType, DomRectCoordinates, PaneExtents, PaneLayout, PanelDetails, PaneType, RenderablePane, RenderablePanel, ScaleLocation, ScaleType, Series, TranslationCoord } from 'src/app/common/interfaces_chart';
 import { AXIS_THICKNESS, PANE_HEIGHT_MATRIX} from '../../common/constants';
 import * as utils from './chart_generator_utils';
+import { D3fcComponent } from 'src/app/experiments/d3fc/d3fc.component';
 
 
 @Injectable({
@@ -467,13 +468,13 @@ export class ChartGeneratorService {
         break;
 
       case ChartType.CANDLESTICK: 
-        // render = utils.generateCandlestickSeries(data, series, paneNumber);
+      render = utils.generateCandlestickSeries(data, xScale, yScale, config.seriesType, paneNumber, layout.paneOrigin);
         
 
         break;
 
       case ChartType.BAR: 
-        // render = utils.generateBarSeries(data, series, paneNumber);
+      render = utils.generateBarSeries(data, xScale, yScale, config.seriesType, paneNumber, layout.paneOrigin);
 
         break;
 

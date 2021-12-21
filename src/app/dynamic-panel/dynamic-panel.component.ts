@@ -67,8 +67,8 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   }
 
   ngOnInit(): void {
-    // this.chartPanelConfigBS.next(SIMPLE_CHART_PANEL_CONFIG);
-    this.chartPanelConfigBS.next(INITIAL_CHART_PANEL_CONFIG);
+    this.chartPanelConfigBS.next(SIMPLE_CHART_PANEL_CONFIG);
+    // this.chartPanelConfigBS.next(INITIAL_CHART_PANEL_CONFIG);
     // TODO: copy/rename this action for this caller and register with effect
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }

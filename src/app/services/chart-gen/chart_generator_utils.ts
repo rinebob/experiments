@@ -117,7 +117,7 @@ export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
 export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Series, paneNumber: number, origin: TranslationCoord) {
     console.log('cGSU gLS input series/paneNumber/origin', series, paneNumber, origin);
     console.log('cGSU gLS input yScale range/domain', yScale.range(), yScale.domain());
-    console.table(data.slice(0,10));
+    console.table(data.slice(100,110));
 
          
     // dataDisplay = d3
@@ -143,7 +143,7 @@ export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Seri
     const lineSeries = d3.create('svg:g')
         .append('path')
         .data([data])
-        .attr('id', `${series}-data-${paneNumber}`)
+        .attr('id', `${series}-line-${paneNumber}`)
         .attr('transform', `translate(${origin.right}, ${origin.down})`)
         .style('fill', 'none')
         .attr('stroke', 'darkblue')
@@ -156,16 +156,55 @@ export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Seri
     
 }
 
-export function generateCandlestickSeries(data: OHLCData[], series:Series, paneNumber: number) {
-    console.log('cGSU gCS input data[0]', data[0]);
-    // const series = {};
-    // return series;
+export function generateCandlestickSeries(data: OHLCData[], xScale, yScale, series:Series, paneNumber: number, origin: TranslationCoord) {
+    console.log('cGSU gCS input series/paneNumber/origin', series, paneNumber, origin);
+    console.log('cGSU gCS input yScale range/domain', yScale.range(), yScale.domain());
+    console.table(data.slice(100,110));
+
+    const renderItem = d3.create('svg:g')
+      .attr('id', `${series}-cndl-${paneNumber}`);
+
+    const candlestick = fc.seriesSvgCandlestick()
+    .xScale(xScale)
+    .yScale(yScale)
+    .crossValue(d => d.date)
+    .openValue(d => d.open)
+    .highValue(d => d.high)
+    .lowValue(d => d.low)
+    .closeValue(d => d.close);
+
+    renderItem
+    .datum(data)
+    .call(candlestick);
+
+    return renderItem;
+
+
 }
 
-export function generateBarSeries(data: OHLCData[], series:Series) {
-    console.log('cGSU gBS input data[0]', data[0]);
-    // const series = {};
-    // return series;
+export function generateBarSeries(data: OHLCData[], xScale, yScale, series:Series, paneNumber: number, origin: TranslationCoord) {
+    console.log('cGSU gBS input series/paneNumber/origin', series, paneNumber, origin);
+    console.log('cGSU gBS input yScale range/domain', yScale.range(), yScale.domain());
+    console.table(data.slice(100,110));
+
+    const renderItem = d3.create('svg:g')
+      .attr('id', `${series}-bar-${paneNumber}`);
+
+    const ohlcBar = fc.seriesSvgOhlc()
+    .xScale(xScale)
+    .yScale(yScale)
+    .crossValue(d => d.date)
+    .openValue(d => d.open)
+    .highValue(d => d.high)
+    .lowValue(d => d.low)
+    .closeValue(d => d.close);
+
+    renderItem
+    .datum(data)
+    .call(ohlcBar);
+
+    return renderItem;
+
 }
 
 export function generateSMA(data: OHLCData[]) {
@@ -235,7 +274,7 @@ export function mergeArrayData(into, from, label) {
 
 export function mergeObjectData(into, from) {
     console.log('cGU mOD input into/from: ', into[0], from[0]);
-    console.log('cGU mD input from[0].key/value: ', from[0].key, from[0].value);
+    console.log('cGU mOD input from[0].key/value: ', from[0].key, from[0].value);
     
     const output = into.map((d, i) => {
       const datum = {...d};
@@ -248,8 +287,28 @@ export function mergeObjectData(into, from) {
       return {...datum};
     });
 
-    console.log('cGU mD output:');
+    console.log('cGU mOD output:');
     console.table(output.slice(0,20));
     
     return output;
+}
+
+export function returnDataWithSmoothD(into, smoothDSource) {
+    console.log('cGU rDWFK input into/fastKSource[100]: ', into[100], smoothDSource[100]);
+    // console.log('cGU rDWFK input from[0].key/value: ', from[0].key, from[0].value);
+
+    const output = into.map((d, i) => {
+        const datum = {...d};
+
+        // take the value from fastKSource.k and add it to into['fastK']
+        datum['smoothD'] = smoothDSource[i].k;
+    
+
+
+    });
+    console.log('cGU rDWFK output data:');
+    console.table(output.slice(100, 110));
+
+    return output;
+
 }
