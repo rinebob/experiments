@@ -2,7 +2,7 @@ import { AfterViewChecked, AfterViewInit, Component, OnInit, ChangeDetectionStra
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as d3 from 'd3';
-import * as techan from 'techan';
+// import * as techan from 'techan';
 import * as fc from 'd3fc';
 
 import { ChartGeneratorService } from 'src/app/services/chart-gen/chart-generator.service';
@@ -11,7 +11,7 @@ import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/inte
 import { ChartDimensions, ChartPanelConfig, ChartPanelDimensions, ChartType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
 import { CHART_MARGINS, CHART_PANEL_DIMENSIONS_INITIALIZER, DEFAULT_CHART_SETTING, DEFAULT_PICKER_TABLE_DATUM, DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
 import { DEFAULT_CHART_DIMENSIONS, DEFAULT_MARGIN_CONFIG, PANE_HEIGHT_MATRIX} from 'src/app/common/constants';
-import { INITIAL_CHART_PANEL_CONFIG, SIMPLE_CHART_PANEL_CONFIG} from 'src/app/common/chart_configs';
+import { FIVE_PANE_PANEL_CONFIG, ONE_PANE_PANEL_CONFIG} from 'src/app/common/chart_configs';
 import {MSFTData_start_99_1101} from '../../../assets/data/MSFT_21-1112';
 import { MSFTData_sample } from 'src/assets/data/MSFT_21-1112_sample';
 
@@ -79,7 +79,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   @Input() scaleType = DEFAULT_CHART_SETTING.scaleType;
   @Input() verticalScaleFactor = 2.5;
 
-  readonly chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(SIMPLE_CHART_PANEL_CONFIG);
+  readonly chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(ONE_PANE_PANEL_CONFIG);
   readonly containerDimsBS = new BehaviorSubject<DomRectCoordinates>(DOM_RECT_COORDS_INITIALIZER);
 
   // used for prototype - not used in chart generator service
@@ -101,9 +101,9 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   yScale: d3.svg.Scale;
   xAxis: d3.svg.Axis;
   yAxis: d3.svg.Axis;
-  ohlcAnnotation: techan.plot.axisannotation;
-  timeAnnotation: techan.plot.axisannotation;
-  crosshair: techan.plot.crosshair;
+  // ohlcAnnotation: techan.plot.axisannotation;
+  // timeAnnotation: techan.plot.axisannotation;
+  // crosshair: techan.plot.crosshair;
   coordsText: d3.svg.Text;
   mergedData: OHLCData[] = [];
   
@@ -207,7 +207,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   ngOnInit(): void {
     // this.testd3fc();
   }
-  
+
   ngAfterViewInit() {
     // console.log('bC ngAVI chart data: ', this.chartDataBS.value);
     // console.log('bC ngAVI baseChart div: ', this.baseChart);
@@ -331,73 +331,73 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   generateCrosshairsWithAnnotations() {
   // generateCrosshairsWithAnnotations(xScale, yScale, xAxis, yAxis) {
     console.log('bC gCWA generate crosshairs called');
-    const xScale = 
-      techan.scale.financetime()
-            .range([0, this.chartPanelDimsBS.value.mainChartDim.width]);
+    // const xScale = 
+      // techan.scale.financetime()
+      //       .range([0, this.chartPanelDimsBS.value.mainChartDim.width]);
 
-    const yScale = 
-      d3.scaleLinear()
-        .range([this.chartPanelDimsBS.value.mainChartDim.height, 0]);
+    // const yScale = 
+    //   d3.scaleLinear()
+    //     .range([this.chartPanelDimsBS.value.mainChartDim.height, 0]);
 
-    const xAxis = d3.axisBottom(xScale);
-    const yAxis = d3.axisRight(yScale);
+    // const xAxis = d3.axisBottom(xScale);
+    // const yAxis = d3.axisRight(yScale);
 
-    this.timeAnnotation = 
-      techan.plot.axisannotation()
-            .axis(xAxis)
-            .orient('bottom')
-            .format(d3.timeFormat('%Y-%m-%d'))
-            .width(65)
-            .translate([0, this.chartPanelDimsBS.value.mainChartDim.height]);
+    // this.timeAnnotation = 
+    //   techan.plot.axisannotation()
+    //         .axis(xAxis)
+    //         .orient('bottom')
+    //         .format(d3.timeFormat('%Y-%m-%d'))
+    //         .width(65)
+    //         .translate([0, this.chartPanelDimsBS.value.mainChartDim.height]);
 
-    this.ohlcAnnotation = 
-      techan.plot.axisannotation()
-            .axis(yAxis)
-            .orient('right')
-            .translate([this.chartPanelDimsBS.value.mainChartDim.width + this.margin.left, 0]);            
+    // this.ohlcAnnotation = 
+    //   techan.plot.axisannotation()
+    //         .axis(yAxis)
+    //         .orient('right')
+    //         .translate([this.chartPanelDimsBS.value.mainChartDim.width + this.margin.left, 0]);            
 
-    this.crosshair = 
-      techan.plot.crosshair()
-            .xScale(xScale)
-            .yScale(yScale)
-            .xAnnotation([this.timeAnnotation])
-            .yAnnotation([this.ohlcAnnotation])
-            .on("enter", this.enter)
-            .on("out", this.out)
-            .on("move", this.move);
+    // this.crosshair = 
+    //   techan.plot.crosshair()
+    //         .xScale(xScale)
+    //         .yScale(yScale)
+    //         .xAnnotation([this.timeAnnotation])
+    //         .yAnnotation([this.ohlcAnnotation])
+    //         .on("enter", this.enter)
+    //         .on("out", this.out)
+    //         .on("move", this.move);
 
-    const candlestick = techan.plot.candlestick().xScale(xScale).yScale(yScale);
-    const accessor = candlestick.accessor();
-    // xScale.domain(this.chartData.map(accessor.d));
-    xScale.domain(this.chartData.map(d => d.date));
-    yScale.domain(techan.scale.plot.ohlc(this.chartData, accessor).domain());
+    // const candlestick = techan.plot.candlestick().xScale(xScale).yScale(yScale);
+    // const accessor = candlestick.accessor();
+    // // xScale.domain(this.chartData.map(accessor.d));
+    // xScale.domain(this.chartData.map(d => d.date));
+    // yScale.domain(techan.scale.plot.ohlc(this.chartData, accessor).domain());
 
     if (this.svg) {
-      console.log('bC gCWA in if this.svg block');
-      this.svg.append("g")
-          .attr("class", "x annotation bottom")
-          .datum([{value: xScale.domain()[30]}])
-          .call(this.timeAnnotation);
+      // console.log('bC gCWA in if this.svg block');
+      // this.svg.append("g")
+      //     .attr("class", "x annotation bottom")
+      //     .datum([{value: xScale.domain()[30]}])
+      //     .call(this.timeAnnotation);
 
-      this.svg.append("g")
-          .attr("class", "y annotation right")
-          .datum([{value: 61}, {value:52}])
-          .call(this.ohlcAnnotation);
+      // this.svg.append("g")
+      //     .attr("class", "y annotation right")
+      //     .datum([{value: 61}, {value:52}])
+      //     .call(this.ohlcAnnotation);
 
-      this.svg.append('g')
-          .attr("class", "crosshair")
-          .datum({ x: xScale.domain()[80], y: 200 })
-          .call(this.crosshair)
-          .each((d) => this.move(d)); // Display the current data
+      // this.svg.append('g')
+      //     .attr("class", "crosshair")
+      //     .datum({ x: xScale.domain()[80], y: 200 })
+      //     .call(this.crosshair)
+      //     .each((d) => this.move(d)); // Display the current data
 
-          // console.log('bC gCWA xScale.domain: ', xScale.domain()[80], xScale.domain() );
+      //     // console.log('bC gCWA xScale.domain: ', xScale.domain()[80], xScale.domain() );
 
-      this.coordsText = this.svg.append('text')
-          .style("text-anchor", "end")
-          .attr("class", "coords")
-          .attr("x", this.margin.left + this.chartPanelDimsBS.value.mainChartDim.width - 5)
-          .attr("y", 200)
-          .text('dude!');
+      // this.coordsText = this.svg.append('text')
+      //     .style("text-anchor", "end")
+      //     .attr("class", "coords")
+      //     .attr("x", this.margin.left + this.chartPanelDimsBS.value.mainChartDim.width - 5)
+      //     .attr("y", 200)
+      //     .text('dude!');
 
     }
 
@@ -430,7 +430,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       console.log('bC m in this.coordsText block');
       this.coordsText.text(
         // this.timeAnnotation.format()(coords.x) + ", " + this.ohlcAnnotation.format()(coords.y)
-        this.timeAnnotation.format()(coords.x)
+        // this.timeAnnotation.format()(coords.x)
       );
     }
   }
@@ -529,11 +529,11 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
   
   generateFinanceTimeXScale() {
-    const xScale = techan.scale
-      .financetime()
-      .range([0, this.containerDimsBS.value.width - this.margin.right]);
+    // const xScale = techan.scale
+    //   .financetime()
+    //   .range([0, this.containerDimsBS.value.width - this.margin.right]);
     
-    return xScale;
+    // return xScale;
   }
 
   private generateYScale(yMin: number, yMax: number) {
@@ -581,7 +581,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       
         break;
 
-      case ChartType.BAR:
+      case ChartType.OHLCBAR:
         console.log('bC gDD chart type bar');
         
         break;
@@ -593,10 +593,10 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
         this.g.append("g")
                 .attr("class", "candlestick");
         
-        dataDisplay = techan.plot
-          .candlestick()
-          .xScale(xScale)
-          .yScale(yScale);
+        // dataDisplay = techan.plot
+        //   .candlestick()
+        //   .xScale(xScale)
+        //   .yScale(yScale);
 
         break;
 
@@ -744,16 +744,16 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   // }
 
   drawCandlestick(data: OHLCData[], dataDisplay) {
-    const x = this.generateFinanceTimeXScale();
-    const y = d3.scaleLinear().range([this.containerDimsBS.value.height, 0]);
-    x.domain(data.map(dataDisplay.accessor().d));
-    y.domain(techan.scale.plot.ohlc(data, dataDisplay.accessor()).domain());
+    // const x = this.generateFinanceTimeXScale();
+    // const y = d3.scaleLinear().range([this.containerDimsBS.value.height, 0]);
+    // x.domain(data.map(dataDisplay.accessor().d));
+    // y.domain(techan.scale.plot.ohlc(data, dataDisplay.accessor()).domain());
     
-    // this.svg.selectAll("g.candlestick")
-    this.g.selectAll("g.candlestick")
-    .datum(data)
-    .attr('transform', `translate(${this.margin.left}, 0)`)
-    .call(dataDisplay);
+    // // this.svg.selectAll("g.candlestick")
+    // this.g.selectAll("g.candlestick")
+    // .datum(data)
+    // .attr('transform', `translate(${this.margin.left}, 0)`)
+    // .call(dataDisplay);
   }
 
 

@@ -237,8 +237,8 @@ export const ZOOM_LEVELS = new Map([
 //     [6, 0.75],
 //   ]);
 
-// export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
-export const DEFAULT_ZOOM_LEVEL = 2;
+export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
+// export const DEFAULT_ZOOM_LEVEL = 2;
 
 export const DOM_RECT_COORDS_INITIALIZER:DomRectCoordinates = {
     x: 0,
@@ -294,6 +294,16 @@ export const PANE_HEIGHT_MATRIX = new Map<number, number>([
 //     [5, 0.1],
 // ]);
 
+// export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
+//     top: 50,
+//     right: 50,
+//     bottom: 50,
+//     left: 50,
+//     buffer: 20,
+//     gutter: 20,
+//     factor: .9,
+// };
+
 export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
     top: 0,
     right: 0,
@@ -303,6 +313,7 @@ export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
     gutter: 20,
     factor: .9,
 };
+
 
 export const AXIS_THICKNESS = 20;
 

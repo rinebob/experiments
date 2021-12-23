@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import * as fc from 'd3fc';
+import { AXIS_THICKNESS } from 'src/app/common/constants';
 
 import { OHLCData } from 'src/app/common/interfaces';
 import { AxisConfig, ChartPaneConfig, ChartSeriesConfig, ChartType, DomRectCoordinates, Series, PaneExtents, ScaleType, TranslationCoord, ScaleLocation, PaneLayout } from 'src/app/common/interfaces_chart';
@@ -30,37 +31,40 @@ export function generateExtents(data: OHLCData[]) {
     // return extents;
 }
 
-export function generateXScale(xMin: number, xMax: number, width: number) {
-    // console.log('cGSU gXS input x min/max/w ', xMin, xMax, width);
+export function generateXScale(xMin: number, xMax: number, layout: PaneLayout) {
+    console.log('cGSU gXS input x min/max/layout.paneOrigin ', xMin, xMax);
+    console.table(layout.paneOrigin);
     const xScale = d3
     .scaleTime()
     .domain([xMin, xMax])
-    .range([0, width]);
+    .range([layout.paneOrigin.right, layout.paneOrigin.right + layout.chartIndWidth]);
     
-    // console.log('cGSU gXS final xScale: ', xScale);
+    console.log('cGSU gXS final xScale domain/range: ', xScale.domain(), xScale.range());
     return xScale;
 }
 
-export function generateLinearYScale(yMin: number, yMax: number, height: number) {
-    console.log('cGSU gLinYS input y min/max/h ', yMin, yMax, height);
+export function generateLinearYScale(yMin: number, yMax: number, layout: PaneLayout) {
+    console.log('cGSU gLinYS input y min/max/layout ', yMin, yMax);
+    console.table(layout.paneOrigin);
     const yScale = d3
         .scaleLinear()
         .domain([yMin, yMax])
-        .range([height, 0]);
+        .range([layout.paneOrigin.down + layout.chartIndHeight, layout.paneOrigin.down]);
 
-        // console.log('cGSU gLinYS final yScale: ', yScale);
+        console.log('cGSU gLinYS final yScale domain/range: ', yScale.domain(), yScale.range());
         return yScale;
 
 }
 
-export function generateLogYScale(yMin: number, yMax: number, height: number) {
-    console.log('cGSU gLogYS input y min/max/h ', yMin, yMax, height);
+export function generateLogYScale(yMin: number, yMax: number, layout: PaneLayout) {
+    console.log('cGSU gLogYS input y min/max/layout ', yMin, yMax);
+    console.table(layout.paneOrigin);
     const yScale = d3
         .scaleLog()
         .domain([yMin, yMax])
-        .range([height, 0]);
+        .range([layout.paneOrigin.down + layout.chartIndHeight, layout.paneOrigin.down]);
 
-    // console.log('cGSU gLogYS final yScale: ', yScale);
+        console.log('cGSU gLogYS final yScale domain/range: ', yScale.domain(), yScale.range());
     return yScale;
 
 
@@ -72,15 +76,44 @@ export function generateYAxis(yScale, layout: PaneLayout, seriesType: string, pa
     console.log('cGSU gYA input yScale range/domain', yScale.range(), yScale.domain());
     console.table(layout);
 
-    const axis = location === ScaleLocation.LEFT ? d3.axisLeft(yScale) : d3.axisRight(yScale);
-    const origin = location === ScaleLocation.LEFT ? layout.leftAxisOrigin : layout.rightAxisOrigin;
+    let axis: d3.Axis;
+    let origin: TranslationCoord;
+
+    // const rect = d3.create('svg:rect')
+    // .attr('height', layout.chartIndHeight)
+    // .attr('width', AXIS_THICKNESS)
+    // .attr('stroke', 'white')
+    // .attr('fill', 'none')
+    // .attr('stroke-width', '1.5');
+
+    const yAxis = d3.create('svg:g')
+        .attr('id', `${seriesType}-yAxis-${paneNumber}`);
+    // const axis = location === ScaleLocation.LEFT ? d3.axisLeft(yScale) : d3.axisRight(yScale);
+    
+    if (location === ScaleLocation.LEFT) {
+        axis = d3.axisLeft(yScale);
+        origin = layout.leftAxisOrigin;
+        yAxis.attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
+        .call(axis);
+
+        
+
+    } else {
+        axis = d3.axisRight(yScale);
+        origin = layout.rightAxisOrigin;
+        yAxis.attr('transform', `translate(${layout.fullPaneWidth - AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
+        .call(axis);
+
+        
+
+    }
 
     console.log('cGSU gYA yScale origin: ', origin);
 
-    const yAxis = d3.create('svg:g')
-        .attr('id', `${seriesType}-yAxis-${paneNumber}`)
-        .attr('transform', `translate(${origin.right}, ${origin.down})`)
-        .call(axis);
+    // rect.attr('transform', `translate(${origin.right}, ${origin.down})`)
+    
+    // console.log('cGSU gYA rect: ', rect);
+    // yAxis.append(() => rect.node());
 
     return yAxis;
 
@@ -89,16 +122,28 @@ export function generateYAxis(yScale, layout: PaneLayout, seriesType: string, pa
 }
 
 export function generateDateXAxis(xScale, layout: PaneLayout, seriesType: Series, paneNumber: number, location: ScaleLocation) {
-    // console.log('cGSU gDXA input xScale/origin/seriesType/paneNumber/location', xScale, layout, seriesType, paneNumber, location);
+    console.log('cGSU gDXA input xScale/origin/seriesType/paneNumber/location', xScale, seriesType, paneNumber, location);
+    console.log('cGSU gDXA input xScale domain/range: ', xScale.domain(), xScale.range());
+    console.table(layout);
 
     const axis = location === ScaleLocation.TOP ? d3.axisTop(xScale) : d3.axisBottom(xScale);
     const origin = location === ScaleLocation.TOP ? layout.topAxisOrigin : layout.bottomAxisOrigin;
-    // console.log('cGU gDXA origin: ', origin);
+    console.log('cGU gDXA origin: ', origin);
 
     const dateXAxis = d3.create('svg:g')
         .attr('id', `${seriesType}-xAxis-${paneNumber}`)
         .attr('transform', `translate(${origin.right}, ${origin.down})`)
         .call(axis);
+
+    // const rect = d3.create('svg:rect')
+    // .attr('height', AXIS_THICKNESS)
+    // .attr('width', layout.chartIndWidth)
+    // .attr('stroke', 'yellow')
+    // .attr('fill', 'none')
+    // .attr('stroke-width', '1.5');
+
+    // console.log('cGSU gYA rect: ', rect);
+    // dateXAxis.append(() => rect.node());
 
     return dateXAxis;
     
@@ -114,55 +159,85 @@ export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
 // get those here based on data
 // generateXScale(xMin: number, xMax: number, width: number)
 // xScale, yScale, series, paneNumber
-export function generateLineSeries(data: OHLCData[], xScale, yScale, series:Series, paneNumber: number, origin: TranslationCoord) {
-    console.log('cGSU gLS input series/paneNumber/origin', series, paneNumber, origin);
+export function generateLineSeries(data: OHLCData[], xScale, yScale, config: ChartSeriesConfig, paneNumber: number, layout: PaneLayout) {
+    console.log('cGSU gLS input series/paneNumber/origin', config.seriesType, paneNumber, layout.paneOrigin);
     console.log('cGSU gLS input yScale range/domain', yScale.range(), yScale.domain());
     console.table(data.slice(100,110));
-
-         
-    // dataDisplay = d3
-    // .line()
-    // .x(d => xScale(d['date']))
-    // .y(d => yScale(d['close']));
-    // // .y(d => yScale(d['stochastic'].d));
-    // // .y(d => yScale(d.stochastic.d));
-
 
     const lineSeriesFn = d3.line()
         .x(d => xScale(d['date']))
         .y(d => yScale(d['close']));
-        // .y(d => yScale(d.series));  // ohlc v sma rsi etc
+
+    // const rect = d3.create('svg:rect')
+    // .attr('height', layout.chartIndHeight)
+    // .attr('width', layout.chartIndWidth)
+    // // .attr('transform', `translate(${layout.dataOrigin.right}, ${layout.dataOrigin.down})`)
+    // .attr('transform', `translate(0, ${layout.paneOrigin.down})`)
+    // .attr('stroke', 'blue')
+    // .attr('fill', 'none')
+    // .attr('stroke-width', '1.5');
+
+    // console.log('cGSU gYA rect: ', rect);
+    
         
-    // console.log('cGSU gLS output line series fn', lineSeriesFn);
-
-    // const dateXAxis = d3.create('svg:g')
-    //     .attr('id', `${seriesType}-xAxis-${paneNumber}`)
-    //     .attr('transform', `translate(${origin.right}, ${origin.down})`)
-    //     .call(axis);
-
-    const lineSeries = d3.create('svg:g')
-        .append('path')
-        .data([data])
-        .attr('id', `${series}-line-${paneNumber}`)
-        .attr('transform', `translate(${origin.right}, ${origin.down})`)
-        .style('fill', 'none')
-        .attr('stroke', 'darkblue')
-        .attr('stroke-width', '1.5')
-        .attr('d', lineSeriesFn);
+    // const lineSeries = d3.create('svg:g')
+    //     .append('path')
+    //     .data([data])
+    //     .attr('id', `${series}-line-${paneNumber}`)
+    //     .attr('transform', `translate(${layout.paneOrigin.right}, ${layout.paneOrigin.down})`)
+    //     .style('fill', 'none')
+    //     .attr('stroke', 'darkblue')
+    //     .attr('stroke-width', '1.5')
+    //     .attr('d', lineSeriesFn);
 
     // console.log('cGSU gLS output line series: ', lineSeries);
 
-    return lineSeries;
+    // lineSeries.append(() => rect.node());
+
+    // return lineSeries;
+
+    // d3fc
+    const renderItem = d3.create('svg:g')
+        .attr('id', `${config.seriesType}-line-${paneNumber}`)
+        // .attr('transform', `translate(${layout.dataOrigin.right}, ${layout.dataOrigin.down})`);
+        .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
+        
+    const line = fc.seriesSvgLine()
+        .xScale(xScale)
+        .yScale(yScale)
+        .crossValue(d => d.date)
+        .mainValue(d => d[config.seriesType])
+        .decorate(selection => 
+            selection.enter()
+            .style('fill', 'none')
+            .attr('stroke', config.displayConfig.color)
+            .attr('stroke-width', '1.5')
+            // .attr('transform', `translate(${layout.dataOrigin.right}, ${layout.dataOrigin.down})`)
+        );
+
+    renderItem
+        .datum(data)
+        .call(line);
+
+        // renderItem.append(() => rect.node());
+
+    console.log('cGSU gLS output render item: ', renderItem);
+    return renderItem;
+
+    // return lineSeries;
+
+
+
     
 }
 
-export function generateCandlestickSeries(data: OHLCData[], xScale, yScale, series:Series, paneNumber: number, origin: TranslationCoord) {
-    console.log('cGSU gCS input series/paneNumber/origin', series, paneNumber, origin);
+export function generateCandlestickSeries(data: OHLCData[], xScale, yScale, config: ChartSeriesConfig, paneNumber: number, layout: PaneLayout) {
+    console.log('cGSU gCS input series/paneNumber/origin', config.seriesType, paneNumber, origin);
     console.log('cGSU gCS input yScale range/domain', yScale.range(), yScale.domain());
     console.table(data.slice(100,110));
 
     const renderItem = d3.create('svg:g')
-      .attr('id', `${series}-cndl-${paneNumber}`);
+      .attr('id', `${config.seriesType}-cndl-${paneNumber}`);
 
     const candlestick = fc.seriesSvgCandlestick()
     .xScale(xScale)
@@ -182,13 +257,13 @@ export function generateCandlestickSeries(data: OHLCData[], xScale, yScale, seri
 
 }
 
-export function generateBarSeries(data: OHLCData[], xScale, yScale, series:Series, paneNumber: number, origin: TranslationCoord) {
-    console.log('cGSU gBS input series/paneNumber/origin', series, paneNumber, origin);
+export function generateBarSeries(data: OHLCData[], xScale, yScale, config: ChartSeriesConfig, paneNumber: number, layout: PaneLayout) {
+    console.log('cGSU gBS input series/paneNumber/origin', config.seriesType, paneNumber, origin);
     console.log('cGSU gBS input yScale range/domain', yScale.range(), yScale.domain());
     console.table(data.slice(100,110));
 
     const renderItem = d3.create('svg:g')
-      .attr('id', `${series}-bar-${paneNumber}`);
+      .attr('id', `${config.seriesType}-bar-${paneNumber}`);
 
     const ohlcBar = fc.seriesSvgOhlc()
     .xScale(xScale)
@@ -267,13 +342,13 @@ export function mergeArrayData(into, from, label) {
     });
 
     console.log('cGU mD output:');
-    console.table(output.slice(0,20));
+    console.table(output.slice(100,110));
     
     return output;
 }
 
 export function mergeObjectData(into, from) {
-    console.log('cGU mOD input into/from: ', into[0], from[0]);
+    console.log('cGU mOD input into/from[0]: ', into[0], from[0]);
     console.log('cGU mOD input from[0].key/value: ', from[0].key, from[0].value);
     
     const output = into.map((d, i) => {
@@ -288,7 +363,7 @@ export function mergeObjectData(into, from) {
     });
 
     console.log('cGU mOD output:');
-    console.table(output.slice(0,20));
+    console.table(output.slice(100,110));
     
     return output;
 }

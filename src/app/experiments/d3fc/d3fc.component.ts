@@ -42,8 +42,8 @@ export class D3fcComponent implements OnInit {
       z: Math.cos(d/4) * 0.7,
     }));
 
-    console.log('d3FC rSC data.slice(0,10): ');
-    console.table(data.slice(0,10));
+    console.log('d3FC rSC data.slice(100,110): ');
+    console.table(data.slice(100,110));
 
     // compute the data domain for each axis (min, max)
     const xExtent = fc.extentLinear()
@@ -92,8 +92,8 @@ export class D3fcComponent implements OnInit {
       z: Math.cos(d/4) * 0.7,
      }));
 
-    console.log('d3FC rSC data.slice(0,10): ');
-    console.table(data.slice(0,10));
+    console.log('d3FC rSC data.slice(100,110): ');
+    console.table(data.slice(100,110));
 
     // compute the data domain for each axis (min, max)
     const xExtent = fc.extentLinear()
@@ -150,9 +150,8 @@ export class D3fcComponent implements OnInit {
 
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    console.log('d3FC rSC data.slice(0,10)[0].open: ', data[0].open);
-    console.log('d3FC rSC data.slice(0,10): ');
-    console.table(data.slice(0,10));
+    console.log('d3FC rSC data.slice(100,110): ');
+    console.table(data.slice(100,110));
 
     // ================ EXTENTS / SCALES ====================
 
@@ -281,7 +280,7 @@ export class D3fcComponent implements OnInit {
 
     const bbData = bbFn(data);
     console.log('d3FC bbData:');
-    console.table(bbData.slice(0,10));
+    console.table(bbData.slice(100,110));
 
     // create the merged data set
     data = mergeObjectData(data, bbData);
@@ -317,11 +316,11 @@ export class D3fcComponent implements OnInit {
     const smaData = smaFn(data);
 
     console.log('d3FC smaData:');
-    console.table(smaData.slice(0,10));
+    console.table(smaData.slice(100,110));
 
     data = mergeArrayData(data, smaData, 'sma');
     console.log('d3FC merged smaData:');
-    console.table(data.slice(0,10));
+    console.table(data.slice(100,110));
 
     const sma = fc.seriesSvgLine()
     .xScale(xScale)
@@ -342,11 +341,11 @@ export class D3fcComponent implements OnInit {
     const emaData = emaFn(data);
 
     console.log('d3FC emaData:');
-    console.table(emaData.slice(0,10));
+    console.table(emaData.slice(100,110));
 
     data = mergeArrayData(data, emaData, 'ema');
     console.log('d3FC merged emaData:');
-    console.table(data.slice(0,10));
+    console.table(data.slice(100,110));
 
     const ema = fc.seriesSvgLine()
     .xScale(xScale)
@@ -383,11 +382,11 @@ export class D3fcComponent implements OnInit {
     const rsiData = rsiFn(data);
 
     console.log('d3FC rsiData:');
-    console.table(rsiData.slice(0,10));
+    console.table(rsiData.slice(100,110));
 
     data = mergeArrayData(data, rsiData, 'rsi');
     console.log('d3FC merged rsiData:');
-    console.table(data.slice(0,10));
+    console.table(data.slice(100,110));
 
     const rsi = fc.seriesSvgLine()
     .xScale(rsiXScale)
@@ -428,7 +427,7 @@ export class D3fcComponent implements OnInit {
     const macdData = macdFn(data);
     // data = macd(data);
     console.log('d3FC macdData:');
-    console.table(macdData.slice(0,10));
+    console.table(macdData.slice(100,110));
 
     // create the merged data set
     data = mergeObjectData(data, macdData);
@@ -484,7 +483,7 @@ export class D3fcComponent implements OnInit {
       const stochData = stochFn(data);
       // data = stoch(data);
       console.log('d3FC stochData:');
-      console.table(stochData.slice(0,10));
+      console.table(stochData.slice(100,110));
 
       // create the merged data set
       data = mergeObjectData(data, stochData);
@@ -582,9 +581,9 @@ export class D3fcComponent implements OnInit {
     // .svgPlotArea(macd);
     .svgPlotArea(indicatorMulti);
     
-    // d3.select('#indicatorPane1')
-    // .datum(data)
-    // .call(indicatorOne);
+    d3.select('#indicatorPane1')
+    .datum(data)
+    .call(indicatorOne);
 
     // ----------------- Indicator Two ---------------
 
@@ -614,9 +613,9 @@ export class D3fcComponent implements OnInit {
     // .svgPlotArea(stochMulti);
     // .svgPlotArea(indicatorMulti2);
     
-    // d3.select('#indicatorPane2')
-    // .datum(data)
-    // .call(indicatorTwo);
+    d3.select('#indicatorPane2')
+    .datum(data)
+    .call(indicatorTwo);
 
   }
 

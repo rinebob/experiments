@@ -35,7 +35,7 @@ const onSetEquity = on(actions.setEquity, (state: AppState,  {equity}) => {
 });
 
 const onSetEquityData = on(actions.setEquityData, (state: AppState,  {equityData}) => {
-    console.log('r onSetEquityData. equityData: ', equityData);
+    // console.log('r onSetEquityData. equityData: ', equityData);
     return  {
         ...state,
         equityData

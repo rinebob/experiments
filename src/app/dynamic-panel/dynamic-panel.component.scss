@@ -15,7 +15,7 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        overflow-y: auto;
+        
         
         exp-chart-controls {
             width: 100%;
@@ -26,8 +26,9 @@
             display: flex;
             justify-content: center;
             height: calc(100vh - 128px);        // 128px = top bar + chart controls heights
-            width: calc(100vw - 40px);
-            overflow: hidden;
+            // width: calc(100vw - 40px);
+            width: 100vw;
+            
         }
     }
     

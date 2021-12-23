@@ -8,7 +8,7 @@ import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
 import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DOM_RECT_COORDS_INITIALIZER, VERTICAL_ADJUSTMENT_FACTOR} from '../common/constants';
-import { INITIAL_CHART_PANEL_CONFIG, SIMPLE_CHART_PANEL_CONFIG} from 'src/app/common/chart_configs';
+import { FIVE_PANE_PANEL_CONFIG, ONE_PANE_PANEL_CONFIG} from 'src/app/common/chart_configs';
 
 const SYMBOL = 'SPY';
 const DATA_SETTING:SymbolTimeSetting = {
@@ -37,7 +37,7 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
   chartDataBS = new BehaviorSubject<OHLCData[]>([]);
   chartData$: Observable<OHLCData[]> = this.chartDataBS;
 
-  chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(SIMPLE_CHART_PANEL_CONFIG);
+  chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(ONE_PANE_PANEL_CONFIG);
   chartPanelConfig$: Observable<ChartPanelConfig> = this.chartPanelConfigBS;
 
   chartTypeBS = new BehaviorSubject<ChartType>(DEFAULT_CHART_SETTING.chartType);
@@ -67,7 +67,7 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
    }
 
   ngOnInit(): void {
-    this.chartPanelConfigBS.next(SIMPLE_CHART_PANEL_CONFIG);
+    this.chartPanelConfigBS.next(ONE_PANE_PANEL_CONFIG);
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 
