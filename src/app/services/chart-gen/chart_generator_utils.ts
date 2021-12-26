@@ -187,6 +187,9 @@ export function generateLineSeries(data: OHLCData[], xScale, yScale, plot: PlotC
     // console.log('cGSU gLS input yScale range/domain', yScale.range(), yScale.domain());
     console.table(data[100]);
     console.log('cGSU gLS input target', target);
+
+    console.log('cGU gLS target data:');
+    console.log('cGU gLS d[target]/yScale[target]: ', data[100][target], yScale(data[100][target]));
     
     const lineSeriesFn = d3.line()
         .x(d => xScale(d['date']))
@@ -515,6 +518,8 @@ export function mergeArrayData(into, from, label) {
     console.table(into[100]);
     console.table(from[100]);
     
+    
+    
     const output = into.map((d, i) => {
         const datum = {...d};
 
@@ -524,6 +529,8 @@ export function mergeArrayData(into, from, label) {
       return {...datum};
     });
 
+    // const columns = [...Object.keys(newData[0])];
+    // const output = {data: newData, columns}
     console.log('cGU mAD output:');
     console.table(output[100]);
     
@@ -546,6 +553,9 @@ export function mergeObjectData(into, from, label: string) {
 
       return {...datum};
     });
+
+    // const columns = [...Object.keys(newData[0])];
+    // const output = {data: newData, columns}
 
     console.log('cGU mOD output:');
     console.table(output[100]);

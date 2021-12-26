@@ -658,42 +658,45 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
                     hasZeroLine: true,
                     series: [
-                        // export interface PlotSeries {
-                        //     title: string;
-                        //     idLabel: string;
-                        //     seriesName: SeriesName;
-                        //     params?: Param[];
-                        //     plots: PlotConfig[];
-                        // }
                         {
-                            title: `Series 1 - ${Indicator.RSI}`,
-                            idLabel: `${PlotName.RSI}-14`,
-                            seriesName: SeriesName.RSI,
+                            title: `Series 1 - ${Indicator.MACD}`,
+                            idLabel: `${SeriesName.MACD}-12-26-5`,
+                            seriesName: SeriesName.MACD,
+                            minExtentsTarget: `${PlotName.MACD_MACD}-12-26-5`,
+                            maxExtentsTarget: `${PlotName.MACD_MACD}-12-26-5`,
                             params: [
-                                {name: SeriesParam.PERIOD, value: 14},
+                                {name: SeriesParam.FAST, value: 12},
+                                {name: SeriesParam.SLOW, value: 26},
+                                {name: SeriesParam.SIGNAL, value: 5},
                             ],
                             plots: [
-                                // export interface PlotConfig {
-                                    // plotType: PlotType;
-                                    // plotName: PlotName;
-                                    // idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
-                                    // param?: Param;
-                                    // target: string; // column name created by data calculator
-                                    // color?: string;
-                                    // upColor?: string;
-                                    // downColor?: string;
-                                    // style?: string;
-                                    // thickness?: string;
                                 {
                                     plotType: PlotType.LINE,
-                                    plotName: PlotName.RSI,
-                                    idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
-                                    param: {name: SeriesParam.PERIOD, value: 14},
-                                    target: `${PlotName.RSI}-14`, // column name created by data calculator
-                                    color: 'yellow',
-                                    upColor: 'green',
-                                    downColor: 'red',
+                                    plotName: PlotName.MACD_MACD,
+                                    idLabel: '',    
+                                    target: `${PlotName.MACD_MACD}-12-26-5`,
+                                    color: 'blue',
                                     style: 'line',
+                                    thickness: '2.0',
+                                },
+                                {
+                                    plotType: PlotType.LINE,
+                                    plotName: PlotName.MACD_SIGNAL,
+                                    idLabel: '',
+                                    target: `${PlotName.MACD_SIGNAL}-12-26-5`,
+                                    color: 'red',
+                                    style: 'line',
+                                    thickness: '2.0',
+                                },
+                                {
+                                    plotType: PlotType.LINE,
+                                    plotName: PlotName.MACD_DIVERGENCE,
+                                    idLabel: '',
+                                    target: `${PlotName.MACD_DIVERGENCE}-12-26-5`,
+                                    color: 'white',
+                                    upColor: 'blue',
+                                    downColor: 'red',
+                                    style: 'bar',
                                     thickness: '2.0',
                                 },
                             ],

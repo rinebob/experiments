@@ -554,10 +554,10 @@ export class ChartGeneratorService {
 
     let xScale: d3.Scale;
     let yScale: d3.Scale;
-    
-    
-    console.log('---------------- gRL Generate Layer Data and Extents -------------------------------');
     let extents: Extents;
+    
+    
+    console.log('---------------- gRL Generate Layer Data -------------------------------');
     
     
       // GENERATE DATA
@@ -591,10 +591,14 @@ export class ChartGeneratorService {
       }
       
 
+      console.log('---------------- gRL Generate Extents -------------------------------');
 
 
-      const minTarget = EXTENTS_LOW_TARGET_MAP.get(series.seriesName);
-      const maxTarget = EXTENTS_HIGH_TARGET_MAP.get(series.seriesName);
+      const minTarget = series.minExtentsTarget ?? EXTENTS_LOW_TARGET_MAP.get(series.seriesName);
+      const maxTarget = series.maxExtentsTarget ?? EXTENTS_HIGH_TARGET_MAP.get(series.seriesName);
+
+
+      console.log('cGS gRL minTarget/maxTarget: ', minTarget, maxTarget);
       extents = utils.generateExtents(this.dataBS.value, minTarget, maxTarget);
 
       if (layerConfig.upperRangeLimit && layerConfig.lowerRangeLimit) {
@@ -634,7 +638,7 @@ export class ChartGeneratorService {
 
 
     console.log('---------------- gRL Generate Layer Y Scale and Axis -------------------------------');
-    if (layerConfig.xAxisConfig.type !== ScaleType.NONE) {
+    if (layerConfig.yAxisConfig.type !== ScaleType.NONE) {
       yScale = this.generateYScale(extents.yMin, extents.yMax, layout, layerConfig.yAxisConfig.type);
       const yAxis = this.generateYAxis(yScale, extents, layout, layerConfig.title, paneConfig.paneNumber, layerConfig.yAxisConfig.location);
           

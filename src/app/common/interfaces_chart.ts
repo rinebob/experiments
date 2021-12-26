@@ -368,6 +368,8 @@ export interface PlotSeries {
     title: string;
     idLabel: string;
     seriesName: SeriesName;
+    minExtentsTarget?: string;
+    maxExtentsTarget?: string;
     params?: Param[];
     plots: PlotConfig[];
 }
