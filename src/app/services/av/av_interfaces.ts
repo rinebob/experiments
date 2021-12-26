@@ -1,6 +1,6 @@
-import {ChartType, ScaleType } from '../../common/interfaces_chart';
+import {PlotType, ScaleType } from '../../common/interfaces_chart';
 import { TimeFrame } from '../../common/interfaces_chart';
-import {OHLCData, OHLC_INITIALIZER } from '../../common/interfaces';
+import {OHLCData } from '../../common/interfaces';
 
 
 // Alphavantage endpoint parameters
@@ -95,7 +95,7 @@ export interface FullSetting {
     adjusted: Adjusted;
     outputSize: OutputSize;
     dataType: DataType;
-    chartType?: ChartType;
+    chartType?: PlotType;
     scaleType?: ScaleType;
     startDate?: Date;
     endDate?: Date;

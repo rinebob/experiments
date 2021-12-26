@@ -5,9 +5,7 @@
     align-items: flex-start;
 
     .dynamic-panel-container {
-        // background-color: skyblue;
-        background-color:darkslategrey;
-        // background-color:#181C27;
+        background-color:rgb(18, 43, 43);
         
         height: calc(100vh - 64px);     // 64px = height of top nav bar
         width: 100%;
@@ -38,11 +36,5 @@
         border: 1px solid black;
         height: calc(100vh - 64px);
     }
-    
-    // exp-base-chart {
-    //     height: calc(100vh - 128px);
-    //     max-height: calc(100vh - 128px);
-    //     // width: 100%;
-    // }
 }
 

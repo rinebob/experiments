@@ -3,11 +3,11 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ChartMoveEvent, ChartPanelConfig, ChartType, DomRectCoordinates, PanDistance, ScaleType, SymbolTimeSetting, TimeFrame, VerticalAdjustment } from '../common/interfaces_chart'
+import { ChartMoveEvent, ChartPanelConfig, PlotType, DomRectCoordinates, PlotName, PanDistance, ScaleType, SeriesName, SymbolTimeSetting, TimeFrame, VerticalAdjustment } from '../common/interfaces_chart'
 import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
-import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DOM_RECT_COORDS_INITIALIZER, VERTICAL_ADJUSTMENT_FACTOR} from '../common/constants';
+import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DOM_RECT_COORDS_INITIALIZER, INDICATOR_LINES_MAP, VERTICAL_ADJUSTMENT_FACTOR} from '../common/constants';
 import { FIVE_PANE_PANEL_CONFIG, ONE_PANE_PANEL_CONFIG} from 'src/app/common/chart_configs';
 
 const SYMBOL = 'SPY';
@@ -40,8 +40,8 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
   chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(ONE_PANE_PANEL_CONFIG);
   chartPanelConfig$: Observable<ChartPanelConfig> = this.chartPanelConfigBS;
 
-  chartTypeBS = new BehaviorSubject<ChartType>(DEFAULT_CHART_SETTING.chartType);
-  chartType$: Observable<ChartType> = this.chartTypeBS;
+  chartTypeBS = new BehaviorSubject<PlotType>(DEFAULT_CHART_SETTING.chartType);
+  chartType$: Observable<PlotType> = this.chartTypeBS;
 
   scaleTypeBS = new BehaviorSubject<ScaleType>(DEFAULT_CHART_SETTING.scaleType);
   scaleType$: Observable<ScaleType> = this.scaleTypeBS;
@@ -69,6 +69,20 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
   ngOnInit(): void {
     this.chartPanelConfigBS.next(ONE_PANE_PANEL_CONFIG);
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
+
+    const linesKeys = [...INDICATOR_LINES_MAP.keys()];
+    const linesValues = [...INDICATOR_LINES_MAP.values()];
+    console.log('sC ngOI lines keys/values: ', linesKeys, linesValues);
+    
+    
+    
+    
+    
+    
+    const stochLines = INDICATOR_LINES_MAP.get(SeriesName.STOCHASTIC)
+    console.log('sC ngOI stochLines: ', stochLines);
+    console.log('sC ngOI not in the map: ', INDICATOR_LINES_MAP.get(SeriesName.CLOSE));
+
   }
 
   ngOnDestroy() {
@@ -122,7 +136,7 @@ export class SimpleChartComponent implements AfterViewInit, OnDestroy, OnInit {
     // console.log('sC hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
   }
 
-  handleUpdateChartType(chartType: ChartType) {
+  handleUpdateChartType(chartType: PlotType) {
     // console.log('sC hUCT chart type: ', chartType);
     this.chartTypeBS.next(chartType);
     console.log('sC hUCT t.baseChart: ', this.baseChart);

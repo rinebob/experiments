@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
-import { ChartMoveEvent, ChartSetting, ChartType, ScaleType} from '../../common/interfaces_chart';
+import { ChartMoveEvent, ChartSetting, PlotType, ScaleType} from '../../common/interfaces_chart';
 import { PanDistance, SymbolTimeSetting, TimeFrame, Zoom } from '../../common/interfaces_chart';
 import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DEFAULT_SYMBOL_TIME_SETTING } from 'src/app/common/constants';
 import * as av from '../../services/av/av_interfaces';
@@ -97,7 +97,7 @@ export class ChartSettingsComponent implements OnChanges, OnInit, OnDestroy {
 
   // }
 
-  setChartType(chartType: ChartType) {
+  setChartType(chartType: PlotType) {
     console.log('cS sCT chart type: ', chartType);
     const setting = {...this.chartSettingsBS.value}
     setting.chartType = chartType;

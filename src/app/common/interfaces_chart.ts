@@ -11,10 +11,14 @@ import * as av from '../services/av/av_interfaces';
 //     MONTHLY = 'Monthly',
 // }
 
-export enum ChartType {
+export enum PlotType {
     LINE = 'line',
-    BAR = 'bar',
+    OHLCBAR = 'ohlcBar',
     CANDLESTICK = 'candlestick',
+    BAR = 'bar',
+    ERROR_BAR = 'errorBar',
+    AREA = 'area',
+    STACKED_AREA = 'stackedArea'
     // RENKO = 'renko',
     // HEIKEN_ASHI = 'heiken-ashi',
     // RANGE_BAR = 'range-bar',
@@ -30,7 +34,7 @@ export enum ScaleType {
 }
   
 export interface ChartSetting {
-    chartType?: ChartType;
+    chartType?: PlotType;
     scaleType?: ScaleType;
     verticalScaleFactor?: number;
     startDate?: Date;
@@ -139,21 +143,6 @@ export interface MarginConfig {
 }
 
 
-export enum Series {
-    OPEN = 'open',
-    HIGH = 'high',
-    LOW = 'low',
-    CLOSE = 'close',
-    PRICE = 'price',
-    VOLUME = 'volume',
-    SMA = 'SMA',
-    EMA = 'EMA',
-    MACD = 'MACD',
-    RSI = 'RSI',
-    STOCHASTIC = 'Stochastic',
-
-}
-
 export enum ScaleLocation {
     NONE = 'none',
     TOP = 'top',
@@ -197,9 +186,11 @@ export interface ChartPaneConfig {
     paneNumber?: number;    // what position among all panes stacked top to bottom 1, 2, 3 etc.
     title?: string;
     description?: string;
+    idLabel?: string;
     paneType?: PaneType;
     seriesConfigs?: ChartSeriesConfig[];
     annotationsConfigs?: any;
+    layerConfigs?: PaneLayerConfig[];
     
 }
 
@@ -210,8 +201,9 @@ export interface AxisConfig {
 
 // A ChartSeries is any data series.  Can be price or an indicator
 // series like a MA or RSI
+// DEPRECATED IN FAVOR OF LAYER CONFIG
 export interface ChartSeriesConfig {
-    seriesType: Series;
+    seriesType: SeriesName;
     title?: string;
     options?: {};
     xAxisConfig?: AxisConfig;
@@ -219,15 +211,15 @@ export interface ChartSeriesConfig {
     displayConfig?: SeriesDisplayConfig;
 }
 
+// DEPRECATED IN FAVOR OF PLOT CONFIG
 export interface SeriesDisplayConfig {
-    chartType: ChartType;
+    chartType: PlotType;
     color?: any;
     thickness?: any;
 
 }
 
-
-export interface PaneExtents {
+export interface Extents {
     xMin: number;
     yMin: number;
     xMax: number;
@@ -245,7 +237,9 @@ export interface PaneLayout {
     fullPaneHeight: number;
     chartIndHeight: number;
     chartIndWidth: number;
+    // paneExtents: PaneExtents;
     paneOrigin: TranslationCoord;
+    dataOrigin: TranslationCoord;
     topAxisOrigin: TranslationCoord;
     rightAxisOrigin: TranslationCoord;
     bottomAxisOrigin: TranslationCoord;
@@ -264,5 +258,179 @@ export interface RenderablePanel {
     panesMap?: Map<number, RenderablePane>;
     renderPanel?: any;
 }
+
+export interface MultilineIndicator {
+    multiLine: boolean;     // whether the indicator has more than one line (i.e. stochastic, macd, bb)
+    lines: string[];        // lines the indicator contains
+}
+
+export enum SeriesName {
+    OPEN = 'open',
+    HIGH = 'high',
+    LOW = 'low',
+    CLOSE = 'close',
+    // PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
+    VOLUME = 'volume',
+    SMA = 'SMA',
+    EMA = 'EMA',
+    MACD = 'MACD',
+    RSI = 'RSI',
+    STOCHASTIC = 'Stochastic',
+    BOLLINGER_BANDS = 'Bollinger bands',
+
+}
+
+export enum Indicator {
+    SMA = 'SMA',
+    EMA = 'EMA',
+    MACD = 'MACD',
+    RSI = 'RSI',
+    STOCHASTIC = 'Stochastic',
+    BOLLINGER_BANDS = 'Bollinger bands',
+
+}
+
+// String values should match the property names added to the data object by the calculator 
+// export enum PlotLine {
+//     EMA = 'ema',
+//     SMA = 'sma',
+//     RSI = 'rsi',
+//     STOCH_K = 'k',
+//     STOCH_D = 'd',
+//     MACD_MACD = 'macd',
+//     MACD_DIVERGENCE = 'divergence',
+//     MACD_SIGNAL = 'signal',
+//     BB_UPPER = 'upper',
+//     BB_LOWER = 'lower',
+//     BB_AVERAGE = 'lower',
+
+// }
+
+// export enum PlotName {
+//     OPEN = 'open',
+//     HIGH = 'high',
+//     LOW = 'low',
+//     CLOSE = 'close',
+//     // PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
+//     VOLUME = 'volume',
+//     EMA = 'ema',
+//     SMA = 'sma',
+//     RSI = 'rsi',
+//     STOCH_K = 'k',
+//     STOCH_D = 'd',
+//     MACD_MACD = 'macd',
+//     MACD_DIVERGENCE = 'divergence',
+//     MACD_SIGNAL = 'signal',
+//     BB_UPPER = 'upper',
+//     BB_LOWER = 'lower',
+//     BB_AVERAGE = 'lower',
+
+// }
+
+export enum PlotName {
+    // PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
+    OPEN = 'open',
+    HIGH = 'high',
+    LOW = 'low',
+    CLOSE = 'close',
+    VOLUME = 'volume',
+    EMA = 'ema',
+    SMA = 'sma',
+    RSI = 'rsi',
+    STOCH_K = 'k-stoch',
+    STOCH_D = 'd-stoch',
+    MACD_MACD = 'macd-macd',
+    MACD_DIVERGENCE = 'divergence-macd',
+    MACD_SIGNAL = 'signal-macd',
+    BB_UPPER = 'upper-bb',
+    BB_LOWER = 'lower-bb',
+    BB_AVERAGE = 'average-bb',
+
+}
+
+export interface PaneLayerConfig {
+    series: PlotSeries[];
+    title?: string;
+    idLabel?: string;
+    options?: {};
+    xAxisConfig?: AxisConfig;
+    yAxisConfig?: AxisConfig;
+    upperRangeLimit?: number;
+    lowerRangeLimit?: number;
+    hasZeroLine?: boolean;
+    upperLineLevel?: number;
+    lowerLineLevel?: number;
+    // gridlines?: boolean;
+    // annotationsConfig?: {};
+}
+
+export interface PlotSeries {
+    title: string;
+    idLabel: string;
+    seriesName: SeriesName;
+    params?: Param[];
+    plots: PlotConfig[];
+}
+
+export interface Param {
+    idLabel?: string;   // used as g element id in html.  do not use as column header for generating line series.  
+    name: SeriesParam;
+    value: number;
+}
+
+export interface PlotConfig {
+    plotType: PlotType;
+    plotName: PlotName;
+    idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
+    param?: Param;
+    target: string; // column name created by data calculator
+    color?: string;
+    upColor?: string;
+    downColor?: string;
+    style?: string;
+    thickness?: string;
+    // upperRangeLimit?: number;
+    // lowerRangeLimit?: number;
+    // hasZeroLine?: boolean;
+    // upperLineLevel?: number;
+    // lowerLineLevel?: number;
+
+}
+
+// export interface SeriesParams {
+//     period?: number;
+//     k?: number;
+//     d?: number;
+//     fast?: number;
+//     slow?: number;
+//     signal?: number;
+//     multiplier?: number;
+// }
+// export interface StochConfig {
+//     k: number;
+//     d: number;
+// }
+
+// export interface MacdConfig {
+//     fast: number;
+//     slow: number;
+//     signal: number;
+// }
+
+// export interface BollingerBandsConfig {
+//     period: number;
+//     multiplier: number;
+// }
+
+export enum SeriesParam {
+    PERIOD = 'period',
+    K = 'k',
+    D = 'd',
+    FAST = 'fast',
+    SLOW = 'slow',
+    SIGNAL = 'signal',
+    MULTIPLIER = 'multiplier',
+}
+
 
 

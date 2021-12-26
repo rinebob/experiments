@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
-import { ChartMoveEvent, ChartType, ScaleType, PanDistance, Zoom, VerticalAdjustment } from 'src/app/common/interfaces_chart';
+import { ChartMoveEvent, PlotType, ScaleType, PanDistance, Zoom, VerticalAdjustment } from 'src/app/common/interfaces_chart';
 import {DEFAULT_CHART_MOVE_EVENT, DEFAULT_ZOOM_LEVEL, ZOOM_LEVELS} from '../../../common/constants';
 
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -27,14 +27,14 @@ export class ChartControlsComponent implements OnInit {
 
   @Output() moveChart = new EventEmitter<ChartMoveEvent>();
   @Output() verticalAdjustment = new EventEmitter<VerticalAdjustment>()
-  @Output() updateChartType = new EventEmitter<ChartType>();
+  @Output() updateChartType = new EventEmitter<PlotType>();
   @Output() updateScaleType = new EventEmitter<ScaleType>();
   @Output() getData = new EventEmitter<void>();
 
   chartMoveConfigBS = new BehaviorSubject<ChartMoveEvent>(DEFAULT_CHART_MOVE_EVENT);
   chartMoveConfig$:Observable<ChartMoveEvent> = this.chartMoveConfigBS;
   
-  readonly CHART_TYPE = ChartType;
+  readonly CHART_TYPE = PlotType;
   readonly SCALE_TYPE = ScaleType;
   readonly PAN_DISTANCE = PanDistance;
   readonly ZOOM = Zoom;
@@ -377,7 +377,7 @@ export class ChartControlsComponent implements OnInit {
     // console.log('cC sCC emitted chartMoveConfig: ', this.chartMoveConfigBS.value);
   }
   
-  setChartType(chartType: ChartType) {
+  setChartType(chartType: PlotType) {
     // console.log('cC sCT chart type: ', chartType);
     this.updateChartType.emit(chartType);
     

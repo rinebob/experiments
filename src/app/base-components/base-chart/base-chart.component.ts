@@ -8,7 +8,7 @@ import * as fc from 'd3fc';
 import { ChartGeneratorService } from 'src/app/services/chart-gen/chart-generator.service';
 import * as utils from 'src/app/services/chart-gen/chart_generator_utils';
 import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/interfaces';
-import { ChartDimensions, ChartPanelConfig, ChartPanelDimensions, ChartType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
+import { ChartDimensions, ChartPanelConfig, ChartPanelDimensions, PlotType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
 import { CHART_MARGINS, CHART_PANEL_DIMENSIONS_INITIALIZER, DEFAULT_CHART_SETTING, DEFAULT_PICKER_TABLE_DATUM, DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
 import { DEFAULT_CHART_DIMENSIONS, DEFAULT_MARGIN_CONFIG, PANE_HEIGHT_MATRIX} from 'src/app/common/constants';
 import { FIVE_PANE_PANEL_CONFIG, ONE_PANE_PANEL_CONFIG} from 'src/app/common/chart_configs';
@@ -217,7 +217,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   runChartGeneratorServiceUtils() {
-    const {xMax, xMin, yMax, yMin} = utils.generateExtents(this.chartData);
+    const {xMax, xMin, yMax, yMin} = utils.generateExtents(this.chartData, 'low', 'high');
 
     // chart scales
     // const xScale = utils.generateXScale(xMin, xMax, this.containerDimsBS.value);
@@ -568,7 +568,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
     let dataDisplay;
 
     switch(this.chartType) {
-      case ChartType.LINE:
+      case PlotType.LINE:
         // console.log('bC gDD chart type line');
         
         dataDisplay = d3
@@ -581,12 +581,12 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       
         break;
 
-      case ChartType.OHLCBAR:
+      case PlotType.OHLCBAR:
         console.log('bC gDD chart type bar');
         
         break;
 
-      case ChartType.CANDLESTICK:
+      case PlotType.CANDLESTICK:
         // console.log('bC gDD chart type candlestick');
 
         // this.svg.append("g")
@@ -722,7 +722,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
     const yAxis = this.appendYAxis(yScale);
 
-    if (this.chartType === ChartType.CANDLESTICK) {
+    if (this.chartType === PlotType.CANDLESTICK) {
       this.drawCandlestick(this.chartData, dataDisplay);
     } else {
       this.appendDataDisplay(dataDisplay);

@@ -283,7 +283,7 @@ export class D3fcComponent implements OnInit {
     console.table(bbData.slice(100,110));
 
     // create the merged data set
-    data = mergeObjectData(data, bbData);
+    data = mergeObjectData(data, bbData, `bb-${bbPeriod}-${bbMultiplier}-`);
 
     // create the BB lines
     const bbUpper = fc.seriesSvgLine()
@@ -318,7 +318,7 @@ export class D3fcComponent implements OnInit {
     console.log('d3FC smaData:');
     console.table(smaData.slice(100,110));
 
-    data = mergeArrayData(data, smaData, 'sma');
+    data = mergeArrayData(data, smaData, `sma-${smaPeriod}`);
     console.log('d3FC merged smaData:');
     console.table(data.slice(100,110));
 
@@ -343,7 +343,7 @@ export class D3fcComponent implements OnInit {
     console.log('d3FC emaData:');
     console.table(emaData.slice(100,110));
 
-    data = mergeArrayData(data, emaData, 'ema');
+    data = mergeArrayData(data, emaData, `ema-${emaPeriod}`);
     console.log('d3FC merged emaData:');
     console.table(data.slice(100,110));
 
@@ -384,7 +384,7 @@ export class D3fcComponent implements OnInit {
     console.log('d3FC rsiData:');
     console.table(rsiData.slice(100,110));
 
-    data = mergeArrayData(data, rsiData, 'rsi');
+    data = mergeArrayData(data, rsiData, `rsi-${rsiPeriod}`);
     console.log('d3FC merged rsiData:');
     console.table(data.slice(100,110));
 
@@ -430,7 +430,7 @@ export class D3fcComponent implements OnInit {
     console.table(macdData.slice(100,110));
 
     // create the merged data set
-    data = mergeObjectData(data, macdData);
+    data = mergeObjectData(data, macdData, `macd-${macdFast}-${macdSlow}-${macdSignal}-`);
 
     // create the macd lines
     const macdLine = fc.seriesSvgLine()
@@ -486,7 +486,7 @@ export class D3fcComponent implements OnInit {
       console.table(stochData.slice(100,110));
 
       // create the merged data set
-      data = mergeObjectData(data, stochData);
+      data = mergeObjectData(data, stochData, `stoch-${kPeriod}-${dPeriod}`);
 
       // create the stoch lines
       const stochKLine = fc.seriesSvgLine()

@@ -12,6 +12,7 @@ import { Alphavantage_API_KEY } from 'src/secrets/secrets';
 import {tslaData} from '../../assets/data/tsla_21-0917';
 import { MSFTData_start_99_1101} from '../../assets/data/MSFT_21-1112';
 import { MSFTData_sample} from '../../assets/data/MSFT_21-1112_sample';
+import { MSFT_Data_sample2} from '../../assets/data/MSFT_21-1112_sample2';
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +63,7 @@ export class ChartDataService {
     //=============================
 
     return of(MSFTData_start_99_1101).pipe(
+    // return of(MSFT_Data_sample2).pipe(
     // return of(MSFTData_sample).pipe(
     // return of(tslaData).pipe(
       map(resp => {
