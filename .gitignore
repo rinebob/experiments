@@ -49,3 +49,5 @@ src/assets/data/MET_full_211008.txt
 src/assets/data/MSFT_21-1112.ts
 src/assets/data/vxx_21-0929.ts
 src/assets/data/MSFT_21-1112_sample.ts
+src/app/experiments/d3fc/yahoo_data.csv
+src/assets/data/MSFT_21-1112_sample2.ts

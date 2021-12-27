@@ -46,8 +46,8 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
   @Input()
   set containerDimensions(dimensions: DomRectCoordinates) {
-    console.log('bC chartDimensions input:');
-    console.table(dimensions);
+    // console.log('bC chartDimensions input:');
+    // console.table(dimensions);
     const allDimensions = this.setContainerDimensions(dimensions);
     this.chartPanelDimsBS.next(allDimensions);
 
@@ -136,7 +136,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
       if (this.containerDimsBS.value.height > 0 && this.containerDimsBS.value.width > 0) {
 
-        const renderablePanel = this.chartGenSvc.generatePanel(this.chartData, this.chartPanelConfig);
+        const renderablePanel = this.chartGenSvc.generateRenderablePanel(this.chartData, this.chartPanelConfig);
         
         // console.log('bC ngOC returned renderablePanel: ', renderablePanel);
 
