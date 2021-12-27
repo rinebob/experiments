@@ -1,8 +1,8 @@
-import { Equity, GalleryViewOption } from "./interfaces";
-import { ChartPanelConfig, DomRectCoordinates, MarginConfig, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
+import { Equity, GalleryViewOption, OHLCData } from "./interfaces";
+import { ChartPanelConfig, DomRectCoordinates, PlotName, MarginConfig, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
-import { ChartPanelDimensions, ChartSetting, ChartType, PaneType, Series, ScaleType } from "./interfaces_chart";
+import { ChartPanelDimensions, ChartSetting, PlotType, PaneType, SeriesName, ScaleType } from "./interfaces_chart";
 import { BlackScholesInputs, Option } from "./option_interfaces";
 
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
@@ -14,8 +14,18 @@ export const DEFAULT_OPTION: Option = {symbol: DEFAULT_OPTION_SYMBOL};
 
 export const VERTICAL_ADJUSTMENT_FACTOR = 0.25;
 
+export const OHLC_INITIALIZER: OHLCData = {
+    date: new Date(Date.now()),
+    stringDate: '',
+    open: 0,
+    high: 0,
+    low: 0,
+    close: 0,
+    volume: 0,
+  }
+
 export const DEFAULT_CHART_SETTING: ChartSetting = {
-    chartType: ChartType.CANDLESTICK,
+    chartType: PlotType.CANDLESTICK,
     scaleType: ScaleType.LOG,
     verticalScaleFactor: 2.5,
     // startDate: Date;
@@ -237,8 +247,8 @@ export const ZOOM_LEVELS = new Map([
 //     [6, 0.75],
 //   ]);
 
-export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
-// export const DEFAULT_ZOOM_LEVEL = 3;
+// export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
+export const DEFAULT_ZOOM_LEVEL = 3;
 
 export const DOM_RECT_COORDS_INITIALIZER:DomRectCoordinates = {
     x: 0,
@@ -270,11 +280,11 @@ export const CHART_PANEL_DIMENSIONS_INITIALIZER: ChartPanelDimensions = {
   }
 
   export const INDICATOR_OPTIONS = new Map([
-      [Series.SMA, {period: 9}],
-      [Series.EMA, {period: 9}],
-      [Series.MACD, {fast: 12, slow: 26, smoother: 9}],
-      [Series.RSI, {period: 14}],
-      [Series.STOCHASTIC, {k: 14, d: 9}],
+      [SeriesName.SMA, {period: 9}],
+      [SeriesName.EMA, {period: 9}],
+      [SeriesName.MACD, {fast: 12, slow: 26, smoother: 9}],
+      [SeriesName.RSI, {period: 14}],
+      [SeriesName.STOCHASTIC, {k: 14, d: 9}],
   ]);
 
 
@@ -294,6 +304,16 @@ export const PANE_HEIGHT_MATRIX = new Map<number, number>([
 //     [5, 0.1],
 // ]);
 
+// export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
+//     top: 50,
+//     right: 50,
+//     bottom: 50,
+//     left: 50,
+//     buffer: 20,
+//     gutter: 20,
+//     factor: .9,
+// };
+
 export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
     top: 0,
     right: 0,
@@ -304,7 +324,8 @@ export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
     factor: .9,
 };
 
-export const AXIS_THICKNESS = 20;
+
+export const AXIS_THICKNESS = 30;
 
 // We will always use calendar days for Black-Scholes and other calculations
 export const DAYS_IN_A_YEAR = 365;
@@ -355,3 +376,36 @@ export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
     },
     
   ];
+
+  export const INDICATOR_LINES_MAP = new Map([
+    [SeriesName.STOCHASTIC, [PlotName.STOCH_K, PlotName.STOCH_D]],
+    [SeriesName.MACD, [PlotName.MACD_DIVERGENCE, PlotName.MACD_MACD, PlotName.MACD_SIGNAL]],
+    [SeriesName.BOLLINGER_BANDS, [PlotName.BB_UPPER, PlotName.BB_LOWER]],
+    
+]);
+
+export const EXTENTS_HIGH_TARGET_MAP = new Map<SeriesName, string | number>([
+    [SeriesName.OPEN, 'open'],
+    [SeriesName.HIGH, 'high'],
+    [SeriesName.LOW, 'low'],
+    [SeriesName.CLOSE, 'high'],
+    [SeriesName.EMA, 'high'],
+    [SeriesName.SMA, 'high'],
+    [SeriesName.BOLLINGER_BANDS, 'high'],
+    [SeriesName.RSI, 100],
+    [SeriesName.STOCHASTIC, 100],
+    [SeriesName.MACD, 'macd']
+]);
+
+export const EXTENTS_LOW_TARGET_MAP = new Map<SeriesName, string | number>([
+    [SeriesName.OPEN, 'open'],
+    [SeriesName.HIGH, 'high'],
+    [SeriesName.LOW, 'low'],
+    [SeriesName.CLOSE, 'low'],
+    [SeriesName.EMA, 'low'],
+    [SeriesName.SMA, 'low'],
+    [SeriesName.BOLLINGER_BANDS, 'low'],
+    [SeriesName.RSI, 0],
+    [SeriesName.STOCHASTIC, 0],
+    [SeriesName.MACD, 'macd']
+]);

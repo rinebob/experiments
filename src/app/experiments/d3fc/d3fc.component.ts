@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import * as fc from 'd3fc';
 
-import { mergeArrayData, mergeObjectData } from 'src/app/services/chart-gen/chart_generator_utils';
+import { mergeArrayData, mergeObjectData, returnDataWithSmoothD } from 'src/app/services/chart-gen/chart_generator_utils';
 import { MSFTData_sample } from 'src/assets/data/MSFT_21-1112_sample';
+import { MSFT_Data_sample2 } from 'src/assets/data/MSFT_21-1112_sample2';
 
 
 
@@ -41,8 +42,8 @@ export class D3fcComponent implements OnInit {
       z: Math.cos(d/4) * 0.7,
     }));
 
-    console.log('d3FC rSC data.slice(0,10): ');
-    console.table(data.slice(0,10));
+    console.log('d3FC rSC data.slice(100,110): ');
+    console.table(data.slice(100,110));
 
     // compute the data domain for each axis (min, max)
     const xExtent = fc.extentLinear()
@@ -91,8 +92,8 @@ export class D3fcComponent implements OnInit {
       z: Math.cos(d/4) * 0.7,
      }));
 
-    console.log('d3FC rSC data.slice(0,10): ');
-    console.table(data.slice(0,10));
+    console.log('d3FC rSC data.slice(100,110): ');
+    console.table(data.slice(100,110));
 
     // compute the data domain for each axis (min, max)
     const xExtent = fc.extentLinear()
@@ -136,38 +137,57 @@ export class D3fcComponent implements OnInit {
   }
 
   renderCandlestickChart() {
-    let data = MSFTData_sample.map((d, i) => ({
+    // let data = MSFTData_sample.map((d, i) => ({
+    let data = MSFT_Data_sample2.slice(0, 400).map((d, i) => ({
       date: i,
+      // date: d.date,
       open: d.open,
       high: d.high,
       low: d.low,
       close: d.close,
+      volume: d.volume,
     }));
 
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    console.log('d3FC rSC typeof data.slice(0,10)[0].open: ', typeof data[0].open, data[0].open);
-    console.log('d3FC rSC data.slice(0,10): ');
-    console.table(data.slice(0,10));
+    console.log('d3FC rSC data.slice(100,110): ');
+    console.table(data.slice(100,110));
+
+    // ================ EXTENTS / SCALES ====================
+
+    let xScale: d3.scale;
+    let yScale: d3.scale
     
     const xExtent = fc.extentLinear()
-                          .accessors([d => d.date]);
+      .accessors([d => d.date]);
     const yExtent = fc.extentLinear()
-                          .accessors([d => d.high, d => d.low]);
+      .accessors([d => d.high, d => d.low]);
 
-    const xScale = d3.scaleLinear()
-        .domain([0, xExtent])
-        .range([0, 500]);
+    const xLinearScale = d3.scaleLinear()
+      .domain([0, xExtent])
+      .range([0, 500]);
 
-    const yScale = d3.scaleLinear()
-        .domain([0, yExtent])
-        .range([250, 0]);
+    const xTimeScale = d3.scaleTime()
+      .domain([0, xExtent])
+      .range([0, 500]);
+
+    const yLinearScale = d3.scaleLinear()
+      .domain([0, yExtent])
+      .range([250, 0]);
+
+    const yLogScale = d3.scaleLog()
+      .domain([0, yExtent])
+      .range([250, 0]);
+
+      xScale = xLinearScale;
+      yScale = yLogScale;
 
     // create gridlines
     const gridlines = fc.annotationSvgGridline();
 
     // ================ D3FC Series ====================
 
+    // -------------- Line / Point / Area / Bar --------------------
     const lineSeries = fc
       .seriesSvgLine()
       .mainValue(d => d.high)
@@ -188,6 +208,8 @@ export class D3fcComponent implements OnInit {
     const bar = fc.seriesSvgBar()
     .mainValue(d => d.close)
     .crossValue(d => d.date);
+
+    // -------------- Examples --------------------
 
     // bar color cycles through a color palette
     const rotatingColorBar = fc.seriesSvgBar()
@@ -212,6 +234,8 @@ export class D3fcComponent implements OnInit {
       .attr('fill', 'black')
     );
 
+    // -------------- OHLC Bar --------------------
+
     const ohlc = fc.seriesSvgOhlc()
     .xScale(xScale)
     .yScale(yScale)
@@ -221,6 +245,8 @@ export class D3fcComponent implements OnInit {
     .lowValue(d => d.low)
     .closeValue(d => d.close);
 
+    // -------------- Candlestick --------------------
+
     const candlestick = fc.seriesSvgCandlestick()
     .xScale(xScale)
     .yScale(yScale)
@@ -229,6 +255,8 @@ export class D3fcComponent implements OnInit {
     .highValue(d => d.high)
     .lowValue(d => d.low)
     .closeValue(d => d.close);
+
+    // -------------- Error Bar --------------------
 
     const errorBar = fc.seriesSvgErrorBar()
     .xScale(xScale)
@@ -241,8 +269,8 @@ export class D3fcComponent implements OnInit {
 
     // -------------- Bollinger Bands --------------------
     
-    const bbPeriod = 3;
-    const bbMultiplier = 1;
+    const bbPeriod = 20;
+    const bbMultiplier = 2;
 
     // logs the data returned by the bb data generator
     const bbFn = fc.indicatorBollingerBands()
@@ -252,10 +280,10 @@ export class D3fcComponent implements OnInit {
 
     const bbData = bbFn(data);
     console.log('d3FC bbData:');
-    console.table(bbData.slice(0,10));
+    console.table(bbData.slice(100,110));
 
     // create the merged data set
-    data = mergeObjectData(data, bbData);
+    data = mergeObjectData(data, bbData, `bb-${bbPeriod}-${bbMultiplier}`);
 
     // create the BB lines
     const bbUpper = fc.seriesSvgLine()
@@ -288,11 +316,11 @@ export class D3fcComponent implements OnInit {
     const smaData = smaFn(data);
 
     console.log('d3FC smaData:');
-    console.table(smaData.slice(0,10));
+    console.table(smaData.slice(100,110));
 
-    data = mergeArrayData(data, smaData, 'sma');
+    data = mergeArrayData(data, smaData, `sma-${smaPeriod}`);
     console.log('d3FC merged smaData:');
-    console.table(data.slice(0,10));
+    console.table(data.slice(100,110));
 
     const sma = fc.seriesSvgLine()
     .xScale(xScale)
@@ -313,17 +341,60 @@ export class D3fcComponent implements OnInit {
     const emaData = emaFn(data);
 
     console.log('d3FC emaData:');
-    console.table(emaData.slice(0,10));
+    console.table(emaData.slice(100,110));
 
-    data = mergeArrayData(data, emaData, 'ema');
+    data = mergeArrayData(data, emaData, `ema-${emaPeriod}`);
     console.log('d3FC merged emaData:');
-    console.table(data.slice(0,10));
+    console.table(data.slice(100,110));
 
     const ema = fc.seriesSvgLine()
     .xScale(xScale)
     .yScale(yScale)
     .mainValue(d => d.ema)
     .crossValue(d => d.date);
+
+    
+
+    // ---------------- RSI -------------------
+
+    const rsiXExtent = fc.extentLinear()
+                          .accessors([d => d.date]);
+    const rsiYExtent = fc.extentLinear()
+                          .accessors([d => d.rsi]);
+
+    const rsiXScale = d3.scaleLinear()
+        .domain([0, rsiXExtent])
+        .range([0, 500]);
+
+    const rsiYScale = d3.scaleLinear()
+        // .domain([0, rsiYExtent])
+        .domain([0, 100])
+        .range([250, 0]);
+
+    const rsiYAxis = fc.axisLeft(rsiYScale);
+
+    const rsiPeriod = 14;
+
+    const rsiFn = fc.indicatorRelativeStrengthIndex()
+    .value(d => d.close)
+    .period(rsiPeriod);
+
+    const rsiData = rsiFn(data);
+
+    console.log('d3FC rsiData:');
+    console.table(rsiData.slice(100,110));
+
+    data = mergeArrayData(data, rsiData, `rsi-${rsiPeriod}`);
+    console.log('d3FC merged rsiData:');
+    console.table(data.slice(100,110));
+
+    const rsi = fc.seriesSvgLine()
+    .xScale(rsiXScale)
+    .yScale(rsiYScale)
+    .mainValue(d => d.rsi)
+    .crossValue(d => d.date);
+
+    
 
     
     // --------------- MACD -------------------
@@ -342,11 +413,10 @@ export class D3fcComponent implements OnInit {
         .domain([0, macdYExtent])
         .range([250, 0]);
 
-    const macdFast = 3;
-    const macdSlow = 8;
-    const macdSignal = 2;
+    const macdFast = 12;
+    const macdSlow = 26;
+    const macdSignal = 9;
 
-    // logs the data returned by the macd data generator
     const macdFn = fc.indicatorMacd()
     .value(d => d.close)
     .fastPeriod(macdFast)
@@ -356,10 +426,10 @@ export class D3fcComponent implements OnInit {
     const macdData = macdFn(data);
     // data = macd(data);
     console.log('d3FC macdData:');
-    console.table(macdData.slice(0,10));
+    console.table(macdData.slice(100,110));
 
     // create the merged data set
-    data = mergeObjectData(data, macdData);
+    data = mergeObjectData(data, macdData, `macd-${macdFast}-${macdSlow}-${macdSignal}`);
 
     // create the macd lines
     const macdLine = fc.seriesSvgLine()
@@ -374,7 +444,7 @@ export class D3fcComponent implements OnInit {
     .mainValue(d => d.signal)
     .crossValue(d => d.date);
 
-    const macdDivergence = fc.seriesSvgLine()
+    const macdDivergence = fc.seriesSvgBar()
     .xScale(macdXScale)
     .yScale(macdYScale)
     .mainValue(d => d.divergence)
@@ -384,9 +454,58 @@ export class D3fcComponent implements OnInit {
     .series([macdLine, macdSignalLine, macdDivergence]);
 
 
+    // ---------------- REGULAR STOCHASTIC -------------------
 
-    // ---------------- RSI -------------------
-    // ---------------- STOCHASTIC -------------------
+     // compute the data domain for each axis (min, max)
+     const stochXExtent = fc.extentLinear()
+          .accessors([d => d.date]);
+      const stochYExtent = fc.extentLinear()
+          .accessors([d => d.k]);
+
+      const stochXScale = d3.scaleLinear()
+      .domain([0, stochXExtent])
+      .range([0, 500]);
+
+      const stochYScale = d3.scaleLinear()
+      .domain([0, stochYExtent])
+      .range([250, 0]);
+
+      const kPeriod = 14;
+      const dPeriod = 3;
+      
+
+      // creates a function that calculates stoch k & d values
+      const stochFn = fc.indicatorStochasticOscillator()
+      .kPeriod(kPeriod)
+      .dPeriod(dPeriod)
+      
+      const stochData = stochFn(data);
+      // data = stoch(data);
+      console.log('d3FC stochData:');
+      console.table(stochData.slice(100,110));
+
+      // create the merged data set
+      data = mergeObjectData(data, stochData, `stoch-${kPeriod}-${dPeriod}`);
+
+      // create the stoch lines
+      const stochKLine = fc.seriesSvgLine()
+      .xScale(stochXScale)
+      .yScale(stochYScale)
+      .mainValue(d => d.k)
+      .crossValue(d => d.date);
+
+      const stochDLine = fc.seriesSvgLine()
+      .xScale(stochXScale)
+      .yScale(stochYScale)
+      .mainValue(d => d.d)
+      .crossValue(d => d.date);
+
+
+      const stoch = fc.seriesSvgMulti()
+      .series([stochKLine, stochDLine]);
+
+      
+
     // --------------- ENVELOPE -------------------
 
 
@@ -404,20 +523,22 @@ export class D3fcComponent implements OnInit {
     .series([gridlines, candlestick, sma]);
 
     const emaMulti = fc.seriesSvgMulti()
-    .series([gridlines, candlestick, sma, ema]);
+    .series([gridlines, candlestick, bbUpper, bbAverage, bbLower, sma, ema]);
 
     
     // const chart = fc.chartCartesian(xScale, yScale)
     // const chart = fc.chartCartesian(
-    // const chart: D3fcComponent = fc.chartCartesian(
-    //   d3.scaleLinear(), d3.scaleLinear()
-    // )
-    // .xLabel('Some number')
-    // .yLabel('Another number')
-    // .yOrient('right')
-    // .chartLabel('This is now a candlestick chart ...')
-    // .yDomain(yExtent(data))
-    // .xDomain(xExtent(data))
+      // d3.scaleLinear()
+    const chart = fc.chartCartesian(
+      d3.scaleLinear(), d3.scaleLog()
+    )
+    .xLabel('Some number')
+    .yLabel('Another number')
+    .xOrient('top')
+    .yOrient('right')
+    .chartLabel('Dude... it\'s a candlestick chart ...')
+    .xDomain(xExtent(data))
+    .yDomain(yExtent(data))
     // .svgPlotArea(multi);
     // .svgPlotArea(line);
     // .svgPlotArea(candlestick);
@@ -433,28 +554,67 @@ export class D3fcComponent implements OnInit {
     // .svgPlotArea(sma);
     // .svgPlotArea(smaMulti);
     // .svgPlotArea(ema);
-    // .svgPlotArea(emaMulti);
+    .svgPlotArea(emaMulti);
     
-    
+    d3.select('#chart')
+    .datum(data)
+    .call(chart);
 
-    // d3.select('#chartPane')
-    // .datum(data)
-    // .call(chart);
+// ============== INDICAOR PLOTS ================== 
+// ----------------- Indicator One ---------------
 
-    // const indicatorOne: D3fcComponent = fc.chartCartesian(
-    //   d3.scaleLinear(), d3.scaleLinear()
-    // )
-    // .xLabel('Some number')
-    // .yLabel('Another number')
-    // .yOrient('right')
-    // .chartLabel('Indicator 1')
-    // .yDomain(macdYExtent(data))
-    // .xDomain(macdXExtent(data))
+    const indicatorGridlines = fc.annotationSvgGridline();
+
+    const indicatorMulti = fc.seriesSvgMulti()
+    .series([indicatorGridlines, macd]);
+
+    const indicatorOne: D3fcComponent = fc.chartCartesian(
+      d3.scaleLinear(), d3.scaleLinear()
+    )
+    .xLabel('Some number')
+    .yLabel('Another number')
+    .yOrient('right')
+    .chartLabel('Indicator 1')
+    .yDomain(macdYExtent(data))
+    .xDomain(macdXExtent(data))
     // .svgPlotArea(macd);
+    .svgPlotArea(indicatorMulti);
     
-    // d3.select('#indicatorPane1')
-    // .datum(data)
-    // .call(indicatorOne);
+    d3.select('#indicatorPane1')
+    .datum(data)
+    .call(indicatorOne);
+
+    // ----------------- Indicator Two ---------------
+
+    const indicatorGridlines2 = fc.annotationSvgGridline();
+
+    const rsiMulti = fc.seriesSvgMulti()
+    .series([indicatorGridlines2, rsi]);
+
+    const stochMulti = fc.seriesSvgMulti()
+    .series([indicatorGridlines2, stoch]);
+
+    const indicatorMulti2 = fc.seriesSvgMulti()
+    .series([indicatorGridlines2, rsi, stoch]);
+
+    const indicatorTwo: D3fcComponent = fc.chartCartesian(
+      d3.scaleLinear(), d3.scaleLinear()
+    )
+    .xLabel('Some number')
+    .yLabel('Another number')
+    .yOrient('right')
+    .chartLabel('Indicator 2')
+    .yDomain([0, 100])
+    .xDomain(rsiXExtent(data))
+    // .svgPlotArea(rsi);
+    // .svgPlotArea(rsiMulti);
+    .svgPlotArea(stoch);
+    // .svgPlotArea(stochMulti);
+    // .svgPlotArea(indicatorMulti2);
+    
+    d3.select('#indicatorPane2')
+    .datum(data)
+    .call(indicatorTwo);
 
   }
 
@@ -497,5 +657,70 @@ export class D3fcComponent implements OnInit {
 
 
   }
+
+  // ---------------- SMOOTHED D STOCHASTIC -------------------
+
+      // Adds a x-period (default = 3) ma to above stoch %d line.
+      // Used to reduce typical jagged choppy %k lines.
+      // Plot the regular %d as %k, and plot the smoothed %d as the regular %d
+
+      // generateSmoothStochastic() {
+
+      
+
+      //   const smoothDPeriod = 3;
+     
+        // get the regular stoch k and d values using regular stoch
+        // data might already have k and d so check first
+        // if (data.hasOwnProperty('k') === false) {
+        //   console.log('d3FC in data.hasOwnProperty block');
+        //   data = stochFn(data);
+        //   console.table(data.slice(100,110));
+  
+        // }
+  
+      //   const smoothedDData = fc.indicatorExponentialMovingAverage()
+      //   .value(d => d.d)
+      //   .period(smoothDPeriod);
+  
+      //   // console.log('d3FC smoothedDData:');
+      //   // console.table(smoothedDData.slice(100,110));
+  
+      //   // create the merged data set
+      //   data = mergeArrayData(data, smoothedDData, 'smoothD');
+      //   console.log('d3FC data after adding k d and smoothD:');
+      //   console.table(data.slice(100,110));
+  
+      //   // create the lines
+      //   // regular (choppy) %k.  Will be hidden typically
+      //   const regStochKLine = fc.seriesSvgLine()
+      //   .xScale(stochXScale)
+      //   .yScale(stochYScale)
+      //   .mainValue(d => d.k)
+      //   .crossValue(d => d.date);
+  
+      //   // regular %d.  Replaces %k to start with a smoothed source
+      //   const regStochDLine = fc.seriesSvgLine()
+      //   .xScale(stochXScale)
+      //   .yScale(stochYScale)
+      //   .mainValue(d => d.d)
+      //   .crossValue(d => d.date);
+  
+      //   // smoothed %d.  Replaces %d.  Nice and smooth and readable eh?
+      //   const smoothStochDLine = fc.seriesSvgLine()
+      //   .xScale(stochXScale)
+      //   .yScale(stochYScale)
+      //   .mainValue(d => d.smoothD)
+      //   .crossValue(d => d.date);
+  
+  
+      //   const smoothDStoch = fc.seriesSvgMulti()
+      //   .series([regStochKLine, regStochDLine, smoothStochDLine]);
+  
+        
+      // }
+
+    //   const smoothDStochMulti = fc.seriesSvgMulti()
+    // .series([indicatorGridlines2, smoothDStoch]);
 
 }

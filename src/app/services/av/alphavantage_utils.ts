@@ -1,4 +1,5 @@
-import { OHLCData, OHLC_INITIALIZER} from '../../common/interfaces';
+import { OHLCData} from '../../common/interfaces';
+import { OHLC_INITIALIZER} from '../../common/constants';
 import {DataSetting, FullSetting} from '../av/av_interfaces';
 import { TimeFrame } from '../../common/interfaces_chart';
 import {IntradayChartData } from './av_interfaces';
