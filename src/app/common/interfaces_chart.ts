@@ -265,11 +265,11 @@ export interface MultilineIndicator {
 }
 
 export enum SeriesName {
+    PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
     OPEN = 'open',
     HIGH = 'high',
     LOW = 'low',
     CLOSE = 'close',
-    // PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
     VOLUME = 'volume',
     SMA = 'SMA',
     EMA = 'EMA',
@@ -328,7 +328,7 @@ export enum Indicator {
 // }
 
 export enum PlotName {
-    // PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
+    PRICE = 'price', // For candlestick price plots.  For individual lines use close instead (or anything but there's no 'price' in any data)
     OPEN = 'open',
     HIGH = 'high',
     LOW = 'low',
@@ -349,19 +349,20 @@ export enum PlotName {
 }
 
 export interface PaneLayerConfig {
-    series: PlotSeries[];
+    layerNumber: number;
     title?: string;
     idLabel?: string;
     options?: {};
-    xAxisConfig?: AxisConfig;
-    yAxisConfig?: AxisConfig;
     upperRangeLimit?: number;
     lowerRangeLimit?: number;
     hasZeroLine?: boolean;
     upperLineLevel?: number;
     lowerLineLevel?: number;
-    // gridlines?: boolean;
+    showGridlines?: boolean;
     // annotationsConfig?: {};
+    xAxisConfig?: AxisConfig;
+    yAxisConfig?: AxisConfig;
+    series: PlotSeries[];
 }
 
 export interface PlotSeries {
@@ -385,7 +386,8 @@ export interface PlotConfig {
     plotName: PlotName;
     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
     param?: Param;
-    target: string; // column name created by data calculator
+    target: string; // column name created by data calculator. For single field series (line, point, area)
+    targets?: OHLCTargets;
     color?: string;
     upColor?: string;
     downColor?: string;
@@ -434,5 +436,25 @@ export enum SeriesParam {
     MULTIPLIER = 'multiplier',
 }
 
+// data column names for creating ohlc charts (candlestick, ohlc, h-a, renko, range etc.)
+export interface OHLCTargets {
+    open: string;
+    high: string;
+    low: string;
+    close: string;
+    volume: string;
+}
+
+export interface SingleLineCoords {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+}
+
+export interface RawGridlinePxValues {
+    horzLineYValues: number[],
+    vertLineXValues: number[],
+}
 
 

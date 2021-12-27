@@ -319,153 +319,152 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
             description: 'Hey it\'s the big one with all the squiggly lines...', 
             paneType: PaneType.CHART,
             paneNumber: 1,
-        
-            // export interface PaneLayerConfig {
-            //     series: PlotSeries[];
+            layerConfigs: [
+                   // export interface PaneLayerConfig {
+            //     layerNumber: number;
             //     title?: string;
+            //     idLabel?: string;
             //     options?: {};
-            //     xAxisConfig?: AxisConfig;
-            //     yAxisConfig?: AxisConfig;
             //     upperRangeLimit?: number;
             //     lowerRangeLimit?: number;
+            //     hasZeroLine?: boolean;
+            //     upperLineLevel?: number;
+            //     lowerLineLevel?: number;
+            //     showGridlines?: boolean;
+            //     // annotationsConfig?: {};
+            //     xAxisConfig?: AxisConfig;
+            //     yAxisConfig?: AxisConfig;
+            //     series: PlotSeries[];
             // }
-   
-            // }
-            
-            
-            layerConfigs: [
                 {
+                    layerNumber: 1,
                     title: 'Layer 1',
                     idLabel: 'pane-1-layer-1-',
+                    showGridlines: true,
+                    // showGridlines: false,
                     series: [
+                        // {
+                        //     title: 'close',
+                        //     seriesName: SeriesName.CLOSE,
+                        //     idLabel: PlotName.CLOSE,
+                        //     plots: [
+                        //         {
+                        //             plotType: PlotType.LINE,
+                        //             plotName: PlotName.CLOSE,
+                        //             idLabel: PlotName.CLOSE,
+                        //             target: PlotName.CLOSE,
+                        //             color: 'yellow',
+                        //             upColor: 'blue',
+                        //             downColor: 'blue',
+                        //             style: 'line',
+                        //             thickness: '2.5',
+                        //         },
+                        //     ],
+                        // },
                         {
-                            title: 'close',
-                            seriesName: SeriesName.CLOSE,
-                            idLabel: PlotName.CLOSE,
+                            title: 'price',
+                            seriesName: SeriesName.PRICE,
+                            idLabel: PlotName.PRICE,
                             plots: [
                                 {
-                                    plotType: PlotType.LINE,
-                                    plotName: PlotName.CLOSE,
-                                    idLabel: PlotName.CLOSE,
-                                    target: PlotName.CLOSE,
+                                    plotType: PlotType.CANDLESTICK,
+                                    plotName: PlotName.PRICE,
+                                    idLabel: PlotName.PRICE,
+                                    target: PlotName.PRICE,
                                     color: 'yellow',
-                                    upColor: 'blue',
+                                    upColor: 'steelblue',
                                     downColor: 'blue',
                                     style: 'line',
                                     thickness: '2.5',
                                 },
                             ],
                         },
+                        // {
+                        //     title: 'price',
+                        //     seriesName: SeriesName.PRICE,
+                        //     idLabel: PlotName.PRICE,
+                        //     plots: [
+                        //         {
+                        //             plotType: PlotType.BAR,
+                        //             plotName: PlotName.PRICE,
+                        //             idLabel: PlotName.PRICE,
+                        //             target: PlotName.PRICE,
+                        //             color: 'yellow',
+                        //             upColor: 'blue',
+                        //             downColor: 'blue',
+                        //             style: 'line',
+                        //             thickness: '2.5',
+                        //         },
+                        //     ],
+                        // },
 
                         {
-                            title: 'Pane 1 Layer 1 ema 9',
+                            title: 'Layer 1 ema 10',
                             seriesName: SeriesName.EMA,
                             idLabel: PlotName.EMA,
-                            params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 9}],
+                            params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 10}],
+                            plots: [
+                                // export interface PlotConfig {
+                                //     plotType: PlotType;
+                                //     plotName: PlotName;
+                                //     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
+                                //     param?: Param;
+                                //     target: string; // column name created by data calculator. For single field series (line, point, area)
+                                //     targets?: OHLCTargets;
+                                //     color?: string;
+                                //     upColor?: string;
+                                //     downColor?: string;
+                                //     style?: string;
+                                //     thickness?: string;
+                                {
+                                    plotType: PlotType.LINE,
+                                    plotName: PlotName.EMA,
+                                    idLabel: `${PlotName.EMA}-10-${PlotType.LINE}`,
+                                    param: {name: SeriesParam.PERIOD, value: 10},
+                                    target: `${PlotName.EMA}-10`,
+                                    color: 'rgb(36, 164, 204)',
+                                    upColor: 'green',
+                                    downColor: 'red',
+                                    style: 'line',
+                                    thickness: '2.0',
+                                },
 
-                            // export interface PlotConfig {
-                            //     plotType: PlotType;
-                            //     plotName: PlotName;
-                            //     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
-                            //     // plotName: PlotName2;
-                            //     target: string; // column name created by data calculator
-                            //     color?: string;
-                            //     upColor?: string;
-                            //     downColor?: string;
-                            //     style?: string;
-                            //     thickness?: string;
-                            //     upperRangeLimit?: number;
-                            //     lowerRangeLimit?: number;
-                            //     hasZeroLine?: boolean;
-                            //     upperLineLevel?: number;
-                                // lowerLineLevel?: number;
-                            
+                            ],
+                        },
+                        {
+                            title: 'Layer 1 ema 50',
+                            seriesName: SeriesName.EMA,
+                            idLabel: PlotName.EMA,
+                            params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 50}],
                             plots: [
                                 {
                                     plotType: PlotType.LINE,
                                     plotName: PlotName.EMA,
-                                    idLabel: `${PlotName.EMA}-9-${PlotType.LINE}`,
-                                    param: {name: SeriesParam.PERIOD, value: 9},
-                                    target: `${PlotName.EMA}-9`,
-                                    color: 'blue',
-                                    upColor: 'green',
-                                    downColor: 'red',
-                                    style: 'line',
-                                    thickness: '2.0',
-                                },
-
-                            ],
-                        },
-                        {
-                            title: 'Pane 1 Layer 1 sma 20',
-                            seriesName: SeriesName.SMA,
-                            idLabel: PlotName.SMA,
-                            params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 20}],
-
-                            // export interface PlotConfig {
-                            //     plotType: PlotType;
-                            //     plotName: PlotName;
-                            //     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
-                            //     // plotName: PlotName2;
-                            //     target: string; // column name created by data calculator
-                            //     color?: string;
-                            //     upColor?: string;
-                            //     downColor?: string;
-                            //     style?: string;
-                            //     thickness?: string;
-                            //     upperRangeLimit?: number;
-                            //     lowerRangeLimit?: number;
-                            //     hasZeroLine?: boolean;
-                            //     upperLineLevel?: number;
-                                // lowerLineLevel?: number;
-                            
-                            plots: [
-                                {
-                                    plotType: PlotType.LINE,
-                                    plotName: PlotName.SMA,
-                                    idLabel: `${PlotName.SMA}-20-${PlotType.LINE}`,
-                                    param: {name: SeriesParam.PERIOD, value: 20},
-                                    target: `${PlotName.SMA}-20`,
-                                    color: 'red',
-                                    upColor: 'green',
-                                    downColor: 'red',
-                                    style: 'line',
-                                    thickness: '2.0',
-                                },
-
-                            ],
-                        },
-                        {
-                            title: 'Pane 1 Layer 1 sma 50',
-                            seriesName: SeriesName.SMA,
-                            idLabel: PlotName.SMA,
-                            params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 50}],
-
-                            // export interface PlotConfig {
-                            //     plotType: PlotType;
-                            //     plotName: PlotName;
-                            //     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
-                            //     // plotName: PlotName2;
-                            //     target: string; // column name created by data calculator
-                            //     color?: string;
-                            //     upColor?: string;
-                            //     downColor?: string;
-                            //     style?: string;
-                            //     thickness?: string;
-                            //     upperRangeLimit?: number;
-                            //     lowerRangeLimit?: number;
-                            //     hasZeroLine?: boolean;
-                            //     upperLineLevel?: number;
-                                // lowerLineLevel?: number;
-                            
-                            plots: [
-                                {
-                                    plotType: PlotType.LINE,
-                                    plotName: PlotName.SMA,
-                                    idLabel: `${PlotName.SMA}-50-${PlotType.LINE}`,
+                                    idLabel: `${PlotName.EMA}-50-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 50},
-                                    target: `${PlotName.SMA}-50`,
-                                    color: 'green',
+                                    target: `${PlotName.EMA}-50`,
+                                    color: 'blue',
+                                    upColor: 'red',
+                                    downColor: 'red',
+                                    style: 'line',
+                                    thickness: '2.0',
+                                },
+
+                            ],
+                        },
+                        {
+                            title: 'Layer 1 ema 200',
+                            seriesName: SeriesName.EMA,
+                            idLabel: PlotName.EMA,
+                            params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 200}],
+                            plots: [
+                                {
+                                    plotType: PlotType.LINE,
+                                    plotName: PlotName.EMA,
+                                    idLabel: `${PlotName.EMA}-200-${PlotType.LINE}`,
+                                    param: {name: SeriesParam.PERIOD, value: 200},
+                                    target: `${PlotName.EMA}-200`,
+                                    color: 'yellow',
                                     upColor: 'green',
                                     downColor: 'red',
                                     style: 'line',
@@ -474,8 +473,48 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
 
                             ],
                         },
+                        // {
+                        //     title: 'Pane 1 Layer 1 sma 20',
+                        //     seriesName: SeriesName.SMA,
+                        //     idLabel: PlotName.SMA,
+                        //     params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 20}],
+                        //     plots: [
+                        //         {
+                        //             plotType: PlotType.LINE,
+                        //             plotName: PlotName.SMA,
+                        //             idLabel: `${PlotName.SMA}-20-${PlotType.LINE}`,
+                        //             param: {name: SeriesParam.PERIOD, value: 20},
+                        //             target: `${PlotName.SMA}-20`,
+                        //             color: 'red',
+                        //             upColor: 'green',
+                        //             downColor: 'red',
+                        //             style: 'line',
+                        //             thickness: '2.0',
+                        //         },
 
+                        //     ],
+                        // },
+                        // {
+                        //     title: 'Pane 1 Layer 1 sma 50',
+                        //     seriesName: SeriesName.SMA,
+                        //     idLabel: PlotName.SMA,
+                        //     params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 50}],
+                        //     plots: [
+                        //         {
+                        //             plotType: PlotType.LINE,
+                        //             plotName: PlotName.SMA,
+                        //             idLabel: `${PlotName.SMA}-50-${PlotType.LINE}`,
+                        //             param: {name: SeriesParam.PERIOD, value: 50},
+                        //             target: `${PlotName.SMA}-50`,
+                        //             color: 'green',
+                        //             upColor: 'green',
+                        //             downColor: 'red',
+                        //             style: 'line',
+                        //             thickness: '2.0',
+                        //         },
 
+                        //     ],
+                        // },
                         {
                             title: 'Pane 1 Layer 1 bb 20 2',
                             seriesName: SeriesName.BOLLINGER_BANDS,
@@ -491,7 +530,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     idLabel: `${PlotName.BB_UPPER}-20-2-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 20},
                                     target: `${PlotName.BB_UPPER}-20-2`,
-                                    color: 'green',
+                                    color: 'yellow',
                                     upColor: 'green',
                                     downColor: 'red',
                                     style: 'line',
@@ -503,24 +542,24 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     idLabel: `${PlotName.BB_LOWER}-20-2-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 20},
                                     target: `${PlotName.BB_LOWER}-20-2`,
-                                    color: 'green',
+                                    color: 'yellow',
                                     upColor: 'green',
                                     downColor: 'red',
                                     style: 'line',
                                     thickness: '2.0',
                                 },
-                                {
-                                    plotType: PlotType.LINE,
-                                    plotName: PlotName.BB_AVERAGE,
-                                    idLabel: `${PlotName.BB_AVERAGE}-20-2-${PlotType.LINE}`,
-                                    param: {name: SeriesParam.PERIOD, value: 20},
-                                    target: `${PlotName.BB_AVERAGE}-20-2`,
-                                    color: 'white',
-                                    upColor: 'green',
-                                    downColor: 'red',
-                                    style: 'line',
-                                    thickness: '2.0',
-                                },
+                                // {
+                                //     plotType: PlotType.LINE,
+                                //     plotName: PlotName.BB_AVERAGE,
+                                //     idLabel: `${PlotName.BB_AVERAGE}-20-2-${PlotType.LINE}`,
+                                //     param: {name: SeriesParam.PERIOD, value: 20},
+                                //     target: `${PlotName.BB_AVERAGE}-20-2`,
+                                //     color: 'white',
+                                //     upColor: 'green',
+                                //     downColor: 'red',
+                                //     style: 'line',
+                                //     thickness: '2.0',
+                                // },
 
                             ],
                         },
@@ -529,7 +568,6 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                     ],
                     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
                     yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
-                    // series: [SeriesName.CLOSE, SeriesName.EMA],
                 },
             ],
         },
@@ -553,14 +591,16 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
             //     lowerLineLevel?: number;
             layerConfigs: [
                 {
+                    layerNumber: 1,
                     title: 'Pane 2 Layer 1',
                     idLabel: 'layer-1',
                     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
                     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
+                    showGridlines: true,
                     upperRangeLimit: 100,
                     lowerRangeLimit: 0,
-                    upperLineLevel: 80,
-                    lowerLineLevel: 20,
+                    upperLineLevel: 75,
+                    lowerLineLevel: 25,
                     hasZeroLine: false,
                     series: [
                         // export interface PlotSeries {
@@ -618,7 +658,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                                     param: {name: SeriesParam.K, value: 14},
                                     target: `${PlotName.STOCH_K}-14-5`, // column name created by data calculator
-                                    color: 'blue',
+                                    color: 'rgb(36, 164, 204)',
                                     upColor: 'green',
                                     downColor: 'red',
                                     style: 'line',
@@ -652,10 +692,14 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
             paneNumber: 2,
             layerConfigs: [
                 {
+                    layerNumber: 1,
                     title: 'Pane 3 Layer 1',
                     idLabel: 'layer-1',
                     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
                     yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
+                    showGridlines: true,
+                    upperLineLevel: 50,
+                    lowerLineLevel: -50,
                     hasZeroLine: true,
                     series: [
                         {
@@ -675,7 +719,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.MACD_MACD,
                                     idLabel: '',    
                                     target: `${PlotName.MACD_MACD}-12-26-5`,
-                                    color: 'blue',
+                                    color: 'rgb(36, 164, 204)',
                                     style: 'line',
                                     thickness: '2.0',
                                 },
@@ -689,12 +733,12 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     thickness: '2.0',
                                 },
                                 {
-                                    plotType: PlotType.LINE,
+                                    plotType: PlotType.BAR,
                                     plotName: PlotName.MACD_DIVERGENCE,
                                     idLabel: '',
                                     target: `${PlotName.MACD_DIVERGENCE}-12-26-5`,
                                     color: 'white',
-                                    upColor: 'blue',
+                                    upColor: 'rgb(36, 164, 204)',
                                     downColor: 'red',
                                     style: 'bar',
                                     thickness: '2.0',
@@ -733,6 +777,7 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                 //     upperLineLevel?: number;
                 //     lowerLineLevel?: number;
                 {
+                    layerNumber: 1,
                     title: 'Layer 1 close ema sma bb',
                     idLabel: 'pane-1-layer-1',
                     series: [
@@ -896,6 +941,7 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
             paneNumber: 1,
             layerConfigs: [
                 {
+                    layerNumber: 1,
                     title: 'Layer 1',
                     idLabel: 'pane-1-layer-1-',
                     series: [

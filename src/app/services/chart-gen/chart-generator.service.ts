@@ -5,7 +5,7 @@ import { BehaviorSubject, config } from 'rxjs';
 import * as d3 from 'd3';
 
 import { OHLCData } from 'src/app/common/interfaces';
-import { AxisConfig, ChartPaneConfig, ChartPanelConfig, ChartSeriesConfig, PlotType, DomRectCoordinates, Indicator, PlotName, Extents, PaneLayout, PanelDetails, PaneType, RenderablePane, RenderablePanel, ScaleLocation, ScaleType, SeriesName, TranslationCoord, PaneLayerConfig, PlotConfig, PlotSeries } from 'src/app/common/interfaces_chart';
+import { AxisConfig, ChartPaneConfig, ChartPanelConfig, ChartSeriesConfig, Extents, PlotType, DomRectCoordinates, Indicator, SingleLineCoords, OHLCTargets, PlotName, PaneLayout, PanelDetails, PaneType, PaneLayerConfig, PlotConfig, PlotSeries, RenderablePane, RenderablePanel, ScaleLocation, ScaleType, SeriesName, TranslationCoord } from 'src/app/common/interfaces_chart';
 import { AXIS_THICKNESS, EXTENTS_HIGH_TARGET_MAP, EXTENTS_LOW_TARGET_MAP, INDICATOR_LINES_MAP, OHLC_INITIALIZER, PANE_HEIGHT_MATRIX} from '../../common/constants';
 import * as utils from './chart_generator_utils';
 import { D3fcComponent } from 'src/app/experiments/d3fc/d3fc.component';
@@ -549,12 +549,13 @@ export class ChartGeneratorService {
     console.log('--------------- gRL layer config: -------------------------------');
     console.table(layerConfig);
 
-    const renderItem = d3.create('svg:g')
+    let renderItem = d3.create('svg:g')
       .attr('id', layerConfig.title);
 
     let xScale: d3.Scale;
     let yScale: d3.Scale;
     let extents: Extents;
+    let gridlinesAdded = false;
     
     
     console.log('---------------- gRL Generate Layer Data -------------------------------');
@@ -648,6 +649,14 @@ export class ChartGeneratorService {
     }
 
 
+    console.log('---------------- gRL Generate Gridlines -------------------------------');
+
+    if (layerConfig.showGridlines) {
+      // export function generateGridlines(xScale, yScale, layer: PaneLayerConfig, layout: PaneLayout) {
+      const gridlines = utils.generateGridlines(xScale, yScale, layerConfig, layout);
+
+      renderItem.append(() => gridlines.node());
+    }
 
 
 
@@ -667,13 +676,12 @@ export class ChartGeneratorService {
     
     
 
+        const addGridlines = layerConfig.showGridlines && !gridlinesAdded;
         
-        
+        // generateRenderablePlot(data: OHLCData[], xScale: d3.xScale, yScale: d3.yScale, extents: Extents, plot: PlotConfig, paneNumber: number, layerNumber: number, layout: PaneLayout, target: string) {
+        const renderablePlot = this.generateRenderablePlot(this.dataBS.value, xScale, yScale, extents, plot, paneConfig.paneNumber, layerConfig.layerNumber, layout, plot.target, addGridlines);
 
-
-
-        // generateRenderablePlot(data: OHLCData[], xScale: d3.xScale, yScale: d3.yScale, extents: Extents, plot: PlotConfig, paneNumber: number, layout: PaneLayout, target: string) {
-        const renderablePlot = this.generateRenderablePlot(this.dataBS.value, xScale, yScale, extents, plot, paneConfig.paneNumber, layout, plot.target);
+        gridlinesAdded = true;
 
         // append the plot to the root node
         renderItem.append(() => renderablePlot.node());
@@ -696,7 +704,7 @@ export class ChartGeneratorService {
   }
 
   
-    generateRenderablePlot(data: OHLCData[], xScale: d3.xScale, yScale: d3.yScale, extents: Extents, plot: PlotConfig, paneNumber: number, layout: PaneLayout, target: string) {
+    generateRenderablePlot(data: OHLCData[], xScale: d3.xScale, yScale: d3.yScale, extents: Extents, plot: PlotConfig, paneNumber: number, layerNumber: number, layout: PaneLayout, target: string, addGridlines: boolean) {
       console.log('cGS gRP paneNum/target/extents: ', paneNumber, target);
       console.table(extents);
   
@@ -709,34 +717,31 @@ export class ChartGeneratorService {
       switch(plot.plotType) {
         case PlotType.LINE: 
         console.log('cGS gRP in type=line');
-          render = utils.generateLineSeries(data, xScale, yScale, plot, paneNumber, layout, target);
+          render = utils.generateLineSeries(data, xScale, yScale, plot, paneNumber, layerNumber, layout, target, addGridlines);
   
           break;
   
         case PlotType.CANDLESTICK: 
-        // render = utils.generateCandlestickSeries(data, xScale, yScale, config, paneNumber, layout);
+        render = utils.generateCandlestickSeries(data, xScale, yScale, plot, paneNumber, layerNumber, layout, addGridlines);
           
   
           break;
   
         case PlotType.OHLCBAR: 
-        // render = utils.generateBarSeries(data, xScale, yScale, config, paneNumber, layout);
+        render = utils.generateOHLCBarSeries(data, xScale, yScale, plot, paneNumber, layerNumber, layout, addGridlines);
+  
+          break;
+
+        case PlotType.BAR: 
+          render = utils.generateBarSeries(data, xScale, yScale, plot, paneNumber, layerNumber, layout, target, addGridlines);
   
           break;
   
         default: ;
       }
-        
       renderItem.append(() => render.node());
       console.log('cGS gSR OUTPUT RENDER ITEM: ', render);
 
       return renderItem;
-  
-      
-  
     }
-
- 
-
-
 }

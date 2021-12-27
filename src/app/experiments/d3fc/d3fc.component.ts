@@ -283,7 +283,7 @@ export class D3fcComponent implements OnInit {
     console.table(bbData.slice(100,110));
 
     // create the merged data set
-    data = mergeObjectData(data, bbData, `bb-${bbPeriod}-${bbMultiplier}-`);
+    data = mergeObjectData(data, bbData, `bb-${bbPeriod}-${bbMultiplier}`);
 
     // create the BB lines
     const bbUpper = fc.seriesSvgLine()
@@ -417,7 +417,6 @@ export class D3fcComponent implements OnInit {
     const macdSlow = 26;
     const macdSignal = 9;
 
-    // logs the data returned by the macd data generator
     const macdFn = fc.indicatorMacd()
     .value(d => d.close)
     .fastPeriod(macdFast)
@@ -430,7 +429,7 @@ export class D3fcComponent implements OnInit {
     console.table(macdData.slice(100,110));
 
     // create the merged data set
-    data = mergeObjectData(data, macdData, `macd-${macdFast}-${macdSlow}-${macdSignal}-`);
+    data = mergeObjectData(data, macdData, `macd-${macdFast}-${macdSlow}-${macdSignal}`);
 
     // create the macd lines
     const macdLine = fc.seriesSvgLine()
