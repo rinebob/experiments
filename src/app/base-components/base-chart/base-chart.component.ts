@@ -11,7 +11,7 @@ import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/inte
 import { ChartDimensions, ChartPanelConfig, ChartPanelDimensions, PlotType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
 import { CHART_MARGINS, CHART_PANEL_DIMENSIONS_INITIALIZER, DEFAULT_CHART_SETTING, DEFAULT_PICKER_TABLE_DATUM, DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
 import { DEFAULT_CHART_DIMENSIONS, DEFAULT_MARGIN_CONFIG, PANE_HEIGHT_MATRIX} from 'src/app/common/constants';
-import { FIVE_PANE_PANEL_CONFIG, ONE_PANE_PANEL_CONFIG} from 'src/app/common/chart_configs';
+import { LAYER_PANEL_CONFIG, SINGLE_PANE_LAYER_PANEL_CONFIG} from 'src/app/common/chart_configs';
 import {MSFTData_start_99_1101} from '../../../assets/data/MSFT_21-1112';
 import { MSFTData_sample } from 'src/assets/data/MSFT_21-1112_sample';
 
@@ -79,7 +79,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   @Input() scaleType = DEFAULT_CHART_SETTING.scaleType;
   @Input() verticalScaleFactor = 2.5;
 
-  readonly chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(ONE_PANE_PANEL_CONFIG);
+  readonly chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(LAYER_PANEL_CONFIG);
   readonly containerDimsBS = new BehaviorSubject<DomRectCoordinates>(DOM_RECT_COORDS_INITIALIZER);
 
   // used for prototype - not used in chart generator service

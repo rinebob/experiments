@@ -529,36 +529,36 @@ export class D3fcComponent implements OnInit {
     // const chart = fc.chartCartesian(xScale, yScale)
     // const chart = fc.chartCartesian(
       // d3.scaleLinear()
-    const chart = fc.chartCartesian(
-      d3.scaleLinear(), d3.scaleLog()
-    )
-    .xLabel('Some number')
-    .yLabel('Another number')
-    .xOrient('top')
-    .yOrient('right')
-    .chartLabel('Dude... it\'s a candlestick chart ...')
-    .xDomain(xExtent(data))
-    .yDomain(yExtent(data))
-    // .svgPlotArea(multi);
-    // .svgPlotArea(line);
-    // .svgPlotArea(candlestick);
-    // .svgPlotArea(bar);
-    // .svgPlotArea(rotatingColorBar);
-    // .svgPlotArea(rotatingColorBarWithLabels);
-    // .svgPlotArea(ohlc);
-    // .svgPlotArea(area);
-    // .svgPlotArea(errorBar);
-    // .svgPlotArea(bbUpper);
-    // .svgPlotArea(candleBbMulti);
-    // .svgPlotArea(bollingerBands);
-    // .svgPlotArea(sma);
-    // .svgPlotArea(smaMulti);
-    // .svgPlotArea(ema);
-    .svgPlotArea(emaMulti);
+    // const chart = fc.chartCartesian(
+    //   d3.scaleLinear(), d3.scaleLog()
+    // )
+    // .xLabel('Some number')
+    // .yLabel('Another number')
+    // .xOrient('top')
+    // .yOrient('right')
+    // .chartLabel('Dude... it\'s a candlestick chart ...')
+    // .xDomain(xExtent(data))
+    // .yDomain(yExtent(data))
+    // // .svgPlotArea(multi);
+    // // .svgPlotArea(line);
+    // // .svgPlotArea(candlestick);
+    // // .svgPlotArea(bar);
+    // // .svgPlotArea(rotatingColorBar);
+    // // .svgPlotArea(rotatingColorBarWithLabels);
+    // // .svgPlotArea(ohlc);
+    // // .svgPlotArea(area);
+    // // .svgPlotArea(errorBar);
+    // // .svgPlotArea(bbUpper);
+    // // .svgPlotArea(candleBbMulti);
+    // // .svgPlotArea(bollingerBands);
+    // // .svgPlotArea(sma);
+    // // .svgPlotArea(smaMulti);
+    // // .svgPlotArea(ema);
+    // .svgPlotArea(emaMulti);
     
-    d3.select('#chart')
-    .datum(data)
-    .call(chart);
+    // d3.select('#chart')
+    // .datum(data)
+    // .call(chart);
 
 // ============== INDICAOR PLOTS ================== 
 // ----------------- Indicator One ---------------
@@ -568,21 +568,21 @@ export class D3fcComponent implements OnInit {
     const indicatorMulti = fc.seriesSvgMulti()
     .series([indicatorGridlines, macd]);
 
-    const indicatorOne: D3fcComponent = fc.chartCartesian(
-      d3.scaleLinear(), d3.scaleLinear()
-    )
-    .xLabel('Some number')
-    .yLabel('Another number')
-    .yOrient('right')
-    .chartLabel('Indicator 1')
-    .yDomain(macdYExtent(data))
-    .xDomain(macdXExtent(data))
-    // .svgPlotArea(macd);
-    .svgPlotArea(indicatorMulti);
+    // const indicatorOne: D3fcComponent = fc.chartCartesian(
+    //   d3.scaleLinear(), d3.scaleLinear()
+    // )
+    // .xLabel('Some number')
+    // .yLabel('Another number')
+    // .yOrient('right')
+    // .chartLabel('Indicator 1')
+    // .yDomain(macdYExtent(data))
+    // .xDomain(macdXExtent(data))
+    // // .svgPlotArea(macd);
+    // .svgPlotArea(indicatorMulti);
     
-    d3.select('#indicatorPane1')
-    .datum(data)
-    .call(indicatorOne);
+    // d3.select('#indicatorPane1')
+    // .datum(data)
+    // .call(indicatorOne);
 
     // ----------------- Indicator Two ---------------
 
@@ -597,24 +597,24 @@ export class D3fcComponent implements OnInit {
     const indicatorMulti2 = fc.seriesSvgMulti()
     .series([indicatorGridlines2, rsi, stoch]);
 
-    const indicatorTwo: D3fcComponent = fc.chartCartesian(
-      d3.scaleLinear(), d3.scaleLinear()
-    )
-    .xLabel('Some number')
-    .yLabel('Another number')
-    .yOrient('right')
-    .chartLabel('Indicator 2')
-    .yDomain([0, 100])
-    .xDomain(rsiXExtent(data))
-    // .svgPlotArea(rsi);
-    // .svgPlotArea(rsiMulti);
-    .svgPlotArea(stoch);
-    // .svgPlotArea(stochMulti);
-    // .svgPlotArea(indicatorMulti2);
+    // const indicatorTwo: D3fcComponent = fc.chartCartesian(
+    //   d3.scaleLinear(), d3.scaleLinear()
+    // )
+    // .xLabel('Some number')
+    // .yLabel('Another number')
+    // .yOrient('right')
+    // .chartLabel('Indicator 2')
+    // .yDomain([0, 100])
+    // .xDomain(rsiXExtent(data))
+    // // .svgPlotArea(rsi);
+    // // .svgPlotArea(rsiMulti);
+    // .svgPlotArea(stoch);
+    // // .svgPlotArea(stochMulti);
+    // // .svgPlotArea(indicatorMulti2);
     
-    d3.select('#indicatorPane2')
-    .datum(data)
-    .call(indicatorTwo);
+    // d3.select('#indicatorPane2')
+    // .datum(data)
+    // .call(indicatorTwo);
 
   }
 

@@ -1,7 +1,8 @@
+import { tick } from '@angular/core/testing';
 import * as d3 from 'd3';
 import * as fc from 'd3fc';
 import { max } from 'rxjs/operators';
-import { AXIS_THICKNESS } from 'src/app/common/constants';
+import { AXIS_THICKNESS, MILLIS_IN_A_DAY } from 'src/app/common/constants';
 
 import { OHLCData } from 'src/app/common/interfaces';
 import { ChartPaneConfig, PlotConfig, Param, SingleLineCoords, RawGridlinePxValues, TranslationCoord, ScaleLocation, PaneLayout, SeriesParam, PaneLayerConfig } from 'src/app/common/interfaces_chart';
@@ -41,11 +42,23 @@ export function generateXScale(xMin: number, xMax: number, layout: PaneLayout) {
     const xScale = d3
         .scaleTime()
         .domain([xMin, xMax])
-        .range([layout.paneOrigin.right, layout.paneOrigin.right + layout.chartIndWidth]);
+        .range([layout.paneOrigin.right, layout.paneOrigin.right + layout.chartIndWidth])
+        .nice();
+
+    // console.log('cGU gXS xScale.ticks(100):');
+    // console.table(xScale.ticks(100));
+
+    const disXScale = fc
+        .scaleDiscontinuous(d3.scaleTime())
+        // .discontinuityProvider(fc.discontinuitySkipWeekends())
+        .domain([xMin, xMax])
+        .range([layout.paneOrigin.right, layout.paneOrigin.right + layout.chartIndWidth])
+        .nice();
 
     
     // console.log('cGSU gXS final xScale domain/range: ', xScale.domain(), xScale.range());
-    return xScale;
+    // return xScale;
+    return disXScale;
 }
 
 export function generateLinearYScale(yMin: number, yMax: number, layout: PaneLayout) {
@@ -54,7 +67,8 @@ export function generateLinearYScale(yMin: number, yMax: number, layout: PaneLay
     const yScale = d3
         .scaleLinear()
         .domain([yMin, yMax])
-        .range([layout.paneOrigin.down + layout.chartIndHeight, layout.paneOrigin.down]);
+        .range([layout.paneOrigin.down + layout.chartIndHeight, layout.paneOrigin.down])
+        .nice();
 
     // console.log('cGSU gLinYS final yScale domain/range: ', yScale.domain(), yScale.range());
     return yScale;
@@ -97,7 +111,53 @@ export function generateRawGridlinePxValues(xScale, yScale, layout: PaneLayout) 
     return rawGridlinePxValues;
 }
 
-export function generateYAxis(yScale, layout: PaneLayout, title: string, paneNumber: number, location: ScaleLocation) {
+export function generateRawGridlinePxValues2(xScale, yScale, tickValues, layout: PaneLayout) {
+    const xTicksPxValues = [0, layout.chartIndWidth];
+    const yTicksPxValues = [layout.paneOrigin.down];
+    
+    for (const tick of tickValues.xTickValues) {
+        xTicksPxValues.push(xScale(tick));
+    }
+
+    for (const tick of tickValues.yTickValues) {
+        yTicksPxValues.push(yScale(tick));
+    }
+
+    const rawGridlinePxValues: RawGridlinePxValues = {
+        horzLineYValues: yTicksPxValues,
+        vertLineXValues: xTicksPxValues,
+    }
+    // console.log('cGU gRGPV output rawGridlinePxValues: ');
+    // console.table(rawGridlinePxValues);
+
+    return rawGridlinePxValues;
+}
+
+export function generateDates(data: OHLCData[]) {
+    const datesMillisArray: number[] = [];
+    const datesArray: Date[] = [];
+    const datesWithRawMillis = [];
+    for (const datum of data) {
+      const millis = Math.floor((new Date(datum.date).getTime()));
+      const midnight = d3.timeDay(datum.date);
+      const midnightMillis = midnight.getTime();
+      datesMillisArray.push(midnightMillis);
+      datesArray.push(datum.date as Date);
+      datesWithRawMillis.push(
+        {
+          rawDate: datum.date,
+          millis,
+          midnightMillis
+        }
+      );
+
+    }
+    // console.log('cGS gD dates with raw millis:');
+    // console.table(datesWithRawMillis);
+    return {datesArray, datesMillisArray, datesWithRawMillis};
+  }
+
+export function generateYAxis(yScale, layout: PaneLayout, idLabel: string, paneNumber: number, location: ScaleLocation) {
     // console.log('cGSU gYA input seriesType/paneNumber/location/layout',seriesType, paneNumber, location);
     // console.log('cGSU gYA input yScale range/domain', yScale.range(), yScale.domain());
     // console.table(layout);
@@ -106,20 +166,20 @@ export function generateYAxis(yScale, layout: PaneLayout, title: string, paneNum
     let origin: TranslationCoord;
 
     const yAxis = d3.create('svg:g')
-        .attr('id', `${title}-yAxis-${paneNumber}`)
-        .attr('stroke', 'white')
-        .attr('stroke-width', '1.0');
+        .attr('id', `${idLabel}-yAxis-${location}`)
+        .attr('stroke', 'white');
+        // .attr('stroke-width', '1.0');
     
     if (location === ScaleLocation.LEFT) {
         axis = d3.axisLeft(yScale);
-        origin = layout.leftAxisOrigin;
+        // origin = layout.leftAxisOrigin;
         yAxis.attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
         .call(axis);
         
 
     } else {
         axis = d3.axisRight(yScale);
-        origin = layout.rightAxisOrigin;
+        // origin = layout.rightAxisOrigin;
         yAxis.attr('transform', `translate(${layout.fullPaneWidth - AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
         .call(axis);
         
@@ -130,19 +190,22 @@ export function generateYAxis(yScale, layout: PaneLayout, title: string, paneNum
     return yAxis;
 }
 
-export function generateDateXAxis(xScale, layout: PaneLayout, paneConfig: ChartPaneConfig, location: ScaleLocation) {
+export function generateDateXAxis(xScale, layout: PaneLayout, layerConfig: PaneLayerConfig) {
     // console.log('cGSU gDXA input xScale/origin/seriesType/paneNumber/location', xScale, seriesType, paneNumber, location);
     // console.log('cGSU gDXA input xScale domain/range: ', xScale.domain(), xScale.range());
     // console.table(layout);
 
-    const axis = location === ScaleLocation.TOP ? d3.axisTop(xScale) : d3.axisBottom(xScale);
-    const origin = location === ScaleLocation.TOP ? layout.topAxisOrigin : layout.bottomAxisOrigin;
+    const origin = layerConfig.xAxisConfig.location === ScaleLocation.TOP ? layout.topAxisOrigin : layout.bottomAxisOrigin;
+    const axis = layerConfig.xAxisConfig.location === ScaleLocation.TOP ? d3.axisTop(xScale) : d3.axisBottom(xScale);
+
+    // axis
+    //     .ticks(50);
     
     const dateXAxis = d3.create('svg:g')
-        .attr('id', `${paneConfig.title}-xAxis-${location}-origin-${paneConfig.paneNumber}`)
+        .attr('id', `${layerConfig.idLabel}-xAxis-${layerConfig.xAxisConfig.location}`)
         .attr('transform', `translate(${origin.right}, ${origin.down})`)
         .attr('stroke', 'white')
-        .attr('stroke-width', '1.0')
+        // .attr('stroke-width', '1.0')
         .call(axis);
 
     return dateXAxis;
@@ -154,7 +217,7 @@ export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
     return axis;
 }
 
-export function generateLineSeries(data: OHLCData[], xScale, yScale, plotConfig: PlotConfig, paneNumber: number, layerNumber: number, target: string) {
+export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale, plotConfig: PlotConfig, paneNumber: number, layerNumber: number, target: string) {
     // console.log('cGSU gLS input plotName/paneNumber/origin', plotConfig.plotName, paneNumber, layout.paneOrigin);
     // console.log('cGSU gLS input xScale range/domain', xScale.range(), xScale.domain());
     // console.log('cGSU gLS input yScale range/domain', yScale.range(), yScale.domain());
@@ -164,17 +227,21 @@ export function generateLineSeries(data: OHLCData[], xScale, yScale, plotConfig:
     // console.log('cGU gLS target data:');
     // console.log('cGU gLS d[target]/yScale[target]: ', data[100][target], yScale(data[100][target]));
     
-    // const lineSeriesFn = d3.line()
-    //     .x(d => xScale(d['date']))
-    //     .y(d => yScale(d[target]));
+    // const renderItem = d3.create('svg:g')
+    //     .attr('id', `pane${paneNumber}-layer${layerNumber}-${target}-line`)
+    //     .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
 
     const renderItem = d3.create('svg:g')
         .attr('id', `pane${paneNumber}-layer${layerNumber}-${target}-line`)
-        .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
-        
+        .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
+        .on('click', (event, d) => {
+            console.log('cGU gLS id: ', `pane-${paneNumber}-layer-${layerNumber}-${target}-line`,' location: ', d3.pointer(event));
+            console.log('cGU gLS data set: ', d);
+        });
+                
     const plot = fc.seriesSvgLine()
-        .xScale(xScale)
-        .yScale(yScale)
+        .xScale(xSc)
+        .yScale(ySc)
         .crossValue(d => d.date)
         .mainValue(d => d[target])
         .decorate(selection => 
@@ -184,9 +251,34 @@ export function generateLineSeries(data: OHLCData[], xScale, yScale, plotConfig:
             .attr('stroke-width', plotConfig.thickness)
         );
 
+    const plot2 = fc.seriesSvgPoint()
+    .xScale(xSc)
+    .yScale(ySc)
+    .crossValue(d => d.date)
+    .mainValue(d => d[target])
+    .size(10)
+    .decorate(selection => 
+        selection.enter()
+        // .style('fill', 'none')
+        .style('fill', 'black')
+        .attr('stroke', plotConfig.color)
+        // .attr('stroke-width', plotConfig.thickness)
+        .attr('stroke-width', '1.0')
+        // .attr('r', (d, i, n) => {
+            // console.log('cGU gLS n[i]: ', n[i]);
+            // const c = d3.select(n[i]);
+            // console.log('cGU gLS c: ', c);
+        // })
+        .on('mouseover', (event, d) => {
+            console.log('cGU gLS pane/target/datum: ', paneNumber, target);
+            // console.table(d);
+        })
+    );
+
     renderItem
         .datum(data)
-        .call(plot);
+        .call(plot)
+        .call(plot2);
 
 
     // console.log('cGSU gLS output render item: ', renderItem);
@@ -270,7 +362,7 @@ export function generateBarSeries(data: OHLCData[], xScale, yScale, plotConfig: 
     return renderItem;
 }
 
-export function generateGridlines(xScale, yScale, layer: PaneLayerConfig, layout: PaneLayout) {
+export function generateGridlines(xScale, yScale, xDates, layer: PaneLayerConfig, layout: PaneLayout) {
     // console.log('cGU gG generate gridlines');
     // console.log('cGU gG xScale domain/range: ', xScale.domain(), xScale.range());
     // console.log('cGU gG yScale domain/range: ', yScale.domain(), yScale.range());
@@ -280,28 +372,41 @@ export function generateGridlines(xScale, yScale, layer: PaneLayerConfig, layout
       .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
 
     const rawGridlinePxValues = generateRawGridlinePxValues(xScale, yScale, layout);
-    // console.log('cGU gG gridlineCoords:');
+    // console.log('cGU gG raw gridlinePxValues:');
     // console.table(rawGridlinePxValues);
 
     const lineCoordsArray = generateGridlineCoords(rawGridlinePxValues, layout);
+    // console.log('cGU gG raw gridlineCoords:');
+    // console.table(lineCoordsArray);
     
     for (const coords of lineCoordsArray) {
-        const label = '';
-        const line: d3.line = generateGridline(coords, layout, label);
+        let line: d3.line = generateGridline(coords, layout);
 
         renderItem.append(() => line.node());
     }
 
-    // Remaining non-gridline lines - upper/lower and zero horizontal lines
+    // console.log('cGU gG gridlines output renderItem: ', renderItem);
+
+    return renderItem;
+}
+
+export function generateIndicatorLines(yScale, layer: PaneLayerConfig, layout: PaneLayout) {
+    // console.log('cGU gG remaining lines: upper/lower/zero: ', layer.upperLineLevel, layer.lowerLineLevel, layer.hasZeroLine);
+
+    const renderItem = d3.create('svg:g')
+      .attr('id', `${layer.idLabel}-indicatorLines`)
+      .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
+
     if (!!layer.upperLineLevel) {
         const coords: SingleLineCoords = {
             x1: 0,
             y1: yScale(layer.upperLineLevel),
             x2: layout.chartIndWidth,
             y2: yScale(layer.upperLineLevel),
+            visible: true,
+            label: 'upper',
         }
-        const label = 'upper-line';
-        const line: d3.line = generateGridline(coords, layout, label);
+        const line: d3.line = generateGridline(coords, layout);
 
         line
             .attr('stroke-width', '2.0')
@@ -316,9 +421,10 @@ export function generateGridlines(xScale, yScale, layer: PaneLayerConfig, layout
             y1: yScale(layer.lowerLineLevel),
             x2: layout.chartIndWidth,
             y2: yScale(layer.lowerLineLevel),
+            visible: true,
+            label: 'lower',
         }
-        const label = 'lower-ine';
-        const line: d3.line = generateGridline(coords, layout, label);
+        const line: d3.line = generateGridline(coords, layout);
 
         line
             .attr('stroke-width', '2.0')
@@ -333,19 +439,17 @@ export function generateGridlines(xScale, yScale, layer: PaneLayerConfig, layout
             y1: yScale(0),
             x2: layout.chartIndWidth,
             y2: yScale(0),
+            visible: true,
+            label: 'zero-line'
         }
-        const label = 'zero-ine';
-        const line: d3.line = generateGridline(coords, layout, label);
+        const line: d3.line = generateGridline(coords, layout);
         
         line
             .attr('stroke-width', '2.0')
             .attr('stroke', 'white');
 
-
         renderItem.append(() => line.node());
     }
-
-    // console.log('cGU gG gridlines output renderItem: ', renderItem);
 
     return renderItem;
 }
@@ -356,13 +460,17 @@ export function generateGridlineCoords(rawGridlinePxValues: RawGridlinePxValues,
     
     const horzLevels = rawGridlinePxValues.horzLineYValues;
     const vertLevels = rawGridlinePxValues.vertLineXValues;
+    // const hiddenVertLevels = rawGridlinePxValues.hiddenVertLineXValues;
 
+ 
     for (const level of horzLevels) {
         const coords: SingleLineCoords = {
             x1: 0,
             y1: level,
             x2: layout.chartIndWidth,
             y2: level,
+            visible: true,
+            label: `grid-h-${horzLevels.indexOf(level)}`,
         }
         lineCoords.push(coords);
     }
@@ -373,9 +481,25 @@ export function generateGridlineCoords(rawGridlinePxValues: RawGridlinePxValues,
             y1: layout.chartIndHeight,
             x2: level,
             y2: 0,
+            visible: true,
+            label: `grid-v-${vertLevels.indexOf(level)}`,
         }
         lineCoords.push(coords);
     }
+
+    
+    // for (const level of hiddenVertLevels) {
+    //     const coords: SingleLineCoords = {
+    //         x1: level,
+    //         y1: layout.chartIndHeight,
+    //         x2: level,
+    //         y2: 0,
+    //         visible: false,
+    //         label: `hidden-v-${hiddenVertLevels.indexOf(level)}`,
+    //         index: hiddenVertLevels.indexOf(level),
+    //     }
+    //     lineCoords.push(coords);
+    // }
 
     // console.log('cGU gLC output lineCoords array:');
     // console.table(lineCoords);
@@ -383,7 +507,7 @@ export function generateGridlineCoords(rawGridlinePxValues: RawGridlinePxValues,
     return lineCoords;
 }
 
-export function generateGridline(coords: SingleLineCoords, layout: PaneLayout, label: string) {
+export function generateGridline(coords: SingleLineCoords, layout: PaneLayout) {
     // console.log('cGU gL input label/coords: ', label)
     // console.table(coords);
     
@@ -399,18 +523,65 @@ export function generateGridline(coords: SingleLineCoords, layout: PaneLayout, l
     const x2 = lineIsHorizontal ? coords.x2 : coords.x2;
     const y2 = lineIsHorizontal ? coords.y2 : coords.y2  + layout.paneOrigin.down;
 
+    // if line is visible give it a color otherwise make it transparent or give it a different color
+    // const strokeColor = coords.visible === true ? 'rgb(54, 69, 84)' : 'rgba(0, 0, 0, 0)';
+    const strokeColor = coords.visible === true ? 'rgb(54, 69, 84)' : 'rgb(154, 169, 184)';
+
     const line = d3.create('svg:line')
-        .attr('id', `grid-${label}`)
+        .classed('hidden', coords.visible === false)
+        .attr('id', coords.label)
         .attr('x1', x1)
         .attr('x2', x2)
         .attr('y1', y1)
         .attr('y2', y2)
-        .attr('stroke', 'rgb(54, 69, 84)')
+        .attr('stroke', strokeColor)
+        // .attr('stroke', 'rgb(54, 69, 84)')
         .attr('stroke-width', '1.0');
+
+    if (coords.index) {
+        line
+            .attr('data-index', coords.index);
+    }
 
     // console.log('cGU gL output line: ', line)
 
     return line;
+}
+
+export function generateCrosshairs(pointerX: number, pointerY: number, layout: PaneLayout) {
+    // console.log('cGU gL input label/coords: ', label)
+    // console.table(coords);
+    const renderItem = d3.create('svg:g')
+        .attr('id', `crosshairs-pane-${layout.paneNumber}`)
+        .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
+
+    const horzLine = d3.create('svg:line')
+        .classed('crosshairs', true)
+        .attr('id', 'crosshairs-x')
+        .attr('x1', 0)
+        .attr('y1', pointerY)
+        .attr('x2', layout.chartIndWidth)
+        .attr('y2', pointerY)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '1.0');
+
+    const vertLine = d3.create('svg:line')
+        .classed('crosshairs', true)
+        .attr('id', `crosshairs-y-${layout.paneNumber}`)
+        .attr('x1', pointerX)
+        .attr('y1', layout.paneOrigin.down + layout.chartIndHeight)
+        .attr('x2', pointerX)
+        .attr('y2', layout.paneOrigin.down)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '1.0');
+
+        
+    // console.log('cGU gL output line: ', line)
+
+    renderItem.append(() => horzLine.node())
+    renderItem.append(() => vertLine.node())
+
+    return renderItem;
 }
 
 export function generateSMA(data: OHLCData[], params: Param[]) {

@@ -244,10 +244,37 @@ export function generateRequestString (req: DataSetting) {
 }
 
 export function convertDates(data: OHLCData[]) {
+
     const newData:OHLCData[] = [];
+
+    // console.log('aVU cD input data len -1: ', data[data.length - 1]);
+    // console.table(data[data.length - 1]);
+    
+    const dt = data[data.length - 1].date;
+    // console.log('aVU cD raw date: ', dt);
+    
     for (const datum of data) {
-        const newDate = typeof datum.date === 'string' ? new Date(datum.date) : datum.date;
-        newData.push({...datum, date: newDate});
+
+        // raw data each date is midnight zulu time
+        // this is rendering as the previous date in local time 
+        // monday data appears on sunday, tuesday on monday, wed on tues etc.
+        // need to set the raw data date one day forward so it renders locally on the correct date
+        // this is only for canned fake data.  When we subscribe to live data will need to revisit this
+
+        const rawDate = typeof datum.date === 'string' ? new Date(datum.date) : datum.date;
+        let zuluMillis = rawDate.getTime();
+        zuluMillis += 24 * 60 * 60 * 1000;
+        const newDate = new Date(zuluMillis);
+
+
+
+
+
+        // console.log('aVU cD input datum:');
+        // console.table(datum);
+        // console.log('aVU cD input datum.date/newDate: ', datum.date, newDate)
+        const newStringDate = newDate.toLocaleString();
+        newData.push({...datum, date: newDate, stringDate: newStringDate});
     }
     
     return newData;

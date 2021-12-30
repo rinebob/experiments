@@ -7,7 +7,8 @@
     .dynamic-panel-container {
         background-color:rgb(18, 43, 43);
         
-        height: calc(100vh - 64px);     // 64px = height of top nav bar
+        // height: calc(100vh - 64px);     // 64px = height of top nav bar
+        height: 100vh;                      // removed top nav bar
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -23,11 +24,22 @@
             box-sizing: border-box;
             display: flex;
             justify-content: center;
-            height: calc(100vh - 128px);        // 128px = top bar + chart controls heights
+            // height: calc(100vh - 128px);        // 128px = top bar (64px) + chart controls (64px) heights
+            height: 100vh;                          
             // width: calc(100vw - 40px);
             width: 100vw;
             
         }
+
+        // .tooltip {
+        //     text-align: left;
+        //     width: 100px;
+        //     height: 100px;
+        //     background: lightcyan;
+        //     padding: 2px;
+        //     font: 12px Helvetica, sans-serif;
+        //     border: 1px solid black;
+        // }
     }
     
     .spacer {

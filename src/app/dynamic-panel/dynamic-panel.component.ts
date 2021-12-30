@@ -8,9 +8,9 @@ import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
 import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DOM_RECT_COORDS_INITIALIZER, VERTICAL_ADJUSTMENT_FACTOR} from '../common/constants';
-import { FIVE_PANE_PANEL_CONFIG, ONE_PANE_PANEL_CONFIG, TWO_PANE_PANEL_CONFIG, LAYER_PANEL_CONFIG} from 'src/app/common/chart_configs';
+import { LAYER_PANEL_CONFIG, SINGLE_PANE_LAYER_PANEL_CONFIG} from 'src/app/common/chart_configs';
 
-const SYMBOL = 'SPY';
+const SYMBOL = 'NFLX';
 const DATA_SETTING:SymbolTimeSetting = {
   symbol: SYMBOL,
   timeFrame: TimeFrame.DAILY,
@@ -36,7 +36,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   chartDataBS = new BehaviorSubject<OHLCData[]>([]);
   chartData$: Observable<OHLCData[]> = this.chartDataBS;
 
-  chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(ONE_PANE_PANEL_CONFIG);
+  chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(LAYER_PANEL_CONFIG);
   chartPanelConfig$: Observable<ChartPanelConfig> = this.chartPanelConfigBS;
 
   chartTypeBS = new BehaviorSubject<PlotType>(DEFAULT_CHART_SETTING.chartType);
@@ -61,7 +61,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
         this.chartDataBS.next(data);
         this.allDataBS.next(data);
         this.numDataPoints = this.allDataBS.value.length;
-        console.log('dP ctor num data pts / t.allDataBS[0]: ', this.numDataPoints, data[0]);
+        // console.log('dP ctor num data pts / t.allDataBS[0]: ', this.numDataPoints, data[0]);
       }
     );
   }
@@ -76,6 +76,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
     
     // CONFIGS WITH PANE LAYERS
     this.chartPanelConfigBS.next(LAYER_PANEL_CONFIG);
+    // this.chartPanelConfigBS.next(SINGLE_PANE_LAYER_PANEL_CONFIG);
 
 
     // TODO: copy/rename this action for this caller and register with effect
@@ -94,8 +95,8 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   generateDomRectCoordinates() {
     const domRect:DomRectCoordinates = this.baseChartContainer.nativeElement.getBoundingClientRect();
     
-    console.log('dP ngAVI baseChartContainer domRect:');
-    console.table(domRect);
+    // console.log('dP ngAVI baseChartContainer domRect:');
+    // console.table(domRect);
     
     const coords: DomRectCoordinates = {
       x: domRect.x,
