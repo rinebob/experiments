@@ -95,7 +95,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   generateDomRectCoordinates() {
     const domRect:DomRectCoordinates = this.baseChartContainer.nativeElement.getBoundingClientRect();
     
-    // console.log('dP ngAVI baseChartContainer domRect:');
+    console.log('dP ngAVI baseChartContainer domRect:');
     // console.table(domRect);
     
     const coords: DomRectCoordinates = {
@@ -109,7 +109,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
       left: domRect.left,
     };
   
-    // console.log('dP ngAVI  coords: ', coords);
+    console.log('dP ngAVI final coords: ', coords);
     return coords;
 
   }
@@ -121,21 +121,21 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
     const adj = adjustment === VerticalAdjustment.VERT_CONTRACT ? VERTICAL_ADJUSTMENT_FACTOR : -VERTICAL_ADJUSTMENT_FACTOR;
     
     const newVertFactor = currentVertFactor + adj;
-    // console.log('dP hVA existing/new vert adjustment: ', currentVertFactor, newVertFactor);
+    console.log('dP hVA existing/new vert adjustment: ', currentVertFactor, newVertFactor);
     this.verticalScaleFactorBS.next(newVertFactor);
     console.log('dP hVA t.vSFBS.value: ', this.verticalScaleFactorBS.value);
 
   }
 
   handleMoveChart(move: ChartMoveEvent) {
-    // console.log('dP hMC move: ', move);
+    console.log('dP hMC move: ', move);
     const data = this.getDataRangeSelection(move.startIndex, move.endIndex);
     this.chartDataBS.next(data);
     // console.log('dP hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
   }
 
   handleUpdateChartType(chartType: PlotType) {
-    // console.log('dP hUCT chart type: ', chartType);
+    console.log('dP hUCT chart type: ', chartType);
     this.chartTypeBS.next(chartType);
     console.log('dP hUCT t.baseChart: ', this.baseChart);
 
@@ -147,7 +147,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   }
 
   getDataRangeSelection(startInd: number, endInd: number): OHLCData[] {
-    // console.log('dP gDRS st/end: ', startInd, endInd);
+    console.log('dP gDRS st/end: ', startInd, endInd);
     const selection = this.allDataBS.value.slice(startInd, endInd);
     // console.log('dP gDRS selection: ', selection);
 
@@ -156,7 +156,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   }
 
   getData() {
-    // console.log('dP rD get data called.  dataSetting: ', DATA_SETTING);
+    console.log('dP rD get data called.  dataSetting: ', DATA_SETTING);
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 
