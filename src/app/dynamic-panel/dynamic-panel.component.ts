@@ -95,7 +95,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   generateDomRectCoordinates() {
     const domRect:DomRectCoordinates = this.baseChartContainer.nativeElement.getBoundingClientRect();
     
-    console.log('dP ngAVI baseChartContainer domRect:');
+    // console.log('dP ngAVI baseChartContainer domRect:');
     // console.table(domRect);
     
     const coords: DomRectCoordinates = {
@@ -109,7 +109,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
       left: domRect.left,
     };
   
-    console.log('dP ngAVI final coords: ', coords);
+    // console.log('dP ngAVI final coords: ', coords);
     return coords;
 
   }
@@ -128,26 +128,26 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   }
 
   handleMoveChart(move: ChartMoveEvent) {
-    console.log('dP hMC move: ', move);
+    // console.log('dP hMC move: ', move);
     const data = this.getDataRangeSelection(move.startIndex, move.endIndex);
     this.chartDataBS.next(data);
     // console.log('dP hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
   }
 
   handleUpdateChartType(chartType: PlotType) {
-    console.log('dP hUCT chart type: ', chartType);
+    // console.log('dP hUCT chart type: ', chartType);
     this.chartTypeBS.next(chartType);
-    console.log('dP hUCT t.baseChart: ', this.baseChart);
+    // console.log('dP hUCT t.baseChart: ', this.baseChart);
 
   }
 
   handleUpdateScaleType(scaleType: ScaleType) {
-    console.log('dP hUST scale type: ', scaleType);
+    // console.log('dP hUST scale type: ', scaleType);
     this.scaleTypeBS.next(scaleType);
   }
 
   getDataRangeSelection(startInd: number, endInd: number): OHLCData[] {
-    console.log('dP gDRS st/end: ', startInd, endInd);
+    // console.log('dP gDRS st/end: ', startInd, endInd);
     const selection = this.allDataBS.value.slice(startInd, endInd);
     // console.log('dP gDRS selection: ', selection);
 

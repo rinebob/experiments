@@ -1,5 +1,4 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, ViewChild, ElementRef} from '@angular/core';
-
 import { BehaviorSubject, Observable } from 'rxjs';
 import * as d3 from 'd3';
 // import * as techan from 'techan';
@@ -19,6 +18,10 @@ import { MSFTData_sample } from 'src/assets/data/MSFT_21-1112_sample';
 // height of ChartControls component
 const CONTROLS_HEIGHT = 50;
 
+
+// BASE CHART IS DEPRECATED FOR NEW IMPLEMENTATIONS
+// USE DYNAMIC PANEL/DYNCAMIC CHART INSTEAD
+// TODO: refactor BaseChart to support SimpleChart only
 @Component({
   selector: 'exp-base-chart',
   templateUrl: './base-chart.component.html',

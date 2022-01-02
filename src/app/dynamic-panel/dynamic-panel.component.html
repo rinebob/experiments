@@ -11,8 +11,11 @@
     
 
     <div #baseChartContainer class="base-chart-container">
-        <exp-dynamic-chart>
-            
+        <exp-dynamic-chart [chartData]="chartData$ | async"
+                           [chartPanelConfig]="chartPanelConfig$ | async"
+                           [containerDimensions]="chartContainerDimensions$ | async"
+        >
+
         </exp-dynamic-chart>
 
         <!-- <exp-base-chart #baseChart
