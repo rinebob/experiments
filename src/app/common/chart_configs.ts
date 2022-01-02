@@ -336,25 +336,6 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //         },
                         //     ],
                         // },
-                        // {
-                        //     title: 'price',
-                        //     seriesName: SeriesName.PRICE,
-                        //     seriesLabel: SeriesLabel.PRICE,
-                        //     idLabel: PlotName.PRICE,
-                        //     plots: [
-                        //         {
-                        //             plotType: PlotType.CANDLESTICK,
-                        //             plotName: PlotName.PRICE,
-                        //             idLabel: PlotName.PRICE,
-                        //             target: PlotName.PRICE,
-                        //             color: 'yellow',
-                        //             upColor: 'steelblue',
-                        //             downColor: 'blue',
-                        //             style: 'line',
-                        //             thickness: '2.5',
-                        //         },
-                        //     ],
-                        // },
                         {
                             title: 'price',
                             seriesName: SeriesName.PRICE,
@@ -362,18 +343,37 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                             idLabel: PlotName.PRICE,
                             plots: [
                                 {
-                                    plotType: PlotType.OHLCBAR,
+                                    plotType: PlotType.CANDLESTICK,
                                     plotName: PlotName.PRICE,
                                     idLabel: PlotName.PRICE,
                                     target: PlotName.PRICE,
                                     color: 'yellow',
-                                    upColor: 'blue',
+                                    upColor: 'steelblue',
                                     downColor: 'blue',
                                     style: 'line',
                                     thickness: '2.5',
                                 },
                             ],
                         },
+                        // {
+                        //     title: 'price',
+                        //     seriesName: SeriesName.PRICE,
+                        //     seriesLabel: SeriesLabel.PRICE,
+                        //     idLabel: PlotName.PRICE,
+                        //     plots: [
+                        //         {
+                        //             plotType: PlotType.OHLCBAR,
+                        //             plotName: PlotName.PRICE,
+                        //             idLabel: PlotName.PRICE,
+                        //             target: PlotName.PRICE,
+                        //             color: 'yellow',
+                        //             upColor: 'blue',
+                        //             downColor: 'blue',
+                        //             style: 'line',
+                        //             thickness: '2.5',
+                        //         },
+                        //     ],
+                        // },
 
                         {
                             title: 'Layer 1 ema 10',

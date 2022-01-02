@@ -50,11 +50,6 @@ export class ChartGeneratorService {
 
     // create root svg node for entire panel.  This is the dimensions of the entire container
     // Panel origin is offset right = margin.left, down = margin.top
-    // const renderPanel = d3.create('svg')
-    //   .attr('width', panelConfig.containerDims.width)
-    //   .attr('height', panelConfig.containerDims.height)
-    //   .attr('id', 'root-panel');
-
     const renderPanel = d3.create('svg')
       .attr('width', panelConfig.containerDims.width)
       .attr('height', panelConfig.containerDims.height)
@@ -98,42 +93,7 @@ export class ChartGeneratorService {
     renderPanel.append(() => panelCrosshairs.node());
 
     renderPanel.on('mousemove', (event) => {
-      // console.log('cGU gPXYT panel x/y coords. x:', d3.pointer(event)[0],' y:', d3.pointer(event)[1]);
-      const pointerX = d3.pointer(event)[0] - AXIS_THICKNESS;
-      const pointerY = d3.pointer(event)[1] - AXIS_THICKNESS;
-      // console.log('cGU gPXYT panel pointer x/y:', pointerX, pointerY);
-      
-      // this will return xScale(pointerX) and the index of this date in the data BS
-      const xDetails = this.getXDetails(pointerX, panelDetails);
-
-      // console.log('cGS gRP returned xDetails: ', xDetails);
-
-      const data = this.dataBS.value[xDetails.index];
-      
-      for (const paneConfig of panelConfig.panes) {
-        
-        if (data) {
-          // console.log('cGS gRP calling update annotations for pane: ', paneConfig.paneNumber);
-          this.updateAnnotationsElements(paneConfig.paneNumber, data);
-        } 
-
-
-      }
-
-      this.updatePanelCrosshairs(pointerX, pointerY, panelDetails);
-
-
-      // call update crosshairs with pointer x and pointer y
-      // this should move all vertical crosshairs to the pointer x coordinate
-      // and move the horizontal crosshair to the pointer y coordinate
-      // try to generate one set of crosshairs for the entire panel, then 
-      // then put a clip path on each pane so the crosshairs are only visible in a pane
-
-
-      // call update annotations with data object
-      // this should update all annotations in all panes
-      // data window and x/y scale text
-
+      this.handleMouseMove(event, panelDetails, panelConfig.panes);
     });
     
     renderablePanel.renderPanel = renderPanel;
@@ -142,6 +102,28 @@ export class ChartGeneratorService {
     // console.log('cGS generatePanel final renderablePanel object: ', renderablePanel);
 
     return renderablePanel;
+  }
+
+  handleMouseMove(event: MouseEvent, panelDetails: PanelDetails, paneConfigs: ChartPaneConfig[]) {
+    // console.log('cGU gPXYT panel x/y coords. x:', d3.pointer(event)[0],' y:', d3.pointer(event)[1]);
+    const pointerX = d3.pointer(event)[0] - AXIS_THICKNESS;
+    const pointerY = d3.pointer(event)[1] - AXIS_THICKNESS;
+    // console.log('cGU gPXYT panel pointer x/y:', pointerX, pointerY);
+
+    // this will return xScale(pointerX) and the index of this date in the data BS
+    const xDetails = this.getXDetails(pointerX, panelDetails);
+
+    const data = this.dataBS.value[xDetails.index];
+
+    for (const paneConfig of paneConfigs) {
+      
+      if (data) {
+        // console.log('cGS gRP calling update annotations for pane: ', paneConfig.paneNumber);
+        this.updateAnnotationsElements(paneConfig.paneNumber, data);
+      } 
+    }
+
+    this.updatePanelCrosshairs(pointerX, pointerY, panelDetails);
   }
 
   generatePanelDetails(panelConfig: ChartPanelConfig) {
@@ -266,17 +248,12 @@ export class ChartGeneratorService {
     return annotationsList;
   }
 
-  generateAnnotationElements(pane, config: PaneAnnotationConfig, layout: PaneLayout, data: OHLCData){
+  generateAnnotationElements(config: PaneAnnotationConfig, layout: PaneLayout, data: OHLCData){
     if (!config) return;
     const LEFT_MARGIN = 10;
-    // const TEXT_HORZ_SPACING = 50;
     const LINE_HEIGHT = 16;
     let vertCount = 1;
-    // let horzCount = 1;
-
-    // const elements = pane.select(`#pane-${config.pane}-annotations`);
-    // console.log('cGS gAE existing elements: ', elements);
-
+    
     const renderItem = d3.create('svg:g')
       .attr('id', `pane-${config.pane}-annotations`);
 
@@ -286,7 +263,6 @@ export class ChartGeneratorService {
     const dateGroup = d3.create('svg:g')
           .attr('id', `pane-${config.pane}-ann-group-date`)
           ;
-
 
     const dateTextString = `Date: ${data.stringDate}`;
 
@@ -307,13 +283,8 @@ export class ChartGeneratorService {
       // console.log('cGS gAE series for annotation: ', seriesAnnotation.seriesName);
       
       if (seriesAnnotation.seriesName === SeriesName.PRICE) {
-
-        // const existingPriceGroup = pane.select(`#ann-group-${seriesAnnotation.seriesLabel}`)
-        // console.log('cGS gAE existing price group: ', existingPriceGroup);
-
         const priceGroup = d3.create('svg:g')
           .attr('id', `ann-group-price`);
-
 
         const priceTextString = `Price open: ${data.open} high: ${data.high} low: ${data.low} close: ${data.close}`;
 
@@ -341,7 +312,6 @@ export class ChartGeneratorService {
 
         for (let i = 0; i < params.length; i++) {
           const param = params[i];
-          // console.log('cGS gAE for loop i: ', i);
           textString = textString + ` ${param.name}: ${param.value}`;
         }
 
@@ -349,7 +319,6 @@ export class ChartGeneratorService {
 
         for (let i = 0; i < plots.length; i++) {
           const plot = plots[i];
-          // console.log('cGS gAE for loop i: ', i);
           textString = textString + `${plot.target}: ${data[plot.target] ?? 'no value'}`;
           if (i < plots.length - 1) {textString += ' | ';}
         }
@@ -362,9 +331,7 @@ export class ChartGeneratorService {
           ;
           
           group.append(() => text.node());
-        
-
-        renderItem.append(() => group.node());
+          renderItem.append(() => group.node());
       }
 
       vertCount++;
@@ -375,6 +342,7 @@ export class ChartGeneratorService {
 
   updateAnnotationsElements(paneNumber: number, data: OHLCData) {
     if (!data) return;
+    // console.log('------------------ cGS uAE pane/date: ', paneNumber, data.stringDate.split(',')[0],' -------------------');
     const config = this.annotationsConfigBS.value.find(config => config.pane === paneNumber);
 
     const pane = d3.select(`#pane-${paneNumber}`);
@@ -422,6 +390,10 @@ export class ChartGeneratorService {
       }
 
       if (!!seriesAnnotation.params) {
+        // console.log('---------------------', seriesAnnotation.seriesLabel,' -------------------');
+
+        // line series plot id format
+        // `pane${paneNumber}-layer${layerNumber}-${target}`
 
         const existingGroup = pane.select(`#ann-group-${seriesAnnotation.seriesLabel}`);
         // console.log('cGS gAE existing group for: ', seriesAnnotation.seriesLabel, existingGroup);
@@ -439,7 +411,7 @@ export class ChartGeneratorService {
           const newString = ` ${param.name}: ${param.value}`;
           // console.log('cGS uAE param newString: ', newString);
 
-          textString = textString + ` ${param.name}: ${param.value}`;
+          textString = textString + newString;
         }
 
         textString += ' | ';
@@ -451,7 +423,7 @@ export class ChartGeneratorService {
           const newString = `${plot.target}: ${data[plot.target] ?? 'no value'}`;
           // console.log('cGS uAE plot newString: ', newString);
           
-          textString = textString + `${plot.target}: ${data[plot.target] ?? 'no value'}`;
+          textString = textString + newString;
           if (i < plots.length - 1) {textString += ' | ';}
         }
 
@@ -618,29 +590,15 @@ export class ChartGeneratorService {
     // console.log('-------- gRL START GENERATE RENDERABLE PANE - Pane: ', paneConfig.paneNumber,' ----------------------------------');
     // console.log('cGS gRP paneConfig:');
     // console.table(paneConfig);
+    // console.log('cGS gRP paneConfig id label: ', paneConfig.idLabel);
     
     const renderItem = d3.create('svg:g')
     .attr('id', `${paneConfig.idLabel}`);
-    
-    // console.log('cGS gRP paneConfig id label: ', paneConfig.idLabel);
-
-    // const rect = d3.create('svg:rect')
-    //     .attr('id', 'test-rect')
-    //     .attr('transform', `translate(${AXIS_THICKNESS}, ${layout.paneOrigin.down + AXIS_THICKNESS})`)
-    //     .attr('height', layout.chartIndHeight)
-    //     .attr('width', AXIS_THICKNESS)
-    //     .attr('stroke', 'white')
-    //     .attr('fill', 'none')
-    //     .attr('stroke-width', '1.5');
-    
-    // renderItem.append(() => rect.node())
 
     // generate annotations elements for this pane BEFORE the plots are appended
     // append them after the plots though, so they are on top of the lines
     const config = this.annotationsConfigBS.value.find(config => config.pane === paneConfig.paneNumber);
-    const annotationsElements = this.generateAnnotationElements(renderItem, config, layout, OHLC_INITIALIZER);
-
-    
+    const annotationsElements = this.generateAnnotationElements(config, layout, OHLC_INITIALIZER);
 
     for (const layer of paneConfig.layerConfigs) {
       // console.log('cGS gRP layerConfig:');
@@ -655,13 +613,8 @@ export class ChartGeneratorService {
     // renderItem.append(() => tooltip.node());
     // renderItem.append(tooltip);
 
-    // // generate annotations elements for this pane
-    // const config = this.annotationsConfigBS.value.find(config => config.pane === paneConfig.paneNumber);
-    // const annotationsElements = this.generateAnnotationElements(renderItem, config, layout, OHLC_INITIALIZER);
-
     // generate above, append here
     renderItem.append(() => annotationsElements.node());
-    
     
     // console.log('-------- gRL END GENERATE RENDERABLE PANE - Pane: ', paneConfig.paneNumber,' ----------------------------------');
     // return the root node (=renderable pane)

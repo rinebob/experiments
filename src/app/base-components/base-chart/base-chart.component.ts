@@ -136,17 +136,18 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
       if (this.containerDimsBS.value.height > 0 && this.containerDimsBS.value.width > 0) {
 
-        const renderablePanel = this.chartGenSvc.generateRenderablePanel(this.chartData, this.chartPanelConfig);
+        this.refreshChart();
+        // const renderablePanel = this.chartGenSvc.generateRenderablePanel(this.chartData, this.chartPanelConfig);
         
-        // console.log('bC ngOC returned renderablePanel: ', renderablePanel);
+        // // console.log('bC ngOC returned renderablePanel: ', renderablePanel);
 
-        d3.select('svg').remove();
-        this.g = d3.select('#testDiv')
-          .attr('top', this.containerDimsBS.value.margin.top)
-          .attr('left', this.containerDimsBS.value.margin.left)
-          .attr('width', this.containerDimsBS.value.width)
-          .attr('height', this.containerDimsBS.value.height)
-          .append(() => renderablePanel.renderPanel.node());
+        // d3.select('svg').remove();
+        // this.g = d3.select('#testDiv')
+        //   .attr('top', this.containerDimsBS.value.margin.top)
+        //   .attr('left', this.containerDimsBS.value.margin.left)
+        //   .attr('width', this.containerDimsBS.value.width)
+        //   .attr('height', this.containerDimsBS.value.height)
+        //   .append(() => renderablePanel.renderPanel.node());
       }
 
     }
@@ -155,6 +156,7 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       // console.log('bC ngOC changes-chartData: ', changes['chartData'].currentValue);
       const data: OHLCData[] = (changes['chartData']).currentValue;
       this.chartDataBS.next(data);
+      this.refreshChart();
       if (data) {
         // console.log('bC ngOC calling create svg and draw chart');
         // this.createSvg();
@@ -164,7 +166,9 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
         // console.log('bC ngOC chart data.  get dimensions: ', dimensions);
 
         // this.draw(this.chartDataBS.value);
-        this.draw(data);
+        // this.draw(data);
+
+        // chart generator service call goes here
       }
     }
     
@@ -184,7 +188,10 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
       // console.log('bC ngOC chart type.  get dimensions: ', dimensions);
 
 
-      this.draw(this.chartDataBS.value);
+      // this.draw(this.chartDataBS.value);
+
+      // chart generator service call goes here
+      this.refreshChart();
       
     }
 
@@ -199,6 +206,9 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
 
 
       this.draw(this.chartDataBS.value);
+
+      // chart generator service call goes here - pass new vertical scale factor
+      // this.refreshChart();
       
     }
 
@@ -214,6 +224,22 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   ngAfterViewChecked() {
+  }
+
+  refreshChart() {
+    
+    const renderablePanel = this.chartGenSvc.generateRenderablePanel(this.chartData, this.chartPanelConfig);
+        
+    // console.log('bC ngOC returned renderablePanel: ', renderablePanel);
+
+    d3.select('svg').remove();
+    this.g = d3.select('#testDiv')
+      .attr('top', this.containerDimsBS.value.margin.top)
+      .attr('left', this.containerDimsBS.value.margin.left)
+      .attr('width', this.containerDimsBS.value.width)
+      .attr('height', this.containerDimsBS.value.height)
+      .append(() => renderablePanel.renderPanel.node());
+
   }
 
   runChartGeneratorServiceUtils() {
@@ -327,115 +353,6 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
    
 
   }
-
-  generateCrosshairsWithAnnotations() {
-  // generateCrosshairsWithAnnotations(xScale, yScale, xAxis, yAxis) {
-    console.log('bC gCWA generate crosshairs called');
-    // const xScale = 
-      // techan.scale.financetime()
-      //       .range([0, this.chartPanelDimsBS.value.mainChartDim.width]);
-
-    // const yScale = 
-    //   d3.scaleLinear()
-    //     .range([this.chartPanelDimsBS.value.mainChartDim.height, 0]);
-
-    // const xAxis = d3.axisBottom(xScale);
-    // const yAxis = d3.axisRight(yScale);
-
-    // this.timeAnnotation = 
-    //   techan.plot.axisannotation()
-    //         .axis(xAxis)
-    //         .orient('bottom')
-    //         .format(d3.timeFormat('%Y-%m-%d'))
-    //         .width(65)
-    //         .translate([0, this.chartPanelDimsBS.value.mainChartDim.height]);
-
-    // this.ohlcAnnotation = 
-    //   techan.plot.axisannotation()
-    //         .axis(yAxis)
-    //         .orient('right')
-    //         .translate([this.chartPanelDimsBS.value.mainChartDim.width + this.margin.left, 0]);            
-
-    // this.crosshair = 
-    //   techan.plot.crosshair()
-    //         .xScale(xScale)
-    //         .yScale(yScale)
-    //         .xAnnotation([this.timeAnnotation])
-    //         .yAnnotation([this.ohlcAnnotation])
-    //         .on("enter", this.enter)
-    //         .on("out", this.out)
-    //         .on("move", this.move);
-
-    // const candlestick = techan.plot.candlestick().xScale(xScale).yScale(yScale);
-    // const accessor = candlestick.accessor();
-    // // xScale.domain(this.chartData.map(accessor.d));
-    // xScale.domain(this.chartData.map(d => d.date));
-    // yScale.domain(techan.scale.plot.ohlc(this.chartData, accessor).domain());
-
-    if (this.svg) {
-      // console.log('bC gCWA in if this.svg block');
-      // this.svg.append("g")
-      //     .attr("class", "x annotation bottom")
-      //     .datum([{value: xScale.domain()[30]}])
-      //     .call(this.timeAnnotation);
-
-      // this.svg.append("g")
-      //     .attr("class", "y annotation right")
-      //     .datum([{value: 61}, {value:52}])
-      //     .call(this.ohlcAnnotation);
-
-      // this.svg.append('g')
-      //     .attr("class", "crosshair")
-      //     .datum({ x: xScale.domain()[80], y: 200 })
-      //     .call(this.crosshair)
-      //     .each((d) => this.move(d)); // Display the current data
-
-      //     // console.log('bC gCWA xScale.domain: ', xScale.domain()[80], xScale.domain() );
-
-      // this.coordsText = this.svg.append('text')
-      //     .style("text-anchor", "end")
-      //     .attr("class", "coords")
-      //     .attr("x", this.margin.left + this.chartPanelDimsBS.value.mainChartDim.width - 5)
-      //     .attr("y", 200)
-      //     .text('dude!');
-
-    }
-
-
-  }
-
-  enter() {
-    console.log('bC e crosshairs enter called');
-    console.log('bC e this.coordsText: ', this.coordsText);
-
-    if (this.coordsText) {
-      console.log('bC e coords text block');
-      this.coordsText.style("display", "inline");
-      
-    }
-  }
-  
-  out() {
-    console.log('bC crosshairs out called');
-    if (this.coordsText) {
-      console.log('bC o coords text block');
-      this.coordsText.style("display", "none");
-    }
-    
-  }
-  
-  move(coords) {
-    console.log('bC crosshairs move called.  coords: ', coords);
-    if (this.coordsText) {
-      console.log('bC m in this.coordsText block');
-      this.coordsText.text(
-        // this.timeAnnotation.format()(coords.x) + ", " + this.ohlcAnnotation.format()(coords.y)
-        // this.timeAnnotation.format()(coords.x)
-      );
-    }
-  }
-
-  
 
    // private createSvg() {
   //   d3.select("svg").remove();

@@ -8,7 +8,7 @@ import { OHLCData } from 'src/app/common/interfaces';
 import { ChartPaneConfig, PlotConfig, Param, SingleLineCoords, RawGridlinePxValues, TranslationCoord, ScaleLocation, PaneLayout, SeriesParam, PaneLayerConfig } from 'src/app/common/interfaces_chart';
 
 export function generateExtents(data: OHLCData[], minTarget: string | number, maxTarget: string | number) {
-    // console.log('cGSU gE input min/maxTargets/data[100]: ', minTarget, maxTarget);
+    console.log('cGSU gE input min/maxTargets/data[100]: ', minTarget, maxTarget);
     // console.table(data[100]);
     
 
@@ -28,7 +28,7 @@ export function generateExtents(data: OHLCData[], minTarget: string | number, ma
     // yMax = Math.ceil(center + newHeight / 2);
     // ===== DO NOT DELETE ========
     
-    // console.log('cGU gE post adjust yMax, yMin: ', yMax, yMin);
+    console.log('cGU gE post adjust yMax, yMin: ', yMax, yMin);
     const extents = {xMax, xMin, yMax, yMin}
 
     return {...extents};
@@ -43,7 +43,8 @@ export function generateXScale(xMin: number, xMax: number, layout: PaneLayout) {
         .scaleTime()
         .domain([xMin, xMax])
         .range([layout.paneOrigin.right, layout.paneOrigin.right + layout.chartIndWidth])
-        .nice();
+        // .nice()
+        ;
 
     // console.log('cGU gXS xScale.ticks(100):');
     // console.table(xScale.ticks(100));
@@ -53,7 +54,8 @@ export function generateXScale(xMin: number, xMax: number, layout: PaneLayout) {
         // .discontinuityProvider(fc.discontinuitySkipWeekends())
         .domain([xMin, xMax])
         .range([layout.paneOrigin.right, layout.paneOrigin.right + layout.chartIndWidth])
-        .nice();
+        // .nice()
+        ;
 
     
     // console.log('cGSU gXS final xScale domain/range: ', xScale.domain(), xScale.range());
@@ -232,7 +234,7 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
     //     .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
 
     const renderItem = d3.create('svg:g')
-        .attr('id', `pane${paneNumber}-layer${layerNumber}-${target}-line`)
+        .attr('id', `pane${paneNumber}-layer${layerNumber}-${target}`)
         .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
         .on('click', (event, d) => {
             console.log('cGU gLS id: ', `pane-${paneNumber}-layer-${layerNumber}-${target}-line`,' location: ', d3.pointer(event));
@@ -277,8 +279,9 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
 
     renderItem
         .datum(data)
-        .call(plot);
-        // .call(plot2);
+        .call(plot)
+        // .call(plot2)
+        ;
 
 
     // console.log('cGSU gLS output render item: ', renderItem);
@@ -652,7 +655,6 @@ export function generateCrosshairsLines(layout: PaneLayout) {
 
     return renderItem;
 }
-
 
 export function generateSMA(data: OHLCData[], params: Param[]) {
     // console.log('cGSU gSMA input data[100]:');
