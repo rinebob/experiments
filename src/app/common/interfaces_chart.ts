@@ -280,6 +280,22 @@ export enum SeriesName {
 
 }
 
+export enum SeriesLabel {
+    PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
+    OPEN = 'open',
+    HIGH = 'high',
+    LOW = 'low',
+    CLOSE = 'close',
+    VOLUME = 'volume',
+    SMA = 'sma',
+    EMA = 'ema',
+    MACD = 'macd',
+    RSI = 'rsi',
+    STOCHASTIC = 'stochastic',
+    BOLLINGER_BANDS = 'bollinger-bands',
+
+}
+
 export enum Indicator {
     SMA = 'SMA',
     EMA = 'EMA',
@@ -369,6 +385,7 @@ export interface PlotSeries {
     title: string;
     idLabel: string;
     seriesName: SeriesName;
+    seriesLabel: SeriesLabel;
     minExtentsTarget?: string;
     maxExtentsTarget?: string;
     params?: Param[];
@@ -427,5 +444,20 @@ export interface RawGridlinePxValues {
     horzLineYValues: number[];
     vertLineXValues: number[];
 }
+
+export interface PaneAnnotationConfig  {
+    pane: number;
+    seriesAnnotations: SeriesAnnotationConfig[];
+}
+
+export interface SeriesAnnotationConfig {
+    seriesName: SeriesName;
+    seriesLabel: SeriesLabel;
+    params?: Param[];
+    plots?: PlotConfig[];
+}
+
+
+
 
 

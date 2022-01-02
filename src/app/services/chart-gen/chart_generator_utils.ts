@@ -277,8 +277,8 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
 
     renderItem
         .datum(data)
-        .call(plot)
-        .call(plot2);
+        .call(plot);
+        // .call(plot2);
 
 
     // console.log('cGSU gLS output render item: ', renderItem);
@@ -403,7 +403,6 @@ export function generateIndicatorLines(yScale, layer: PaneLayerConfig, layout: P
             y1: yScale(layer.upperLineLevel),
             x2: layout.chartIndWidth,
             y2: yScale(layer.upperLineLevel),
-            visible: true,
             label: 'upper',
         }
         const line: d3.line = generateGridline(coords, layout);
@@ -421,7 +420,6 @@ export function generateIndicatorLines(yScale, layer: PaneLayerConfig, layout: P
             y1: yScale(layer.lowerLineLevel),
             x2: layout.chartIndWidth,
             y2: yScale(layer.lowerLineLevel),
-            visible: true,
             label: 'lower',
         }
         const line: d3.line = generateGridline(coords, layout);
@@ -439,7 +437,6 @@ export function generateIndicatorLines(yScale, layer: PaneLayerConfig, layout: P
             y1: yScale(0),
             x2: layout.chartIndWidth,
             y2: yScale(0),
-            visible: true,
             label: 'zero-line'
         }
         const line: d3.line = generateGridline(coords, layout);
@@ -460,8 +457,6 @@ export function generateGridlineCoords(rawGridlinePxValues: RawGridlinePxValues,
     
     const horzLevels = rawGridlinePxValues.horzLineYValues;
     const vertLevels = rawGridlinePxValues.vertLineXValues;
-    // const hiddenVertLevels = rawGridlinePxValues.hiddenVertLineXValues;
-
  
     for (const level of horzLevels) {
         const coords: SingleLineCoords = {
@@ -469,7 +464,6 @@ export function generateGridlineCoords(rawGridlinePxValues: RawGridlinePxValues,
             y1: level,
             x2: layout.chartIndWidth,
             y2: level,
-            visible: true,
             label: `grid-h-${horzLevels.indexOf(level)}`,
         }
         lineCoords.push(coords);
@@ -481,25 +475,10 @@ export function generateGridlineCoords(rawGridlinePxValues: RawGridlinePxValues,
             y1: layout.chartIndHeight,
             x2: level,
             y2: 0,
-            visible: true,
             label: `grid-v-${vertLevels.indexOf(level)}`,
         }
         lineCoords.push(coords);
     }
-
-    
-    // for (const level of hiddenVertLevels) {
-    //     const coords: SingleLineCoords = {
-    //         x1: level,
-    //         y1: layout.chartIndHeight,
-    //         x2: level,
-    //         y2: 0,
-    //         visible: false,
-    //         label: `hidden-v-${hiddenVertLevels.indexOf(level)}`,
-    //         index: hiddenVertLevels.indexOf(level),
-    //     }
-    //     lineCoords.push(coords);
-    // }
 
     // console.log('cGU gLC output lineCoords array:');
     // console.table(lineCoords);
@@ -525,17 +504,16 @@ export function generateGridline(coords: SingleLineCoords, layout: PaneLayout) {
 
     // if line is visible give it a color otherwise make it transparent or give it a different color
     // const strokeColor = coords.visible === true ? 'rgb(54, 69, 84)' : 'rgba(0, 0, 0, 0)';
-    const strokeColor = coords.visible === true ? 'rgb(54, 69, 84)' : 'rgb(154, 169, 184)';
+    // const strokeColor = coords.visible === true ? 'rgb(54, 69, 84)' : 'rgb(154, 169, 184)';
 
     const line = d3.create('svg:line')
-        .classed('hidden', coords.visible === false)
         .attr('id', coords.label)
         .attr('x1', x1)
         .attr('x2', x2)
         .attr('y1', y1)
         .attr('y2', y2)
-        .attr('stroke', strokeColor)
-        // .attr('stroke', 'rgb(54, 69, 84)')
+        // .attr('stroke', strokeColor)
+        .attr('stroke', 'rgb(54, 69, 84)')
         .attr('stroke-width', '1.0');
 
     if (coords.index) {
@@ -546,6 +524,59 @@ export function generateGridline(coords: SingleLineCoords, layout: PaneLayout) {
     // console.log('cGU gL output line: ', line)
 
     return line;
+}
+
+export function generatePanelCrosshairs(layouts: PaneLayout[]) {
+    // console.log('cGU gPC input layouts: ', layouts);
+
+    const strokeWidth = '0.5';
+
+    const renderItem = d3.create('svg:g')
+        .attr('id', `panel-crosshairs`)
+        .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
+
+    const horzLine = d3.create('svg:line')
+        .classed('panel-crosshairs panel-crosshairs-x', true)
+        .attr('id', 'panel-crosshairs-x')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 0)
+        .attr('stroke', 'white')
+        .attr('stroke-width', strokeWidth);
+
+    for (const layout of layouts) {
+        // console.log('cGU gPC layout.paneNumber: ', layout.paneNumber);
+
+        // const clip = d3.create('svg:clipPath')
+        //     .attr('id', `pane-${layout.paneNumber}-crosshairs-clipPath`)
+        //     .attr('x', layout.paneOrigin.right)
+        //     .attr('y', layout.paneOrigin.down)
+        //     .attr('height', layout.chartIndHeight)
+        //     .attr('width', layout.chartIndWidth)
+        //     ;
+
+        const vertLine = d3.create('svg:line')
+            .classed('panel-crosshairs panel-crosshairs-y', true)
+            .attr('id', `panel-crosshairs-y-pane-${layout.paneNumber}`)
+            .attr('x1', 0)
+            .attr('y1', 0)
+            .attr('x2', 0)
+            .attr('y2', 0)
+            .attr('stroke', 'white')
+            .attr('stroke-width', strokeWidth);
+        
+            
+            // clip.append(() => vertLine.node());
+            // renderItem.append(() => clip.node());
+            
+        // console.log('cGU gPC vertLine: ', vertLine);
+        renderItem.append(() => vertLine.node());
+    }
+
+    renderItem.append(() => horzLine.node());
+    
+    return renderItem;
 }
 
 export function generateCrosshairs(pointerX: number, pointerY: number, layout: PaneLayout) {
@@ -583,6 +614,45 @@ export function generateCrosshairs(pointerX: number, pointerY: number, layout: P
 
     return renderItem;
 }
+
+// This is only to create the first set of crosshairs lines
+// all updates to coords will happen programatically, not here
+export function generateCrosshairsLines(layout: PaneLayout) {
+    // console.log('cGU gL input label/coords: ', label)
+    // console.table(coords);
+    const renderItem = d3.create('svg:g')
+        .attr('id', `crosshairs-pane-${layout.paneNumber}`)
+        .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
+
+    const horzLine = d3.create('svg:line')
+        .classed('crosshairs', true)
+        .attr('id', 'crosshairs-x')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 0)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '1.0');
+
+    const vertLine = d3.create('svg:line')
+        .classed('crosshairs', true)
+        .attr('id', `crosshairs-y-${layout.paneNumber}`)
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 0)
+        .attr('stroke', 'white')
+        .attr('stroke-width', '1.0');
+
+        
+    // console.log('cGU gL output line: ', line)
+
+    renderItem.append(() => horzLine.node())
+    renderItem.append(() => vertLine.node())
+
+    return renderItem;
+}
+
 
 export function generateSMA(data: OHLCData[], params: Param[]) {
     // console.log('cGSU gSMA input data[100]:');

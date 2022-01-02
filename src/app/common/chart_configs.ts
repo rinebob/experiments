@@ -1,4 +1,4 @@
-import { ChartPanelConfig, PlotType, PaneType,  PlotName,  ScaleLocation, ScaleType, SeriesName, SeriesParam, Indicator} from "./interfaces_chart";
+import { ChartPanelConfig, PlotType, PaneType,  PlotName,  ScaleLocation, ScaleType, SeriesLabel, SeriesName, SeriesParam, Indicator} from "./interfaces_chart";
 import {INDICATOR_LINES_MAP} from './constants';
 
 // ========================================================================
@@ -41,6 +41,7 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'price',
                             seriesName: SeriesName.PRICE,
+                            seriesLabel: SeriesLabel.PRICE,
                             idLabel: PlotName.PRICE,
                             plots: [
                                 {
@@ -78,6 +79,7 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'Layer 1 ema 10',
                             seriesName: SeriesName.EMA,
+                            seriesLabel: SeriesLabel.EMA,
                             idLabel: PlotName.EMA,
                             params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 10}],
                             plots: [
@@ -99,6 +101,7 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         // {
                         //     title: 'Layer 1 ema 50',
                         //     seriesName: SeriesName.EMA,
+                        //     seriesLabel: SeriesLabel.EMA,
                         //     idLabel: PlotName.EMA,
                         //     params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 50}],
                         //     plots: [
@@ -120,6 +123,7 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         // {
                         //     title: 'Layer 1 ema 200',
                         //     seriesName: SeriesName.EMA,
+                        //     seriesLabel: SeriesLabel.EMA,
                         //     idLabel: PlotName.EMA,
                         //     params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 200}],
                         //     plots: [
@@ -141,6 +145,7 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         // {
                         //     title: 'Pane 1 Layer 1 sma 20',
                         //     seriesName: SeriesName.SMA,
+                        //     seriesLabel: SeriesLabel.SMA,
                         //     idLabel: PlotName.SMA,
                         //     params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 20}],
                         //     plots: [
@@ -162,6 +167,7 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         // {
                         //     title: 'Pane 1 Layer 1 sma 50',
                         //     seriesName: SeriesName.SMA,
+                        //     seriesLabel: SeriesLabel.SMA,
                         //     idLabel: PlotName.SMA,
                         //     params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 50}],
                         //     plots: [
@@ -180,54 +186,55 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
 
                         //     ],
                         // },
-                        // {
-                        //     title: 'Pane 1 Layer 1 bb 20 2',
-                        //     seriesName: SeriesName.BOLLINGER_BANDS,
-                        //     idLabel: `${SeriesName.BOLLINGER_BANDS}-20-2`,
-                        //     params: [
-                        //         {name: SeriesParam.PERIOD, value: 20},
-                        //         {name: SeriesParam.MULTIPLIER, value: 2},
-                        //     ],
-                        //     plots: [
-                        //         {
-                        //             plotType: PlotType.LINE,
-                        //             plotName: PlotName.BB_UPPER,
-                        //             idLabel: `${PlotName.BB_UPPER}-20-2-${PlotType.LINE}`,
-                        //             param: {name: SeriesParam.PERIOD, value: 20},
-                        //             target: `${PlotName.BB_UPPER}-20-2`,
-                        //             color: 'yellow',
-                        //             upColor: 'green',
-                        //             downColor: 'red',
-                        //             style: 'line',
-                        //             thickness: '2.0',
-                        //         },
-                        //         {
-                        //             plotType: PlotType.LINE,
-                        //             plotName: PlotName.BB_LOWER,
-                        //             idLabel: `${PlotName.BB_LOWER}-20-2-${PlotType.LINE}`,
-                        //             param: {name: SeriesParam.PERIOD, value: 20},
-                        //             target: `${PlotName.BB_LOWER}-20-2`,
-                        //             color: 'yellow',
-                        //             upColor: 'green',
-                        //             downColor: 'red',
-                        //             style: 'line',
-                        //             thickness: '2.0',
-                        //         },
-                        //         // {
-                        //         //     plotType: PlotType.LINE,
-                        //         //     plotName: PlotName.BB_AVERAGE,
-                        //         //     idLabel: `${PlotName.BB_AVERAGE}-20-2-${PlotType.LINE}`,
-                        //         //     param: {name: SeriesParam.PERIOD, value: 20},
-                        //         //     target: `${PlotName.BB_AVERAGE}-20-2`,
-                        //         //     color: 'white',
-                        //         //     upColor: 'green',
-                        //         //     downColor: 'red',
-                        //         //     style: 'line',
-                        //         //     thickness: '2.0',
-                        //         // },
+                        {
+                            title: 'Pane 1 Layer 1 bb 20 2',
+                            seriesName: SeriesName.BOLLINGER_BANDS,
+                            seriesLabel: SeriesLabel.BOLLINGER_BANDS,
+                            idLabel: `${SeriesName.BOLLINGER_BANDS}-20-2`,
+                            params: [
+                                {name: SeriesParam.PERIOD, value: 20},
+                                {name: SeriesParam.MULTIPLIER, value: 2},
+                            ],
+                            plots: [
+                                {
+                                    plotType: PlotType.LINE,
+                                    plotName: PlotName.BB_UPPER,
+                                    idLabel: `${PlotName.BB_UPPER}-20-2-${PlotType.LINE}`,
+                                    param: {name: SeriesParam.PERIOD, value: 20},
+                                    target: `${PlotName.BB_UPPER}-20-2`,
+                                    color: 'yellow',
+                                    upColor: 'green',
+                                    downColor: 'red',
+                                    style: 'line',
+                                    thickness: '2.0',
+                                },
+                                {
+                                    plotType: PlotType.LINE,
+                                    plotName: PlotName.BB_LOWER,
+                                    idLabel: `${PlotName.BB_LOWER}-20-2-${PlotType.LINE}`,
+                                    param: {name: SeriesParam.PERIOD, value: 20},
+                                    target: `${PlotName.BB_LOWER}-20-2`,
+                                    color: 'yellow',
+                                    upColor: 'green',
+                                    downColor: 'red',
+                                    style: 'line',
+                                    thickness: '2.0',
+                                },
+                                // {
+                                //     plotType: PlotType.LINE,
+                                //     plotName: PlotName.BB_AVERAGE,
+                                //     idLabel: `${PlotName.BB_AVERAGE}-20-2-${PlotType.LINE}`,
+                                //     param: {name: SeriesParam.PERIOD, value: 20},
+                                //     target: `${PlotName.BB_AVERAGE}-20-2`,
+                                //     color: 'white',
+                                //     upColor: 'green',
+                                //     downColor: 'red',
+                                //     style: 'line',
+                                //     thickness: '2.0',
+                                // },
 
-                        //     ],
-                        // },
+                            ],
+                        },
                       
                       
                     ],
@@ -251,6 +258,7 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                             title: `Series 1 - ${Indicator.RSI}`,
                             idLabel: `${PlotName.RSI}-14`,
                             seriesName: SeriesName.RSI,
+                            seriesLabel: SeriesLabel.RSI,
                             params: [
                                 {name: SeriesParam.PERIOD, value: 14},
                             ],
@@ -305,13 +313,14 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                 {
                     layerNumber: 1,
                     title: 'Layer 1',
-                    idLabel: 'layer-1-',
+                    idLabel: 'layer-1',
                     showGridlines: true,
                     // showGridlines: false,
                     series: [
                         // {
                         //     title: 'close',
                         //     seriesName: SeriesName.CLOSE,
+                        //     seriesLabel: SeriesLabel.CLOSE,
                         //     idLabel: PlotName.CLOSE,
                         //     plots: [
                         //         {
@@ -330,6 +339,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         // {
                         //     title: 'price',
                         //     seriesName: SeriesName.PRICE,
+                        //     seriesLabel: SeriesLabel.PRICE,
                         //     idLabel: PlotName.PRICE,
                         //     plots: [
                         //         {
@@ -348,6 +358,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'price',
                             seriesName: SeriesName.PRICE,
+                            seriesLabel: SeriesLabel.PRICE,
                             idLabel: PlotName.PRICE,
                             plots: [
                                 {
@@ -367,6 +378,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'Layer 1 ema 10',
                             seriesName: SeriesName.EMA,
+                            seriesLabel: SeriesLabel.EMA,
                             idLabel: PlotName.EMA,
                             params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 10}],
                             plots: [
@@ -400,6 +412,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'Layer 1 ema 50',
                             seriesName: SeriesName.EMA,
+                            seriesLabel: SeriesLabel.EMA,
                             idLabel: PlotName.EMA,
                             params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 50}],
                             plots: [
@@ -421,6 +434,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'Layer 1 ema 200',
                             seriesName: SeriesName.EMA,
+                            seriesLabel: SeriesLabel.EMA,
                             idLabel: PlotName.EMA,
                             params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 200}],
                             plots: [
@@ -442,6 +456,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'Pane 1 Layer 1 bb 20 2',
                             seriesName: SeriesName.BOLLINGER_BANDS,
+                            seriesLabel: SeriesLabel.BOLLINGER_BANDS,
                             idLabel: `${SeriesName.BOLLINGER_BANDS}-20-2`,
                             params: [
                                 {name: SeriesParam.PERIOD, value: 20},
@@ -492,6 +507,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                     ],
                     xAxisConfig: {type: ScaleType.DATE, location: ScaleLocation.BOTTOM},
                     yAxisConfig: {type: ScaleType.LOG, location: ScaleLocation.RIGHT},
+                    // yAxisConfig: {type: ScaleType.LINEAR, location: ScaleLocation.RIGHT},
                 },
                 // {
                 //     layerNumber: 2,
@@ -507,6 +523,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                 //             title: `Series 1 - ${Indicator.RSI}`,
                 //             idLabel: `${PlotName.RSI}-14`,
                 //             seriesName: SeriesName.RSI,
+                //             seriesLabel: SeriesLabel.RSI,
                 //             params: [
                 //                 {name: SeriesParam.PERIOD, value: 14},
                 //             ],
@@ -572,6 +589,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //     title: `Series 1 - ${Indicator.RSI}`,
                         //     idLabel: `${PlotName.RSI}-14`,
                         //     seriesName: SeriesName.RSI,
+                        //     seriesLabel: SeriesLabel.RSI,
                         //     params: [
                         //         {name: SeriesParam.PERIOD, value: 14},
                         //     ],
@@ -605,6 +623,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                             title: `Series 2 - ${Indicator.STOCHASTIC}`,
                             idLabel: `${SeriesName.STOCHASTIC}-14-5`,
                             seriesName: SeriesName.STOCHASTIC,
+                            seriesLabel: SeriesLabel.STOCHASTIC,
                             params: [
                                 {name: SeriesParam.K, value: 14},
                                 {name: SeriesParam.D, value: 5},
@@ -647,7 +666,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
             idLabel: 'pane-3',
             description: 'MACD', 
             paneType: PaneType.INDICATOR,
-            paneNumber: 2,
+            paneNumber: 3,
             layerConfigs: [
                 {
                     layerNumber: 1,
@@ -664,6 +683,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                             title: `Series 1 - ${Indicator.MACD}`,
                             idLabel: `${SeriesName.MACD}-12-26-5`,
                             seriesName: SeriesName.MACD,
+                            seriesLabel: SeriesLabel.MACD,
                             minExtentsTarget: `${PlotName.MACD_MACD}-12-26-5`,
                             maxExtentsTarget: `${PlotName.MACD_MACD}-12-26-5`,
                             params: [
@@ -735,6 +755,7 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                             title: `Series 1 - ${Indicator.RSI}`,
                             idLabel: `${PlotName.RSI}-14`,
                             seriesName: SeriesName.RSI,
+                            seriesLabel: SeriesLabel.RSI,
                             params: [
                                 {name: SeriesParam.PERIOD, value: 14},
                             ],
@@ -808,6 +829,7 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                         {
                             title: 'close',
                             seriesName: SeriesName.CLOSE,
+                            seriesLabel: SeriesLabel.CLOSE,
                             idLabel: PlotName.CLOSE,
                             // export interface PlotConfig {
                             //     plotType: PlotType;
@@ -838,6 +860,7 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                         {
                             title: 'Pane 1 Layer 1 ema 9',
                             seriesName: SeriesName.EMA,
+                            seriesLabel: SeriesLabel.EMA,
                             idLabel: PlotName.EMA,
                             params: [
                                 // export interface Param {
@@ -884,6 +907,7 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                         {
                             title: 'Pane 1 Layer 1 sma 20',
                             seriesName: SeriesName.SMA,
+                            seriesLabel: SeriesLabel.SMA,
                             idLabel: PlotName.SMA,
                             params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 20}],
                             plots: [
@@ -905,6 +929,7 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                         {
                             title: 'Pane 1 Layer 1 bb 20 2',
                             seriesName: SeriesName.BOLLINGER_BANDS,
+                            seriesLabel: SeriesLabel.BOLLINGER_BANDS,
                             idLabel: `${SeriesName.BOLLINGER_BANDS}-20-2`,
                             params: [
                                 {name: SeriesParam.PERIOD, value: 20},
@@ -960,11 +985,12 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                 {
                     layerNumber: 1,
                     title: 'Layer 1',
-                    idLabel: 'pane-1-layer-1-',
+                    idLabel: 'pane-1-layer-1',
                     series: [
                         {
                             title: 'close',
                             seriesName: SeriesName.CLOSE,
+                            seriesLabel: SeriesLabel.CLOSE,
                             idLabel: PlotName.CLOSE,
                             plots: [
                                 {
@@ -983,6 +1009,7 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'Pane 1 Layer 1 ema 9',
                             seriesName: SeriesName.EMA,
+                            seriesLabel: SeriesLabel.EMA,
                             idLabel: PlotName.EMA,
                             params: [{idLabel: PlotName.EMA, name: SeriesParam.PERIOD, value: 9}],
                             plots: [
@@ -1004,6 +1031,7 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'Pane 1 Layer 1 sma 20',
                             seriesName: SeriesName.SMA,
+                            seriesLabel: SeriesLabel.SMA,
                             idLabel: PlotName.SMA,
                             params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 20}],
 
@@ -1043,6 +1071,7 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         {
                             title: 'Pane 1 Layer 1 sma 50',
                             seriesName: SeriesName.SMA,
+                            seriesLabel: SeriesLabel.SMA,
                             idLabel: PlotName.SMA,
                             params: [{idLabel: PlotName.SMA, name: SeriesParam.PERIOD, value: 50}],
 

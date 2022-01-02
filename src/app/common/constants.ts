@@ -42,7 +42,7 @@ export const DEFAULT_SYMBOL_TIME_SETTING: SymbolTimeSetting = {
 export const DEFAULT_AV_BASE_DATA_SETTING: av.BaseSetting = {
   slice: av.Slice.YEAR1MONTH1,
   adjusted: av.Adjusted.ADJUSTED,
-  outputSize: av.OutputSize.FULL,
+  outputSize: av.OutputSize.COMPACT,
   dataType: av.DataType.JSON,
 };
 
@@ -326,6 +326,7 @@ export const DEFAULT_MARGIN_CONFIG: MarginConfig = {
 
 
 export const AXIS_THICKNESS = 30;
+// export const AXIS_THICKNESS = 20;
 
 // We will always use calendar days for Black-Scholes and other calculations
 export const DAYS_IN_A_YEAR = 365;
@@ -377,7 +378,10 @@ export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
     
   ];
 
+  export const PRICE_SERIES = new Set([SeriesName.OPEN, SeriesName.HIGH, SeriesName.LOW, SeriesName.CLOSE]);
+
   export const INDICATOR_LINES_MAP = new Map([
+    [SeriesName.PRICE, [PlotName.OPEN, PlotName.HIGH, PlotName.LOW, PlotName.CLOSE]],
     [SeriesName.STOCHASTIC, [PlotName.STOCH_K, PlotName.STOCH_D]],
     [SeriesName.MACD, [PlotName.MACD_DIVERGENCE, PlotName.MACD_MACD, PlotName.MACD_SIGNAL]],
     [SeriesName.BOLLINGER_BANDS, [PlotName.BB_UPPER, PlotName.BB_LOWER]],
