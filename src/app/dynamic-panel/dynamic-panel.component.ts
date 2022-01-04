@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ChartMoveEvent, ChartPanelConfig, PlotType, DomRectCoordinates, PanDistance, ScaleType, SymbolTimeSetting, TimeFrame, VerticalAdjustment } from '../common/interfaces_chart'
+import { ChartMoveEvent, ChartPanelConfig, DataRenderIndices, PlotType, DomRectCoordinates, PanDistance, ScaleType, SymbolTimeSetting, TimeFrame, VerticalAdjustment } from '../common/interfaces_chart'
 import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
@@ -25,8 +25,6 @@ const DATA_SETTING:SymbolTimeSetting = {
 })
 export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit {
   readonly destroy = new Subject();
-  @ViewChild('baseChart', {read: ElementRef}) baseChart: ElementRef;
-  @ViewChild('dynamicPanelContainer', {read: ElementRef}) dynamicPanelContainer: ElementRef;
   @ViewChild('baseChartContainer', {read: ElementRef}) baseChartContainer: ElementRef;
 
   equityData$: Observable<OHLCData[]> = this.store.select(selectors.selectEquityData);
@@ -49,7 +47,10 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   chartContainerDimensions$: Observable<DomRectCoordinates> = this.chartContainerDimensionsBS;
 
   verticalScaleFactorBS = new BehaviorSubject<number>(DEFAULT_CHART_SETTING.verticalScaleFactor);
-  verticalScaleFactor$: Observable<number> = this.verticalScaleFactorBS
+  verticalScaleFactor$: Observable<number> = this.verticalScaleFactorBS;
+
+  dataRenderIndicesBS = new BehaviorSubject<DataRenderIndices>({start: 0, end: 0});
+  dataRenderIndices$: Observable<DataRenderIndices> = this.dataRenderIndicesBS;
 
   numDataPoints = 0;
   
@@ -61,6 +62,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
         this.chartDataBS.next(data);
         this.allDataBS.next(data);
         this.numDataPoints = this.allDataBS.value.length;
+        this.dataRenderIndicesBS.next({start: 0, end: this.numDataPoints - 1});
         // console.log('dP ctor num data pts / t.allDataBS[0]: ', this.numDataPoints, data[0]);
       }
     );
@@ -68,16 +70,8 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
 
   ngOnInit(): void {
     
-    // CONFIGS WITHOUT PANE LAYERS
-    // this.chartPanelConfigBS.next(ONE_PANE_PANEL_CONFIG);
-    // this.chartPanelConfigBS.next(TWO_PANE_PANEL_CONFIG);
-    // this.chartPanelConfigBS.next(FIVE_PANE_PANEL_CONFIG);
-    
-    
-    // CONFIGS WITH PANE LAYERS
     this.chartPanelConfigBS.next(LAYER_PANEL_CONFIG);
     // this.chartPanelConfigBS.next(SINGLE_PANE_LAYER_PANEL_CONFIG);
-
 
     // TODO: copy/rename this action for this caller and register with effect
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
@@ -129,9 +123,18 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
 
   handleMoveChart(move: ChartMoveEvent) {
     // console.log('dP hMC move: ', move);
-    const data = this.getDataRangeSelection(move.startIndex, move.endIndex);
-    this.chartDataBS.next(data);
+    // const data = this.getDataRangeSelection(move.startIndex, move.endIndex);
+    // this.chartDataBS.next(data);
     // console.log('dP hMC t.cDBS.v[0]: ', this.chartDataBS.value[0]);
+
+    // we don't want to update the actual raw data selection every time here
+    // we only want to let the chart know that it should re-render the chart 
+    // based on the updated the start/end indices of the data object
+
+    // pass the start/end indices to a BS that can be async'd in the template
+    this.dataRenderIndicesBS.next({start: move.startIndex, end: move.endIndex});
+
+
   }
 
   handleUpdateChartType(chartType: PlotType) {
@@ -156,7 +159,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   }
 
   getData() {
-    console.log('dP rD get data called.  dataSetting: ', DATA_SETTING);
+    console.log('dP gD get data called.  dataSetting: ', DATA_SETTING);
     this.store.dispatch(actions.sCgDfetchEquityData({dataSetting: DATA_SETTING}));
   }
 

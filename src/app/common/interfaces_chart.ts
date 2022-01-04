@@ -457,7 +457,10 @@ export interface SeriesAnnotationConfig {
     plots?: PlotConfig[];
 }
 
-
+export interface DataRenderIndices {
+    start: number;
+    end: number;
+}
 
 
 

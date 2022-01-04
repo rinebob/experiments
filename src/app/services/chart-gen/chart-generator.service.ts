@@ -524,7 +524,7 @@ export class ChartGeneratorService {
   }
   
   generateSeriesData(series: PlotSeries, data: OHLCData[]) {
-    // console.log('----------- gSD series:', series.seriesName,' ------------------');
+    // console.log('----------- cGS gSD series:', series.seriesName,' ------------------');
     // console.log('cGS gSD series:');
     // console.table(series);
     // console.table(series.params);
@@ -581,6 +581,9 @@ export class ChartGeneratorService {
         // not an indicator so just return out
       default: return;
     }
+
+    // console.log('cGS gSD final seriesData.slice(100, 101):')
+    // console.table(seriesData.slice(100, 101))
 
     return seriesData;
 
@@ -652,171 +655,6 @@ export class ChartGeneratorService {
 
     return {date, index};
 
-  }
-
-  generateXYTracker(pane, paneNumber: number, xSc: d3.Scale, ySc: d3.Scale, layout: PaneLayout) {
-    // console.log('cGS gXYT input paneId: ', paneId);
-    // const pane = d3.select('#paneId');
-    // console.log('cGS gXYT pane: ', pane);
-
-    const horzCoords = [
-      {x1: 0, y1: 0, x2: 0, y2: 0},
-    ];
-    const vertCoords = [
-      {x1: 0, y1: 0, x2: 0, y2: 0},
-    ];
-
-    let horzLine = pane.select('crosshairs-x');
-    let vertLine = pane.select(`crosshairs-y-${paneNumber}`);
-
-    // console.log('cGS gXYT horz/vert xhair lines: ', horzLine, vertLine);
-
-    // pane.select('crosshairs-x')
-    //   .data(horzCoords)
-    //   .join(horzLine)
-    //     // .attr('x1', horzCoords[0].x1)
-    //     // .attr('y1', horzCoords[0].y1)
-    //     // .attr('x2', horzCoords[0].x2)
-    //     // .attr('y2', horzCoords[0].y2);
-    //     .attr('x1', d => d.x1)
-    //     .attr('y1', d => d.y1)
-    //     .attr('x2', d => d.x2)
-    //     .attr('y2', d => d.y2);
-
-    pane.select('crosshairs-x')
-      .attr('x1', horzCoords[0].x1)
-      .attr('y1', horzCoords[0].y1)
-      .attr('x2', horzCoords[0].x2)
-      .attr('y2', horzCoords[0].y2);
-        
-
-    // pane.select(`crosshairs-y-${paneNumber}`)
-    //   .data(vertCoords)
-    //   .join(vertLine)
-    //     // .attr('x1', vertCoords[0].x1)
-    //     // .attr('y1', vertCoords[0].y1)
-    //     // .attr('x2', vertCoords[0].x2)
-    //     // .attr('y2', vertCoords[0].y2);
-    //     .attr('x1', d => d.x1)
-    //     .attr('y1', d => d.y1)
-    //     .attr('x2', d => d.x2)
-    //     .attr('y2', d => d.y2);
-
-    pane
-      // .on('mousemove', (event, d) => {
-      .on('mousemove', (event) => {
-        console.log('------------------------ XY Tracker --------------------' );
-        console.log('cGU gXYT -- paneId/x/y coords.  Pane-',paneNumber,' x:', d3.pointer(event)[0],' y:', d3.pointer(event)[1],' ----------------' );
-        // crosshairs
-        // console.log('cGU gXYT x/y before axis thickness adjustment: ', d3.pointer(event)[0], d3.pointer(event)[1]);
-        const pointerX = d3.pointer(event)[0] - AXIS_THICKNESS;
-        const pointerY = d3.pointer(event)[1] - AXIS_THICKNESS;
-        // console.log('cGU gXYT x/y after axis thickness adjustment: ', pointerX, pointerY);
-        // console.log('cGU gXYT x/y diff: ', d3.pointer(event)[0] - pointerX, d3.pointer(event)[1] - pointerY);
-        
-        
-      pane.selectAll('.crosshairs')
-          .remove();
-        const crosshairs = utils.generateCrosshairs(pointerX, pointerY, layout);
-        // console.log('cGS gXYT crosshairs: ', crosshairs);
-        pane.append(() => crosshairs.node());
-
-        // horz line then vert line as objects
-
-        // horzCoords[0] = {x1: 0, y1: pointerY, x2: layout.chartIndWidth, y2: pointerY};
-        // vertCoords[0] = {x1: pointerX, y1: layout.paneOrigin.down + layout.chartIndHeight, x2: pointerX, y2: layout.paneOrigin.down};
-        
-
-        // console.log('cGS gXYT horz coords: ', horzCoords[0].x1, horzCoords[0].y1, horzCoords[0].x2, horzCoords[0].y2);
-        // console.log('cGS gXYT vert coords: ', vertCoords[0].x1, vertCoords[0].y1, vertCoords[0].x2, vertCoords[0].y2);
-
-        // this.updateCrosshairs(pointerX, pointerY, layout);
-
-        // const crosshairsRender = d3.create('svg:g')
-        //   .attr('id', `crosshairs-pane-${layout.paneNumber}`)
-        //   .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
-
-        // const horzLine = d3.create('svg:line')
-        // const horzLine = d3.select('crosshairs-x')
-        //   .append('svg:line')
-        //   .classed('crosshairs', true)
-        //   .attr('id', 'crosshairs-x')
-        //   .attr('stroke', 'white')
-        //   .attr('stroke-width', '1.0')
-        //   .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
-
-        // // const vertLine = d3.create('svg:line')
-        // const vertLine = d3.select(`#crosshairs-y-${layout.paneNumber}`)
-        //   .classed('crosshairs', true)
-        //   .attr('id', `crosshairs-y-${layout.paneNumber}`)
-        //   .attr('stroke', 'white')
-        //   .attr('stroke-width', '1.0')
-        //   .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
-
-        // pane.select('crosshairs-x')
-        //   .attr('x1', chCoords[0].x1)
-        //   .attr('y1', chCoords[0].y1)
-        //   .attr('x2', chCoords[0].x2)
-        //   .attr('y2', chCoords[0].y2);
-
-        // pane.select(`crosshairs-y-${layout.paneNumber}`)
-        //   .attr('x1', chCoords[1].x1)
-        //   .attr('y1', chCoords[1].y1)
-        //   .attr('x2', chCoords[1].x2)
-        //   .attr('y2', chCoords[1].y2);
-
-        // crosshairsRender.append(() => horzLine.node())
-        // crosshairsRender.append(() => vertLine.node())
-
-      
-        // pane
-        //   .append(() => horzLine.node())
-        //   .append(() => vertLine.node())
-        //   // .append(() => crosshairsRender.node())
-        //   .selectAll('.crosshairs')
-        //       .data(chCoords)
-        //       .join('line');
-    
-        // const crosshairs = utils.generateCrosshairs(pointerX, pointerY, layout);
-
-        // console.log('cGS gXYT crosshairs: ', crosshairs);
-
-        // pane.append(() => crosshairs.node());
-
-        
-
-      })
-      .on('mouseleave', (event) => {
-        pane.selectAll('.crosshairs')
-          .remove();
-      }
-
-    )
-    return pane;
-  }
-
-  updateCrosshairs(pointerX: number, pointerY: number, layout: PaneLayout) {
-    const horzCoords = {x1: 0, y1: pointerY, x2: layout.chartIndWidth, y2: pointerY};
-    const vertCoords = {x1: pointerX, y1: layout.paneOrigin.down + layout.chartIndHeight, x2: pointerX, y2: layout.paneOrigin.down};
-
-    console.log('cGS uC horz/vert coords: ', horzCoords, vertCoords);
-    
-
-    const horzLine = d3.select('.crosshairs-x')
-      .attr('x1', horzCoords.x1)
-      .attr('y1', horzCoords.y1)
-      .attr('x2', horzCoords.x2)
-      .attr('y2', horzCoords.y2);
-
-    const vertLine = d3.select(`crosshairs-y-${layout.paneNumber}`)
-        .attr('x1', vertCoords.x1)
-        .attr('y1', vertCoords.y1)
-        .attr('x2', vertCoords.x2)
-        .attr('y2', vertCoords.y2);
-
-
-    console.log('cGS uC horz/vert lines: ', horzLine, vertLine);
-    
   }
 
   updatePanelCrosshairs(pointerX: number, pointerY: number, panelDetails: PanelDetails) {
@@ -921,7 +759,6 @@ export class ChartGeneratorService {
     
   }
 
-
   generateTooltip(target: string, origin: TranslationCoord) {
     // const tooltip = d3.create('svg:rect')
     //     .attr('height', '50px')
@@ -958,41 +795,13 @@ export class ChartGeneratorService {
     let extents: Extents;
     
     
-    // console.log('---------------- gRL Generate Layer Data -------------------------------');
+    // console.log('---------------- gRL Generate Layer Extents -------------------------------');
     
     
-      // GENERATE DATA
-      // generate data only if plot is derived value (ie not ohlcv ('primitive') data)
-    // console.log('---------------- gRL start generate data series loop.  num series: ', layerConfig.series.length,' -------------------------------');
+    // console.log('---------------- gRL start loop. num series: ', layerConfig.series.length,' -------------------------------');
     for (const series of layerConfig.series) {
-      // console.log('---------------- gRL Generating data for: ', series.seriesName,' -------------------------------');
-      
-    
-      // console.log('cGS gPane pre generatePlotData dataBS.value[100]:');
-      // console.table(this.dataBS.value[100]);
-      
-      const indicatorValues = Array.from(Object.values(Indicator));
-      const seriesName = series.seriesName as unknown as Indicator;
 
-      // console.log('cGS gRL O.values(Ind): ', indicatorValues);
-      // console.log('cGS gRL includes seriesName: ', series.seriesName, indicatorValues.includes(seriesName));
-
-      // generate series data only if series is an indicator (ie not ohlcv data)
-      if (indicatorValues.includes(seriesName)) {
-        const layerData = this.generateSeriesData(series, this.dataBS.value);
-
-        // return a data set with all the necessary columns of data for the entire layer
-        // push this new data set to BehaviorSubject
-
-        this.dataBS.next(layerData)
-
-        // console.log('cGS gRL with new layer data dataBS.value[100]:');
-        // console.table((this.dataBS.value)[100]);
-
-      }
-      
-
-      // console.log('---------------- gRL Generate Layer Extents -------------------------------');
+      // console.log('---------------- gRL Series ', series.seriesName,' -------------------------------');
 
       let minTarget, maxTarget;
 
@@ -1075,18 +884,6 @@ export class ChartGeneratorService {
       renderItem.append(() => indicatorLines.node());
 
     }
-
-    // console.log('---------------- gRL Generate and Attach Crosshairs -------------------------------');
-    // const crosshairs = utils.generateCrosshairsLines(layout);
-
-    // renderItem.append(() => crosshairs.node());
-
-
-
-    // console.log('---------------- gRL Generate XY Tracker -------------------------------');
-    // renderItem = this.generateXYTracker(renderItem, paneConfig.paneNumber, xScale, yScale, layout);
-    
-
 
     // console.log('---------------------- gRL start generate plots series loop. num series: ', layerConfig.series.length,' --------------------------');
     for (const series of layerConfig.series) {
