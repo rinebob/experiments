@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import * as d3 from 'd3';
 
 import { OHLCData } from 'src/app/common/interfaces';
-import { AxisConfig, ChartPaneConfig, ChartPanelConfig, Extents, PlotType, DomRectCoordinates, Indicator, PaneAnnotationConfig, PaneLayout, PanelDetails, PaneType, PaneLayerConfig, PlotConfig, PlotSeries, RenderablePane, RenderablePanel, ScaleLocation, ScaleType, SeriesAnnotationConfig, SeriesLabel, SeriesName, TranslationCoord, SingleLineCoords } from 'src/app/common/interfaces_chart';
+import { AxisConfig, ChartPaneConfig, ChartPanelConfig, Extents, PlotType, DomRectCoordinates, Indicator, PaneAnnotationConfig, PaneLayout, PanelDetails, PanelOptions, PaneType, PaneLayerConfig, PlotConfig, PlotSeries, RenderablePane, RenderablePanel, ScaleLocation, ScaleType, SeriesAnnotationConfig, SeriesLabel, SeriesName, TranslationCoord, SingleLineCoords } from 'src/app/common/interfaces_chart';
 import { AXIS_THICKNESS, EXTENTS_HIGH_TARGET_MAP, EXTENTS_LOW_TARGET_MAP, MILLIS_IN_A_DAY, OHLC_INITIALIZER, PANE_HEIGHT_MATRIX, PRICE_SERIES} from '../../common/constants';
 import * as utils from './chart_generator_utils';
 import { pointer } from 'd3fc';
@@ -14,17 +14,17 @@ import { pointer } from 'd3fc';
   providedIn: 'root'
 })
 export class ChartGeneratorService {
-
+  
   readonly dataBS = new BehaviorSubject<OHLCData[]>([OHLC_INITIALIZER]);
   readonly datesMillisBS = new BehaviorSubject<number[]>([]);
   readonly datesBS = new BehaviorSubject<Date[]>([]);
   readonly datesWithRawMillisBS = new BehaviorSubject([]);
   readonly annotationsConfigBS = new BehaviorSubject<PaneAnnotationConfig[]>([]);
   readonly paneLayoutsBS = new BehaviorSubject<PaneLayout[]>([]);
-
+  
   constructor() { }
 
-  generateRenderablePanel(data: OHLCData[], panelConfig: ChartPanelConfig) {
+  generateRenderablePanel(data: OHLCData[], panelConfig: ChartPanelConfig, options?: PanelOptions) {
     // console.log('cGS gRP start: ');
     // console.log('cGS gRP input data[0], panelConfig: ', data[0], panelConfig);
     // console.log('cGS gRP input panelConfig.containerDims:');
@@ -89,12 +89,20 @@ export class ChartGeneratorService {
 
     this.paneLayoutsBS.next(paneLayouts);
 
-    const panelCrosshairs = utils.generatePanelCrosshairs(this.paneLayoutsBS.value);
-    renderPanel.append(() => panelCrosshairs.node());
+    if (options.showCrosshairs && options.showCrosshairs === true) {
+      const panelCrosshairs = utils.generatePanelCrosshairs(this.paneLayoutsBS.value);
+      renderPanel.append(() => panelCrosshairs.node());
+
+    }
 
     renderPanel.on('mousemove', (event) => {
       this.handleMouseMove(event, panelDetails, panelConfig.panes);
     });
+
+    // renderPanel.on('click', (event) => {
+      // this.setFocusPane(event);
+      // console.log('cGS gRP typeof/event: ', typeof event, event);
+    // });
     
     renderablePanel.renderPanel = renderPanel;
     
@@ -594,9 +602,27 @@ export class ChartGeneratorService {
     // console.log('cGS gRP paneConfig:');
     // console.table(paneConfig);
     // console.log('cGS gRP paneConfig id label: ', paneConfig.idLabel);
+
+    const focusRect = d3.create('svg:rect')
+        .classed('focus-rect', true)
+        .attr('id', `pane-${paneConfig.paneNumber}-focus-rect`)
+        .attr('height', layout.chartIndHeight)
+        .attr('width', layout.chartIndWidth)
+        // .attr('stroke', 'red')
+        .attr('fill', 'rgba(0, 0, 0, 0)')
+        .attr('z-index', 100)
+        .attr('data-pane-number', paneConfig.paneNumber)
+        .attr('transform', `translate(${AXIS_THICKNESS + layout.paneOrigin.right}, ${AXIS_THICKNESS + layout.paneOrigin.down})`)
+        
+        ;
     
     const renderItem = d3.create('svg:g')
-    .attr('id', `${paneConfig.idLabel}`);
+      .attr('id', `${paneConfig.idLabel}`)
+      // .attr('data-pane-number', paneConfig.paneNumber)
+      // .attr('data-pane-name', 'pane name dude!')
+      ;
+
+    
 
     // generate annotations elements for this pane BEFORE the plots are appended
     // append them after the plots though, so they are on top of the lines
@@ -618,11 +644,14 @@ export class ChartGeneratorService {
 
     // generate above, append here
     renderItem.append(() => annotationsElements.node());
+
+    renderItem.append(() => focusRect.node());
     
     // console.log('-------- gRL END GENERATE RENDERABLE PANE - Pane: ', paneConfig.paneNumber,' ----------------------------------');
     // return the root node (=renderable pane)
     return renderItem;
   }
+
 
   getXDetails(pointerX: number, panelDetails: PanelDetails) {
     // console.log('cGS gXD input pointerX: ', pointerX);

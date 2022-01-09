@@ -1,13 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges} from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, EventEmitter, OnInit, ChangeDetectionStrategy, Input, Output, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import * as d3 from 'd3';
 
 import { ChartGeneratorService } from 'src/app/services/chart-gen/chart-generator.service';
 import { OHLCData } from 'src/app/common/interfaces';
-import { ChartPanelConfig, DataRenderIndices, DomRectCoordinates, Indicator } from 'src/app/common/interfaces_chart';
+import { ChartPanelConfig, DataRenderIndices, DomRectCoordinates, Indicator, PanelOptions } from 'src/app/common/interfaces_chart';
 import { DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
-import { DEFAULT_MARGIN_CONFIG} from 'src/app/common/constants';
+import { DEFAULT_CHART_SETTING, DEFAULT_MARGIN_CONFIG} from 'src/app/common/constants';
 import { LAYER_PANEL_CONFIG, SINGLE_PANE_LAYER_PANEL_CONFIG} from 'src/app/common/chart_configs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'exp-dynamic-chart',
@@ -15,7 +16,8 @@ import { LAYER_PANEL_CONFIG, SINGLE_PANE_LAYER_PANEL_CONFIG} from 'src/app/commo
   styleUrls: ['./dynamic-chart.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicChartComponent implements OnChanges, OnInit {
+export class DynamicChartComponent implements OnChanges, OnDestroy, OnInit {
+  readonly destroy = new Subject();
 
   @Input()
   set chartData(data: OHLCData[]) {
@@ -57,16 +59,51 @@ export class DynamicChartComponent implements OnChanges, OnInit {
     return this.dataRenderIndicesBS.value;
     
   }
+
+  @Input()
+  set verticalScaleFactor(factor: number) {
+    this.verticalScaleFactorBS.next(factor);
+    // console.log('dC set dRI input indices: ', indices);
+    this.verticalScaleFactorBS.next(factor);
+
+    // this.refreshChart();
+
+  }
+  get verticalScaleFactor() {
+    return this.verticalScaleFactorBS.value;
+    
+  }
+
+  @Input() chartType = DEFAULT_CHART_SETTING.chartType;
+  @Input() scaleType = DEFAULT_CHART_SETTING.scaleType;
+  @Input() 
+  set showCrosshairs(showXs: boolean) {
+    // console.log('dC input showCrosshairs: ', showXs);
+    this.showCrosshairsBS.next(showXs);
+    this.refreshChart();
+  };
+  get showCrosshairs() {
+    return this.showCrosshairsBS.value;
+  }
+
+  @Output() focusPane = new EventEmitter<number>();
+
+  readonly focusPaneBS = new BehaviorSubject<number>(1);
+  readonly focusPane$: Observable<number> = this.focusPaneBS;
   
   readonly chartDataBS = new BehaviorSubject<OHLCData[]>([]);
   
   readonly allChartDataBS = new BehaviorSubject<OHLCData[]>([]);
-
+  
   readonly containerDimsBS = new BehaviorSubject<DomRectCoordinates>(DOM_RECT_COORDS_INITIALIZER);
-
+  
   readonly chartPanelConfigBS = new BehaviorSubject<ChartPanelConfig>(LAYER_PANEL_CONFIG);
   
   readonly dataRenderIndicesBS = new BehaviorSubject<DataRenderIndices>({start: 0, end: 0});
+  
+  readonly verticalScaleFactorBS = new BehaviorSubject<number>(DEFAULT_CHART_SETTING.verticalScaleFactor);
+  
+  readonly showCrosshairsBS = new BehaviorSubject<boolean>(false)
 
   constructor(private readonly chartGenSvc: ChartGeneratorService) { }
 
@@ -106,6 +143,17 @@ export class DynamicChartComponent implements OnChanges, OnInit {
     // console.table(this.chartData.slice(100, 101));
     this.generatePanelData(this.chartPanelConfig);
     this.refreshChart();
+    this.focusPane$.pipe(takeUntil(this.destroy)).subscribe(
+      paneNumber => {
+        console.log('dP ngOI t.focusPane$.  paneNumber: ', paneNumber);
+        this.focusPane.emit(paneNumber);
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   setContainerDimensions(dimensions: DomRectCoordinates) {
@@ -156,10 +204,31 @@ export class DynamicChartComponent implements OnChanges, OnInit {
 
   refreshChart() {
     const ok = this.chartPanelConfig.containerDims?.height && this.chartPanelConfig.containerDims?.height;
+    const options: PanelOptions = {
+      showCrosshairs: this.showCrosshairs,
+    }
 
     if (ok && this.allChartDataBS.value && this.chartPanelConfig.containerDims) {
       const data = this.getDataRangeSelection();
-      const renderablePanel = this.chartGenSvc.generateRenderablePanel(data, this.chartPanelConfig);
+      const renderablePanel = this.chartGenSvc.generateRenderablePanel(data, this.chartPanelConfig, options);
+
+      // console.log('dC rC renderable panel: ', renderablePanel);
+
+      // const panel = d3.select('#root-panel');
+      const panel = renderablePanel.renderPanel;
+
+      // const crosshairs = panel.selectAll('.panel-crosshairs');
+      // console.log('dC rC crosshairs: ', crosshairs);
+      // this.initializeCrosshairs(crosshairs, this.showCrosshairsBS.value)
+
+      const initialFocusedPane = panel.select('#pane-1');
+      // console.log('dC rC pane 1: ', initialFocusedPane);
+      this.setInitialFocusedPane(initialFocusedPane);
+
+      const rects = panel.selectAll('.focus-rect');
+      // console.log('dC rC panel/rects: ', panel, rects);
+      this.addPaneNumberListeners(rects);
+
           
       d3.select('svg').remove();
       d3.select('#dynamicChart')
@@ -171,8 +240,38 @@ export class DynamicChartComponent implements OnChanges, OnInit {
         ;
 
     }
+  }
+
+  setInitialFocusedPane(pane) {
+    // const p = d3.select(pane);
+    // console.log('dC sIFP pane/p: ', pane, p)
+    const rect = pane.select('.focus-rect')
+      .attr('stroke', 'blue')
+      .classed('focused', true)
+      ;
     
+    // console.log('dC sIFP init rect: ', rect);
     
+    this.focusPane.emit(1);
+  }
+
+  addPaneNumberListeners(rects) {
+    for (const rect of rects) {
+      // console.log('dC rC paneNumber/rect: ', rect.dataset.paneNumber, rect);
+      const r = d3.select(rect);
+      r.on('click', (event) => {
+        // console.log('dC rC paneNumber/rect: ', rect.dataset.paneNumber, rect);
+        this.focusPaneBS.next(rect.dataset.paneNumber);
+        // console.log('dC rC t.focusPaneBS.v: ', this.focusPaneBS.value);
+        
+        for (const rect of rects) {
+          const r = d3.select(rect);
+          r
+          .classed('focused', rect.dataset.paneNumber === this.focusPaneBS.value)
+          .attr('stroke', rect.dataset.paneNumber === this.focusPaneBS.value ? 'blue' : 'rgba(0, 0, 0, 0)')
+        }
+      });
+    }
 
   }
 

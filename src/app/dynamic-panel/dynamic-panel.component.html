@@ -6,7 +6,9 @@
                         (verticalAdjustment)="handleVerticalAdjustment($event)"
                         (updateChartType)="handleUpdateChartType($event)"
                         (updateScaleType)="handleUpdateScaleType($event)"
-                        (getData)="getData()">
+                        (getData)="getData()"
+                        (toggleCrosshairs)="toggleCrosshairs()"
+                        >
     </exp-chart-controls>
     
 
@@ -15,6 +17,9 @@
                            [chartPanelConfig]="chartPanelConfig$ | async"
                            [containerDimensions]="chartContainerDimensions$ | async"
                            [dataRenderIndices]="dataRenderIndices$ | async"
+                           [verticalScaleFactor]="verticalScaleFactor$ | async"
+                           [showCrosshairs]="showCrosshairs$ | async"
+                           (focusPane)="updateFocusPane($event)"
         >
 
         </exp-dynamic-chart>

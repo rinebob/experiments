@@ -52,6 +52,12 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   dataRenderIndicesBS = new BehaviorSubject<DataRenderIndices>({start: 0, end: 0});
   dataRenderIndices$: Observable<DataRenderIndices> = this.dataRenderIndicesBS;
 
+  focusPaneBS = new BehaviorSubject<number>(1);
+  focusPane$: Observable<number> = this.focusPaneBS;
+
+  showCrosshairsBS = new BehaviorSubject<boolean>(false);
+  showCrosshairs$: Observable<boolean> = this.showCrosshairsBS;
+
   numDataPoints = 0;
   
 
@@ -105,6 +111,35 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   
     // console.log('dP ngAVI final coords: ', coords);
     return coords;
+
+  }
+
+  updateFocusPane(paneNumber: number) {
+    console.log('dP uFP paneNumber: ', paneNumber);
+    // console.log('dP uFP full config: ', this.chartPanelConfigBS.value);
+    for (const pane of this.chartPanelConfigBS.value.panes) {
+      // console.log('dP uFP pane: ', pane.paneNumber);
+
+    }
+    const pane = this.chartPanelConfigBS.value.panes.find(pane => pane.paneNumber == paneNumber);
+    console.log('dP uFP found pane: ');
+    console.table(pane);
+    for (const config of pane.layerConfigs) {
+      console.log('dP uFP layer config. layer no: ', config.layerNumber);
+      console.table(config)
+      for (const series of config.series) {
+        console.log('dP uFP series name: ', series.seriesName);
+        console.table(series)
+      }
+    }
+    
+    
+  }
+  
+  toggleCrosshairs() {
+    console.log('dP tC t.sCBS.v init: ', this.showCrosshairsBS.value);
+    this.showCrosshairsBS.next(!this.showCrosshairsBS.value);
+    console.log('dP tC t.sCBS.v post toggle: ', this.showCrosshairsBS.value);
 
   }
 

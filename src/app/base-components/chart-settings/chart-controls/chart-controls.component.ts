@@ -30,6 +30,7 @@ export class ChartControlsComponent implements OnInit {
   @Output() updateChartType = new EventEmitter<PlotType>();
   @Output() updateScaleType = new EventEmitter<ScaleType>();
   @Output() getData = new EventEmitter<void>();
+  @Output() toggleCrosshairs = new EventEmitter<boolean>();
 
   chartMoveConfigBS = new BehaviorSubject<ChartMoveEvent>(DEFAULT_CHART_MOVE_EVENT);
   chartMoveConfig$:Observable<ChartMoveEvent> = this.chartMoveConfigBS;
@@ -48,6 +49,7 @@ export class ChartControlsComponent implements OnInit {
   previousZoomLevel = DEFAULT_ZOOM_LEVEL;
   numZoomLevels = ZOOM_LEVELS.size;
   zoomLock = false;
+  showCrosshairs = false;
 
   // slider params
   max = 0;
@@ -63,6 +65,15 @@ export class ChartControlsComponent implements OnInit {
   ngOnInit(): void {
     
   }
+
+  openSettings() {
+    console.log('cC oS open settings clicked');
+  }
+
+  openIndDialog() {
+    console.log('cC oID open indicator dialog clicked');
+  }
+
 
   initializeChartMoveConfig(numPoints: number) {
     // console.log('======================================');
@@ -103,6 +114,12 @@ export class ChartControlsComponent implements OnInit {
 
   toggleZoomLock() {
     this.zoomLock = !this.zoomLock;
+  }
+
+  toggleXHairs() {
+    console.log('cC tXH toggle crosshairs called');
+    this.showCrosshairs = !this.showCrosshairs;
+    this.toggleCrosshairs.emit(this.showCrosshairs);
   }
 
   handleVerticalAdjustment(change: VerticalAdjustment) {
@@ -310,7 +327,7 @@ export class ChartControlsComponent implements OnInit {
   }
 
   updateChartMoveConfig(start: number, end?:number) {
-    console.log('cC uCMC start/end: ', start, end);
+    // console.log('cC uCMC start/end: ', start, end);
     const currentIndex = Math.round(start);
     this.currentIndex = currentIndex;
     const moveEnd = end ? end : Math.min(currentIndex + this.pageSize, this.numDataPoints);
@@ -321,7 +338,7 @@ export class ChartControlsComponent implements OnInit {
     move.hasPreviousPage = this.hasPreviousPage();
 
     this.chartMoveConfigBS.next(move);
-    console.log('cC hP final config: ', this.chartMoveConfigBS.value);
+    // console.log('cC hP final config: ', this.chartMoveConfigBS.value);
   }
   
   updateSliderControls(start: number, end: number) {
@@ -350,7 +367,7 @@ export class ChartControlsComponent implements OnInit {
       // if less than numPts go to next zoom level 
       if (value * this.numDataPoints < numPts) {
         first = key;
-        console.log('cC dZL key: ', key);
+        
       } else {
         break;
       }
