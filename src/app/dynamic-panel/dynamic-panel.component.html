@@ -6,13 +6,25 @@
                         (verticalAdjustment)="handleVerticalAdjustment($event)"
                         (updateChartType)="handleUpdateChartType($event)"
                         (updateScaleType)="handleUpdateScaleType($event)"
-                        (getData)="getData()">
+                        (getData)="getData()"
+                        (toggleCrosshairs)="toggleCrosshairs()"
+                        >
     </exp-chart-controls>
     
 
     <div #baseChartContainer class="base-chart-container">
+        <exp-dynamic-chart [chartData]="chartData$ | async"
+                           [chartPanelConfig]="chartPanelConfig$ | async"
+                           [containerDimensions]="chartContainerDimensions$ | async"
+                           [dataRenderIndices]="dataRenderIndices$ | async"
+                           [verticalScaleFactor]="verticalScaleFactor$ | async"
+                           [showCrosshairs]="showCrosshairs$ | async"
+                           (focusPane)="updateFocusPane($event)"
+        >
 
-        <exp-base-chart #baseChart
+        </exp-dynamic-chart>
+
+        <!-- <exp-base-chart #baseChart
                         [chartPanelConfig]="chartPanelConfig$ | async"
                         [containerDimensions]="chartContainerDimensions$ | async"
                         [chartData]="chartData$ | async"
@@ -21,7 +33,7 @@
                         [verticalScaleFactor]="verticalScaleFactor$ | async"
                         chartMode="fullscreen"
                         class="chart-fullscreen">
-        </exp-base-chart>
+        </exp-base-chart> -->
 
     </div>
 

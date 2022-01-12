@@ -280,6 +280,22 @@ export enum SeriesName {
 
 }
 
+export enum SeriesLabel {
+    PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
+    OPEN = 'open',
+    HIGH = 'high',
+    LOW = 'low',
+    CLOSE = 'close',
+    VOLUME = 'volume',
+    SMA = 'sma',
+    EMA = 'ema',
+    MACD = 'macd',
+    RSI = 'rsi',
+    STOCHASTIC = 'stochastic',
+    BOLLINGER_BANDS = 'bollinger-bands',
+
+}
+
 export enum Indicator {
     SMA = 'SMA',
     EMA = 'EMA',
@@ -369,6 +385,7 @@ export interface PlotSeries {
     title: string;
     idLabel: string;
     seriesName: SeriesName;
+    seriesLabel: SeriesLabel;
     minExtentsTarget?: string;
     maxExtentsTarget?: string;
     params?: Param[];
@@ -393,38 +410,7 @@ export interface PlotConfig {
     downColor?: string;
     style?: string;
     thickness?: string;
-    // upperRangeLimit?: number;
-    // lowerRangeLimit?: number;
-    // hasZeroLine?: boolean;
-    // upperLineLevel?: number;
-    // lowerLineLevel?: number;
-
 }
-
-// export interface SeriesParams {
-//     period?: number;
-//     k?: number;
-//     d?: number;
-//     fast?: number;
-//     slow?: number;
-//     signal?: number;
-//     multiplier?: number;
-// }
-// export interface StochConfig {
-//     k: number;
-//     d: number;
-// }
-
-// export interface MacdConfig {
-//     fast: number;
-//     slow: number;
-//     signal: number;
-// }
-
-// export interface BollingerBandsConfig {
-//     period: number;
-//     multiplier: number;
-// }
 
 export enum SeriesParam {
     PERIOD = 'period',
@@ -450,11 +436,31 @@ export interface SingleLineCoords {
     y1: number;
     x2: number;
     y2: number;
+    label?: string;
+    index?: number;
 }
 
 export interface RawGridlinePxValues {
-    horzLineYValues: number[],
-    vertLineXValues: number[],
+    horzLineYValues: number[];
+    vertLineXValues: number[];
 }
+
+export interface PaneAnnotationConfig  {
+    pane: number;
+    seriesAnnotations: SeriesAnnotationConfig[];
+}
+
+export interface SeriesAnnotationConfig {
+    seriesName: SeriesName;
+    seriesLabel: SeriesLabel;
+    params?: Param[];
+    plots?: PlotConfig[];
+}
+
+export interface DataRenderIndices {
+    start: number;
+    end: number;
+}
+
 
 
