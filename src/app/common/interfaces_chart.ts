@@ -1,4 +1,5 @@
 import * as av from '../services/av/av_interfaces';
+import { PriceComponent } from './interfaces';
 
 // export enum TimeFrame {
 //     ONE_MINUTE = '1min',
@@ -82,13 +83,6 @@ export enum Zoom {
     OUT = 'out',
 }
 
-// export enum PanDistance {
-//     END = 'end',
-//     LEFT = 'left',
-//     RIGHT = 'right',
-//     START = 'start',
-
-// }
 
 export enum PanDistance {
     START = 'start',
@@ -188,7 +182,7 @@ export interface ChartPaneConfig {
     description?: string;
     idLabel?: string;
     paneType?: PaneType;
-    seriesConfigs?: ChartSeriesConfig[];
+    // seriesConfigs?: ChartSeriesConfig[];
     annotationsConfigs?: any;
     layerConfigs?: PaneLayerConfig[];
     
@@ -197,26 +191,6 @@ export interface ChartPaneConfig {
 export interface AxisConfig {
     type?: ScaleType;
     location?: ScaleLocation;
-}
-
-// A ChartSeries is any data series.  Can be price or an indicator
-// series like a MA or RSI
-// DEPRECATED IN FAVOR OF LAYER CONFIG
-export interface ChartSeriesConfig {
-    seriesType: SeriesName;
-    title?: string;
-    options?: {};
-    xAxisConfig?: AxisConfig;
-    yAxisConfig?: AxisConfig;
-    displayConfig?: SeriesDisplayConfig;
-}
-
-// DEPRECATED IN FAVOR OF PLOT CONFIG
-export interface SeriesDisplayConfig {
-    chartType: PlotType;
-    color?: any;
-    thickness?: any;
-
 }
 
 export interface Extents {
@@ -257,6 +231,10 @@ export interface RenderablePanel {
     panelConfig?: ChartPanelConfig;
     panesMap?: Map<number, RenderablePane>;
     renderPanel?: any;
+}
+
+export interface PanelOptions {
+    showCrosshairs?: boolean;
 }
 
 export interface MultilineIndicator {
@@ -378,10 +356,11 @@ export interface PaneLayerConfig {
     // annotationsConfig?: {};
     xAxisConfig?: AxisConfig;
     yAxisConfig?: AxisConfig;
-    series: PlotSeries[];
+    series: Series[];
+    referenceLines?: ReferenceLines;
 }
 
-export interface PlotSeries {
+export interface Series {
     title: string;
     idLabel: string;
     seriesName: SeriesName;
@@ -390,6 +369,21 @@ export interface PlotSeries {
     maxExtentsTarget?: string;
     params?: Param[];
     plots: PlotConfig[];
+    referenceLines?: ReferenceLines;
+    seriesConfig?: IndicatorConfig;
+    xAxisConfig?: AxisConfig;
+    yAxisConfig?: AxisConfig;
+}
+
+export interface NewSeries {
+    title: string;
+    idLabel: string;
+    seriesName: SeriesName;
+    seriesLabel: SeriesLabel;
+    seriesConfig?: IndicatorConfig;
+    xAxisConfig?: AxisConfig;
+    yAxisConfig?: AxisConfig;
+    referenceLines?: ReferenceLines;
 }
 
 export interface Param {
@@ -410,6 +404,8 @@ export interface PlotConfig {
     downColor?: string;
     style?: string;
     thickness?: string;
+    minExtentsTarget?: string;
+    maxExtentsTarget?: string;
 }
 
 export enum SeriesParam {
@@ -420,6 +416,14 @@ export enum SeriesParam {
     SLOW = 'slow',
     SIGNAL = 'signal',
     MULTIPLIER = 'multiplier',
+}
+
+export interface ReferenceLines {
+    upperLineLevel?: number;
+    lowerLineLevel?: number;
+    upperRangeLimit?: number;
+    lowerRangeLimit?: number;
+    hasZeroLine?: boolean;
 }
 
 // data column names for creating ohlc charts (candlestick, ohlc, h-a, renko, range etc.)
@@ -462,5 +466,60 @@ export interface DataRenderIndices {
     end: number;
 }
 
+export enum MovingAverageType {
+    SIMPLE = 'simple',
+    EXPONENTIAL = 'exponential',
+}
 
+// moving avg
+export interface MovingAverageConfig {
+    source: PriceComponent;
+    maType: MovingAverageType;
+    period: number;
+    maLine: PlotConfig;
+}
+
+// rsi
+export interface RsiConfig {
+    source: PriceComponent;
+    period: number;
+    rsiLine: PlotConfig;
+    referenceLines: ReferenceLines;
+}
+
+// stochastic
+export interface StochasticConfig {
+    source: PriceComponent;
+    k: number;
+    d: number;
+    fastLine: PlotConfig;
+    slowLine: PlotConfig;
+    smoothedLine: PlotConfig;
+    referenceLines: ReferenceLines;
+}
+
+
+export interface BollingerBandsConfig {
+    source: PriceComponent;
+    period: number;
+    multiplier: number;
+    upperLine: PlotConfig;
+    lowerLine: PlotConfig;
+    centerLine: PlotConfig;
+}
+
+
+// macd
+export interface MacdConfig {
+    source: PriceComponent;
+    fastPeriod: number;
+    slowPeriod: number;
+    signalPeriod: number;
+    macdLine: PlotConfig;
+    signalLine: PlotConfig;
+    divergenceLine: PlotConfig;
+    referenceLines: ReferenceLines;
+}
+
+export type IndicatorConfig = MovingAverageConfig | RsiConfig | StochasticConfig | BollingerBandsConfig | MacdConfig;
 
