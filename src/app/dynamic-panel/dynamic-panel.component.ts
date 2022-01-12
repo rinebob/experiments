@@ -7,7 +7,7 @@ import { ChartMoveEvent, ChartPanelConfig, DataRenderIndices, PlotType, DomRectC
 import { OHLCData } from 'src/app/common/interfaces';
 import * as actions from '../store/actions';
 import * as selectors from '../store/selectors';
-import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DOM_RECT_COORDS_INITIALIZER, VERTICAL_ADJUSTMENT_FACTOR} from '../common/constants';
+import { DEFAULT_AV_BASE_DATA_SETTING, DEFAULT_CHART_SETTING, DEFAULT_SHOW_CROSSHAIRS_SETTING, DOM_RECT_COORDS_INITIALIZER, VERTICAL_ADJUSTMENT_FACTOR} from '../common/constants';
 import { LAYER_PANEL_CONFIG, SINGLE_PANE_LAYER_PANEL_CONFIG} from 'src/app/common/chart_configs';
 
 const SYMBOL = 'NFLX';
@@ -55,7 +55,7 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   focusPaneBS = new BehaviorSubject<number>(1);
   focusPane$: Observable<number> = this.focusPaneBS;
 
-  showCrosshairsBS = new BehaviorSubject<boolean>(false);
+  showCrosshairsBS = new BehaviorSubject<boolean>(DEFAULT_SHOW_CROSSHAIRS_SETTING);
   showCrosshairs$: Observable<boolean> = this.showCrosshairsBS;
 
   numDataPoints = 0;
@@ -115,23 +115,29 @@ export class DynamicPanelComponent  implements AfterViewInit, OnDestroy, OnInit 
   }
 
   updateFocusPane(paneNumber: number) {
-    console.log('dP uFP paneNumber: ', paneNumber);
-    // console.log('dP uFP full config: ', this.chartPanelConfigBS.value);
-    for (const pane of this.chartPanelConfigBS.value.panes) {
-      // console.log('dP uFP pane: ', pane.paneNumber);
+    this.focusPaneBS.next(paneNumber);
+    // console.log('dP uFP input/t.fPBS.v: ', paneNumber,  this.focusPaneBS.value);
 
-    }
-    const pane = this.chartPanelConfigBS.value.panes.find(pane => pane.paneNumber == paneNumber);
-    console.log('dP uFP found pane: ');
-    console.table(pane);
-    for (const config of pane.layerConfigs) {
-      console.log('dP uFP layer config. layer no: ', config.layerNumber);
-      console.table(config)
-      for (const series of config.series) {
-        console.log('dP uFP series name: ', series.seriesName);
-        console.table(series)
-      }
-    }
+    // console.log('--------  dP uFP paneNumber: ', paneNumber,' ---------');
+    // console.log('dP uFP full config: ', this.chartPanelConfigBS.value);
+    // for (const pane of this.chartPanelConfigBS.value.panes) {
+    //   // console.log('dP uFP pane: ', pane.paneNumber);
+
+    // }
+    // const pane = this.chartPanelConfigBS.value.panes.find(pane => pane.paneNumber == paneNumber);
+    // console.log('dP uFP found pane: ');
+    // console.table(pane);
+    // for (const config of pane.layerConfigs) {
+    //   console.log('--------  dP uFP layer no: ', config.layerNumber,' ---------');
+    //   console.log('dP uFP layer config:');
+    //   console.table(config)
+    //   for (const series of config.series) {
+    //     console.log('dP uFP series name: ', series.seriesName);
+    //     console.table(series)
+    //     console.table(series.params)
+    //     console.table(series.plots)
+    //   }
+    // }
     
     
   }

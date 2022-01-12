@@ -8,7 +8,7 @@ import { OHLCData } from 'src/app/common/interfaces';
 import { ChartPaneConfig, PlotConfig, Param, SingleLineCoords, RawGridlinePxValues, TranslationCoord, ScaleLocation, PaneLayout, SeriesParam, PaneLayerConfig } from 'src/app/common/interfaces_chart';
 
 export function generateExtents(data: OHLCData[], minTarget: string | number, maxTarget: string | number) {
-    console.log('cGSU gE input min/maxTargets/data[100]: ', minTarget, maxTarget);
+    // console.log('cGSU gE input min/maxTargets/data[100]: ', minTarget, maxTarget);
     // console.table(data[100]);
     
 
@@ -28,7 +28,7 @@ export function generateExtents(data: OHLCData[], minTarget: string | number, ma
     // yMax = Math.ceil(center + newHeight / 2);
     // ===== DO NOT DELETE ========
     
-    console.log('cGU gE post adjust yMax, yMin: ', yMax, yMin);
+    // console.log('cGU gE post adjust yMax, yMin: ', yMax, yMin);
     const extents = {xMax, xMin, yMax, yMin}
 
     return {...extents};
@@ -583,6 +583,7 @@ export function generatePanelCrosshairs(layouts: PaneLayout[]) {
 }
 
 export function generateCrosshairs(pointerX: number, pointerY: number, layout: PaneLayout) {
+    // NOT BEING USED.  generatePanelCrosshairs is what you want...
     // console.log('cGU gL input label/coords: ', label)
     // console.table(coords);
     const renderItem = d3.create('svg:g')
@@ -621,6 +622,7 @@ export function generateCrosshairs(pointerX: number, pointerY: number, layout: P
 // This is only to create the first set of crosshairs lines
 // all updates to coords will happen programatically, not here
 export function generateCrosshairsLines(layout: PaneLayout) {
+    // NOT BEING USED.  generatePanelCrosshairs is what you want...
     // console.log('cGU gL input label/coords: ', label)
     // console.table(coords);
     const renderItem = d3.create('svg:g')
@@ -634,6 +636,7 @@ export function generateCrosshairsLines(layout: PaneLayout) {
         .attr('y1', 0)
         .attr('x2', 0)
         .attr('y2', 0)
+        .attr('z-index', 1)
         .attr('stroke', 'white')
         .attr('stroke-width', '1.0');
 
@@ -644,6 +647,7 @@ export function generateCrosshairsLines(layout: PaneLayout) {
         .attr('y1', 0)
         .attr('x2', 0)
         .attr('y2', 0)
+        .attr('z-index', 1)
         .attr('stroke', 'white')
         .attr('stroke-width', '1.0');
 

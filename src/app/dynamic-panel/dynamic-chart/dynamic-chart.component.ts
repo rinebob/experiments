@@ -240,7 +240,7 @@ export class DynamicChartComponent implements OnChanges, OnDestroy, OnInit {
         ;
 
     }
-  }
+  } 
 
   setInitialFocusedPane(pane) {
     // const p = d3.select(pane);

@@ -86,4 +86,10 @@ export interface MenuConfig {
     triggerFor?: string;
 }
 
+export enum PriceComponent {
+    OPEN = 'open',
+    HIGH = 'high',
+    LOW = 'low',
+    CLOSE = 'close',
+}
 

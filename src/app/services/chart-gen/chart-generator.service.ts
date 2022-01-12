@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import * as d3 from 'd3';
 
 import { OHLCData } from 'src/app/common/interfaces';
-import { AxisConfig, ChartPaneConfig, ChartPanelConfig, Extents, PlotType, DomRectCoordinates, Indicator, PaneAnnotationConfig, PaneLayout, PanelDetails, PanelOptions, PaneType, PaneLayerConfig, PlotConfig, PlotSeries, RenderablePane, RenderablePanel, ScaleLocation, ScaleType, SeriesAnnotationConfig, SeriesLabel, SeriesName, TranslationCoord, SingleLineCoords } from 'src/app/common/interfaces_chart';
+import { AxisConfig, ChartPaneConfig, ChartPanelConfig, Extents, PlotType, DomRectCoordinates, Indicator, PaneAnnotationConfig, PaneLayout, PanelDetails, PanelOptions, PaneType, PaneLayerConfig, PlotConfig, Series, RenderablePane, RenderablePanel, ScaleLocation, ScaleType, SeriesAnnotationConfig, SeriesLabel, SeriesName, TranslationCoord, SingleLineCoords } from 'src/app/common/interfaces_chart';
 import { AXIS_THICKNESS, EXTENTS_HIGH_TARGET_MAP, EXTENTS_LOW_TARGET_MAP, MILLIS_IN_A_DAY, OHLC_INITIALIZER, PANE_HEIGHT_MATRIX, PRICE_SERIES} from '../../common/constants';
 import * as utils from './chart_generator_utils';
 import { pointer } from 'd3fc';
@@ -21,8 +21,15 @@ export class ChartGeneratorService {
   readonly datesWithRawMillisBS = new BehaviorSubject([]);
   readonly annotationsConfigBS = new BehaviorSubject<PaneAnnotationConfig[]>([]);
   readonly paneLayoutsBS = new BehaviorSubject<PaneLayout[]>([]);
+  readonly activePaneNumberBS = new BehaviorSubject<number>(1);
   
   constructor() { }
+
+  getActivePane() {
+    console.log('cGS gAP get active pane called.  t.aPNBS.v: ', this.activePaneNumberBS.value);
+    return this.activePaneNumberBS.value;
+
+  }
 
   generateRenderablePanel(data: OHLCData[], panelConfig: ChartPanelConfig, options?: PanelOptions) {
     // console.log('cGS gRP start: ');
@@ -91,7 +98,19 @@ export class ChartGeneratorService {
 
     if (options.showCrosshairs && options.showCrosshairs === true) {
       const panelCrosshairs = utils.generatePanelCrosshairs(this.paneLayoutsBS.value);
+      // console.log('cGS gRP panelCrosshairs: ', panelCrosshairs);
+
       renderPanel.append(() => panelCrosshairs.node());
+
+      // console.log('-------- cGS gRPanel horzLine click listener setup ---------');
+      // const horzLine = panelCrosshairs.select('#panel-crosshairs-x');
+      // console.log('horzLine: ', horzLine);
+
+      // horzLine.on('click', (event) => {
+      //   const paneNumber = this.getPaneNumberFromClick(event);
+      //   this.activePaneNumberBS.next(paneNumber);
+      //   console.log('cGS gRPanel click listener paneNo/t.aPNBS.v: ', paneNumber, this.activePaneNumberBS.value);
+      // });
 
     }
 
@@ -110,6 +129,31 @@ export class ChartGeneratorService {
     // console.log('cGS generatePanel final renderablePanel object: ', renderablePanel);
 
     return renderablePanel;
+  }
+
+  getPaneNumberFromClick(event: PointerEvent) {
+    console.log('----   cGS gPNFC called:')
+    const layouts = this.paneLayoutsBS.value;
+
+    const pointerY = d3.pointer(event)[1];
+    console.log('cGU gPNFC panel pointer y:', pointerY);
+    
+    let paneNumber = 1;
+    
+    for (const layout of layouts) {
+      // console.log('cGS gPNFC paneNo/layout: ', layout.paneNumber)
+      // console.table(layout)
+      
+      const inThisPaneVertically = pointerY > layout.paneOrigin.down && pointerY < layout.paneOrigin.down + layout.chartIndHeight;
+      if (inThisPaneVertically) {
+        paneNumber = layout.paneNumber;
+        break;
+        
+      }
+    }
+    
+    console.log('cGU gPNFC final pane number:', paneNumber);
+    return paneNumber
   }
 
   handleMouseMove(event: MouseEvent, panelDetails: PanelDetails, paneConfigs: ChartPaneConfig[]) {
@@ -531,7 +575,7 @@ export class ChartGeneratorService {
     return yAxis;
   }
   
-  generateSeriesData(series: PlotSeries, data: OHLCData[]) {
+  generateSeriesData(series: Series, data: OHLCData[]) {
     // console.log('----------- cGS gSD series:', series.seriesName,' ------------------');
     // console.log('cGS gSD series:');
     // console.table(series);
