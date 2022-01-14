@@ -38,7 +38,7 @@ export class BlackScholesComponent implements OnInit {
 
     // console.log('test dist cmtvNormalDis: ', this.cmtvNormalDis(2, 0, 1));
     // console.log('test dist2 normalCdf: ', this.normalCdf(2, 0, 1));
-    this.getOptionPricesAndGreeks(this.inputs);
+    // this.getOptionPricesAndGreeks(this.inputs);
   }
 
   // =====================================

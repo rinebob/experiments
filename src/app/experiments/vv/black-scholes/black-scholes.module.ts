@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { BlackScholesRoutingModule } from './black-scholes-routing.module';
 import { BlackScholesComponent } from './black-scholes.component';
+import { BsCalculatorModule } from './bs-calculator/bs-calculator.module';
 
 
 @NgModule({
@@ -11,7 +12,8 @@ import { BlackScholesComponent } from './black-scholes.component';
   ],
   imports: [
     CommonModule,
-    BlackScholesRoutingModule
+    BlackScholesRoutingModule,
+    BsCalculatorModule
   ]
 })
 export class BlackScholesModule { }

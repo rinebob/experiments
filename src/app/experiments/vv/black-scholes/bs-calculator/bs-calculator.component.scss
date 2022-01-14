@@ -1,0 +1,90 @@
+
+
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 50px;
+}
+
+.outer-container {
+    // border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+
+
+    .calc-container {
+        border: 1px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px;
+        
+
+
+        .calc-form {
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-right: 20px;
+            padding: 20px;
+            
+
+            input {
+                margin-bottom: 20px;
+            }
+
+            .button-container {
+                // border: 1px solid black;
+                width: 100%;
+                display: flex;
+                justify-content: space-evenly;
+            }
+
+        }
+
+        .results-display {
+            border: 1px solid black;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 20px;
+
+            .results-container {
+                // border: 1px solid black;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: flex-start;
+                padding: 20px;
+                width: 300px;
+    
+                .heading {
+                    align-self: center;
+    
+                }
+    
+                .result {
+                    // border: 1px solid black;
+                    width: 100%;
+                    display: flex;
+                    justify-content: flex-end;
+                    
+                    .result-data {
+                        // border: 1px solid black;
+                        margin-left: auto;
+                        text-align: left;
+                        width: 75%;
+                    }
+                }
+            }
+        }
+    }
+}

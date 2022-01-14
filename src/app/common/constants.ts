@@ -333,6 +333,10 @@ export const AXIS_THICKNESS = 30;
 // We will always use calendar days for Black-Scholes and other calculations
 export const DAYS_IN_A_YEAR = 365;
 
+export const BLACK_SCHOLES_INITIALIZER: BlackScholesInputs = {
+    S0: 100, X: 100, s: .25, t: .15, r: .02, q: 0,
+};
+
 export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
     {
       S0: 100, X: 100, s: .25, t: .15, r: .02, q: 0,
