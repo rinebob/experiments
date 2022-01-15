@@ -13,16 +13,16 @@
             <input type="number" formControlName="X">
 
             <label for="t">t: </label>
-            <input type="number" formControlName="t">
+            <input type="number" formControlName="t" step=".01" min="0.01" max="0.99">
 
             <label for="s">s: </label>
-            <input type="number" formControlName="s">
+            <input type="number" formControlName="s" step=".01" min="0.01" max="0.99">
 
             <label for="q">q: </label>
-            <input type="number" formControlName="q">
+            <input type="number" formControlName="q" step=".01" min="0.00" max="100.00">
 
             <label for="r">r: </label>
-            <input type="number" formControlName="r">
+            <input type="number" formControlName="r" step=".01" min="0.00" max="100.00">
             
             <div class="button-container">
                 <button>Clear form</button>
@@ -36,27 +36,30 @@
             <div class="results-container">
 
                 <p class="heading">Call data: </p>
-                <p class="result">Price: <span class="result-data">{{formValues.S0}}</span></p>
-                <p class="result">Delta: <span class="result-data">{{formValues.X}}</span></p>
-                <p class="result">Theta: <span class="result-data">{{formValues.t}}</span></p>
+                <!-- <p class="result">Price: <span class="result-data">{{oPWG.callPrice | number: `1.${minPrecision}-${maxPrecision}`}}</span></p> -->
+                <!-- <p class="result">Price: <span class="result-data">{{oPWG.callPrice | number: `${numberPipeString}`}}</span></p> -->
+                <!-- <p class="result">Price: <span class="result-data">{{oPWG.callPrice | number: '1.0-6'}}</span></p> -->
+                <p class="result">Price: <span class="result-data">{{oPWG.callPrice}}</span></p>
+                <p class="result">Delta: <span class="result-data">{{oPWG.callDelta}}</span></p>
+                <p class="result">Theta: <span class="result-data">{{oPWG.callTheta}}</span></p>
                 
             </div>
 
             <div class="results-container">
 
                 <p class="heading">Put data: </p>
-                <p class="result">Price: <span class="result-data">{{formValues.s}}</span></p>
-                <p class="result">Delta: <span class="result-data">{{formValues.q}}</span></p>
-                <p class="result">Theta: <span class="result-data">{{formValues.r}}</span></p>
+                <p class="result">Price: <span class="result-data">{{oPWG.putPrice}}</span></p>
+                <p class="result">Delta: <span class="result-data">{{oPWG.putDelta}}</span></p>
+                <p class="result">Theta: <span class="result-data">{{oPWG.putTheta}}</span></p>
                 
             </div>
             
             <div class="results-container">
                 
                 <p class="heading">Others: </p>
-                <p class="result">Gamma: <span class="result-data">{{formValues.S0}}</span></p>
-                <p class="result">Vega: <span class="result-data">{{formValues.X}}</span></p>
-                <p class="result">Rho: <span class="result-data">{{formValues.t}}</span></p>
+                <p class="result">Gamma: <span class="result-data">{{oPWG.gamma}}</span></p>
+                <p class="result">Vega: <span class="result-data">{{oPWG.vega}}</span></p>
+                <p class="result">Rho: <span class="result-data">{{oPWG.rho}}</span></p>
 
             </div>
 

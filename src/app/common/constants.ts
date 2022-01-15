@@ -384,6 +384,18 @@ export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
     
   ];
 
+  export const BLACK_SCHOLES_OUTPUT_INITIALIZER = {
+    callPrice: 0,
+    callDelta: 0,
+    callTheta: 0,
+    putPrice: 0,
+    putDelta: 0,
+    putTheta: 0,
+    gamma: 0,
+    vega: 0,
+    rho: 0
+}
+
   export const PRICE_SERIES = new Set([SeriesName.OPEN, SeriesName.HIGH, SeriesName.LOW, SeriesName.CLOSE]);
 
   export const INDICATOR_LINES_MAP = new Map([

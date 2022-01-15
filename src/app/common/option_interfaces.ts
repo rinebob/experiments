@@ -93,6 +93,18 @@ export interface BlackScholesInputs {
   q: number;    // q - dividend yield (% / yr as decimal).  If stock pays no dividend enter zero
 }
 
+export interface BlackScholesOutput {
+  callPrice: number;
+  callDelta: number;
+  callTheta: number;
+  putPrice: number;
+  putDelta: number;
+  putTheta: number;
+  gamma: number;
+  vega: number;
+  rho: number;
+}
+
 export type Direction = 'LONG' | 'SHORT';
 export type OptionType = 'CALL' | 'PUT';
 export type CreditDebit = 'CREDIT' | 'DEBIT';
