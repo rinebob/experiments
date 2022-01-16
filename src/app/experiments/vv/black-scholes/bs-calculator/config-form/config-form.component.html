@@ -1,1 +1,103 @@
-<p>config-form works!</p>
+<div class="config-container">
+
+    <form class="config-form" [formGroup]="configForm" (ngSubmit)="handleGenerateDataSet()">
+
+        <div class="single-config-container">
+            
+            <p class="config-label">Strike Price</p>
+            
+            <div class="controls-container">
+            
+                <div class="config-control-container">
+                    <label for="strikeMin">min:</label>
+                    <input type="number" formControlName="strikeMin">
+                </div>
+            
+                <div class="config-control-container">
+                    <label for="strikeMax">max:</label>
+                    <input type="number" formControlName="strikeMax">
+                </div>
+            
+                <div class="config-control-container">
+                    <label for="strikeIncrement">inc:</label>
+                    <input type="number" formControlName="strikeIncrement">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="single-config-container">
+            
+            <p class="config-label">Underlying Price</p>
+            
+            <div class="controls-container">
+            
+                <div class="config-control-container">
+                    <label for="undPriceMin">min:</label>
+                    <input type="number" formControlName="undPriceMin">
+                </div>
+            
+                <div class="config-control-container">
+                    <label for="undPriceMax">max:</label>
+                    <input type="number" formControlName="undPriceMax">
+                </div>
+            
+            </div>
+
+        </div>
+
+        <div class="single-config-container">
+            
+            <p class="config-label">Time to expiration</p>
+            
+            <div class="controls-container">
+            
+                <div class="config-control-container">
+                    <label for="timeMin">min:</label>
+                    <input type="number" formControlName="timeMin" step=".01" min="0.01" max="0.99">
+                </div>
+            
+                <div class="config-control-container">
+                    <label for="timeMax">max:</label>
+                    <input type="number" formControlName="timeMax" step=".01" min="0.01" max="0.99">
+                </div>
+            
+            </div>
+
+        </div>
+
+        <div class="single-config-container">
+            
+            <p class="config-label">Implied volatility</p>
+            
+            <div class="controls-container">
+            
+                <div class="config-control-container">
+                    <label for="volMin">min:</label>
+                    <input type="number" formControlName="volMin" step=".01" min="0.01" max="0.99">
+                </div>
+            
+                <div class="config-control-container">
+                    <label for="volMax">max:</label>
+                    <input type="number" formControlName="volMax" step=".01" min="0.01" max="0.99">
+                </div>
+            
+            </div>
+
+        </div>
+        <div class="config-actions">
+            <div class="data-points-control">
+                <label for="volIncrement">Num data points:</label>
+                <input type="number" formControlName="numDataPoints" step="5" min="5" max="10000">
+            </div>
+            <div class="config-button-container">
+                <button (click)="resetConfigForm()">Reset</button>
+                <button type="submit">Generate</button>
+            </div>
+        </div>
+
+    
+    </form>
+
+</div>

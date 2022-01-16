@@ -14,121 +14,11 @@ import { BlackScholesService } from '../black-scholes.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BsCalculatorComponent implements OnInit {
-
-  calculatorForm = new FormGroup({
-   S0: new FormControl(100),
-   X: new FormControl(100),
-   t: new FormControl(.25),
-   s: new FormControl(.25),
-   q: new FormControl(0),
-   r: new FormControl(.02),
-  });
-
-  calculatorFormValues = this.calculatorForm.valueChanges;
-  calculatorFormValuesBS = new BehaviorSubject<BlackScholesInputs>(BLACK_SCHOLES_INITIALIZER);
-  // calculatorFormValues$: Observable<BlackScholesInputs> = this.calculatorFormValuesBS;
-
-  configForm = new FormGroup({
-    undPriceMin: new FormControl(0),
-    undPriceMax: new FormControl(0),
-    strikeMin: new FormControl(0),
-    strikeMax: new FormControl(0),
-    strikeIncrement: new FormControl(0),
-    timeMin: new FormControl(.01),
-    timeMax: new FormControl(1),
-    volMin: new FormControl(0),
-    volMax: new FormControl(1),
-    numDataPoints: new FormControl(100),
-   });
- 
-   configFormValues = this.configForm.valueChanges;
-   configFormValuesBS = new BehaviorSubject<BlackScholesCalculatorConfig>(BLACK_SCHOLES_CONFIG_INITIALIZER);
-
-  oPWG = BLACK_SCHOLES_OUTPUT_INITIALIZER;  // onePriceWithGreeks - used in template
-
-  minPrecision = 0;
-  maxPrecision = 6;
-  numberPipeString = this.generateNumberPipeString();
+  configFormValuesBS = new BehaviorSubject<BlackScholesCalculatorConfig>(BLACK_SCHOLES_CONFIG_INITIALIZER);
 
   constructor(private readonly bsService: BlackScholesService ) { }
 
   ngOnInit(): void {
-    this.calculatorFormValuesBS.next(this.calculatorForm.value);
-    // console.log('bSC ngOI initial calculatorForm.value: ', this.calculatorForm.value);
-    // console.log('bSC ngOI initial calculatorFormValuesBS: ', this.calculatorFormValuesBS.value);
-    this.calculatorFormValues.pipe().subscribe(
-      values => {
-        // console.log('bSC ngOI calculator form values:');
-        // console.table(values);
-        this.calculatorFormValuesBS.next(values);
-        this.getOptionPriceWithGreeks();
-      });
-
-    this.configFormValuesBS.next(this.configForm.value);
-    // console.log('bSC ngOI initial configForm.value: ', this.configForm.value);
-    // console.log('bSC ngOI initial configFormValuesBS: ', this.configFormValuesBS.value);
-
-    this.configFormValues.pipe().subscribe(
-      values => {
-        // console.log('bSC ngOI config form values:');
-        // console.table(values);
-        this.configFormValuesBS.next(values);
-      });
-
-    this.initializeConfigForm();
-    this.getOptionPriceWithGreeks();
-  }
-
-  generateNumberPipeString() {
-    const numberPipeString = '1.`${this.minPrecision}-${this.maxPrecision}`';
-    // console.log('bSC numberPipeString: ', numberPipeString);
-    return numberPipeString;
-  }
-
-  initializeConfigForm() {
-      const config: BlackScholesCalculatorConfig = {...BLACK_SCHOLES_CONFIG_INITIALIZER};
-      console.log('bSC iCF init with config:');
-      console.table(config);
-      this.configForm.controls['undPriceMin'].setValue(config.undPriceMin);
-      this.configForm.controls['undPriceMax'].setValue(config.undPriceMax);
-      this.configForm.controls['strikeMin'].setValue(config.strikeMin);
-      this.configForm.controls['strikeMax'].setValue(config.strikeMax);
-      this.configForm.controls['strikeIncrement'].setValue(config.strikeIncrement);
-      this.configForm.controls['timeMin'].setValue(config.timeMin);
-      this.configForm.controls['timeMax'].setValue(config.timeMax);
-      this.configForm.controls['volMin'].setValue(config.volMin);
-      this.configForm.controls['volMax'].setValue(config.volMax);
-      this.configForm.controls['numDataPoints'].setValue(config.numDataPoints);
-  }
-
-  generateConfig() {
-    const config = BLACK_SCHOLES_CONFIG_INITIALIZER;
-    // console.log('bSC gC config: ', config)
-  }
-
-  getConfigFormValues() {
-    // console.log('bSC gCFV control values: ', );
-    // console.log('bSC gCFV undPriceMin: ', this.configForm.value['undPriceMin']);
-    
-    const config: BlackScholesCalculatorConfig = {...BLACK_SCHOLES_CONFIG_INITIALIZER};
-    config.undPriceMin = this.configForm.value['undPriceMin'];
-    config.undPriceMax = this.configForm.value['undPriceMax'];
-    config.strikeMin = this.configForm.value['strikeMin'];
-    config.strikeMax = this.configForm.value['strikeMax'];
-    config.strikeIncrement = this.configForm.value['strikeIncrement'];
-    config.timeMin = this.configForm.value['timeMin'];
-    config.timeMax = this.configForm.value['timeMax'];
-    config.volMin = this.configForm.value['volMin'];
-    config.volMax = this.configForm.value['volMax'];
-    config.numDataPoints = this.configForm.value['numDataPoints'];
-    
-    
-    this.configFormValuesBS.next(config);
-    // console.log('bSC gCFV config: ', config);
-    // console.log('bSC gCFV configFormValuesBS: ', this.configFormValuesBS.value);
-
-    return config;
-
   }
 
   // generate series for one strike
@@ -173,14 +63,15 @@ export class BsCalculatorComponent implements OnInit {
       // console.log('bSC gPPD Series output datum:');
       // console.table(datum);
       data.push(datum);
+    }
+    // console.log('bSC gPPD Series final data:', data);
+    return data;
   }
 
-    
-    // console.log('bSC gPPD Series final data:', data);
-
-    return data;
-
-
+  handleGenerateDataSet(event: BlackScholesCalculatorConfig) {
+    console.log('bSC hGDS handle generate data set called.  event: ', event);
+    this.configFormValuesBS.next(event);
+    this.generatePriceProjectionDataSet();
   }
 
   generatePriceProjectionDataSet() {
@@ -205,9 +96,7 @@ export class BsCalculatorComponent implements OnInit {
       }
       
       // console.log('bSC gPPD series at strike: ', seriesAtStrike)
-
       dataSet.push(seriesAtStrike);
-
     }
 
     console.log('bSC gPPD Set final data set: ', dataSet);
@@ -216,46 +105,15 @@ export class BsCalculatorComponent implements OnInit {
       console.table(set.series)
 
     }
-
     return dataSet;
-
-
   }
-
     
-  getOptionPriceWithGreeks(inputArg?: BlackScholesInputs) {
-    const input = inputArg ? {...inputArg} : this.getCalculatorFormValues(); // returns a BlackScholesInput object
-    
+  getOptionPriceWithGreeks(input: BlackScholesInputs) {
     const pricesAndGreeks = this.bsService.getOneOptionPriceWithGreeks(input);
-
-    this.oPWG = this.bsService.getOneOptionPriceWithGreeks(input);
-
     // console.log('bSC c pricesAndGreeks: ', pricesAndGreeks);
     // console.log('bSC c t.oPWG: ', this.oPWG);
 
     return pricesAndGreeks;
 
   }
-
-  getCalculatorFormValues() {
-    // console.log('bSC c control values: ', );
-    // console.log('bSC c S0: ', this.calculatorForm.value['S0']);
-    
-    const inputs: BlackScholesInputs = {...BLACK_SCHOLES_INITIALIZER};
-    inputs.S0 = this.calculatorForm.value['S0'];
-    inputs.X = this.calculatorForm.value['X'];
-    inputs.t = this.calculatorForm.value['t'];
-    inputs.s = this.calculatorForm.value['s'];
-    inputs.q = this.calculatorForm.value['q'];
-    inputs.r = this.calculatorForm.value['r'];
-    
-    
-    this.calculatorFormValuesBS.next(inputs);
-    // console.log('bSC c inputs: ', inputs);
-    // console.log('bSC c calculatorFormValuesBS: ', this.calculatorFormValuesBS.value);
-
-    return inputs;
-
-  }
-
 }

@@ -14,7 +14,7 @@ import { CalcChartsComponent } from './calc-charts/calc-charts.component';
     BsCalculatorComponent,
     CalcFormComponent,
     ConfigFormComponent,
-    CalcChartsComponent
+    CalcChartsComponent,
   ],
   imports: [
     CommonModule,
@@ -22,7 +22,10 @@ import { CalcChartsComponent } from './calc-charts/calc-charts.component';
     ReactiveFormsModule,
   ],
   exports: [
-    BsCalculatorComponent
+    BsCalculatorComponent,
+    CalcFormComponent,
+    ConfigFormComponent,
+    CalcChartsComponent,
   ],
 })
 export class BsCalculatorModule { }
