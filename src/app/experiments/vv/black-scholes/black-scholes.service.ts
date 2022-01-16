@@ -32,13 +32,13 @@ export class BlackScholesService {
 
   generateNumberPipeString() {
     const numberPipeString = `1.${this.minPrecision}-${this.maxPrecision}`;
-    console.log('bSC numberPipeString: ', numberPipeString);
+    // console.log('bSC numberPipeString: ', numberPipeString);
     return numberPipeString;
   }
 
   getOneOptionPriceWithGreeks(input: BlackScholesInputs) {
-    console.log('bSSvc gOOPWG input arg:')
-    console.table(input);
+    // console.log('bSSvc gOOPWG input arg:')
+    // console.table(input);
     const {callPrice, putPrice } = this.getCallAndPutPrice(input);
     const {callDelta, putDelta } = this.calcDelta(input);
     const {callTheta, putTheta } = this.calcTheta(input);
@@ -55,18 +55,23 @@ export class BlackScholesService {
       rho: Number(formatNumber(this.calcRho(input), this.locale, this.numberPipeString)),         // hardcoded to return zero
 
     }
-    console.log('bSSvc gOPAG final bs output: ', output);
+
+    // console.log('bSSvc gOPAG final bs output:');
+    // console.table(output);
     return output;
   }
 
   getOptionPricesAndGreeks(inputs: BlackScholesInputs[]) {
     const data = []
     for (const input of inputs) {
-      const output = this.getOneOptionPriceWithGreeks(input);
+      // console.log('bSSvc gOPAG BS inputs: ');
       // console.table(input);
+      const output = this.getOneOptionPriceWithGreeks(input);
       data.push(output);
+      // console.log('bSSvc gOPAG BS output: ');
+      // console.table(output);
     }
-    console.log('bSSvc gOPAG final data set: ', data);
+    // console.log('bSSvc gOPAG final data set: ', data);
     return data
   }
 
@@ -244,7 +249,7 @@ export class BlackScholesService {
     const callDelta = h.eqt * h.Nd1;
     const putDelta = callDelta - 1;
 
-    console.log('call delta: ', callDelta, ' put delta: ', putDelta);
+    // console.log('call delta: ', callDelta, ' put delta: ', putDelta);
 
 
     return {callDelta, putDelta}
@@ -260,7 +265,7 @@ export class BlackScholesService {
     // vega also fixed
     const gamma = (h.eqt / (inputs.S0 * h.ssqrtt)) * h.oneTwoPi * h.ed2;  
 
-    console.log('gamma: ', gamma);
+    // console.log('gamma: ', gamma);
 
     return gamma;
 
@@ -283,7 +288,7 @@ export class BlackScholesService {
     const th = ((inputs.S0 * inputs.s * h.eqt) / (2 * Math.sqrt(inputs.t))) * h.oneTwoPi * h.ed2;
 
     // console.log('th1/2: ', th, th2);
-    console.log('-th: ', -th);
+    // console.log('-th: ', -th);
 
     // Is this the daily version?
     // const callTheta = (1/h.T) * (-h.th - (inputs.r * inputs.X * h.ert * h.Nd2) + (inputs.q * inputs.S0 * h.eqt * h.Nd1));
@@ -298,7 +303,7 @@ export class BlackScholesService {
     const qSeN = inputs.q * inputs.S0 * h.eqt * h.Nd1;    // = 0 b/c q = 0
     const qSeNm = inputs.q * inputs.S0 * h.eqt * h.Nmd1;  // = 0 b/c q = 0
 
-    console.log('rXeN: ', rXeN,' qSeN: ', qSeN);
+    // console.log('rXeN: ', rXeN,' qSeN: ', qSeN);
 
     // This change makes call theta match the two verification websites 
     // one reports as negative the other as positive, so leading negation maybe not necessary
@@ -309,7 +314,7 @@ export class BlackScholesService {
 
     // only the helper is uncertain.  Also order of operations
 
-    console.log('call theta1/2: ', callTheta, callTheta2, ' put theta1/2: ', putTheta, putTheta2);
+    // console.log('call theta1/2: ', callTheta, callTheta2, ' put theta1/2: ', putTheta, putTheta2);
 
     return {callTheta, putTheta};
 
@@ -322,7 +327,7 @@ export class BlackScholesService {
 
     const vega = (1/100 * inputs.S0 * h.eqt * Math.sqrt(inputs.t)) * h.oneTwoPi * h.ed2;
     
-    console.log('vega: ', vega);
+    // console.log('vega: ', vega);
 
     return vega
 
@@ -341,8 +346,8 @@ export class BlackScholesService {
     const putPrice = inputs.X * h.ert * h.Nmd2 - inputs.S0 * h.eqt * h.Nmd1;
 
     
-    console.log('call price: ', callPrice, ' put price: ', putPrice);
-    console.log('long straddle price: ', callPrice + putPrice);
+    // console.log('call price: ', callPrice, ' put price: ', putPrice);
+    // console.log('long straddle price: ', callPrice + putPrice);
 
     return { callPrice, putPrice }
   }

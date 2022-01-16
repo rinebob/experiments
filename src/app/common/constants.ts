@@ -1,7 +1,7 @@
 import { Equity, GalleryViewOption, OHLCData } from "./interfaces";
 import { ChartPanelConfig, DomRectCoordinates, PlotName, MarginConfig, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
-import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
+import { BlackScholesCalculatorConfig, BlackScholesOutput, ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
 import { ChartPanelDimensions, ChartSetting, PlotType, PaneType, SeriesName, ScaleType } from "./interfaces_chart";
 import { BlackScholesInputs, Option } from "./option_interfaces";
 
@@ -384,7 +384,7 @@ export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
     
   ];
 
-  export const BLACK_SCHOLES_OUTPUT_INITIALIZER = {
+  export const BLACK_SCHOLES_OUTPUT_INITIALIZER: BlackScholesOutput = {
     callPrice: 0,
     callDelta: 0,
     callTheta: 0,
@@ -394,6 +394,19 @@ export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
     gamma: 0,
     vega: 0,
     rho: 0
+}
+
+export const BLACK_SCHOLES_CONFIG_INITIALIZER: BlackScholesCalculatorConfig = {
+    undPriceMin: 100,
+    undPriceMax: 110,
+    strikeMin: 100,
+    strikeMax: 110,
+    strikeIncrement: 5,
+    timeMin: 0.125,
+    timeMax: 0.5,
+    volMin: 0.25,
+    volMax: 0.75,
+    numDataPoints: 2,
 }
 
   export const PRICE_SERIES = new Set([SeriesName.OPEN, SeriesName.HIGH, SeriesName.LOW, SeriesName.CLOSE]);

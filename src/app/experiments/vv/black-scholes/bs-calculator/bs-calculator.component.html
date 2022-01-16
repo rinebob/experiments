@@ -1,69 +1,190 @@
-<h3>Black-Scholes Calculator</h3>
+<p class="title">Black-Scholes Calculator</p>
 
 <div class="outer-container">
 
-    <div class="calc-container">
+    <div class="left-container">
 
-        <form class="calc-form" [formGroup]="calculatorForm" (ngSubmit)="calculate()">
+        <div class="calc-container">
 
-            <label for="S)">S0: </label>
-            <input type="number" formControlName="S0">
+            <form class="calc-form" [formGroup]="calculatorForm" (ngSubmit)="getOptionPriceWithGreeks()">
 
-            <label for="X">X: </label>
-            <input type="number" formControlName="X">
+                <div class="control-container">
+                    <label for="S0">S0:</label>
+                    <input type="number" formControlName="S0">
+                </div>
 
-            <label for="t">t: </label>
-            <input type="number" formControlName="t" step=".01" min="0.01" max="0.99">
+                <div class="control-container">
+                    <label for="X">X:</label>
+                    <input type="number" formControlName="X">
+                </div>
 
-            <label for="s">s: </label>
-            <input type="number" formControlName="s" step=".01" min="0.01" max="0.99">
+                <div class="control-container">
+                    <label for="t">t:</label>
+                    <input type="number" formControlName="t" step=".01" min="0.01" max="0.99">
+                </div>
 
-            <label for="q">q: </label>
-            <input type="number" formControlName="q" step=".01" min="0.00" max="100.00">
+                <div class="control-container">
+                    <label for="s">s:</label>
+                    <input type="number" formControlName="s" step=".01" min="0.01" max="0.99">
+                </div>
 
-            <label for="r">r: </label>
-            <input type="number" formControlName="r" step=".01" min="0.00" max="100.00">
-            
-            <div class="button-container">
-                <button>Clear form</button>
-                <button type="submit">Calculate</button>
-            </div>
+                <div class="control-container">
+                    <label for="q">q:</label>
+                    <input type="number" formControlName="q" step=".01" min="0.00" max="100.00">
+                </div>
 
-        </form>
-
-        <div class="results-display" *ngIf="formValues$ | async as formValues">
-
-            <div class="results-container">
-
-                <p class="heading">Call data: </p>
-                <!-- <p class="result">Price: <span class="result-data">{{oPWG.callPrice | number: `1.${minPrecision}-${maxPrecision}`}}</span></p> -->
-                <!-- <p class="result">Price: <span class="result-data">{{oPWG.callPrice | number: `${numberPipeString}`}}</span></p> -->
-                <!-- <p class="result">Price: <span class="result-data">{{oPWG.callPrice | number: '1.0-6'}}</span></p> -->
-                <p class="result">Price: <span class="result-data">{{oPWG.callPrice}}</span></p>
-                <p class="result">Delta: <span class="result-data">{{oPWG.callDelta}}</span></p>
-                <p class="result">Theta: <span class="result-data">{{oPWG.callTheta}}</span></p>
+                <div class="control-container">
+                    <label for="r">r:</label>
+                    <input type="number" formControlName="r" step=".01" min="0.00" max="100.00">
+                </div>
                 
-            </div>
+                <div class="button-container">
+                    <button>Clear</button>
+                    <button type="submit">Calculate</button>
+                </div>
 
-            <div class="results-container">
+            </form>
 
-                <p class="heading">Put data: </p>
-                <p class="result">Price: <span class="result-data">{{oPWG.putPrice}}</span></p>
-                <p class="result">Delta: <span class="result-data">{{oPWG.putDelta}}</span></p>
-                <p class="result">Theta: <span class="result-data">{{oPWG.putTheta}}</span></p>
+            <div class="results-display" *ngIf="oPWG">
+
+                <div class="results-container">
+
+                    <p class="heading">Call data: </p>
+                    <p class="result">Price: <span class="result-data">{{oPWG.callPrice}}</span></p>
+                    <p class="result">Delta: <span class="result-data">{{oPWG.callDelta}}</span></p>
+                    <p class="result">Theta: <span class="result-data">{{oPWG.callTheta}}</span></p>
+                    
+                </div>
+
+                <div class="results-container">
+
+                    <p class="heading">Put data: </p>
+                    <p class="result">Price: <span class="result-data">{{oPWG.putPrice}}</span></p>
+                    <p class="result">Delta: <span class="result-data">{{oPWG.putDelta}}</span></p>
+                    <p class="result">Theta: <span class="result-data">{{oPWG.putTheta}}</span></p>
+                    
+                </div>
                 
-            </div>
-            
-            <div class="results-container">
-                
-                <p class="heading">Others: </p>
-                <p class="result">Gamma: <span class="result-data">{{oPWG.gamma}}</span></p>
-                <p class="result">Vega: <span class="result-data">{{oPWG.vega}}</span></p>
-                <p class="result">Rho: <span class="result-data">{{oPWG.rho}}</span></p>
+                <div class="results-container">
+                    
+                    <p class="heading">Others: </p>
+                    <p class="result">Gamma: <span class="result-data">{{oPWG.gamma}}</span></p>
+                    <p class="result">Vega: <span class="result-data">{{oPWG.vega}}</span></p>
+                    <p class="result">Rho: <span class="result-data">{{oPWG.rho}}</span></p>
+
+                </div>
 
             </div>
 
         </div>
+
+        <div class="config-container">
+
+            <form class="config-form" [formGroup]="configForm" (ngSubmit)="generatePriceProjectionDataSet()">
+
+                <div class="single-config-container">
+                    
+                    <p class="config-label">Strike Price</p>
+                    
+                    <div class="controls-container">
+                    
+                        <div class="config-control-container">
+                            <label for="strikeMin">min:</label>
+                            <input type="number" formControlName="strikeMin">
+                        </div>
+                    
+                        <div class="config-control-container">
+                            <label for="strikeMax">max:</label>
+                            <input type="number" formControlName="strikeMax">
+                        </div>
+                    
+                        <div class="config-control-container">
+                            <label for="strikeIncrement">inc:</label>
+                            <input type="number" formControlName="strikeIncrement">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="single-config-container">
+                    
+                    <p class="config-label">Underlying Price</p>
+                    
+                    <div class="controls-container">
+                    
+                        <div class="config-control-container">
+                            <label for="undPriceMin">min:</label>
+                            <input type="number" formControlName="undPriceMin">
+                        </div>
+                    
+                        <div class="config-control-container">
+                            <label for="undPriceMax">max:</label>
+                            <input type="number" formControlName="undPriceMax">
+                        </div>
+                    
+                    </div>
+
+                </div>
+
+                <div class="single-config-container">
+                    
+                    <p class="config-label">Time to expiration</p>
+                    
+                    <div class="controls-container">
+                    
+                        <div class="config-control-container">
+                            <label for="timeMin">min:</label>
+                            <input type="number" formControlName="timeMin" step=".01" min="0.01" max="0.99">
+                        </div>
+                    
+                        <div class="config-control-container">
+                            <label for="timeMax">max:</label>
+                            <input type="number" formControlName="timeMax" step=".01" min="0.01" max="0.99">
+                        </div>
+                    
+                    </div>
+
+                </div>
+
+                <div class="single-config-container">
+                    
+                    <p class="config-label">Implied volatility</p>
+                    
+                    <div class="controls-container">
+                    
+                        <div class="config-control-container">
+                            <label for="volMin">min:</label>
+                            <input type="number" formControlName="volMin" step=".01" min="0.01" max="0.99">
+                        </div>
+                    
+                        <div class="config-control-container">
+                            <label for="volMax">max:</label>
+                            <input type="number" formControlName="volMax" step=".01" min="0.01" max="0.99">
+                        </div>
+                    
+                    </div>
+
+                </div>
+                <div class="config-actions">
+                    <div class="data-points-control">
+                        <label for="volIncrement">Num data points:</label>
+                        <input type="number" formControlName="numDataPoints" step="5" min="5" max="10000">
+                    </div>
+                    <div class="config-button-container">
+                        <button (click)="initializeConfigForm()">Reset</button>
+                        <button type="submit">Generate</button>
+                    </div>
+                </div>
+
+            
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="right-container">
 
     </div>
 

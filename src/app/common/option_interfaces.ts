@@ -105,6 +105,19 @@ export interface BlackScholesOutput {
   rho: number;
 }
 
+export interface BlackScholesCalculatorConfig {
+  undPriceMin: number;
+  undPriceMax: number;
+  strikeMin: number;
+  strikeMax: number;
+  strikeIncrement: number;
+  timeMin: number;
+  timeMax: number;
+  volMin: number;
+  volMax: number;
+  numDataPoints: number;
+}
+
 export type Direction = 'LONG' | 'SHORT';
 export type OptionType = 'CALL' | 'PUT';
 export type CreditDebit = 'CREDIT' | 'DEBIT';

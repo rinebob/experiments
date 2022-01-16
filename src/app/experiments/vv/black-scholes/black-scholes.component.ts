@@ -52,7 +52,7 @@ export class BlackScholesComponent implements OnInit {
   // all price ranges are over the last n days
 
   generateStochastics(data: OHLCData[], n: number, x: number) {
-    console.log('bS gS input data[0], n, x: ', data[0], n, x)
+    // console.log('bS gS input data[0], n, x: ', data[0], n, x)
     const newData: OHLCData[] = [];
     
     for (const datum of data ) {
@@ -237,7 +237,7 @@ export class BlackScholesComponent implements OnInit {
     const callDelta = h.eqt * h.Nd1;
     const putDelta = callDelta - 1;
 
-    console.log('call delta: ', callDelta, ' put delta: ', putDelta);
+    // console.log('call delta: ', callDelta, ' put delta: ', putDelta);
 
 
     return {callDelta, putDelta}
@@ -253,7 +253,7 @@ export class BlackScholesComponent implements OnInit {
     // vega also fixed
     const gamma = (h.eqt / (inputs.S0 * h.ssqrtt)) * h.oneTwoPi * h.ed2;  
 
-    console.log('gamma: ', gamma);
+    // console.log('gamma: ', gamma);
 
     return gamma;
 
@@ -276,7 +276,7 @@ export class BlackScholesComponent implements OnInit {
     const th = ((inputs.S0 * inputs.s * h.eqt) / (2 * Math.sqrt(inputs.t))) * h.oneTwoPi * h.ed2;
 
     // console.log('th1/2: ', th, th2);
-    console.log('-th: ', -th);
+    // console.log('-th: ', -th);
 
     // Is this the daily version?
     // const callTheta = (1/h.T) * (-h.th - (inputs.r * inputs.X * h.ert * h.Nd2) + (inputs.q * inputs.S0 * h.eqt * h.Nd1));
@@ -291,7 +291,7 @@ export class BlackScholesComponent implements OnInit {
     const qSeN = inputs.q * inputs.S0 * h.eqt * h.Nd1;    // = 0 b/c q = 0
     const qSeNm = inputs.q * inputs.S0 * h.eqt * h.Nmd1;  // = 0 b/c q = 0
 
-    console.log('rXeN: ', rXeN,' qSeN: ', qSeN);
+    // console.log('rXeN: ', rXeN,' qSeN: ', qSeN);
 
     // This change makes call theta match the two verification websites 
     // one reports as negative the other as positive, so leading negation maybe not necessary
@@ -302,7 +302,7 @@ export class BlackScholesComponent implements OnInit {
 
     // only the helper is uncertain.  Also order of operations
 
-    console.log('call theta1/2: ', callTheta, callTheta2, ' put theta1/2: ', putTheta, putTheta2);
+    // console.log('call theta1/2: ', callTheta, callTheta2, ' put theta1/2: ', putTheta, putTheta2);
 
     return {callTheta, putTheta};
 
@@ -315,7 +315,7 @@ export class BlackScholesComponent implements OnInit {
 
     const vega = (1/100 * inputs.S0 * h.eqt * Math.sqrt(inputs.t)) * h.oneTwoPi * h.ed2;
     
-    console.log('vega: ', vega);
+    // console.log('vega: ', vega);
 
 
   }
@@ -332,8 +332,8 @@ export class BlackScholesComponent implements OnInit {
     const putPrice = inputs.X * h.ert * h.Nmd2 - inputs.S0 * h.eqt * h.Nmd1;
 
     
-    console.log('call price: ', callPrice, ' put price: ', putPrice);
-    console.log('long straddle price: ', callPrice + putPrice);
+    // console.log('call price: ', callPrice, ' put price: ', putPrice);
+    // console.log('long straddle price: ', callPrice + putPrice);
 
     return { callPrice, putPrice }
   }
