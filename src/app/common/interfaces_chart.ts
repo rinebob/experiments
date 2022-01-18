@@ -255,6 +255,16 @@ export enum SeriesName {
     RSI = 'RSI',
     STOCHASTIC = 'Stochastic',
     BOLLINGER_BANDS = 'Bollinger bands',
+    CALL_PRICE = 'Call price',
+    CALL_DELTA = 'Call delta',
+    CALL_THETA = 'Call theta',
+    PUT_PRICE = 'Put price',
+    PUT_DELTA = 'Put delta',
+    PUT_THETA = 'Put theta',
+    GAMMA = 'Gamma',
+    VEGA = 'Vega',
+
+
 
 }
 
@@ -271,6 +281,14 @@ export enum SeriesLabel {
     RSI = 'rsi',
     STOCHASTIC = 'stochastic',
     BOLLINGER_BANDS = 'bollinger-bands',
+    CALL_PRICE = 'callPrice',
+    CALL_DELTA = 'callDelta',
+    CALL_THETA = 'callTheta',
+    PUT_PRICE = 'putPrice',
+    PUT_DELTA = 'putDelta',
+    PUT_THETA = 'putTheta',
+    GAMMA = 'gamma',
+    VEGA = 'vega',
 
 }
 
@@ -339,6 +357,14 @@ export enum PlotName {
     BB_UPPER = 'upper-bb',
     BB_LOWER = 'lower-bb',
     BB_AVERAGE = 'average-bb',
+    CALL_PRICE = 'call-price',
+    CALL_DELTA = 'call-delta',
+    CALL_THETA = 'call-theta',
+    PUT_PRICE = 'put-price',
+    PUT_DELTA = 'put-delta',
+    PUT_THETA = 'put-theta',
+    GAMMA = 'gamma',
+    VEGA = 'vega',
 
 }
 

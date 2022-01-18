@@ -8,7 +8,10 @@
     </div>
 
     <div class="right-container">
-        <exp-calc-charts></exp-calc-charts>
+        <exp-calc-charts [dataSet]="projectionDataSet$ | async"
+                         [renderConfig]="renderConfig$ | async"
+        >
+        </exp-calc-charts>
 
     </div>
 

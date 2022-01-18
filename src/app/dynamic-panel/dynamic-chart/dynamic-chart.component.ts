@@ -203,7 +203,7 @@ export class DynamicChartComponent implements OnChanges, OnDestroy, OnInit {
   }
 
   refreshChart() {
-    const ok = this.chartPanelConfig.containerDims?.height && this.chartPanelConfig.containerDims?.height;
+    const ok = this.chartPanelConfig.containerDims?.height && this.chartPanelConfig.containerDims?.width;
     const options: PanelOptions = {
       showCrosshairs: this.showCrosshairs,
     }

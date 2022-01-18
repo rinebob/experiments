@@ -105,6 +105,18 @@ export interface BlackScholesOutput {
   rho: number;
 }
 
+// key is the strike price for the series
+export interface BlackScholesOutputSeries {
+  strike: number;
+  series: BlackScholesOutput[];
+}
+
+export type OptionProjectionDataSet = BlackScholesOutputSeries[];
+
+// export interface OptionProjectionDataSet {
+//   dataSet: BlackScholesOutputSeries[];
+// }
+
 export interface BlackScholesCalculatorConfig {
   undPriceMin: number;
   undPriceMax: number;
