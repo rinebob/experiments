@@ -35,16 +35,16 @@ export class ChartDataService {
   
 
 //  const dataRequest: DataSetting =  {
-//     symbol: "TSLA",
+//     symbol: "AAPL",
 //     timeFrame: TimeFrame.DAILY,
-//     outputSize: OutputSize.COMPACT,
+//     outputSize: OutputSize.FULL,
 //     slice: Slice.YEAR1MONTH1,
 //     adjusted: Adjusted.ADJUSTED,
 //     dataType: DataType.JSON,
 // }
 
   getAlphavantageOHLCData(settings: DataSetting): Observable<OHLCData[]> {
-    const reqString = av.generateRequestString(settings);
+    // const reqString = av.generateRequestString(settings);
     // console.log('cDS gAOD input settings: ', settings);
     // console.log('cDS gAOD reqString: ', reqString);
 
@@ -62,12 +62,14 @@ export class ChartDataService {
     // );
     //=============================
 
-    return of(MSFTData_start_99_1101).pipe(
-    // return of(MSFT_Data_sample2).pipe(
+    // return of(MSFTData_start_99_1101).pipe(
+    return of(MSFT_Data_sample2).pipe(
     // return of(MSFTData_sample).pipe(
-    // return of(tslaData).pipe(
+    // // return of(tslaData).pipe(
       map(resp => {
         // console.log('cDS gAOD of fake data resp: ', resp);
+        // console.log('cDS gAOD of fake data resp:');
+        // console.table(resp[resp.length - 1])
         // const data = av.convertAvToVz(resp);
         const data = av.convertDates(resp);
 

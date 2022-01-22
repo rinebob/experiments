@@ -1,6 +1,8 @@
 
 // From Visvol interfaces.  Must keep in sync
 
+import { OHLCData } from "./interfaces";
+
 
 
 
@@ -108,7 +110,8 @@ export interface BlackScholesOutput {
 // key is the strike price for the series
 export interface BlackScholesOutputSeries {
   strike: number;
-  series: BlackScholesOutput[];
+  // series: BlackScholesOutput[];
+  series: OHLCData[];
 }
 
 export type OptionProjectionDataSet = BlackScholesOutputSeries[];

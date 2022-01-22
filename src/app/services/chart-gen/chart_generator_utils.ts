@@ -5,19 +5,42 @@ import { max } from 'rxjs/operators';
 import { AXIS_THICKNESS, MILLIS_IN_A_DAY } from 'src/app/common/constants';
 
 import { OHLCData } from 'src/app/common/interfaces';
-import { ChartPaneConfig, PlotConfig, Param, SingleLineCoords, RawGridlinePxValues, TranslationCoord, ScaleLocation, PaneLayout, SeriesParam, PaneLayerConfig } from 'src/app/common/interfaces_chart';
+import { ChartPaneConfig, ExtentsConfig, PlotConfig, Param, SingleLineCoords, RawGridlinePxValues, TranslationCoord, ScaleLocation, PaneLayout, SeriesParam, PaneLayerConfig } from 'src/app/common/interfaces_chart';
 
-export function generateExtents(data: OHLCData[], minTarget: string | number, maxTarget: string | number) {
-    // console.log('cGSU gE input min/maxTargets/data[100]: ', minTarget, maxTarget);
-    // console.table(data[100]);
+
+// export function generateExtents(data: OHLCData[], minTarget: string | number, maxTarget: string | number) {
+export function generateExtents(data: OHLCData[], config: ExtentsConfig) {
+    // console.log('cGSU gE input extentsConfig/data[10]: ', config);
+    // console.table(data[10]);
+
+    // switch case for x and y scale types
+    // type = fixed just use input as final extent
+    // else do a normal extents calc
+    // ex price use regular extents
+    // rsi stoch are fixed
+    // macd has two targets to generate extents for...
+
+
+
+
+
     
 
-    const xMin = Math.floor(d3.min(data, d => d['date']));
-    const xMax = Math.ceil(d3.max(data, d => d['date']));
+    // const xMin = Math.floor(d3.min(data, d => d['date']));
+    // const xMax = Math.ceil(d3.max(data, d => d['date']));
+    const xMin = Math.floor(d3.min(data, d => d[config.xMinTarget]));
+    const xMax = Math.ceil(d3.max(data, d => d[config.xMaxTarget]));
+    // const xMin = Math.floor(d3.min(data, d => d['callPrice']));  
+    // const xMax = Math.ceil(d3.max(data, d => d['callPrice']));
     // let yMin = d3.min(data, d => d['low']);
     // let yMax = d3.max(data, d => d['high']);
-    let yMin = typeof minTarget === 'number' ? minTarget : d3.min(data, d => d[minTarget]);
-    let yMax = typeof maxTarget === 'number' ? maxTarget :  d3.max(data, d => d[maxTarget]);
+    
+    
+    // const xMin = Math.floor(d3.min(data, d => d[minTarget]));
+    // const xMax = Math.ceil(d3.max(data, d => d[maxTarget]));
+    
+    let yMin = typeof config.yMinTarget === 'number' ? config.yMinTarget : d3.min(data, d => d[config.yMinTarget]);
+    let yMax = typeof config.yMaxTarget === 'number' ? config.yMaxTarget :  d3.max(data, d => d[config.yMaxTarget]);
     
     // ===== DO NOT DELETE ========
     // ===== vertical expand/contract code  ========
@@ -170,6 +193,7 @@ export function generateYAxis(yScale, layout: PaneLayout, idLabel: string, paneN
     const yAxis = d3.create('svg:g')
         .attr('id', `${idLabel}-yAxis-${location}`)
         .attr('stroke', 'white');
+        // .attr('stroke', 'black');
         // .attr('stroke-width', '1.0');
     
     if (location === ScaleLocation.LEFT) {
@@ -213,17 +237,42 @@ export function generateDateXAxis(xScale, layout: PaneLayout, layerConfig: PaneL
     return dateXAxis;
 }
 
+export function generateLinearXAxis(xScale, layout: PaneLayout, layerConfig: PaneLayerConfig) {
+    // console.log('cGSU gLXA called', );
+    // console.log('cGSU gLXA input layout/layerConfig', xScale, layout, layerConfig);
+    // console.log('cGSU gLXA input xScale domain/range: ', xScale.domain(), xScale.range());
+    // console.table(layout);
+
+    const origin = layerConfig.xAxisConfig.location === ScaleLocation.TOP ? layout.topAxisOrigin : layout.bottomAxisOrigin;
+    const axis = layerConfig.xAxisConfig.location === ScaleLocation.TOP ? d3.axisTop(xScale) : d3.axisBottom(xScale);
+
+    // axis
+    //     .ticks(50);
+    
+    const dateXAxis = d3.create('svg:g')
+        .attr('id', `${layerConfig.idLabel}-xAxis-${layerConfig.xAxisConfig.location}`)
+        .attr('transform', `translate(${origin.right}, ${origin.down})`)
+        .attr('stroke', 'white')
+        // .attr('stroke', 'black')
+        // .attr('stroke-width', '1.0')
+        .call(axis);
+
+    return dateXAxis;
+}
+
 export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
     // console.log('cGSU gFTA input xScale', xScale);
     const axis = {};
     return axis;
 }
 
-export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale, plotConfig: PlotConfig, paneNumber: number, layerNumber: number, target: string) {
-    // console.log('cGSU gLS input plotName/paneNumber/origin', plotConfig.plotName, paneNumber, layout.paneOrigin);
-    // console.log('cGSU gLS input xScale range/domain', xScale.range(), xScale.domain());
-    // console.log('cGSU gLS input yScale range/domain', yScale.range(), yScale.domain());
-    // console.table(data[100]);
+export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale, plotConfig: PlotConfig,
+     paneNumber: number, layerNumber: number, target: string) {
+
+    // console.log('cGSU gLS');
+    // console.log('cGSU gLS input xScale range/domain', xSc.range(), xSc.domain());
+    // console.log('cGSU gLS input yScale range/domain', ySc.range(), ySc.domain());
+    // console.table(data[10]);
     // console.log('cGSU gLS input target', target);
 
     // console.log('cGU gLS target data:');
@@ -240,11 +289,12 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
             console.log('cGU gLS id: ', `pane-${paneNumber}-layer-${layerNumber}-${target}-line`,' location: ', d3.pointer(event));
             console.log('cGU gLS data set: ', d);
         });
+
                 
     const plot = fc.seriesSvgLine()
         .xScale(xSc)
         .yScale(ySc)
-        .crossValue(d => d.date)
+        .crossValue(d => d.index)
         .mainValue(d => d[target])
         .decorate(selection => 
             selection.enter()
@@ -253,16 +303,19 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
             .attr('stroke-width', plotConfig.thickness)
         );
 
+    
     const plot2 = fc.seriesSvgPoint()
     .xScale(xSc)
     .yScale(ySc)
-    .crossValue(d => d.date)
+    // .crossValue(d => d.date)
+    .crossValue(d => d.index)
     .mainValue(d => d[target])
     .size(10)
     .decorate(selection => 
         selection.enter()
         // .style('fill', 'none')
-        .style('fill', 'black')
+        .style('fill', 'white')
+        // .style('fill', 'black')
         .attr('stroke', plotConfig.color)
         // .attr('stroke-width', plotConfig.thickness)
         .attr('stroke-width', '1.0')
@@ -280,7 +333,7 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
     renderItem
         .datum(data)
         .call(plot)
-        // .call(plot2)
+        .call(plot2)
         ;
 
 
@@ -516,8 +569,10 @@ export function generateGridline(coords: SingleLineCoords, layout: PaneLayout) {
         .attr('y1', y1)
         .attr('y2', y2)
         // .attr('stroke', strokeColor)
-        .attr('stroke', 'rgb(54, 69, 84)')
-        .attr('stroke-width', '1.0');
+        // .attr('stroke', 'rgb(54, 69, 84)')
+        .attr('stroke', 'lightgrey')
+        // .attr('stroke-width', '1.0');
+        .attr('stroke-width', '0.5');
 
     if (coords.index) {
         line

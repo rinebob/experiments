@@ -406,7 +406,7 @@ export const BLACK_SCHOLES_CONFIG_INITIALIZER: BlackScholesCalculatorConfig = {
     timeMax: 0.5,
     volMin: 0.25,
     volMax: 0.75,
-    numDataPoints: 2,
+    numDataPoints: 20,
 }
 
   export const PRICE_SERIES = new Set([SeriesName.OPEN, SeriesName.HIGH, SeriesName.LOW, SeriesName.CLOSE]);
@@ -420,27 +420,47 @@ export const BLACK_SCHOLES_CONFIG_INITIALIZER: BlackScholesCalculatorConfig = {
 ]);
 
 export const EXTENTS_HIGH_TARGET_MAP = new Map<SeriesName, string | number>([
+    [SeriesName.INDEX, 'index'],
     [SeriesName.OPEN, 'open'],
     [SeriesName.HIGH, 'high'],
     [SeriesName.LOW, 'low'],
     [SeriesName.CLOSE, 'high'],
+    [SeriesName.VOLUME , 'volume'],
     [SeriesName.EMA, 'high'],
     [SeriesName.SMA, 'high'],
     [SeriesName.BOLLINGER_BANDS, 'high'],
     [SeriesName.RSI, 100],
     [SeriesName.STOCHASTIC, 100],
-    [SeriesName.MACD, 'macd']
+    [SeriesName.MACD, 'macd'],
+    [SeriesName.CALL_PRICE , 'callPrice'],
+    [SeriesName.CALL_DELTA , 'callDelta'],
+    [SeriesName.CALL_THETA , 'callTheta'],
+    [SeriesName.PUT_PRICE , 'putPrice'],
+    [SeriesName.PUT_DELTA , 'putDelta'],
+    [SeriesName.PUT_THETA , 'putTheta'],
+    [SeriesName.GAMMA , 'gamma'],
+    [SeriesName.VEGA , 'vega'],
 ]);
 
 export const EXTENTS_LOW_TARGET_MAP = new Map<SeriesName, string | number>([
+    [SeriesName.INDEX, 'index'],
     [SeriesName.OPEN, 'open'],
     [SeriesName.HIGH, 'high'],
     [SeriesName.LOW, 'low'],
     [SeriesName.CLOSE, 'low'],
+    [SeriesName.VOLUME , 'volume'],
     [SeriesName.EMA, 'low'],
     [SeriesName.SMA, 'low'],
     [SeriesName.BOLLINGER_BANDS, 'low'],
     [SeriesName.RSI, 0],
     [SeriesName.STOCHASTIC, 0],
-    [SeriesName.MACD, 'macd']
+    [SeriesName.MACD, 'macd'],
+    [SeriesName.CALL_PRICE , 'callPrice'],
+    [SeriesName.CALL_DELTA , 'callDelta'],
+    [SeriesName.CALL_THETA , 'callTheta'],
+    [SeriesName.PUT_PRICE , 'putPrice'],
+    [SeriesName.PUT_DELTA , 'putDelta'],
+    [SeriesName.PUT_THETA , 'putTheta'],
+    [SeriesName.GAMMA , 'gamma'],
+    [SeriesName.VEGA , 'vega'],
 ]);

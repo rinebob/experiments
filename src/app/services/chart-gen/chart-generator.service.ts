@@ -32,10 +32,15 @@ export class ChartGeneratorService {
   }
 
   generateRenderablePanel(data: OHLCData[], panelConfig: ChartPanelConfig, options?: PanelOptions) {
-    // console.log('cGS gRP start: ');
+    // console.log('-----------------------  cGS gR Panel Start  ---------------');
     // console.log('cGS gRP input data[0], panelConfig: ', data[0], panelConfig);
     // console.log('cGS gRP input panelConfig.containerDims:');
     // console.table(panelConfig.containerDims);
+
+    if (!panelConfig.containerDims) {
+      console.log('cGS gRP dude no container dims!  outta here!');
+      return;
+    }
 
     this.dataBS.next(data);
     // this.datesBS.next(utils.generateDates(data));
@@ -47,8 +52,8 @@ export class ChartGeneratorService {
     const panelDetails = this.generatePanelDetails(panelConfig);
     panelConfig.details = {...panelDetails};
 
-    // console.log('cGS gRP panel details:');
-    // console.table(panelDetails);
+    console.log('cGS gRP panel details:');
+    console.table(panelDetails);
 
     const renderablePanel: RenderablePanel = {
       panelConfig: panelConfig,
@@ -62,6 +67,7 @@ export class ChartGeneratorService {
       .attr('height', panelConfig.containerDims.height)
       .attr('id', 'root-panel');
 
+    // origin point for each pane.  Updated dynamically for each pane to create stack
     let nextOrigin = {...panelConfig.details.panelOrigin};
 
     // generate all annotations for entire panel.  They'll be added in generateRenderablePane
@@ -96,7 +102,7 @@ export class ChartGeneratorService {
 
     this.paneLayoutsBS.next(paneLayouts);
 
-    if (options.showCrosshairs && options.showCrosshairs === true) {
+    if (options && options.showCrosshairs === true) {
       const panelCrosshairs = utils.generatePanelCrosshairs(this.paneLayoutsBS.value);
       // console.log('cGS gRP panelCrosshairs: ', panelCrosshairs);
 
@@ -179,6 +185,7 @@ export class ChartGeneratorService {
   }
 
   generatePanelDetails(panelConfig: ChartPanelConfig) {
+    // console.log('cGS genPanelDeets panelConfig: ', panelConfig);
     // console.log('cGS genPanelDeets panelConfig.panes: ', panelConfig.panes);
     // console.log('cGS genPanelDeets input container w/h: ', panelConfig.containerDims.height, panelConfig.containerDims.height);
 
@@ -264,7 +271,7 @@ export class ChartGeneratorService {
         // console.log('cGS gAL layerNumber: ', layerConfig.layerNumber);
         
         for (const series of layerConfig.series) {
-          // console.log('cGS gAL series name: ', series.seriesName);
+          console.log('cGS gAL series name: ', series.seriesName);
 
           if (series.seriesName === SeriesName.PRICE) {
             const annotation: SeriesAnnotationConfig = {
@@ -316,14 +323,16 @@ export class ChartGeneratorService {
           .attr('id', `pane-${config.pane}-ann-group-date`)
           ;
 
-    const dateTextString = `Date: ${data.stringDate}`;
+    // const dateTextString = `Date: ${data.stringDate}`;
+    const dateTextString = `Date: ${data.index}`;
 
     const dateText =  d3.create('svg:text')
       .attr('id', `pane-${config.pane}-ann-date`)
       .attr('font-size', '10px')
       .attr('transform', `translate(${AXIS_THICKNESS + LEFT_MARGIN}, ${AXIS_THICKNESS + vertCount * LINE_HEIGHT + layout.paneOrigin.down})`)
       .text(dateTextString)
-      .attr('fill', 'white')
+      // .attr('fill', 'white')
+      .attr('fill', 'black')
       ;
 
     dateGroup.append(() => dateText.node());
@@ -345,7 +354,8 @@ export class ChartGeneratorService {
           .attr('font-size', '10px')
           .attr('transform', `translate(${AXIS_THICKNESS + LEFT_MARGIN}, ${AXIS_THICKNESS + vertCount * LINE_HEIGHT + layout.paneOrigin.down})`)
           .text(priceTextString)
-          .attr('fill', 'white')
+          // .attr('fill', 'white')
+          .attr('fill', 'black')
           ;
 
         priceGroup.append(() => priceText.node());
@@ -379,7 +389,8 @@ export class ChartGeneratorService {
           .attr('font-size', '10px')
           .attr('transform', `translate(${AXIS_THICKNESS + LEFT_MARGIN}, ${AXIS_THICKNESS + vertCount * LINE_HEIGHT + layout.paneOrigin.down})`)
           .text(textString)
-          .attr('fill', `${plots[0].color}` ?? 'white')
+          // .attr('fill', `${plots[0].color}` ?? 'white')
+          .attr('fill', `${plots[0].color}` ?? 'black')
           ;
           
           group.append(() => text.node());
@@ -414,7 +425,8 @@ export class ChartGeneratorService {
     const existingDateGroup = pane.select(`#pane-${paneNumber}-ann-group-date`);
     // console.log('cGS gAE existing date group: ', existingDateGroup);
     
-    const dateOnlyText = data.stringDate.split(',')[0];
+    // const dateOnlyText = data.stringDate.split(',')[0];
+    const dateOnlyText = data.index;
     // console.log('cGS gAE string date/dateOnlyText: ', data.stringDate, dateOnlyText);
     // const dateTextString = `Date: ${data.stringDate}`;
     const dateTextString = `Date: ${dateOnlyText}`;
@@ -517,13 +529,19 @@ export class ChartGeneratorService {
   }
 
   generateXAxis(xScale, extents: Extents, layout: PaneLayout, layerConfig: PaneLayerConfig) {
-    // console.log('cGS gXA input extents, layout, axis config: ', extents, layout, config);
+    console.log('cGS gXA input extents, layout, layer config: ', extents, layout, layerConfig);
     let axis:d3.Axis;
     
     switch(layerConfig.xAxisConfig.type) {
       case ScaleType.DATE: 
         axis = utils.generateDateXAxis(xScale, layout, layerConfig);
-        // console.log('cGS gXA genDateAxis final axis: ', axis);
+        console.log('cGS gXA genDateXAxis final axis: ', axis);
+        
+        return axis;
+
+      case ScaleType.LINEAR: 
+        axis = utils.generateLinearXAxis(xScale, layout, layerConfig);
+        console.log('cGS gXA genLinearXAxis final axis: ', axis);
         
         return axis;
       
@@ -671,7 +689,7 @@ export class ChartGeneratorService {
     // generate annotations elements for this pane BEFORE the plots are appended
     // append them after the plots though, so they are on top of the lines
     const config = this.annotationsConfigBS.value.find(config => config.pane === paneConfig.paneNumber);
-    const annotationsElements = this.generateAnnotationElements(config, layout, OHLC_INITIALIZER);
+    // const annotationsElements = this.generateAnnotationElements(config, layout, OHLC_INITIALIZER);
 
     for (const layer of paneConfig.layerConfigs) {
       // console.log('cGS gRP layerConfig:');
@@ -687,9 +705,9 @@ export class ChartGeneratorService {
     // renderItem.append(tooltip);
 
     // generate above, append here
-    renderItem.append(() => annotationsElements.node());
+    // renderItem.append(() => annotationsElements.node());
 
-    renderItem.append(() => focusRect.node());
+    // renderItem.append(() => focusRect.node());
     
     // console.log('-------- gRL END GENERATE RENDERABLE PANE - Pane: ', paneConfig.paneNumber,' ----------------------------------');
     // return the root node (=renderable pane)
@@ -856,9 +874,9 @@ export class ChartGeneratorService {
   }
 
   generateRenderableLayer(paneConfig: ChartPaneConfig, layout: PaneLayout, layerConfig: PaneLayerConfig) {
-    // console.log('-------- gRL START GENERATE RENDERABLE LAYER ', layerConfig.title,' ----------------------------------');
-    // console.log('--------------- gRL layer config: -------------------------------');
-    // console.table(layerConfig);
+    console.log('-------- gRL START GENERATE RENDERABLE LAYER ', layerConfig.title,' ----------------------------------');
+    console.log('--------------- gRL layer config: -------------------------------');
+    console.table(layerConfig);
 
     let renderItem = d3.create('svg:g')
       .attr('id', `${paneConfig.idLabel}-${layerConfig.idLabel}`);
@@ -867,6 +885,7 @@ export class ChartGeneratorService {
     let yScale: d3.Scale;
     let extents: Extents;
     
+    const extentsConfig = layerConfig.extentsConfig;
     
     // console.log('---------------- gRL Generate Layer Extents -------------------------------');
     
@@ -876,34 +895,50 @@ export class ChartGeneratorService {
 
       // console.log('---------------- gRL Series ', series.seriesName,' -------------------------------');
 
-      let minTarget, maxTarget;
+      // let minTarget, maxTarget;
+
+      let xMinTarget, xMaxTarget, yMinTarget, yMaxTarget;
+      
+      
+      // const macdExtents = utils.generateExtents(this.dataBS.value, extConfig);
+      // const divExtents = utils.generateExtents(this.dataBS.value, extConfig);
+
+      // // console.log('cGS gRL macd/div extents: ');
+      // // console.table(macdExtents);
+      // // console.table(divExtents);
+
+      // minTarget = macdExtents.yMin < divExtents.yMin ? xMinTarget : `divergence-macd-12-26-5`
+      // maxTarget = macdExtents.yMax > divExtents.yMax ? xMaxTarget : `divergence-macd-12-26-5`
+
 
       // TODO: replace hardcoded target strings with dynamically generated targets
       // when PanelConfig UI constructed
       if (series.seriesName === SeriesName.MACD) {
-        let minExtentsTarget = `macd-macd-12-26-5`;
-        let maxExtentsTarget = `macd-macd-12-26-5`;
-        
-        const macdExtents = utils.generateExtents(this.dataBS.value, minExtentsTarget, maxExtentsTarget);
-        
-        minExtentsTarget = `divergence-macd-12-26-5`;
-        maxExtentsTarget = `divergence-macd-12-26-5`;
-        
-        const divExtents = utils.generateExtents(this.dataBS.value, minExtentsTarget, maxExtentsTarget);
+        // let minExtentsTarget = `macd-macd-12-26-5`;
+        // let maxExtentsTarget = `macd-macd-12-26-5`;
+        // const macdExtents = utils.generateExtents(this.dataBS.value, minExtentsTarget, maxExtentsTarget);
+        // minExtentsTarget = `divergence-macd-12-26-5`;
+        // maxExtentsTarget = `divergence-macd-12-26-5`;
+        // const divExtents = utils.generateExtents(this.dataBS.value, minExtentsTarget, maxExtentsTarget);
+        // minTarget = macdExtents.yMin < divExtents.yMin ? `macd-macd-12-26-5` : `divergence-macd-12-26-5`
+        // maxTarget = macdExtents.yMax > divExtents.yMax ? `macd-macd-12-26-5` : `divergence-macd-12-26-5`
 
         // console.log('cGS gRL macd/div extents: ');
         // console.table(macdExtents);
         // console.table(divExtents);
 
-        minTarget = macdExtents.yMin < divExtents.yMin ? `macd-macd-12-26-5` : `divergence-macd-12-26-5`
-        maxTarget = macdExtents.yMax > divExtents.yMax ? `macd-macd-12-26-5` : `divergence-macd-12-26-5`
+      
 
       } else {
-        minTarget = series.minExtentsTarget ?? EXTENTS_LOW_TARGET_MAP.get(series.seriesName);
-        maxTarget = series.maxExtentsTarget ?? EXTENTS_HIGH_TARGET_MAP.get(series.seriesName);
+        // console.log('gRL series.minET/maxET: ', series.minExtentsTarget, series.maxExtentsTarget);
+        // minTarget = series.minExtentsTarget ?? EXTENTS_LOW_TARGET_MAP.get(series.seriesName);
+        // maxTarget = series.maxExtentsTarget ?? EXTENTS_HIGH_TARGET_MAP.get(series.seriesName);
+        // console.log('gRL generated min/max targets: ', minTarget, maxTarget);
+        
       }
 
-      extents = utils.generateExtents(this.dataBS.value, minTarget, maxTarget);
+      // extents = utils.generateExtents(this.dataBS.value, minTarget, maxTarget);
+      extents = utils.generateExtents(this.dataBS.value, extentsConfig);
 
       if (layerConfig.upperRangeLimit && layerConfig.lowerRangeLimit) {
         extents.yMax = layerConfig.upperRangeLimit;
@@ -912,19 +947,20 @@ export class ChartGeneratorService {
       }
     }
     
-    // console.log('gRL final extents:');
-    // console.table(extents);
+    console.log('gRL final extents:');
+    console.table(extents);
 
     // console.log('---------------- gRL Generate Layer X Scale and Axis -------------------------------');
     if (layerConfig.xAxisConfig.type !== ScaleType.NONE) {
         
       // generateXAxis(xScale, extents: Extents, layout: PaneLayout, series: Series, xAxisConfig: AxisConfig, paneConfig: ChartPaneConfig) {
       xScale = utils.generateXScale(extents.xMin, extents.xMax, layout);
+      // console.log('gRL final xScale: ', xScale);
       const xAxis = this.generateXAxis(xScale, extents, layout, layerConfig);
+      // console.log('gRL final xScale/xAxis: ', xScale, xAxis);
       
       renderItem.append(() => xAxis.node());
 
-      // console.log('gRL final xScale/xAxis: ', xScale, xAxis);
     }
 
 
@@ -986,9 +1022,8 @@ export class ChartGeneratorService {
 
   
   generateRenderablePlot(data: OHLCData[], xScale: d3.xScale, yScale: d3.yScale, plotConfig: PlotConfig, paneNumber: number, layerNumber: number, target: string) {
-      // console.log('cGS gRP paneNum/target/extents: ', paneNumber, target);
-      // console.table(extents);
-  
+      // console.log('cGS gRP called: ', paneNumber, target);
+      
       const renderItem = d3.create('svg:g')
         .attr('id', `pane${paneNumber}-layer${layerNumber}-${plotConfig.plotName}`);
   

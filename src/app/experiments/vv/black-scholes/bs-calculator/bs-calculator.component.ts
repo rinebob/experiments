@@ -69,6 +69,7 @@ export class BsCalculatorComponent implements OnInit {
 
     for (let i = 0; i <= numDataPoints; i++ ) {
       const datum = {
+        index: i,
         S0: undPriceMin + (priceInterval * i),
         X: strike,
         t: timeMax - (timeInterval * i),
@@ -89,6 +90,7 @@ export class BsCalculatorComponent implements OnInit {
       datum['gamma'] = oPWG.gamma;
       datum['vega'] = oPWG.vega;
       datum['rho'] = oPWG.rho;
+      datum['longStraddle'] = oPWG.callPrice + oPWG.putPrice;
       
 
       // console.log('bSC gPPD Series output datum:');
@@ -125,12 +127,12 @@ export class BsCalculatorComponent implements OnInit {
       dataSet.push(seriesAtStrike);
     }
 
-    console.log('bSC gPPD Set final data set: ', dataSet);
-    for (const set of dataSet.values()) {
-      console.log('strike: ', set.strike);
-      console.table(set.series)
+    // console.log('bSC gPPD Set final data set: ', dataSet);
+    // for (const set of dataSet.values()) {
+    //   console.log('strike: ', set.strike);
+    //   console.table(set.series)
 
-    }
+    // }
     return dataSet;
   }
 

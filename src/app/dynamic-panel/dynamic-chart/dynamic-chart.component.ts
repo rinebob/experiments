@@ -229,7 +229,6 @@ export class DynamicChartComponent implements OnChanges, OnDestroy, OnInit {
       // console.log('dC rC panel/rects: ', panel, rects);
       this.addPaneNumberListeners(rects);
 
-          
       d3.select('svg').remove();
       d3.select('#dynamicChart')
         .attr('top', this.containerDimsBS.value.margin.top)

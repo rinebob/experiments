@@ -27,6 +27,7 @@ export enum PlotType {
 
 export enum ScaleType {
     NONE = 'none',
+    FIXED = 'fixed',
     LINEAR = 'linear',
     LOG = 'log',
     DATE = 'date',
@@ -243,6 +244,7 @@ export interface MultilineIndicator {
 }
 
 export enum SeriesName {
+    INDEX = 'index',
     PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
     OPEN = 'open',
     HIGH = 'high',
@@ -263,12 +265,14 @@ export enum SeriesName {
     PUT_THETA = 'Put theta',
     GAMMA = 'Gamma',
     VEGA = 'Vega',
+    LONG_STRADDLE = 'Long straddle',
 
 
 
 }
 
 export enum SeriesLabel {
+    DATE = 'date',
     PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
     OPEN = 'open',
     HIGH = 'high',
@@ -289,6 +293,7 @@ export enum SeriesLabel {
     PUT_THETA = 'putTheta',
     GAMMA = 'gamma',
     VEGA = 'vega',
+    LONG_STRADDLE = 'longStraddle',
 
 }
 
@@ -340,6 +345,7 @@ export enum Indicator {
 // }
 
 export enum PlotName {
+    DATE = 'date',
     PRICE = 'price', // For candlestick price plots.  For individual lines use close instead (or anything but there's no 'price' in any data)
     OPEN = 'open',
     HIGH = 'high',
@@ -365,6 +371,7 @@ export enum PlotName {
     PUT_THETA = 'put-theta',
     GAMMA = 'gamma',
     VEGA = 'vega',
+    LONG_STRADDLE = 'long-straddle'
 
 }
 
@@ -380,10 +387,11 @@ export interface PaneLayerConfig {
     lowerLineLevel?: number;
     showGridlines?: boolean;
     // annotationsConfig?: {};
+    extentsConfig?: ExtentsConfig;
+    referenceLines?: ReferenceLines;
     xAxisConfig?: AxisConfig;
     yAxisConfig?: AxisConfig;
     series: Series[];
-    referenceLines?: ReferenceLines;
 }
 
 export interface Series {
@@ -433,6 +441,16 @@ export interface PlotConfig {
     minExtentsTarget?: string;
     maxExtentsTarget?: string;
 }
+
+export interface ExtentsConfig {
+    xScaleType: ScaleType;
+    xMinTarget: string | number;
+    xMaxTarget: string | number;
+    yScaleType: ScaleType;
+    yMinTarget: string | number;
+    yMaxTarget: string | number;
+}
+
 
 export enum SeriesParam {
     PERIOD = 'period',
