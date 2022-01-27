@@ -403,7 +403,7 @@ export const BLACK_SCHOLES_CONFIG_INITIALIZER: BlackScholesCalculatorConfig = {
     strikeMax: 110,
     strikeIncrement: 5,
     timeMin: 0.125,
-    timeMax: 0.5,
+    timeMax: 0.25,
     volMin: 0.25,
     volMax: 0.75,
     numDataPoints: 20,

@@ -59,8 +59,8 @@ export function generateExtents(data: OHLCData[], config: ExtentsConfig) {
     // return extents;
 }
 
-export function generateXScale(xMin: number, xMax: number, layout: PaneLayout) {
-    // console.log('cGSU gXS input x min/max/layout.paneOrigin ', xMin, xMax);
+export function generateDateXScale(xMin: number, xMax: number, layout: PaneLayout) {
+    // console.log('cGSU gDXSc input x min/max/layout.paneOrigin ', xMin, xMax);
     // console.table(layout.paneOrigin);
     const xScale = d3
         .scaleTime()
@@ -84,6 +84,25 @@ export function generateXScale(xMin: number, xMax: number, layout: PaneLayout) {
     // console.log('cGSU gXS final xScale domain/range: ', xScale.domain(), xScale.range());
     // return xScale;
     return disXScale;
+}
+
+export function generateLinearXScale(xMin: number, xMax: number, layout: PaneLayout) {
+    // console.log('cGSU gLXSc input x min/max/layout.paneOrigin ', xMin, xMax);
+    // console.table(layout.paneOrigin);
+    const xScale = d3
+        .scaleLinear()
+        .domain([xMin, xMax])
+        .range([layout.paneOrigin.right, layout.paneOrigin.right + layout.chartIndWidth])
+        // .nice()
+        ;
+
+    // console.log('cGU gXS xScale.ticks(100):');
+    // console.table(xScale.ticks(100));
+
+    
+    // console.log('cGSU gXS final xScale domain/range: ', xScale.domain(), xScale.range());
+    return xScale;
+    
 }
 
 export function generateLinearYScale(yMin: number, yMax: number, layout: PaneLayout) {
@@ -249,7 +268,7 @@ export function generateLinearXAxis(xScale, layout: PaneLayout, layerConfig: Pan
     // axis
     //     .ticks(50);
     
-    const dateXAxis = d3.create('svg:g')
+    const linearXAxis = d3.create('svg:g')
         .attr('id', `${layerConfig.idLabel}-xAxis-${layerConfig.xAxisConfig.location}`)
         .attr('transform', `translate(${origin.right}, ${origin.down})`)
         .attr('stroke', 'white')
@@ -257,7 +276,7 @@ export function generateLinearXAxis(xScale, layout: PaneLayout, layerConfig: Pan
         // .attr('stroke-width', '1.0')
         .call(axis);
 
-    return dateXAxis;
+    return linearXAxis;
 }
 
 export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
@@ -267,26 +286,26 @@ export function generateFinanceTimeXAxis(xScale, origin: TranslationCoord) {
 }
 
 export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale, plotConfig: PlotConfig,
-     paneNumber: number, layerNumber: number, target: string) {
+     paneNumber: number, layerNumber: number, xTarget: string, yTarget: string) {
 
-    // console.log('cGSU gLS');
+    // console.log('-------------- cGSU gLS -------------------');
     // console.log('cGSU gLS input xScale range/domain', xSc.range(), xSc.domain());
     // console.log('cGSU gLS input yScale range/domain', ySc.range(), ySc.domain());
     // console.table(data[10]);
-    // console.log('cGSU gLS input target', target);
+    // console.log('cGSU gLS input xTarget/yTarget', xTarget, yTarget);
 
-    // console.log('cGU gLS target data:');
-    // console.log('cGU gLS d[target]/yScale[target]: ', data[100][target], yScale(data[100][target]));
+    // console.log('cGU gLS yTarget data:');
+    // console.log('cGU gLS d[yTarget]/yScale[yTarget]: ', data[100][yTarget], yScale(data[100][yTarget]));
     
     // const renderItem = d3.create('svg:g')
-    //     .attr('id', `pane${paneNumber}-layer${layerNumber}-${target}-line`)
+    //     .attr('id', `pane${paneNumber}-layer${layerNumber}-${yTarget}-line`)
     //     .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
 
     const renderItem = d3.create('svg:g')
-        .attr('id', `pane${paneNumber}-layer${layerNumber}-${target}`)
+        .attr('id', `pane${paneNumber}-layer${layerNumber}-${yTarget}`)
         .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
         .on('click', (event, d) => {
-            console.log('cGU gLS id: ', `pane-${paneNumber}-layer-${layerNumber}-${target}-line`,' location: ', d3.pointer(event));
+            console.log('cGU gLS id: ', `pane-${paneNumber}-layer-${layerNumber}-${yTarget}-line`,' location: ', d3.pointer(event));
             console.log('cGU gLS data set: ', d);
         });
 
@@ -294,8 +313,10 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
     const plot = fc.seriesSvgLine()
         .xScale(xSc)
         .yScale(ySc)
-        .crossValue(d => d.index)
-        .mainValue(d => d[target])
+        // .crossValue(d => d.date)
+        // .crossValue(d => d.index)
+        .crossValue(d => d[xTarget])
+        .mainValue(d => d[yTarget])
         .decorate(selection => 
             selection.enter()
             .style('fill', 'none')
@@ -308,8 +329,9 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
     .xScale(xSc)
     .yScale(ySc)
     // .crossValue(d => d.date)
-    .crossValue(d => d.index)
-    .mainValue(d => d[target])
+    .crossValue(d => d[xTarget])
+    // .crossValue(d => d.index)
+    .mainValue(d => d[yTarget])
     .size(10)
     .decorate(selection => 
         selection.enter()
@@ -325,7 +347,7 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
             // console.log('cGU gLS c: ', c);
         // })
         .on('mouseover', (event, d) => {
-            console.log('cGU gLS pane/target/datum: ', paneNumber, target);
+            console.log('cGU gLS pane/yTarget/datum: ', paneNumber, yTarget);
             // console.table(d);
         })
     );
@@ -391,24 +413,25 @@ export function generateOHLCBarSeries(data: OHLCData[], xScale, yScale, plotConf
     return renderItem;
 }
 
-export function generateBarSeries(data: OHLCData[], xScale, yScale, plotConfig: PlotConfig, paneNumber: number, layerNumber: number, target: string) {
-    // console.log('cGSU gBS input plotName/paneNumber/layerNumber/target', plotConfig.plotName, paneNumber, layerNumber, target);
+export function generateBarSeries(data: OHLCData[], xScale, yScale, plotConfig: PlotConfig, paneNumber: number, layerNumber: number, xTarget: string, yTarget: string) {
+    // console.log('cGSU gBS input plotName/paneNumber/layerNumber/yTarget', plotConfig.plotName, paneNumber, layerNumber, yTarget);
     // console.log('cGSU gBS input yScale range/domain', yScale.range(), yScale.domain());
     // console.table(data.slice(100,110));
 
     const renderItem = d3.create('svg:g')
-      .attr('id', `pane${paneNumber}-layer${layerNumber}-${target}-bar`)
+      .attr('id', `pane${paneNumber}-layer${layerNumber}-${yTarget}-bar`)
       .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
 
     const plot = fc.seriesSvgBar()
         .xScale(xScale)
         .yScale(yScale)
-        .mainValue(d => d[target])
-        .crossValue(d => d.date)
+        // .crossValue(d => d.date)
+        .crossValue(d => d[xTarget])
+        .mainValue(d => d[yTarget])
         .decorate(sel => 
             sel.enter()
-            .attr('stroke', d => d[target] >= 0 ? plotConfig.upColor : plotConfig.downColor)
-            .attr('fill', d => d[target] >= 0 ? plotConfig.upColor : plotConfig.downColor)
+            .attr('stroke', d => d[yTarget] >= 0 ? plotConfig.upColor : plotConfig.downColor)
+            .attr('fill', d => d[yTarget] >= 0 ? plotConfig.upColor : plotConfig.downColor)
             );
 
     renderItem

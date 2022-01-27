@@ -37,7 +37,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotType: PlotType.LINE,
                         //             plotName: PlotName.CLOSE,
                         //             idLabel: PlotName.CLOSE,
-                        //             target: PlotName.CLOSE,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: PlotName.CLOSE,
                         //             color: 'yellow',
                         //             upColor: 'blue',
                         //             downColor: 'blue',
@@ -56,7 +57,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotType: PlotType.CANDLESTICK,
                                     plotName: PlotName.PRICE,
                                     idLabel: PlotName.PRICE,
-                                    target: PlotName.PRICE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.PRICE,
                                     color: 'yellow',
                                     upColor: 'steelblue',
                                     downColor: 'blue',
@@ -74,7 +76,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotType: PlotType.OHLCBAR,
                         //             plotName: PlotName.PRICE,
                         //             idLabel: PlotName.PRICE,
-                        //             target: PlotName.PRICE,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: PlotName.PRICE,
                         //             color: 'yellow',
                         //             upColor: 'blue',
                         //             downColor: 'blue',
@@ -96,7 +99,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.EMA,
                                     idLabel: `${PlotName.EMA}-10-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 10},
-                                    target: `${PlotName.EMA}-10`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.EMA}-10`,
                                     color: 'rgb(36, 164, 204)',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -118,7 +122,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.EMA,
                         //             idLabel: `${PlotName.EMA}-50-${PlotType.LINE}`,
                         //             param: {name: SeriesParam.PERIOD, value: 50},
-                        //             target: `${PlotName.EMA}-50`,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: `${PlotName.EMA}-50`,
                         //             color: 'blue',
                         //             upColor: 'red',
                         //             downColor: 'red',
@@ -140,7 +145,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.EMA,
                                     idLabel: `${PlotName.EMA}-200-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 200},
-                                    target: `${PlotName.EMA}-200`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.EMA}-200`,
                                     color: 'yellow',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -162,7 +168,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.SMA,
                         //             idLabel: `${PlotName.SMA}-20-${PlotType.LINE}`,
                         //             param: {name: SeriesParam.PERIOD, value: 20},
-                        //             target: `${PlotName.SMA}-20`,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: `${PlotName.SMA}-20`,
                         //             color: 'red',
                         //             upColor: 'green',
                         //             downColor: 'red',
@@ -184,7 +191,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.SMA,
                         //             idLabel: `${PlotName.SMA}-50-${PlotType.LINE}`,
                         //             param: {name: SeriesParam.PERIOD, value: 50},
-                        //             target: `${PlotName.SMA}-50`,
+                        //              xTarget: PlotName.DATE,
+                        //              yTarget: `${PlotName.SMA}-50`,
                         //             color: 'green',
                         //             upColor: 'green',
                         //             downColor: 'red',
@@ -209,7 +217,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.BB_UPPER,
                         //             idLabel: `${PlotName.BB_UPPER}-20-2-${PlotType.LINE}`,
                         //             param: {name: SeriesParam.PERIOD, value: 20},
-                        //             target: `${PlotName.BB_UPPER}-20-2`,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: `${PlotName.BB_UPPER}-20-2`,
                         //             color: 'yellow',
                         //             upColor: 'green',
                         //             downColor: 'red',
@@ -221,7 +230,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.BB_LOWER,
                         //             idLabel: `${PlotName.BB_LOWER}-20-2-${PlotType.LINE}`,
                         //             param: {name: SeriesParam.PERIOD, value: 20},
-                        //             target: `${PlotName.BB_LOWER}-20-2`,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: `${PlotName.BB_LOWER}-20-2`,
                         //             color: 'yellow',
                         //             upColor: 'green',
                         //             downColor: 'red',
@@ -233,7 +243,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //         //     plotName: PlotName.BB_AVERAGE,
                         //         //     idLabel: `${PlotName.BB_AVERAGE}-20-2-${PlotType.LINE}`,
                         //         //     param: {name: SeriesParam.PERIOD, value: 20},
-                        //         //     target: `${PlotName.BB_AVERAGE}-20-2`,
+                        //         //     xTarget: PlotName.DATE,
+                        //         //     yTarget: `${PlotName.BB_AVERAGE}-20-2`,
                         //         //     color: 'white',
                         //         //     upColor: 'green',
                         //         //     downColor: 'red',
@@ -284,7 +295,8 @@ export const SINGLE_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.RSI,
                                     idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                                     param: {name: SeriesParam.PERIOD, value: 14},
-                                    target: `${PlotName.RSI}-14`, // column name created by data calculator
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.RSI}-14`, // column name created by data calculator
                                     color: 'red',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -351,7 +363,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotType: PlotType.LINE,
                         //             plotName: PlotName.CLOSE,
                         //             idLabel: PlotName.CLOSE,
-                        //             target: PlotName.CLOSE,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: PlotName.CLOSE,
                         //             color: 'yellow',
                         //             upColor: 'blue',
                         //             downColor: 'blue',
@@ -370,7 +383,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotType: PlotType.CANDLESTICK,
                                     plotName: PlotName.PRICE,
                                     idLabel: PlotName.PRICE,
-                                    target: PlotName.PRICE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.PRICE,
                                     color: 'yellow',
                                     upColor: 'steelblue',
                                     downColor: 'blue',
@@ -389,7 +403,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotType: PlotType.OHLCBAR,
                         //             plotName: PlotName.PRICE,
                         //             idLabel: PlotName.PRICE,
-                        //             target: PlotName.PRICE,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: PlotName.PRICE,
                         //             color: 'yellow',
                         //             upColor: 'blue',
                         //             downColor: 'blue',
@@ -411,7 +426,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //         //     plotName: PlotName;
                         //         //     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                         //         //     param?: Param;
-                        //         //     target: string; // column name created by data calculator. For single field series (line, point, area)
+                        //         //     xTarget: string; // column name created by data calculator. For single field series (line, point, area)
+                        //         //     yTarget: string; // column name created by data calculator. For single field series (line, point, area)
                         //         //     targets?: OHLCTargets;
                         //         //     color?: string;
                         //         //     upColor?: string;
@@ -423,7 +439,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.EMA,
                         //             idLabel: `${PlotName.EMA}-10-${PlotType.LINE}`,
                         //             param: {name: SeriesParam.PERIOD, value: 10},
-                        //             target: `${PlotName.EMA}-10`,
+                        //             yTarget: PlotName.DATE,
+                        //             xTarget: `${PlotName.EMA}-10`,
                         //             color: 'rgb(36, 164, 204)',
                         //             upColor: 'green',
                         //             downColor: 'red',
@@ -445,7 +462,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                 //     plotName: PlotName;
                                 //     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                                 //     param?: Param;
-                                //     target: string; // column name created by data calculator. For single field series (line, point, area)
+                                //     yTarget: string; // column name created by data calculator. For single field series (line, point, area)
+                                //     xTarget: string; // column name created by data calculator. For single field series (line, point, area)
                                 //     targets?: OHLCTargets;
                                 //     color?: string;
                                 //     upColor?: string;
@@ -457,7 +475,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.EMA,
                                     idLabel: `${PlotName.EMA}-20-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 20},
-                                    target: `${PlotName.EMA}-20`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.EMA}-20`,
                                     color: 'rgb(36, 164, 204)',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -479,7 +498,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.EMA,
                                     idLabel: `${PlotName.EMA}-50-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 50},
-                                    target: `${PlotName.EMA}-50`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.EMA}-50`,
                                     color: 'blue',
                                     upColor: 'red',
                                     downColor: 'red',
@@ -501,7 +521,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.EMA,
                                     idLabel: `${PlotName.EMA}-200-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 200},
-                                    target: `${PlotName.EMA}-200`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.EMA}-200`,
                                     color: 'red',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -526,7 +547,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.BB_UPPER,
                         //             idLabel: `${PlotName.BB_UPPER}-20-2-${PlotType.LINE}`,
                         //             param: {name: SeriesParam.PERIOD, value: 20},
-                        //             target: `${PlotName.BB_UPPER}-20-2`,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: `${PlotName.BB_UPPER}-20-2`,
                         //             color: 'yellow',
                         //             upColor: 'green',
                         //             downColor: 'red',
@@ -538,7 +560,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.BB_LOWER,
                         //             idLabel: `${PlotName.BB_LOWER}-20-2-${PlotType.LINE}`,
                         //             param: {name: SeriesParam.PERIOD, value: 20},
-                        //             target: `${PlotName.BB_LOWER}-20-2`,
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: `${PlotName.BB_LOWER}-20-2`,
                         //             color: 'yellow',
                         //             upColor: 'green',
                         //             downColor: 'red',
@@ -550,7 +573,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //         //     plotName: PlotName.BB_AVERAGE,
                         //         //     idLabel: `${PlotName.BB_AVERAGE}-20-2-${PlotType.LINE}`,
                         //         //     param: {name: SeriesParam.PERIOD, value: 20},
-                        //         //     target: `${PlotName.BB_AVERAGE}-20-2`,
+                        //         //     xTarget: PlotName.DATE,
+                        //         //     yTarget: `${PlotName.BB_AVERAGE}-20-2`,
                         //         //     color: 'white',
                         //         //     upColor: 'green',
                         //         //     downColor: 'red',
@@ -575,7 +599,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.BB_UPPER,
                                     idLabel: `${PlotName.BB_UPPER}-40-2-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 40},
-                                    target: `${PlotName.BB_UPPER}-40-2`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.BB_UPPER}-40-2`,
                                     color: 'yellow',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -587,7 +612,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.BB_LOWER,
                                     idLabel: `${PlotName.BB_LOWER}-40-2-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 40},
-                                    target: `${PlotName.BB_LOWER}-40-2`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.BB_LOWER}-40-2`,
                                     color: 'yellow',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -599,7 +625,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                 //     plotName: PlotName.BB_AVERAGE,
                                 //     idLabel: `${PlotName.BB_AVERAGE}-40-2-${PlotType.LINE}`,
                                 //     param: {name: SeriesParam.PERIOD, value: 40},
-                                //     target: `${PlotName.BB_AVERAGE}-40-2`,
+                                //     xTarget: PlotName.DATE,
+                                //     yTarget: `${PlotName.BB_AVERAGE}-40-2`,
                                 //     color: 'white',
                                 //     upColor: 'green',
                                 //     downColor: 'red',
@@ -648,7 +675,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                 //                     plotName: PlotName.RSI,
                 //                     idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                 //                     param: {name: SeriesParam.PERIOD, value: 14},
-                //                     target: `${PlotName.RSI}-14`, // column name created by data calculator
+                //                     xTarget: PlotName.DATE,
+                //                     yTarget: `${PlotName.RSI}-14`, // column name created by data calculator
                 //                     color: 'red',
                 //                     upColor: 'green',
                 //                     downColor: 'red',
@@ -697,8 +725,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         xMinTarget: PlotName.DATE,
                         xMaxTarget: PlotName.DATE,
                         yScaleType: ScaleType.LINEAR,
-                        yMinTarget: `${SeriesName.STOCHASTIC}-14-5`,
-                        yMaxTarget: `${SeriesName.STOCHASTIC}-14-5`,
+                        yMinTarget: `${PlotName.STOCH_K}-14-5`,
+                        yMaxTarget: `${PlotName.STOCH_K}-14-5`,
                     },
                     series: [
                         // export interface PlotSeries {
@@ -722,7 +750,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             // plotName: PlotName;
                         //             // idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                         //             // param?: Param;
-                        //             // target: string; // column name created by data calculator
+                        //             // xTarget: string; // column name created by data calculator
+                        //             // yTarget: string; // column name created by data calculator
                         //             // color?: string;
                         //             // upColor?: string;
                         //             // downColor?: string;
@@ -733,7 +762,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         //             plotName: PlotName.RSI,
                         //             idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                         //             param: {name: SeriesParam.PERIOD, value: 14},
-                        //             target: `${PlotName.RSI}-14`, // column name created by data calculator
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: `${PlotName.RSI}-14`, // column name created by data calculator
                         //             color: 'yellow',
                         //             upColor: 'green',
                         //             downColor: 'red',
@@ -757,7 +787,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.STOCH_K,
                                     idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                                     param: {name: SeriesParam.K, value: 14},
-                                    target: `${PlotName.STOCH_K}-14-5`, // column name created by data calculator
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.STOCH_K}-14-5`, // column name created by data calculator
                                     color: 'rgb(36, 164, 204)',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -769,7 +800,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.STOCH_D,
                                     idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                                     param: {name: SeriesParam.D, value: 5},
-                                    target: `${PlotName.STOCH_D}-14-5`, // column name created by data calculator
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.STOCH_D}-14-5`, // column name created by data calculator
                                     color: 'red',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -827,7 +859,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotType: PlotType.LINE,
                                     plotName: PlotName.MACD_MACD,
                                     idLabel: '',    
-                                    target: `${PlotName.MACD_MACD}-12-26-5`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.MACD_MACD}-12-26-5`,
                                     color: 'rgb(36, 164, 204)',
                                     style: 'line',
                                     thickness: '2.0',
@@ -836,7 +869,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotType: PlotType.LINE,
                                     plotName: PlotName.MACD_SIGNAL,
                                     idLabel: '',
-                                    target: `${PlotName.MACD_SIGNAL}-12-26-5`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.MACD_SIGNAL}-12-26-5`,
                                     color: 'red',
                                     style: 'line',
                                     thickness: '2.0',
@@ -845,7 +879,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotType: PlotType.BAR,
                                     plotName: PlotName.MACD_DIVERGENCE,
                                     idLabel: '',
-                                    target: `${PlotName.MACD_DIVERGENCE}-12-26-5`,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.MACD_DIVERGENCE}-12-26-5`,
                                     color: 'white',
                                     upColor: 'rgb(36, 164, 204)',
                                     downColor: 'red',
@@ -904,7 +939,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     // plotName: PlotName;
                                     // idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                                     // param?: Param;
-                                    // target: string; // column name created by data calculator
+                                    // xTarget: string; // column name created by data calculator
+                                    // yTarget: string; // column name created by data calculator
                                     // color?: string;
                                     // upColor?: string;
                                     // downColor?: string;
@@ -915,7 +951,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.RSI,
                                     idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                                     param: {name: SeriesParam.PERIOD, value: 14},
-                                    target: `${PlotName.RSI}-14`, // column name created by data calculator
+                                    xTarget: PlotName.DATE,
+                                    yTarget: `${PlotName.RSI}-14`, // column name created by data calculator
                                     color: 'yellow',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -976,7 +1013,7 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                             //     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                             //     // plotName: PlotName2;
                             //     param?: Param;
-                            //     target: string; // column name created by data calculator
+                            //     xTarget: string; // column name created by data calculator
                             //     color?: string;
                             //     upColor?: string;
                             //     downColor?: string;
@@ -987,7 +1024,8 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                                     plotType: PlotType.LINE,
                                     plotName: PlotName.CLOSE,
                                     idLabel: PlotName.CLOSE,
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'yellow',
                                     upColor: 'blue',
                                     downColor: 'blue',
@@ -1015,7 +1053,7 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                             //     plotName: PlotName;
                             //     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
                             //     // plotName: PlotName2;
-                            //     target: string; // column name created by data calculator
+                            //     xTarget: string; // column name created by data calculator
                             //     color?: string;
                             //     upColor?: string;
                             //     downColor?: string;
@@ -1033,7 +1071,8 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                                     plotName: PlotName.EMA,
                                     idLabel: `${PlotName.EMA}-9-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 9},
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'blue',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -1055,7 +1094,8 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                                     plotName: PlotName.SMA,
                                     idLabel: `${PlotName.SMA}-20-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 20},
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'red',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -1080,7 +1120,8 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                                     plotName: PlotName.BB_UPPER,
                                     idLabel: `${PlotName.BB_UPPER}-20-2-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 20},
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'green',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -1092,7 +1133,8 @@ export const ALL_INDICATORS_LAYER_CONFIGS: ChartPanelConfig = {
                                     plotName: PlotName.BB_LOWER,
                                     idLabel: `${PlotName.BB_LOWER}-20-2-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 20},
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'green',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -1136,7 +1178,8 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotType: PlotType.LINE,
                                     plotName: PlotName.CLOSE,
                                     idLabel: PlotName.CLOSE,
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'yellow',
                                     upColor: 'blue',
                                     downColor: 'blue',
@@ -1157,7 +1200,8 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.EMA,
                                     idLabel: `${PlotName.EMA}-9-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 9},
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'blue',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -1197,7 +1241,8 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.SMA,
                                     idLabel: `${PlotName.SMA}-20-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 20},
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'red',
                                     upColor: 'green',
                                     downColor: 'red',
@@ -1237,7 +1282,8 @@ export const TWO_PANE_LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                     plotName: PlotName.SMA,
                                     idLabel: `${PlotName.SMA}-50-${PlotType.LINE}`,
                                     param: {name: SeriesParam.PERIOD, value: 50},
-                                    target: PlotName.CLOSE,
+                                    xTarget: PlotName.DATE,
+                                    yTarget: PlotName.CLOSE,
                                     color: 'green',
                                     upColor: 'green',
                                     downColor: 'red',

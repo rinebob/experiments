@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 import { ChartMoveEvent, PlotType, ScaleType, PanDistance, Zoom, VerticalAdjustment } from 'src/app/common/interfaces_chart';
-import {DEFAULT_CHART_MOVE_EVENT, DEFAULT_ZOOM_LEVEL, ZOOM_LEVELS} from '../../../common/constants';
+import {DEFAULT_CHART_MOVE_EVENT, DEFAULT_SHOW_CROSSHAIRS_SETTING, DEFAULT_ZOOM_LEVEL, ZOOM_LEVELS} from '../../../common/constants';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { MatSliderChange } from '@angular/material/slider';
@@ -49,7 +49,7 @@ export class ChartControlsComponent implements OnInit {
   previousZoomLevel = DEFAULT_ZOOM_LEVEL;
   numZoomLevels = ZOOM_LEVELS.size;
   zoomLock = false;
-  showCrosshairs = false;
+  showCrosshairs = DEFAULT_SHOW_CROSSHAIRS_SETTING;
 
   // slider params
   max = 0;

@@ -138,7 +138,7 @@ export class BsCalculatorComponent implements OnInit {
 
    // responsd to user clicking 'Generate' button
    handleGenerateDataSet(event: BlackScholesCalculatorConfig) {
-    console.log('bSC hGDS handle generate data set called.  event: ', event);
+    // console.log('bSC hGDS handle generate data set called.  event: ', event);
     this.configFormValuesBS.next(event);
     const dataSet: BlackScholesOutputSeries[] = this.generatePriceProjectionDataSet();
     this.projectionDataSetBS.next(dataSet);

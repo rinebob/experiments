@@ -38,7 +38,7 @@ export class ChartGeneratorService {
     // console.table(panelConfig.containerDims);
 
     if (!panelConfig.containerDims) {
-      console.log('cGS gRP dude no container dims!  outta here!');
+      // console.log('cGS gRP dude no container dims!  outta here!');
       return;
     }
 
@@ -52,8 +52,8 @@ export class ChartGeneratorService {
     const panelDetails = this.generatePanelDetails(panelConfig);
     panelConfig.details = {...panelDetails};
 
-    console.log('cGS gRP panel details:');
-    console.table(panelDetails);
+    // console.log('cGS gRP panel details:');
+    // console.table(panelDetails);
 
     const renderablePanel: RenderablePanel = {
       panelConfig: panelConfig,
@@ -138,11 +138,11 @@ export class ChartGeneratorService {
   }
 
   getPaneNumberFromClick(event: PointerEvent) {
-    console.log('----   cGS gPNFC called:')
+    // console.log('----   cGS gPNFC called:')
     const layouts = this.paneLayoutsBS.value;
 
     const pointerY = d3.pointer(event)[1];
-    console.log('cGU gPNFC panel pointer y:', pointerY);
+    // console.log('cGU gPNFC panel pointer y:', pointerY);
     
     let paneNumber = 1;
     
@@ -158,25 +158,29 @@ export class ChartGeneratorService {
       }
     }
     
-    console.log('cGU gPNFC final pane number:', paneNumber);
+    // console.log('cGU gPNFC final pane number:', paneNumber);
     return paneNumber
   }
 
   handleMouseMove(event: MouseEvent, panelDetails: PanelDetails, paneConfigs: ChartPaneConfig[]) {
-    // console.log('cGU gPXYT panel x/y coords. x:', d3.pointer(event)[0],' y:', d3.pointer(event)[1]);
+    console.log('---------------------- handleMouseMove -----------------');
+    console.log('cGU gPXYT panel x/y coords. x:', d3.pointer(event)[0],' y:', d3.pointer(event)[1]);
     const pointerX = d3.pointer(event)[0] - AXIS_THICKNESS;
     const pointerY = d3.pointer(event)[1] - AXIS_THICKNESS;
     // console.log('cGU gPXYT panel pointer x/y:', pointerX, pointerY);
 
     // this will return xScale(pointerX) and the index of this date in the data BS
-    const xDetails = this.getXDetails(pointerX, panelDetails);
-
+    const xTarget = 'index';
+    const xDetails = this.getXDetails(pointerX, panelDetails, xTarget);
+    console.log('cGS hMM xDetails: ', xDetails);
+    
     const data = this.dataBS.value[xDetails.index];
+    console.log('cGS hMM data: ', data);
 
     for (const paneConfig of paneConfigs) {
       
       if (data) {
-        // console.log('cGS gRP calling update annotations for pane: ', paneConfig.paneNumber);
+        console.log('cGS gRP calling update annotations for pane: ', paneConfig.paneNumber);
         this.updateAnnotationsElements(paneConfig.paneNumber, data);
       } 
     }
@@ -260,7 +264,8 @@ export class ChartGeneratorService {
     const annotationsList = [];
 
     for (const paneConfig of panelConfig.panes) {
-      // console.log('cGS gAL paneNumber: ', paneConfig.paneNumber);
+      console.log('--------------------------');
+      console.log('cGS gAL paneNumber: ', paneConfig.paneNumber);
 
       const paneAnnotation: PaneAnnotationConfig = {
         pane: paneConfig.paneNumber,
@@ -268,7 +273,7 @@ export class ChartGeneratorService {
       };
       
       for (const layerConfig of paneConfig.layerConfigs) {
-        // console.log('cGS gAL layerNumber: ', layerConfig.layerNumber);
+        console.log('cGS gAL layerNumber: ', layerConfig.layerNumber);
         
         for (const series of layerConfig.series) {
           console.log('cGS gAL series name: ', series.seriesName);
@@ -289,11 +294,11 @@ export class ChartGeneratorService {
               plots: [],
             }
             for (const param of series.params.values()) {
-              // console.log('cGS gAL param name/value: ', param.name, param.value);
+              console.log('cGS gAL param name/value: ', param.name, param.value);
               annotation.params.push(param);
             }
             for (const plot of series.plots.values()) {
-              // console.log('cGS gAL plot name/target: ', plot.plotName, plot.target);
+              console.log('cGS gAL plot name/yTarget: ', plot.plotName, plot.yTarget);
               annotation.plots.push(plot);
             }
             paneAnnotation.seriesAnnotations.push(annotation);
@@ -303,7 +308,7 @@ export class ChartGeneratorService {
       annotationsList.push(paneAnnotation)
     }
 
-    // console.log('cGS gAL final annotations list: ', annotationsList);
+    console.log('cGS gAL final annotations list: ', annotationsList);
     return annotationsList;
   }
 
@@ -316,7 +321,7 @@ export class ChartGeneratorService {
     const renderItem = d3.create('svg:g')
       .attr('id', `pane-${config.pane}-annotations`);
 
-    // console.log('cGS gAE annotations for pane: ', config.pane);
+    console.log('cGS gAE annotations for pane: ', config.pane);
 
     // Date annotation for all panes
     const dateGroup = d3.create('svg:g')
@@ -381,7 +386,7 @@ export class ChartGeneratorService {
 
         for (let i = 0; i < plots.length; i++) {
           const plot = plots[i];
-          textString = textString + `${plot.target}: ${data[plot.target] ?? 'no value'}`;
+          textString = textString + `${plot.yTarget}: ${data[plot.yTarget] ?? 'no value'}`;
           if (i < plots.length - 1) {textString += ' | ';}
         }
         const text =  d3.create('svg:text')
@@ -405,13 +410,14 @@ export class ChartGeneratorService {
 
   updateAnnotationsElements(paneNumber: number, data: OHLCData) {
     if (!data) return;
-    // console.log('------------------ cGS uAE pane/date: ', paneNumber, data.stringDate.split(',')[0],' -------------------');
+    console.log('------------------ cGS uAE pane: ', paneNumber, ' -------------------');
+    if (!!data.stringDate) {console.log('cGS uAE date: ', data.stringDate.split(',')[0]);}
     const config = this.annotationsConfigBS.value.find(config => config.pane === paneNumber);
 
     const pane = d3.select(`#pane-${paneNumber}`);
 
-    // console.log('cGS uAE pane: ', pane);
-    // console.log('cGS uAE data: ', data);
+    console.log('cGS uAE pane: ', pane);
+    console.log('cGS uAE data: ', data);
     
     for (const [key, value] of Object.entries(data)) {
       if (typeof value === 'number') {
@@ -423,11 +429,11 @@ export class ChartGeneratorService {
     // console.log('cGS gAE existing elements: ', elements);
 
     const existingDateGroup = pane.select(`#pane-${paneNumber}-ann-group-date`);
-    // console.log('cGS gAE existing date group: ', existingDateGroup);
+    console.log('cGS gAE existing date group: ', existingDateGroup);
     
     // const dateOnlyText = data.stringDate.split(',')[0];
     const dateOnlyText = data.index;
-    // console.log('cGS gAE string date/dateOnlyText: ', data.stringDate, dateOnlyText);
+    console.log('cGS gAE string date/dateOnlyText: ', data.stringDate, dateOnlyText);
     // const dateTextString = `Date: ${data.stringDate}`;
     const dateTextString = `Date: ${dateOnlyText}`;
     // console.log('cGS uAE date newString: ', dateTextString);
@@ -454,26 +460,26 @@ export class ChartGeneratorService {
       }
 
       if (!!seriesAnnotation.params) {
-        // console.log('---------------------', seriesAnnotation.seriesLabel,' -------------------');
+        console.log('---------------------', seriesAnnotation.seriesLabel,' -------------------');
 
         // line series plot id format
-        // `pane${paneNumber}-layer${layerNumber}-${target}`
+        // `pane${paneNumber}-layer${layerNumber}-${yTarget}`
 
         const existingGroup = pane.select(`#ann-group-${seriesAnnotation.seriesLabel}`);
-        // console.log('cGS gAE existing group for: ', seriesAnnotation.seriesLabel, existingGroup);
+        console.log('cGS gAE existing group for: ', seriesAnnotation.seriesLabel, existingGroup);
         
         let textString = `${seriesAnnotation.seriesName}: `;
-        // console.log('cGS uAE start param textString: ', textString);
+        console.log('cGS uAE start param textString: ', textString);
         
         const params = seriesAnnotation.params;
         const plots = seriesAnnotation.plots
         
         for (let i = 0; i < params.length; i++) {
           const param = params[i];
-          // console.log('cGS gAE for loop i: ', i);
+          console.log('cGS gAE for loop i: ', i);
           
           const newString = ` ${param.name}: ${param.value}`;
-          // console.log('cGS uAE param newString: ', newString);
+          console.log('cGS uAE param newString: ', newString);
 
           textString = textString + newString;
         }
@@ -482,16 +488,16 @@ export class ChartGeneratorService {
 
         for (let i = 0; i < plots.length; i++) {
           const plot = plots[i];
-          // console.log('cGS gAE for loop i: ', i);
+          console.log('cGS gAE for loop i: ', i);
           
-          const newString = `${plot.target}: ${data[plot.target] ?? 'no value'}`;
-          // console.log('cGS uAE plot newString: ', newString);
+          const newString = `${plot.yTarget}: ${data[plot.yTarget] ?? 'no value'}`;
+          console.log('cGS uAE plot newString: ', newString);
           
           textString = textString + newString;
           if (i < plots.length - 1) {textString += ' | ';}
         }
 
-        // console.log('cGS uAE final param textString: ', textString);
+        console.log('cGS uAE final param textString: ', textString);
 
         existingGroup.select('text')
           .text(textString);
@@ -528,20 +534,45 @@ export class ChartGeneratorService {
 
   }
 
+  generateXScale(xMin: number, xMax: number, layout: PaneLayout, scaleType: ScaleType) {
+    let xScale: d3.Scale;
+
+    switch(scaleType) {
+      case ScaleType.DATE: 
+        xScale = utils.generateDateXScale(xMin, xMax, layout);
+        // console.log('cGS gXA genDateXAxis final xScale: ', xScale);
+        
+        return xScale;
+
+      case ScaleType.LINEAR: 
+        xScale = utils.generateLinearXScale(xMin, xMax, layout);
+        // console.log('cGS gXA genLinearXxScale final xScale: ', xScale);
+        
+        return xScale;
+      
+      case ScaleType.FINANCE_DATE: 
+        // xScale = utils.generateFinanceTimeXxScale(xScale);
+        // console.log('cGS gXA genFinTimexScale xScale - no op for now');
+        // return xScale;
+
+        break;
+    }
+  }
+
   generateXAxis(xScale, extents: Extents, layout: PaneLayout, layerConfig: PaneLayerConfig) {
-    console.log('cGS gXA input extents, layout, layer config: ', extents, layout, layerConfig);
+    // console.log('cGS gXA input extents, layout, layer config: ', extents, layout, layerConfig);
     let axis:d3.Axis;
     
     switch(layerConfig.xAxisConfig.type) {
       case ScaleType.DATE: 
         axis = utils.generateDateXAxis(xScale, layout, layerConfig);
-        console.log('cGS gXA genDateXAxis final axis: ', axis);
+        // console.log('cGS gXA genDateXAxis final axis: ', axis);
         
         return axis;
 
       case ScaleType.LINEAR: 
         axis = utils.generateLinearXAxis(xScale, layout, layerConfig);
-        console.log('cGS gXA genLinearXAxis final axis: ', axis);
+        // console.log('cGS gXA genLinearXAxis final axis: ', axis);
         
         return axis;
       
@@ -715,36 +746,57 @@ export class ChartGeneratorService {
   }
 
 
-  getXDetails(pointerX: number, panelDetails: PanelDetails) {
-    // console.log('cGS gXD input pointerX: ', pointerX);
-    const xMin = this.dataBS.value[0].date;
-    // console.log('cGS gXD xMin: ', xMin);
-    const xMax = this.dataBS.value[this.dataBS.value.length - 1].date;
-    // console.log('cGS gXD xMax: ', xMax);
+  getXDetails(pointerX: number, panelDetails: PanelDetails, xTarget: string) {
+    console.log('cGS gXD input xTarget/pointerX: ', xTarget, pointerX);
+    // const xMin = this.dataBS.value[0].date;
+    const xMin = this.dataBS.value[0][xTarget];
+    // const xMax = this.dataBS.value[this.dataBS.value.length - 1].date;
+    const xMax = this.dataBS.value[this.dataBS.value.length - 1][xTarget];
+    console.log('cGS gXD xMin/xMax: ',xMin, xMax);
 
-    const xSc = d3
-      .scaleTime()
-      .domain([xMin, xMax])
-      // .range([AXIS_THICKNESS, AXIS_THICKNESS + panelDetails.chartIndWidth])
-      .range([0, panelDetails.chartIndWidth])
-      .nice();
+    let xSc: d3.Scale;
 
-    // data window
-    // const date = xSc.invert(d3.pointer(event)[0]);
-    const date = xSc.invert(pointerX);
-    const millis = date.getTime();
-    // console.log('cGS gXD date/x millis: ', date, millis);
+    if (xTarget === 'date') {
+      console.log('cGS gXD xTarget=date');
+      xSc = d3
+        .scaleTime()
+        .domain([xMin, xMax])
+        // .range([AXIS_THICKNESS, AXIS_THICKNESS + panelDetails.chartIndWidth])
+        .range([0, panelDetails.chartIndWidth])
+        .nice();
 
-    const midnight = d3.timeDay(date);
-    const midnightMillis = midnight.getTime();
-    // console.log('cGS gXD midnight/millis: ', midnight, midnightMillis);
+      // const date = xSc.invert(d3.pointer(event)[0]);
+      const date = xSc.invert(pointerX);
+      const millis = date.getTime();
+      console.log('cGS gXD date/x millis: ', date, millis);
+
+      const midnight = d3.timeDay(date);
+      const midnightMillis = midnight.getTime();
+      console.log('cGS gXD midnight/millis: ', midnight, midnightMillis);
+      
+      
+      const value = this.datesMillisBS.value.find(dt => dt === midnightMillis);
+      const index = this.datesMillisBS.value.indexOf(value);
+      console.log('cGS gXD millis value/index: ', value, index);
+
+      return {date, index};
+      
+    } else {
+      console.log('cGS gXD xTarget!=date (=index)');
+      xSc = d3
+        .scaleLinear()
+        .domain([xMin, xMax])
+        // .range([AXIS_THICKNESS, AXIS_THICKNESS + panelDetails.chartIndWidth])
+        .range([0, panelDetails.chartIndWidth])
+        .nice();
+      const xVal = xSc.invert(pointerX);
+      const index = Math.round(xVal);
+      console.log('cGS gXD xVal/index: ', xVal, index);
+      return {index};
+
+    }
     
-    
-    const value = this.datesMillisBS.value.find(dt => dt === midnightMillis);
-    const index = this.datesMillisBS.value.indexOf(value);
-    // console.log('cGS gXD millis value/index: ', value, index);
 
-    return {date, index};
 
   }
 
@@ -850,7 +902,7 @@ export class ChartGeneratorService {
     
   }
 
-  generateTooltip(target: string, origin: TranslationCoord) {
+  generateTooltip(yTarget: string, origin: TranslationCoord) {
     // const tooltip = d3.create('svg:rect')
     //     .attr('height', '50px')
     //     .attr('width', '100px')
@@ -859,7 +911,7 @@ export class ChartGeneratorService {
     //     .attr('transform', `translate(${origin.right}, ${origin.down})`)
     //     .html('dude its a tooltip!');
 
-    const tooltip = d3.select(target)
+    const tooltip = d3.select(yTarget)
       .append('div')
         .attr('height', '50px')
         .attr('width', '100px')
@@ -874,9 +926,9 @@ export class ChartGeneratorService {
   }
 
   generateRenderableLayer(paneConfig: ChartPaneConfig, layout: PaneLayout, layerConfig: PaneLayerConfig) {
-    console.log('-------- gRL START GENERATE RENDERABLE LAYER ', layerConfig.title,' ----------------------------------');
-    console.log('--------------- gRL layer config: -------------------------------');
-    console.table(layerConfig);
+    // console.log('-------- gRL START GENERATE RENDERABLE LAYER ', layerConfig.title,' ----------------------------------');
+    // console.log('--------------- gRL layer config: -------------------------------');
+    // console.table(layerConfig);
 
     let renderItem = d3.create('svg:g')
       .attr('id', `${paneConfig.idLabel}-${layerConfig.idLabel}`);
@@ -940,21 +992,27 @@ export class ChartGeneratorService {
       // extents = utils.generateExtents(this.dataBS.value, minTarget, maxTarget);
       extents = utils.generateExtents(this.dataBS.value, extentsConfig);
 
-      if (layerConfig.upperRangeLimit && layerConfig.lowerRangeLimit) {
+      // console.log('cGS gRL layerConfig.uRL/lRL: ', layerConfig.upperRangeLimit, layerConfig.lowerRangeLimit)
+
+      if (layerConfig.upperRangeLimit !== undefined && layerConfig.lowerRangeLimit !== undefined) {
         extents.yMax = layerConfig.upperRangeLimit;
         extents.yMin = layerConfig.lowerRangeLimit;
 
       }
     }
     
-    console.log('gRL final extents:');
-    console.table(extents);
+    // console.log('gRL final extents:');
+    // console.table(extents);
 
     // console.log('---------------- gRL Generate Layer X Scale and Axis -------------------------------');
     if (layerConfig.xAxisConfig.type !== ScaleType.NONE) {
         
       // generateXAxis(xScale, extents: Extents, layout: PaneLayout, series: Series, xAxisConfig: AxisConfig, paneConfig: ChartPaneConfig) {
-      xScale = utils.generateXScale(extents.xMin, extents.xMax, layout);
+
+      // xScale = utils.generateXScale(extents.xMin, extents.xMax, layout);
+
+      xScale = this.generateXScale(extents.xMin, extents.xMax, layout, layerConfig.xAxisConfig.type)
+
       // console.log('gRL final xScale: ', xScale);
       const xAxis = this.generateXAxis(xScale, extents, layout, layerConfig);
       // console.log('gRL final xScale/xAxis: ', xScale, xAxis);
@@ -1007,7 +1065,7 @@ export class ChartGeneratorService {
         // console.log('cGS gRL plotConfig:');
         // console.table(plot);
     
-        const renderablePlot = this.generateRenderablePlot(this.dataBS.value, xScale, yScale, plot, paneConfig.paneNumber, layerConfig.layerNumber, plot.target);
+        const renderablePlot = this.generateRenderablePlot(this.dataBS.value, xScale, yScale, plot, paneConfig.paneNumber, layerConfig.layerNumber, plot.xTarget, plot.yTarget);
         
         renderItem.append(() => renderablePlot.node());
 
@@ -1021,8 +1079,8 @@ export class ChartGeneratorService {
   }
 
   
-  generateRenderablePlot(data: OHLCData[], xScale: d3.xScale, yScale: d3.yScale, plotConfig: PlotConfig, paneNumber: number, layerNumber: number, target: string) {
-      // console.log('cGS gRP called: ', paneNumber, target);
+  generateRenderablePlot(data: OHLCData[], xScale: d3.xScale, yScale: d3.yScale, plotConfig: PlotConfig, paneNumber: number, layerNumber: number, xTarget: string, yTarget: string) {
+      // console.log('cGS gRP called: ', paneNumber, yTarget);
       
       const renderItem = d3.create('svg:g')
         .attr('id', `pane${paneNumber}-layer${layerNumber}-${plotConfig.plotName}`);
@@ -1032,7 +1090,7 @@ export class ChartGeneratorService {
       switch(plotConfig.plotType) {
         case PlotType.LINE: 
         // console.log('cGS gRP in type=line');
-          render = utils.generateLineSeries(data, xScale, yScale, plotConfig, paneNumber, layerNumber, target);
+          render = utils.generateLineSeries(data, xScale, yScale, plotConfig, paneNumber, layerNumber, xTarget, yTarget);
   
           break;
   
@@ -1048,7 +1106,7 @@ export class ChartGeneratorService {
           break;
 
         case PlotType.BAR: 
-          render = utils.generateBarSeries(data, xScale, yScale, plotConfig, paneNumber, layerNumber, target);
+          render = utils.generateBarSeries(data, xScale, yScale, plotConfig, paneNumber, layerNumber, xTarget, yTarget);
   
           break;
   

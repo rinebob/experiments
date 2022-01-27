@@ -272,6 +272,7 @@ export enum SeriesName {
 }
 
 export enum SeriesLabel {
+    INDEX = 'index',
     DATE = 'date',
     PRICE = 'price', // use close instead (or anything but there's no 'price' in any data)
     OPEN = 'open',
@@ -345,6 +346,7 @@ export enum Indicator {
 // }
 
 export enum PlotName {
+    INDEX = 'index',
     DATE = 'date',
     PRICE = 'price', // For candlestick price plots.  For individual lines use close instead (or anything but there's no 'price' in any data)
     OPEN = 'open',
@@ -431,7 +433,8 @@ export interface PlotConfig {
     plotName: PlotName;
     idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
     param?: Param;
-    target: string; // column name created by data calculator. For single field series (line, point, area)
+    xTarget: string;
+    yTarget: string; // column name created by data calculator. For single field series (line, point, area)
     targets?: OHLCTargets;
     color?: string;
     upColor?: string;

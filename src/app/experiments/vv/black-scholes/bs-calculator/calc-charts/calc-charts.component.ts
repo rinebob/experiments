@@ -18,7 +18,7 @@ export class CalcChartsComponent implements AfterViewInit, OnInit {
 
   @Input()
   set dataSet(set: OptionProjectionDataSet) {
-    console.log('cC @i dataSet[0]: ', set[0]);
+    // console.log('cC @i dataSet[0]: ', set[0]);
     this.dataSetBS.next(set);
     this.refreshChart();
 
@@ -30,7 +30,7 @@ export class CalcChartsComponent implements AfterViewInit, OnInit {
 
   @Input()
   set renderConfig(config: ChartPanelConfig) {
-    console.log('cC @i config: ', config);
+    // console.log('cC @i config: ', config);
     this.renderConfigBS.next(config);
     // this.refreshChart();
 
@@ -73,8 +73,8 @@ export class CalcChartsComponent implements AfterViewInit, OnInit {
       margin: DEFAULT_MARGIN_CONFIG,
     };
   
-    console.log('cC gDRC final coords:');
-    console.table(coords);
+    // console.log('cC gDRC final coords:');
+    // console.table(coords);
     return coords;
 
   }
@@ -131,16 +131,16 @@ export class CalcChartsComponent implements AfterViewInit, OnInit {
       renderItem.append(() => renderablePanel.renderPanel.node());
 
       d3.select('svg').remove();
-        d3.select('#panelRoot')
-          .attr('top', this.containerDimsBS.value.margin.top)
-          .attr('left', this.containerDimsBS.value.margin.left)
-          .attr('width', this.containerDimsBS.value.width)
-          .attr('height', this.containerDimsBS.value.height)
-          .append(() => renderablePanel.renderPanel.node())
-          ;
+      d3.select('#panelRoot')
+        .attr('top', this.containerDimsBS.value.margin.top)
+        .attr('left', this.containerDimsBS.value.margin.left)
+        .attr('width', this.containerDimsBS.value.width)
+        .attr('height', this.containerDimsBS.value.height)
+        .append(() => renderablePanel.renderPanel.node())
+        ;
 
     } else {
-      console.log('cC rC dude theres no rederable panel here!')
+      // console.log('cC rC dude theres no rederable panel here!')
     }
 
 
@@ -160,7 +160,7 @@ export class CalcChartsComponent implements AfterViewInit, OnInit {
     // console.log('cC rC --------------- Begin pane -------------------');
 
     // pane 
-    console.log('cC rC renderConfig panes: ', this.renderConfig.panes);
+    // console.log('cC rC renderConfig panes: ', this.renderConfig.panes);
 
     if (!!this.renderConfig.panes) {
 
