@@ -6,6 +6,7 @@ import { DynamicPanelComponent } from './dynamic-panel.component';
 import { ChartSettingsModule } from '../base-components/chart-settings/chart-settings.module';
 import { BaseComponentsModule } from '../base-components/base-components.module';
 import { DynamicChartModule } from './dynamic-chart/dynamic-chart.module';
+import { PanelBuilderModule } from './panel-builder/panel-builder.module';
 
 
 
@@ -19,6 +20,7 @@ import { DynamicChartModule } from './dynamic-chart/dynamic-chart.module';
     BaseComponentsModule,
     ChartSettingsModule,
     DynamicChartModule,
+    PanelBuilderModule,
   ]
 })
 export class DynamicPanelModule { }

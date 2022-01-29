@@ -1,6 +1,8 @@
 
 // From Visvol interfaces.  Must keep in sync
 
+import { OHLCData } from "./interfaces";
+
 
 
 
@@ -91,6 +93,44 @@ export interface BlackScholesInputs {
   t: number;    // t - time to expiration (percent of the year as decimal (i.e. 3 mo = .25 year))
   r: number;    // r - risk free interest rate (% / yr as decimal)
   q: number;    // q - dividend yield (% / yr as decimal).  If stock pays no dividend enter zero
+}
+
+export interface BlackScholesOutput {
+  callPrice: number;
+  callDelta: number;
+  callTheta: number;
+  putPrice: number;
+  putDelta: number;
+  putTheta: number;
+  gamma: number;
+  vega: number;
+  rho: number;
+}
+
+// key is the strike price for the series
+export interface BlackScholesOutputSeries {
+  strike: number;
+  // series: BlackScholesOutput[];
+  series: OHLCData[];
+}
+
+export type OptionProjectionDataSet = BlackScholesOutputSeries[];
+
+// export interface OptionProjectionDataSet {
+//   dataSet: BlackScholesOutputSeries[];
+// }
+
+export interface BlackScholesCalculatorConfig {
+  undPriceMin: number;
+  undPriceMax: number;
+  strikeMin: number;
+  strikeMax: number;
+  strikeIncrement: number;
+  timeMin: number;
+  timeMax: number;
+  volMin: number;
+  volMax: number;
+  numDataPoints: number;
 }
 
 export type Direction = 'LONG' | 'SHORT';

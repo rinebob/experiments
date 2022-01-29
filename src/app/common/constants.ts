@@ -1,7 +1,7 @@
 import { Equity, GalleryViewOption, OHLCData } from "./interfaces";
 import { ChartPanelConfig, DomRectCoordinates, PlotName, MarginConfig, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
-import { ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
+import { BlackScholesCalculatorConfig, BlackScholesOutput, ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
 import { ChartPanelDimensions, ChartSetting, PlotType, PaneType, SeriesName, ScaleType } from "./interfaces_chart";
 import { BlackScholesInputs, Option } from "./option_interfaces";
 
@@ -248,7 +248,9 @@ export const ZOOM_LEVELS = new Map([
 //   ]);
 
 // export const DEFAULT_ZOOM_LEVEL = ZOOM_LEVELS.size;
-export const DEFAULT_ZOOM_LEVEL = 3;
+export const DEFAULT_ZOOM_LEVEL = 4;
+
+export const DEFAULT_SHOW_CROSSHAIRS_SETTING = false;
 
 export const DOM_RECT_COORDS_INITIALIZER:DomRectCoordinates = {
     x: 0,
@@ -331,6 +333,10 @@ export const AXIS_THICKNESS = 30;
 // We will always use calendar days for Black-Scholes and other calculations
 export const DAYS_IN_A_YEAR = 365;
 
+export const BLACK_SCHOLES_INITIALIZER: BlackScholesInputs = {
+    S0: 100, X: 100, s: .25, t: .15, r: .02, q: 0,
+};
+
 export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
     {
       S0: 100, X: 100, s: .25, t: .15, r: .02, q: 0,
@@ -378,6 +384,31 @@ export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
     
   ];
 
+  export const BLACK_SCHOLES_OUTPUT_INITIALIZER: BlackScholesOutput = {
+    callPrice: 0,
+    callDelta: 0,
+    callTheta: 0,
+    putPrice: 0,
+    putDelta: 0,
+    putTheta: 0,
+    gamma: 0,
+    vega: 0,
+    rho: 0
+}
+
+export const BLACK_SCHOLES_CONFIG_INITIALIZER: BlackScholesCalculatorConfig = {
+    undPriceMin: 100,
+    undPriceMax: 110,
+    strikeMin: 100,
+    strikeMax: 110,
+    strikeIncrement: 5,
+    timeMin: 0.125,
+    timeMax: 0.25,
+    volMin: 0.25,
+    volMax: 0.75,
+    numDataPoints: 20,
+}
+
   export const PRICE_SERIES = new Set([SeriesName.OPEN, SeriesName.HIGH, SeriesName.LOW, SeriesName.CLOSE]);
 
   export const INDICATOR_LINES_MAP = new Map([
@@ -389,27 +420,47 @@ export const BLACK_SCHOLES_INPUTS: BlackScholesInputs[] = [
 ]);
 
 export const EXTENTS_HIGH_TARGET_MAP = new Map<SeriesName, string | number>([
+    [SeriesName.INDEX, 'index'],
     [SeriesName.OPEN, 'open'],
     [SeriesName.HIGH, 'high'],
     [SeriesName.LOW, 'low'],
     [SeriesName.CLOSE, 'high'],
+    [SeriesName.VOLUME , 'volume'],
     [SeriesName.EMA, 'high'],
     [SeriesName.SMA, 'high'],
     [SeriesName.BOLLINGER_BANDS, 'high'],
     [SeriesName.RSI, 100],
     [SeriesName.STOCHASTIC, 100],
-    [SeriesName.MACD, 'macd']
+    [SeriesName.MACD, 'macd'],
+    [SeriesName.CALL_PRICE , 'callPrice'],
+    [SeriesName.CALL_DELTA , 'callDelta'],
+    [SeriesName.CALL_THETA , 'callTheta'],
+    [SeriesName.PUT_PRICE , 'putPrice'],
+    [SeriesName.PUT_DELTA , 'putDelta'],
+    [SeriesName.PUT_THETA , 'putTheta'],
+    [SeriesName.GAMMA , 'gamma'],
+    [SeriesName.VEGA , 'vega'],
 ]);
 
 export const EXTENTS_LOW_TARGET_MAP = new Map<SeriesName, string | number>([
+    [SeriesName.INDEX, 'index'],
     [SeriesName.OPEN, 'open'],
     [SeriesName.HIGH, 'high'],
     [SeriesName.LOW, 'low'],
     [SeriesName.CLOSE, 'low'],
+    [SeriesName.VOLUME , 'volume'],
     [SeriesName.EMA, 'low'],
     [SeriesName.SMA, 'low'],
     [SeriesName.BOLLINGER_BANDS, 'low'],
     [SeriesName.RSI, 0],
     [SeriesName.STOCHASTIC, 0],
-    [SeriesName.MACD, 'macd']
+    [SeriesName.MACD, 'macd'],
+    [SeriesName.CALL_PRICE , 'callPrice'],
+    [SeriesName.CALL_DELTA , 'callDelta'],
+    [SeriesName.CALL_THETA , 'callTheta'],
+    [SeriesName.PUT_PRICE , 'putPrice'],
+    [SeriesName.PUT_DELTA , 'putDelta'],
+    [SeriesName.PUT_THETA , 'putTheta'],
+    [SeriesName.GAMMA , 'gamma'],
+    [SeriesName.VEGA , 'vega'],
 ]);

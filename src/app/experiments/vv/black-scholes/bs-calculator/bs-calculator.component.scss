@@ -1,0 +1,43 @@
+
+
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 100vh;
+    background-color: darkslategray;
+    color: white;
+
+}
+
+.title {
+    font: 700 normal 16px/24px 'Arial'; 
+}
+
+.outer-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+
+    // .left-container {
+
+    
+
+
+    // }
+
+    .right-container {
+        border: 1px solid black;
+        height: 100%;
+        flex: 1
+        
+    }
+
+    
+
+    
+}

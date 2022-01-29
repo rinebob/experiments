@@ -9,17 +9,27 @@ export interface Equity {
 }
 
   export interface OHLCData {
-    date: Date | string;
+    index?: number;
+    date?: Date | string;
     stringDate?: string;
-    open: number;
-    high: number;
-    low: number;
+    open?: number;
+    high?: number;
+    low?: number;
     close: number;
     adjustedClose?: number;
-    volume: number;
+    volume?: number;
     dividendAmount?: number;
     splitCoefficient?: number;
     stochastic?: Stochastic;
+    callPrice?: number;
+    callDelta?: number;
+    callTheta?: number;
+    putPrice?: number;
+    putDelta?: number;
+    putTheta?: number;
+    gamma?: number;
+    vega?: number;
+    rho?: number;
   }
 
   export interface Stochastic {
@@ -86,4 +96,10 @@ export interface MenuConfig {
     triggerFor?: string;
 }
 
+export enum PriceComponent {
+    OPEN = 'open',
+    HIGH = 'high',
+    LOW = 'low',
+    CLOSE = 'close',
+}
 

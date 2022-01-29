@@ -1,0 +1,18 @@
+<p class="title">Black-Scholes Calculator</p>
+
+<div class="outer-container">
+
+    <div class="left-container">
+        <exp-calc-form></exp-calc-form>
+        <exp-config-form (configFormValues)="handleGenerateDataSet($event)"></exp-config-form>
+    </div>
+
+    <div class="right-container">
+        <exp-calc-charts [dataSet]="projectionDataSet$ | async"
+                         [renderConfig]="renderConfig$ | async"
+        >
+        </exp-calc-charts>
+
+    </div>
+
+</div>

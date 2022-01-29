@@ -7,7 +7,7 @@ import * as fc from 'd3fc';
 import { ChartGeneratorService } from 'src/app/services/chart-gen/chart-generator.service';
 import * as utils from 'src/app/services/chart-gen/chart_generator_utils';
 import { GalleryChartMode, OHLCData, PickerTableData } from 'src/app/common/interfaces';
-import { ChartDimensions, ChartPanelConfig, ChartPanelDimensions, PlotType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
+import { ChartDimensions, ChartPanelConfig, ChartPanelDimensions, ExtentsConfig, PlotName, PlotType, DomRectCoordinates, ScaleType } from 'src/app/common/interfaces_chart';
 import { CHART_MARGINS, CHART_PANEL_DIMENSIONS_INITIALIZER, DEFAULT_CHART_SETTING, DEFAULT_PICKER_TABLE_DATUM, DOM_RECT_COORDS_INITIALIZER } from 'src/app/common/constants';
 import { DEFAULT_CHART_DIMENSIONS, DEFAULT_MARGIN_CONFIG, PANE_HEIGHT_MATRIX} from 'src/app/common/constants';
 import { LAYER_PANEL_CONFIG, SINGLE_PANE_LAYER_PANEL_CONFIG} from 'src/app/common/chart_configs';
@@ -246,7 +246,16 @@ export class BaseChartComponent implements AfterViewChecked, AfterViewInit, OnCh
   }
 
   runChartGeneratorServiceUtils() {
-    const {xMax, xMin, yMax, yMin} = utils.generateExtents(this.chartData, 'low', 'high');
+    const extentsConfig = {
+      xScaleType: ScaleType.DATE,
+      xMinTarget: PlotName.LOW,
+      xMaxTarget: PlotName.HIGH,
+      yScaleType: ScaleType.LOG,
+      yMinTarget: PlotName.LOW,
+      yMaxTarget: PlotName.HIGH,
+    }
+
+    const {xMax, xMin, yMax, yMin} = utils.generateExtents(this.chartData, extentsConfig);
 
     // chart scales
     // const xScale = utils.generateXScale(xMin, xMax, this.containerDimsBS.value);
