@@ -145,7 +145,7 @@ export class DynamicChartComponent implements OnChanges, OnDestroy, OnInit {
     this.refreshChart();
     this.focusPane$.pipe(takeUntil(this.destroy)).subscribe(
       paneNumber => {
-        console.log('dP ngOI t.focusPane$.  paneNumber: ', paneNumber);
+        // console.log('dP ngOI t.focusPane$.  paneNumber: ', paneNumber);
         this.focusPane.emit(paneNumber);
       }
     );
@@ -214,13 +214,11 @@ export class DynamicChartComponent implements OnChanges, OnDestroy, OnInit {
 
       // console.log('dC rC renderable panel: ', renderablePanel);
 
-      // const panel = d3.select('#root-panel');
       const panel = renderablePanel.renderPanel;
 
       // const crosshairs = panel.selectAll('.panel-crosshairs');
       // console.log('dC rC crosshairs: ', crosshairs);
-      // this.initializeCrosshairs(crosshairs, this.showCrosshairsBS.value)
-
+      
       const initialFocusedPane = panel.select('#pane-1');
       // console.log('dC rC pane 1: ', initialFocusedPane);
       this.setInitialFocusedPane(initialFocusedPane);

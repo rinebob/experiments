@@ -729,51 +729,8 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                         yMaxTarget: `${PlotName.STOCH_K}-14-5`,
                     },
                     series: [
-                        // export interface PlotSeries {
-                        //     title: string;
-                        //     idLabel: string;
-                        //     seriesName: SeriesName;
-                        //     params?: Param[];
-                        //     plots: PlotConfig[];
-                        // }
-                        // {
-                        //     title: `Series 1 - ${Indicator.RSI}`,
-                        //     idLabel: `${PlotName.RSI}-14`,
-                        //     seriesName: SeriesName.RSI,
-                        //     seriesLabel: SeriesLabel.RSI,
-                        //     params: [
-                        //         {name: SeriesParam.PERIOD, value: 14},
-                        //     ],
-                        //     plots: [
-                        //         // export interface PlotConfig {
-                        //             // plotType: PlotType;
-                        //             // plotName: PlotName;
-                        //             // idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
-                        //             // param?: Param;
-                        //             // xTarget: string; // column name created by data calculator
-                        //             // yTarget: string; // column name created by data calculator
-                        //             // color?: string;
-                        //             // upColor?: string;
-                        //             // downColor?: string;
-                        //             // style?: string;
-                        //             // thickness?: string;
-                        //         {
-                        //             plotType: PlotType.LINE,
-                        //             plotName: PlotName.RSI,
-                        //             idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
-                        //             param: {name: SeriesParam.PERIOD, value: 14},
-                        //             xTarget: PlotName.DATE,
-                        //             yTarget: `${PlotName.RSI}-14`, // column name created by data calculator
-                        //             color: 'yellow',
-                        //             upColor: 'green',
-                        //             downColor: 'red',
-                        //             style: 'line',
-                        //             thickness: '2.0',
-                        //         },
-                        //     ],
-                        // },
                         {
-                            title: `Series 2 - ${Indicator.STOCHASTIC}`,
+                            title: `Series 1 - ${Indicator.STOCHASTIC}`,
                             idLabel: `${SeriesName.STOCHASTIC}-14-5`,
                             seriesName: SeriesName.STOCHASTIC,
                             seriesLabel: SeriesLabel.STOCHASTIC,
@@ -810,6 +767,43 @@ export const LAYER_PANEL_CONFIG: ChartPanelConfig = {
                                 },
                             ],
                         },
+                        // {
+                        //     title: `Series 1 - ${Indicator.RSI}`,
+                        //     idLabel: `${PlotName.RSI}-14`,
+                        //     seriesName: SeriesName.RSI,
+                        //     seriesLabel: SeriesLabel.RSI,
+                        //     params: [
+                        //         {name: SeriesParam.PERIOD, value: 14},
+                        //     ],
+                        //     plots: [
+                        //         // export interface PlotConfig {
+                        //             // plotType: PlotType;
+                        //             // plotName: PlotName;
+                        //             // idLabel: string;    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
+                        //             // param?: Param;
+                        //             // xTarget: string; // column name created by data calculator
+                        //             // yTarget: string; // column name created by data calculator
+                        //             // color?: string;
+                        //             // upColor?: string;
+                        //             // downColor?: string;
+                        //             // style?: string;
+                        //             // thickness?: string;
+                        //         {
+                        //             plotType: PlotType.LINE,
+                        //             plotName: PlotName.RSI,
+                        //             idLabel: '',    // output of concatenating labels for pane-layer-params?-series-source-plotName-plotType
+                        //             param: {name: SeriesParam.PERIOD, value: 14},
+                        //             xTarget: PlotName.DATE,
+                        //             yTarget: `${PlotName.RSI}-14`, // column name created by data calculator
+                        //             color: 'yellow',
+                        //             upColor: 'green',
+                        //             downColor: 'red',
+                        //             style: 'line',
+                        //             thickness: '2.0',
+                        //         },
+                        //     ],
+                        // },
+                       
                     ],
                 },
                 

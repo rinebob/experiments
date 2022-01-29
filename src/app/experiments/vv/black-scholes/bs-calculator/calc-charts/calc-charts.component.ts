@@ -106,16 +106,6 @@ export class CalcChartsComponent implements AfterViewInit, OnInit {
     // console.table(data);
     // console.log('cC rC data[0][callPrice]', data[0]['callPrice']);
 
-
-    // if all the dimensions are present (chartPanelConfig.containerDims.h & w)
-    // and if the data is present
-    // make a call to chart gen svc generate renderable panel, passing the data and
-    // chart panel config objects
-    // this should return a svg group object that you can append to the below base svg
-
-    // DOH! wrong data type dude!  it's not OHLCData dooooohhhhhh.....
-    // need to adapt Dynamic Chart code to new use case here for linear data
-    // update - added fields to OHLCData interface so now it should fit...
     
     let renderItem = d3.create('svg:g')
       .attr('id', 'id');
@@ -123,7 +113,6 @@ export class CalcChartsComponent implements AfterViewInit, OnInit {
     const renderablePanel = this.chartGenSvc.generateRenderablePanel(data, this.renderConfig, options);
 
     // console.log('cC rC renderItem new: ', renderItem);
-    
     // console.log('cC rC generated renderPanel: ', renderablePanel.renderPanel);
 
     if (!!renderablePanel) {

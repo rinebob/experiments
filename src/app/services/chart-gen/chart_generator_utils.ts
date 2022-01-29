@@ -1,11 +1,9 @@
-import { tick } from '@angular/core/testing';
 import * as d3 from 'd3';
 import * as fc from 'd3fc';
-import { max } from 'rxjs/operators';
-import { AXIS_THICKNESS, MILLIS_IN_A_DAY } from 'src/app/common/constants';
 
+import { AXIS_THICKNESS } from 'src/app/common/constants';
 import { OHLCData } from 'src/app/common/interfaces';
-import { ChartPaneConfig, ExtentsConfig, PlotConfig, Param, SingleLineCoords, RawGridlinePxValues, TranslationCoord, ScaleLocation, PaneLayout, SeriesParam, PaneLayerConfig } from 'src/app/common/interfaces_chart';
+import { ExtentsConfig, PlotConfig, Param, SingleLineCoords, RawGridlinePxValues, TranslationCoord, ScaleLocation, PaneLayout, SeriesParam, PaneLayerConfig } from 'src/app/common/interfaces_chart';
 
 
 // export function generateExtents(data: OHLCData[], minTarget: string | number, maxTarget: string | number) {
@@ -217,14 +215,12 @@ export function generateYAxis(yScale, layout: PaneLayout, idLabel: string, paneN
     
     if (location === ScaleLocation.LEFT) {
         axis = d3.axisLeft(yScale);
-        // origin = layout.leftAxisOrigin;
         yAxis.attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
         .call(axis);
         
 
     } else {
         axis = d3.axisRight(yScale);
-        // origin = layout.rightAxisOrigin;
         yAxis.attr('transform', `translate(${layout.fullPaneWidth - AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
         .call(axis);
         
@@ -297,12 +293,8 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
     // console.log('cGU gLS yTarget data:');
     // console.log('cGU gLS d[yTarget]/yScale[yTarget]: ', data[100][yTarget], yScale(data[100][yTarget]));
     
-    // const renderItem = d3.create('svg:g')
-    //     .attr('id', `pane${paneNumber}-layer${layerNumber}-${yTarget}-line`)
-    //     .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
-
     const renderItem = d3.create('svg:g')
-        .attr('id', `pane${paneNumber}-layer${layerNumber}-${yTarget}`)
+        .attr('id', `pane${paneNumber}-layer${layerNumber}-${yTarget}-line`)
         .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`)
         .on('click', (event, d) => {
             console.log('cGU gLS id: ', `pane-${paneNumber}-layer-${layerNumber}-${yTarget}-line`,' location: ', d3.pointer(event));
@@ -328,9 +320,7 @@ export function generateLineSeries(data: OHLCData[], xSc:d3.Scale, ySc:d3.Scale,
     const plot2 = fc.seriesSvgPoint()
     .xScale(xSc)
     .yScale(ySc)
-    // .crossValue(d => d.date)
     .crossValue(d => d[xTarget])
-    // .crossValue(d => d.index)
     .mainValue(d => d[yTarget])
     .size(10)
     .decorate(selection => 
@@ -425,7 +415,6 @@ export function generateBarSeries(data: OHLCData[], xScale, yScale, plotConfig: 
     const plot = fc.seriesSvgBar()
         .xScale(xScale)
         .yScale(yScale)
-        // .crossValue(d => d.date)
         .crossValue(d => d[xTarget])
         .mainValue(d => d[yTarget])
         .decorate(sel => 
@@ -572,7 +561,6 @@ export function generateGridline(coords: SingleLineCoords, layout: PaneLayout) {
     // y1 = y2 means horizontal line
     // x1 = x2 means vertical line
     const lineIsHorizontal = coords.y1 === coords.y2;
-    const lineIsVertical = coords.x1 === coords.x2;
     
     // console.log('cGU gL line is horz/vert: ', lineIsHorizontal, lineIsVertical);
 
@@ -657,84 +645,6 @@ export function generatePanelCrosshairs(layouts: PaneLayout[]) {
 
     renderItem.append(() => horzLine.node());
     
-    return renderItem;
-}
-
-export function generateCrosshairs(pointerX: number, pointerY: number, layout: PaneLayout) {
-    // NOT BEING USED.  generatePanelCrosshairs is what you want...
-    // console.log('cGU gL input label/coords: ', label)
-    // console.table(coords);
-    const renderItem = d3.create('svg:g')
-        .attr('id', `crosshairs-pane-${layout.paneNumber}`)
-        .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
-
-    const horzLine = d3.create('svg:line')
-        .classed('crosshairs', true)
-        .attr('id', 'crosshairs-x')
-        .attr('x1', 0)
-        .attr('y1', pointerY)
-        .attr('x2', layout.chartIndWidth)
-        .attr('y2', pointerY)
-        .attr('stroke', 'white')
-        .attr('stroke-width', '1.0');
-
-    const vertLine = d3.create('svg:line')
-        .classed('crosshairs', true)
-        .attr('id', `crosshairs-y-${layout.paneNumber}`)
-        .attr('x1', pointerX)
-        .attr('y1', layout.paneOrigin.down + layout.chartIndHeight)
-        .attr('x2', pointerX)
-        .attr('y2', layout.paneOrigin.down)
-        .attr('stroke', 'white')
-        .attr('stroke-width', '1.0');
-
-        
-    // console.log('cGU gL output line: ', line)
-
-    renderItem.append(() => horzLine.node())
-    renderItem.append(() => vertLine.node())
-
-    return renderItem;
-}
-
-// This is only to create the first set of crosshairs lines
-// all updates to coords will happen programatically, not here
-export function generateCrosshairsLines(layout: PaneLayout) {
-    // NOT BEING USED.  generatePanelCrosshairs is what you want...
-    // console.log('cGU gL input label/coords: ', label)
-    // console.table(coords);
-    const renderItem = d3.create('svg:g')
-        .attr('id', `crosshairs-pane-${layout.paneNumber}`)
-        .attr('transform', `translate(${AXIS_THICKNESS}, ${AXIS_THICKNESS})`);
-
-    const horzLine = d3.create('svg:line')
-        .classed('crosshairs', true)
-        .attr('id', 'crosshairs-x')
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('x2', 0)
-        .attr('y2', 0)
-        .attr('z-index', 1)
-        .attr('stroke', 'white')
-        .attr('stroke-width', '1.0');
-
-    const vertLine = d3.create('svg:line')
-        .classed('crosshairs', true)
-        .attr('id', `crosshairs-y-${layout.paneNumber}`)
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('x2', 0)
-        .attr('y2', 0)
-        .attr('z-index', 1)
-        .attr('stroke', 'white')
-        .attr('stroke-width', '1.0');
-
-        
-    // console.log('cGU gL output line: ', line)
-
-    renderItem.append(() => horzLine.node())
-    renderItem.append(() => vertLine.node())
-
     return renderItem;
 }
 
