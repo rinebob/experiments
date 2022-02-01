@@ -20,99 +20,99 @@
 
         // height: 200px;
 
-        .series-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border: 1px solid black;
+        // .series-row {
+        //     display: flex;
+        //     justify-content: space-between;
+        //     align-items: flex-start;
+        //     border: 1px solid black;
 
-            .control-group {
-                display: flex;
-                // flex-direction: column;
-                justify-content: center;
-                align-items: flex-start;
-            }
+        //     .control-group {
+        //         display: flex;
+        //         // flex-direction: column;
+        //         justify-content: center;
+        //         align-items: flex-start;
+        //     }
 
-            .plot-group {
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-            }
+        //     .plot-group {
+        //         display: flex;
+        //         justify-content: flex-start;
+        //         align-items: center;
+        //     }
 
-            .indicator-group {
-                // border: 1px solid black;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: flex-start;
-                border: 1px solid blue;
-                width: 100%;
+        //     .indicator-group {
+        //         // border: 1px solid black;
+        //         display: flex;
+        //         flex-direction: column;
+        //         justify-content: center;
+        //         align-items: flex-start;
+        //         border: 1px solid blue;
+        //         width: 100%;
 
-                .title {
-                    margin: 0;
-                    padding: 4px;
-                }
+        //         .title {
+        //             margin: 0;
+        //             padding: 4px;
+        //         }
 
-                .ind-row {
-                    display: flex;
+        //         .ind-row {
+        //             display: flex;
                     
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    border: 1px solid black;
+        //             justify-content: flex-start;
+        //             align-items: flex-start;
+        //             border: 1px solid black;
 
-                    .ind-container {
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: flex-start;
-                        align-items: flex-start;
-                        border: 1px solid red;
-                    }
-                }
+        //             .ind-container {
+        //                 display: flex;
+        //                 flex-direction: column;
+        //                 justify-content: flex-start;
+        //                 align-items: flex-start;
+        //                 border: 1px solid red;
+        //             }
+        //         }
 
-            }
+        //     }
         
-            .control-container {
-                border: 1px solid black;
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                background-color: grey;
-                color: white;
-                height: 20px;
+        //     .control-container {
+        //         border: 1px solid black;
+        //         display: flex;
+        //         justify-content: flex-start;
+        //         align-items: center;
+        //         background-color: grey;
+        //         color: white;
+        //         height: 20px;
         
-                .radio-button {
-                    border-radius: 50%;
-                    width: 10px;
-                    height: 10px;
-                    margin: 0 4px 0 10px;
-                    align-self: center;
-                    border: 1px solid black;
-                }
+        //         .radio-button {
+        //             border-radius: 50%;
+        //             width: 10px;
+        //             height: 10px;
+        //             margin: 0 4px 0 10px;
+        //             align-self: center;
+        //             border: 1px solid black;
+        //         }
 
-                .input {
-                    width: 30px;
-                    height: 20px;
-                    border: 1px solid black;
-                }
+        //         .input {
+        //             width: 30px;
+        //             height: 20px;
+        //             border: 1px solid black;
+        //         }
 
-                .title {
-                    color: white;
-                    padding: 0 4px;
-                    margin: 0 8px 0;
+        //         .title {
+        //             color: white;
+        //             padding: 0 4px;
+        //             margin: 0 8px 0;
                     
         
-                }
+        //         }
 
-                .label {
-                    color: white;
-                    padding: 0 4px;
-                    margin: 0;
+        //         .label {
+        //             color: white;
+        //             padding: 0 4px;
+        //             margin: 0;
         
-                }
+        //         }
 
-            }
+        //     }
 
-        }
+        // }
 
 
     }

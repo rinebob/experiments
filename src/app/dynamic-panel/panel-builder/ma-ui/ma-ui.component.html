@@ -1,63 +1,82 @@
+
+
+
 <div class="series-row">
+
     <div class="indicator-group">
         <p class="title">Moving Average</p>
+
         <div class="ind-row">
+
+            <!-- container div  -->
+            <div class="ind-column">
             
-            
-            <div class="ind-container params">
-                <p class="title">Params</p>
-                <div class="control-group">
-                    <div class="control-container">
-                        <p class="title">Period</p>
-                        <div class="input"></div>
-                        
+                <div class="ind-container params">
+
+                    <p class="title">Params</p>
+                    <div class="control-group">
+
+                        <div class="control-container">
+                            <p class="title">Period</p>
+                            <div class="input"></div>
+                            
+                        </div>
+
+                        <div class="control-container">
+                            <p class="title">MA type</p>
+                            <div class="radio-button"></div>
+                            <p class="label">SMA</p>
+                            <div class="radio-button"></div>
+                            <p class="label">EMA</p>
+                        </div>
+
                     </div>
-                    <div class="control-container">
-                        <p class="title">MA type</p>
-                        <div class="radio-button"></div>
-                        <p class="label">SMA</p>
-                        <div class="radio-button"></div>
-                        <p class="label">EMA</p>
-                        
+                </div>
+
+                <div class="ind-container plots">
+
+                    <p class="title">Plots</p>
+                    <div class="plot-group">
+                        <p class="title">MA 1</p>
+
+                        <div class="control-container">
+                            <p class="title">Plot type</p>
+                            <div class="radio-button"></div>
+                            <p class="label">Line</p>
+                            <div class="radio-button"></div>
+                            <p class="label">Point</p>
+                        </div>
+
                     </div>
-                    
+                    <div class="plot-group">
+                        
+                        <p class="title">MA 2</p>
+                        <div class="control-container">
+
+                            <p class="title">Plot type</p>
+                            <div class="radio-button"></div>
+                            <p class="label">Line</p>
+                            <div class="radio-button"></div>
+                            <p class="label">Point</p>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
-            <div class="ind-container plots">
-                <p class="title">Plots</p>
-                <div class="plot-group">
-                    <p class="title">MA 1</p>
 
-                    <div class="control-container">
-                        <p class="title">Plot type</p>
-                        <div class="radio-button"></div>
-                        <p class="label">Line</p>
-                        <!-- <div class="radio-button"></div>
-                        <p class="label">Candlestick</p>
-                        <div class="radio-button"></div>
-                        <p class="label">OHLC Bar</p> -->
-                        <div class="radio-button"></div>
-                        <p class="label">Bar</p>
-                    </div>
-                </div>
-                <div class="plot-group">
-                    <p class="title">MA 2</p>
+            <!-- next horizontal container begin here -->
+            <div class="ind-column">
 
-                    <div class="control-container">
-                        <p class="title">Plot type</p>
-                        <div class="radio-button"></div>
-                        <p class="label">Line</p>
-                        <!-- <div class="radio-button"></div>
-                        <p class="label">Candlestick</p>
-                        <div class="radio-button"></div>
-                        <p class="label">OHLC Bar</p> -->
-                        <div class="radio-button"></div>
-                        <p class="label">Bar</p>
-                    </div>
-                </div>
+                <!-- insert scale config child component here -->
+
+                <exp-scale-config></exp-scale-config>
 
             </div>
+
+            
 
         </div>
         

@@ -9,6 +9,7 @@ import { RsiUiComponent } from './rsi-ui/rsi-ui.component';
 import { StochUiComponent } from './stoch-ui/stoch-ui.component';
 import { MacdUiComponent } from './macd-ui/macd-ui.component';
 import { DatasourceUiComponent } from './datasource-ui/datasource-ui.component';
+import { ScaleConfigComponent } from './scale-config/scale-config.component';
 
 
 
@@ -22,7 +23,8 @@ import { DatasourceUiComponent } from './datasource-ui/datasource-ui.component';
     RsiUiComponent,
     StochUiComponent,
     MacdUiComponent,
-    DatasourceUiComponent
+    DatasourceUiComponent,
+    ScaleConfigComponent
   ],
   imports: [
     CommonModule
