@@ -52,9 +52,11 @@ export class PositionBuilderService {
 
       }
       // create a title / label for the position
-      // TSLA JUN 19 21 Long Straddle
-      position.title = this.generatePositionTitle(position);
+      // TSLA WED JUN 19 21 Long Straddle
       position.expDateText = this.getDateText(position.expDate);
+      position.title = this.generatePositionTitle(position);
+
+      // console.log('pBS gOPO posn expDateText: ', position.expDateText);
 
       optionPositionObjects.push(position);
     }
@@ -94,6 +96,7 @@ export class PositionBuilderService {
     const yr = (date.getFullYear()).toString().slice(2);
 
     dateText = `${day} ${mo} ${dateNum} ${yr}`;
+    // console.log('pBS gDT date text: ', dateText);
 
     return dateText;
   }
@@ -123,7 +126,7 @@ export class PositionBuilderService {
     const label = `${symbol}_${expDate}_${symbolInfo.strike}_${putCallLabel}`;
     // console.log('pBS gSFP symbol label: ', label);
 
-    const symbObj:OptionSymbolMetadata = {symbol, label};
+    const symbObj:OptionSymbolMetadata = {symbol: symb, label};
 
     return symbObj;
 

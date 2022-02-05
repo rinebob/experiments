@@ -20,11 +20,11 @@ export class PositionBuilderComponent implements OnInit {
   
   private readonly configsList: OptionSpreadConfigBase[] = [
     // configs.ATM_LONG_STRADDLE,
-    configs.IRON_CONDOR,
+    // configs.IRON_CONDOR,
     // configs.VERTICAL_CALL_DEBIT_SPREAD,
     // configs.VERTICAL_CALL_CREDIT_SPREAD,
     configs.TWENTY_DELTA_SHORT_STRANGLE,
-    // configs.VERTICAL_PUT_DEBIT_SPREAD,
+    configs.VERTICAL_PUT_DEBIT_SPREAD,
     // configs.VERTICAL_PUT_CREDIT_SPREAD,
   ];
 
@@ -61,6 +61,14 @@ export class PositionBuilderComponent implements OnInit {
 
   showConfig(symbol: string) {
     console.log('pBS sC symbol: ', symbol);
+    const nflxPositions = this.generateOptionPositions('NFLX', nflxData);
+    const tslaPositions = this.generateOptionPositions('TSLA', tslaData);
+    console.log('nflx positions:');
+    console.log(nflxPositions);
+    console.log('tsla positions:');
+    console.log(tslaPositions);
+
+
     if (symbol === 'NFLX') {
       this.positionsBS.next(this.generateOptionPositions('NFLX', nflxData));
     } else {

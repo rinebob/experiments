@@ -1,1 +1,33 @@
-<p>port-dashboard works!</p>
+<div class="portfolio-container">
+    <div class="columns-container">
+        <div class="tiles-column">
+            <ng-container *ngFor="let i of items">
+                <exp-position-tile></exp-position-tile>
+            </ng-container>
+            
+
+        </div>
+        <div class="tiles-column">
+            <ng-container *ngFor="let i of items">
+                <exp-position-tile></exp-position-tile>
+
+            </ng-container>
+            
+        </div>
+        <div class="tiles-column">
+            <ng-container *ngFor="let i of items">
+                <exp-position-tile></exp-position-tile>
+
+            </ng-container>
+            
+        </div>
+
+    </div>
+    <div class="results-container">
+        <div class="results-viewer">
+
+        </div>
+        <div class="results-tables"></div>
+        
+    </div>
+</div>

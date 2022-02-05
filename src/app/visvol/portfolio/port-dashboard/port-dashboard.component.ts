@@ -8,6 +8,8 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 })
 export class PortDashboardComponent implements OnInit {
 
+  items = new Array(30);
+
   constructor() { }
 
   ngOnInit(): void {

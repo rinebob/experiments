@@ -4,14 +4,14 @@ import { CommonModule } from '@angular/common';
 import { VisvolRoutingModule } from './visvol-routing.module';
 import { VisvolComponent } from './visvol.component';
 
-
 @NgModule({
   declarations: [
-    VisvolComponent
+    VisvolComponent,
+    
   ],
   imports: [
     CommonModule,
-    VisvolRoutingModule
-  ]
+    VisvolRoutingModule,
+  ],
 })
 export class VisvolModule { }
