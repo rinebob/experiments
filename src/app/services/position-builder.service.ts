@@ -33,6 +33,20 @@ export class PositionBuilderService {
     return tradingDates;
 
   }
+
+  generateOptionPositions(symbol: string, dates: any[], configsList: OptionSpreadConfigBase[]) {
+    let positions: OptionPosition[] = [];
+    // const dates = this.posnBuilderService.generateTradingDates(data);
+    
+    for (const config of configsList) {
+      // console.log('pB gOP input config: ', {...config});
+      positions = [...positions, ...this.generateOptionPositionObjects(dates, symbol, config)];
+    }
+    positions = this.generateSymbolsForPositions(positions);
+    positions.sort((a,b) => (a.dateOpened.getTime() - b.dateOpened.getTime()));
+
+    return positions;
+  }
   
   // Generate an array of OptionPosition object stubs
   generateOptionPositionObjects(data: any[], symbol: string, config: OptionSpreadConfigBase) {

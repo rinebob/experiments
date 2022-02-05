@@ -1,15 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-
 import { BehaviorSubject, Observable } from 'rxjs';
 
-import { DatesService } from '../services/dates.service';
 import { PositionBuilderService } from '../services/position-builder.service';
 import { nflxData } from 'src/assets/data/nflx_21-0917';
 import { tslaData } from 'src/assets/data/tsla_21-0917';
 import { OptionPosition, OptionSpreadConfigBase } from '../common/option_interfaces';
-import * as legs from '../common/option_legs';
 import * as configs from '../common/option_configs';
-import { ExpirationDate } from '../common/option_interfaces';
 
 @Component({
   selector: 'exp-position-builder',
@@ -28,53 +24,33 @@ export class PositionBuilderComponent implements OnInit {
     // configs.VERTICAL_PUT_CREDIT_SPREAD,
   ];
 
-  optionSpreadConfigs = Object.entries(configs);
-  optionSpreadLegs = Object.entries(legs);
-
-  nflxOptionPositions: OptionPosition[] = [];
-  tslaOptionPositions: OptionPosition[] = [];
-
   positionsBS = new BehaviorSubject<OptionPosition[]>([]);
   positions$: Observable<OptionPosition[]> = this.positionsBS;
 
-  constructor(private readonly datesService: DatesService,
+  constructor(
     private readonly posnBuilderService: PositionBuilderService) { }
 
   ngOnInit(): void {
-    // this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
-
   }
 
-  generateOptionPositions(symbol: string, data: any[]) {
-    let positions: OptionPosition[] = [];
+  generateTradingDates(data: any[]) {
     const dates = this.posnBuilderService.generateTradingDates(data);
-    
-    for (const config of this.configsList) {
-      // console.log('pB gOP input config: ', {...config});
-      positions = [...positions, ...this.posnBuilderService.generateOptionPositionObjects(dates, symbol, config)];
-    }
-    positions = this.posnBuilderService.generateSymbolsForPositions(positions);
-    positions.sort((a,b) => (a.dateOpened.getTime() - b.dateOpened.getTime()));
 
-    return positions;
+    return dates;
   }
 
   showConfig(symbol: string) {
-    console.log('pBS sC symbol: ', symbol);
-    const nflxPositions = this.generateOptionPositions('NFLX', nflxData);
-    const tslaPositions = this.generateOptionPositions('TSLA', tslaData);
-    console.log('nflx positions:');
-    console.log(nflxPositions);
-    console.log('tsla positions:');
-    console.log(tslaPositions);
-
+    let dates;
 
     if (symbol === 'NFLX') {
-      this.positionsBS.next(this.generateOptionPositions('NFLX', nflxData));
-    } else {
-      this.positionsBS.next(this.generateOptionPositions('TSLA', tslaData));
+      dates = this.generateTradingDates(nflxData);
+      this.positionsBS.next(this.posnBuilderService.generateOptionPositions('NFLX', dates, this.configsList));
+  } else {
+      dates = this.generateTradingDates(tslaData);
+      this.positionsBS.next(this.posnBuilderService.generateOptionPositions('TSLA', dates, this.configsList));
     }
   }
+
 
 
 }
