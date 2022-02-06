@@ -1,23 +1,21 @@
 <div class="portfolio-container">
     <div class="columns-container">
-        <div class="tiles-column">
-            <ng-container *ngFor="let i of items">
-                <exp-position-tile></exp-position-tile>
+        <div class="tiles-column" *ngIf="optionPositions as positions">
+            <ng-container *ngFor="let position of positions">
+                <exp-position-tile [position]="position"></exp-position-tile>
             </ng-container>
             
 
         </div>
-        <div class="tiles-column">
-            <ng-container *ngFor="let i of items">
-                <exp-position-tile></exp-position-tile>
-
+        <div class="tiles-column" *ngIf="optionPositions as positions">
+            <ng-container *ngFor="let position of positions">
+                <exp-position-tile [position]="position"></exp-position-tile>
             </ng-container>
             
         </div>
-        <div class="tiles-column">
-            <ng-container *ngFor="let i of items">
-                <exp-position-tile></exp-position-tile>
-
+        <div class="tiles-column" *ngIf="optionPositions as positions">
+            <ng-container *ngFor="let position of positions">
+                <exp-position-tile [position]="position"></exp-position-tile>
             </ng-container>
             
         </div>

@@ -1,4 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+
+import { OptionPosition } from 'src/app/common/option_interfaces';
 
 @Component({
   selector: 'exp-position-tile',
@@ -7,6 +9,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PositionTileComponent implements OnInit {
+  @Input() position: OptionPosition;
 
   constructor() { }
 
