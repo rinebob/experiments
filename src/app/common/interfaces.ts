@@ -21,6 +21,7 @@ export interface Equity {
     dividendAmount?: number;
     splitCoefficient?: number;
     stochastic?: Stochastic;
+    implVolty?: number;
     callPrice?: number;
     callDelta?: number;
     callTheta?: number;

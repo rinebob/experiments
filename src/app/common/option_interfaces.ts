@@ -47,9 +47,27 @@ export interface OptionPosition {
   openPrice?: number;
   expDate?: Date;
   expDateText?: string;
+  openPriceEventData?: OptionPositionPriceEventData;
+  lastPriceEventData?: OptionPositionPriceEventData;
+  closePriceEventData?: OptionPositionPriceEventData;
   config?: OptionSpreadConfigBase;
   symbols?: OptionSymbolMetadata[];
   data?: PositionPricePoint[];    // TODO - normalize to separate table
+
+}
+
+export interface OptionPositionPriceEventData {
+  date: Date;
+  dateString: string;
+  price: number;
+  pricePctChgDay?: number;
+  pricePctChgLife?: number;
+  underlyingPrice: number;
+  undPctChgDay?: number;
+  undPctChgLife?: number;
+  implVolty: number;
+  ivPctChgDay?: number;
+  ivPctChgLife?: number;
 
 }
 
