@@ -1,5 +1,14 @@
 
 
+export enum Direction {
+    LONG = 'Long',
+    SHORT = 'Short',
+}
+
+export enum Status {
+    OPEN = 'Open',
+    CLOSED = 'Closed',
+}
 
 export interface Equity {
     symbol: string;
@@ -21,6 +30,7 @@ export interface Equity {
     dividendAmount?: number;
     splitCoefficient?: number;
     stochastic?: Stochastic;
+    implVolty?: number;
     callPrice?: number;
     callDelta?: number;
     callTheta?: number;

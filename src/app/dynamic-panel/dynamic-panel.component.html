@@ -13,7 +13,9 @@
     
 
     <div #baseChartContainer class="base-chart-container">
-        <exp-dynamic-chart [chartData]="chartData$ | async"
+
+        <exp-panel-builder></exp-panel-builder>
+        <!-- <exp-dynamic-chart [chartData]="chartData$ | async"
                            [chartPanelConfig]="chartPanelConfig$ | async"
                            [containerDimensions]="chartContainerDimensions$ | async"
                            [dataRenderIndices]="dataRenderIndices$ | async"
@@ -22,9 +24,15 @@
                            (focusPane)="updateFocusPane($event)"
         >
 
-        </exp-dynamic-chart>
+        </exp-dynamic-chart> -->
 
-        <!-- <exp-base-chart #baseChart
+       
+
+    </div>
+
+</div>
+
+ <!-- <exp-base-chart #baseChart
                         [chartPanelConfig]="chartPanelConfig$ | async"
                         [containerDimensions]="chartContainerDimensions$ | async"
                         [chartData]="chartData$ | async"
@@ -34,7 +42,3 @@
                         chartMode="fullscreen"
                         class="chart-fullscreen">
         </exp-base-chart> -->
-
-    </div>
-
-</div>

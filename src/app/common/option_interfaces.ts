@@ -3,8 +3,17 @@
 
 import { OHLCData } from "./interfaces";
 
-
-
+export enum OptionStrategyName {
+  VERTICAL_CALL_DEBIT_SPREAD = 'Vertical call debit spread',
+  VERTICAL_CALL_CREDIT_SPREAD = 'Vertical call credit spread',
+  VERTICAL_PUT_DEBIT_SPREAD = 'Vertical put debit spread',
+  VERTICAL_PUT_CREDIT_SPREAD = 'Vertical put credit spread',
+  ATM_LONG_STRADDLE = 'ATM long straddle',
+  TWENTY_DELTA_SHORT_STRANGLE = 'Twenty delta short strangle',
+  IRON_CONDOR = 'Iron condor',
+  ATM_CALL_CALENDAR_SPREAD = 'ATM call calendar spread',
+  ATM_PUT_CALENDAR_SPREAD = 'ATM put calendar spread',
+}
 
 // ex: LongOneAtmCall, ShortTwoOtm2Put
 export interface OptionLegBase {
@@ -24,7 +33,7 @@ export interface OptionLegAsTraded {
   // ex: 20 Delta Short Strangle
   // [ShortOneOtm3Call, ShortOneOtmPut]
 export interface OptionSpreadConfigBase {
-  name: string;
+  name: OptionStrategyName;
   legs: OptionLegBase[];
   moneyness?: MoneynessUnit;
   strategyName?: string;
@@ -47,10 +56,36 @@ export interface OptionPosition {
   openPrice?: number;
   expDate?: Date;
   expDateText?: string;
+  status?: OpenClosedStatus;
+  openPriceEventData?: OptionPositionPriceEventData;
+  lastPriceEventData?: OptionPositionPriceEventData;
+  closePriceEventData?: OptionPositionPriceEventData;
   config?: OptionSpreadConfigBase;
   symbols?: OptionSymbolMetadata[];
   data?: PositionPricePoint[];    // TODO - normalize to separate table
 
+}
+
+export interface OptionPositionPriceEventData {
+  date: Date;
+  dateString: string;
+  price: number;
+  pricePctChgDay?: number;
+  pricePctChgLife?: number;
+  underlyingPrice: number;
+  undPctChgDay?: number;
+  undPctChgLife?: number;
+  implVolty: number;
+  ivPctChgDay?: number;
+  ivPctChgLife?: number;
+
+}
+
+
+export interface PositionOutcome {
+  closeDate: Date;
+  closePrice: number;
+  
 }
 
 export interface OptionQuote {
@@ -136,6 +171,7 @@ export interface BlackScholesCalculatorConfig {
 export type Direction = 'LONG' | 'SHORT';
 export type OptionType = 'CALL' | 'PUT';
 export type CreditDebit = 'CREDIT' | 'DEBIT';
+export type OpenClosedStatus = 'OPEN' | 'CLOSED';
   
 export enum Exchange {
   CHICAGO_BOARD_OPTIONS_EXCHANGE = 'CBOE',

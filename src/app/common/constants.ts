@@ -5,6 +5,9 @@ import { BlackScholesCalculatorConfig, BlackScholesOutput, ExpirationSeries, Exp
 import { ChartPanelDimensions, ChartSetting, PlotType, PaneType, SeriesName, ScaleType } from "./interfaces_chart";
 import { BlackScholesInputs, Option } from "./option_interfaces";
 
+import { nflxData as NFLX_DATA } from 'src/assets/data/nflx_21-0917';
+import { tslaData as TSLA_DATA } from 'src/assets/data/tsla_21-0917';
+
 export const DEFAULT_PICKER_TABLE_DATUM = {symbol: 'TSLA', company: 'Tesla, Inc.', price: 50, implVolty: 20};
 
 export const DEFAULT_EQUITY_SYMBOL = 'MSFT';
@@ -464,3 +467,13 @@ export const EXTENTS_LOW_TARGET_MAP = new Map<SeriesName, string | number>([
     [SeriesName.GAMMA , 'gamma'],
     [SeriesName.VEGA , 'vega'],
 ]);
+
+
+export const EQUITY_DATA_MAP = new Map<string, OHLCData[]>([
+    ['NFLX', NFLX_DATA],
+    ['TSLA', TSLA_DATA],
+    // ['MSFT', MSFT_DATA],
+]);
+
+
+
