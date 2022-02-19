@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
-import { OptionPosition, OptionPositionPriceEventData, OptionSpreadConfigBase } from '../../common/option_interfaces';
+import { OpenClosedStatus, OptionPosition, OptionPositionPriceEventData, OptionSpreadConfigBase } from '../../common/option_interfaces';
 import { PositionBuilderService } from '../../services/position-builder.service';
 import {EQUITY_DATA_MAP} from '../../common/constants';
 // import { nflxData } from 'src/assets/data/nflx_21-0917';
@@ -55,6 +55,7 @@ export class PortfolioComponent implements OnInit {
 
     }
 
+    // this.optionPositionsBS.next([positionsList[0]]);
     this.optionPositionsBS.next(positionsList);
     console.log('p gP positions[0]: ', positionsList[0]);
     return positionsList;
@@ -99,7 +100,7 @@ export class PortfolioComponent implements OnInit {
     for (const position of positions) {
 
       const openData: OptionPositionPriceEventData = {
-        price: position.underlyingPrice / 10,
+        price: Number((position.underlyingPrice / 10).toFixed(2)),
         underlyingPrice: position.underlyingPrice,
         implVolty: 0.25,
         date: position.dateOpened,
@@ -107,9 +108,10 @@ export class PortfolioComponent implements OnInit {
       }
 
       position.openPriceEventData = openData;
+      position.status = 'OPEN';
 
       const lastData: OptionPositionPriceEventData = {
-        price: position.underlyingPrice / 10,
+        price: Number((position.underlyingPrice / 10).toFixed(2)),
         pricePctChgDay: 0.25,
         pricePctChgLife: 10,
         underlyingPrice: position.underlyingPrice,
@@ -122,7 +124,25 @@ export class PortfolioComponent implements OnInit {
         dateString: new Date().toDateString(),
       }
 
+      position.status = 'OPEN';
       position.lastPriceEventData = lastData;
+
+      const closeData: OptionPositionPriceEventData = {
+        price: Number((position.underlyingPrice / 10).toFixed(2)),
+        pricePctChgDay: 0.25,
+        pricePctChgLife: 10,
+        underlyingPrice: position.underlyingPrice,
+        undPctChgDay: 0.25,
+        undPctChgLife: 10,
+        implVolty: 0.5,
+        ivPctChgDay: 0.25,
+        ivPctChgLife: 10,
+        date: new Date(),
+        dateString: new Date().toDateString(),
+      }
+
+      position.status = 'CLOSED';
+      position.closePriceEventData = closeData;
       
     }
 

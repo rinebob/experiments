@@ -1,5 +1,88 @@
 <div class="tile-container">
     <div class="header">
+        <div class="symbol-container">
+            <p class="symbol">{{position.underlying}}</p>
+            <p class="header-label">Last: </p>
+            <p class="datum">{{position.lastPriceEventData.underlyingPrice}}</p>
+            <p class="header-label">% Chg: </p>
+            <p class="datum">{{position.lastPriceEventData.undPctChgDay}}</p>
+
+        </div>
+
+        <div class="header-buttons">
+            <p class="header-button">CFG</p>
+            <p class="header-button">LEGS</p>
+            <p class="header-button">CHART</p>
+
+        </div>
+    </div>
+    <div class="type">
+        <p class="symbol">{{position.title}}</p>
+    </div>
+
+
+    <div class="data">
+        <div class="data-column">
+            <div class="datum-container">
+                <span class="label">open date:</span>
+                <span class="datum">{{position.openPriceEventData.dateString}}</span>
+            </div>
+            <div class="datum-container">
+                <span class="label">price:</span>
+                <span class="datum">{{position.openPriceEventData.price}}</span>
+            </div>
+            <div class="datum-container">
+                <span class="label">Und price:</span>
+                <span class="datum">{{position.openPriceEventData.underlyingPrice}}</span>
+            </div>
+            <div class="datum-container">
+                <span class="label">IV:</span>
+                <span class="datum">{{position.openPriceEventData.implVolty}}</span>
+            </div>
+            <div class="datum-container">
+                <span class="label">Exp:</span>
+                <span class="datum">{{position.expDateText}}</span>
+            </div>
+        </div>
+        <div class="data-column">
+            <div class="datum-container">
+                <span class="label">Last: </span>
+                <span class="datum">{{position.lastPriceEventData.price}}</span>
+            </div>
+            <div class="datum-container">
+                <span class="label">%Chg</span>
+                <span class="datum">{{position.lastPriceEventData.pricePctChgDay}}</span>
+                <!-- <span class="label"> life: </span>
+                <span class="datum">{{position.lastPriceEventData.pricePctChgLife}}</span> -->
+            </div>
+            <div class="datum-container">
+                <span class="label">Und last: </span>
+                <span class="datum">{{position.lastPriceEventData.underlyingPrice}}</span>
+            </div>
+            <div class="datum-container">
+                <span class="label">%Chg</span>
+                <span class="datum">{{position.lastPriceEventData.undPctChgDay}}</span> 
+                <!-- <span class="label"> | life: </span>
+                <span class="datum">{{position.lastPriceEventData.undPctChgLife}}</span> -->
+            </div>
+            <div class="datum-container">
+                <span class="label">IV last: </span>
+                <span class="datum">{{position.lastPriceEventData.implVolty}}</span>
+            </div>
+            <div class="datum-container">
+                <span class="label">%Chg</span>
+                <span class="datum">{{position.lastPriceEventData.ivPctChgDay}}</span> 
+                <!-- <span class="label"> | life: </span>
+                <span class="datum">{{position.lastPriceEventData.ivPctChgLife}}</span> -->
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+    <!-- <div class="tile-container">
+    <div class="header">
         <p class="symbol">{{position.underlying}}
             <span class="datum">| Last: </span><span class="datum">{{position.lastPriceEventData.underlyingPrice}}</span>
             <span class="datum"> | % Chg: </span><span class="datum">{{position.lastPriceEventData.undPctChgDay}}</span>
@@ -18,51 +101,62 @@
 
     <div class="data">
         <div class="data-column">
-            <p class="datum">open date: 
+            <div class="datum-container">
+                <span class="">open date: </span>
                 <span class="datum">{{position.openPriceEventData.dateString}}</span>
-            </p>
-            <p class="datum">price: 
+            </div>
+            <div class="datum-container">
+                <span class="">price: </span>
                 <span class="datum">{{position.openPriceEventData.price}}</span>
-            </p>
-            <p class="datum">Und price: 
+            </div>
+            <div class="datum-container">
+                <span class="">Und price: </span>
                 <span class="datum">{{position.openPriceEventData.underlyingPrice}}</span>
-            </p>
-            <p class="datum">IV: 
+            </div>
+            <div class="datum-container">
+                <span class="">IV: </span>
                 <span class="datum">{{position.openPriceEventData.implVolty}}</span>
-            </p>
-            <p class="datum">Exp: 
+            </div>
+            <div class="datum datum-container">
+                <span class="">Exp: </span>
                 <span class="datum">{{position.expDateText}}</span>
-            </p>
+            </div>
         </div>
         <div class="data-column">
-            <p class="datum">Last: 
+            <div class="datum-container">
+                <span class="label">Last: </span>
                 <span class="datum">{{position.lastPriceEventData.price}}</span>
-            </p>
-            <p class="datum">%Chg | day: 
-                <span class="datum">{{position.lastPriceEventData.pricePctChgDay}}</span>
-                <span class="datum"> | life: </span>
+            </div>
+            <div class="datum-container">
+                <span class="label">%Chg - </span>
+                <span class="datum"> day: {{position.lastPriceEventData.pricePctChgDay}}</span>
+                <span class="label"> life: </span>
                 <span class="datum">{{position.lastPriceEventData.pricePctChgLife}}</span>
-            </p>
-            <p class="datum">Und last: 
+            </div>
+            <div class="datum-container">
+                <span class="label">Und last: </span>
                 <span class="datum">{{position.lastPriceEventData.underlyingPrice}}</span>
-            </p>
-            <p class="datum">%Chg | day: 
+            </div>
+            <div class="datum-container">
+                <span class="label">%Chg | day: </span>
                 <span class="datum">{{position.lastPriceEventData.undPctChgDay}}</span> 
-                <span class="datum"> | life: </span>
+                <span class="label"> | life: </span>
                 <span class="datum">{{position.lastPriceEventData.undPctChgLife}}</span>
-            </p>
-            <p class="datum">IV last: 
+            </div>
+            <div class="datum-container">
+                <span class="label">IV last: </span>
                 <span class="datum">{{position.lastPriceEventData.implVolty}}</span>
-            </p>
-            <p class="datum">%Chg | day: 
+            </div>
+            <div class="datum-container">
+                <span class="label">%Chg | day: </span>
                 <span class="datum">{{position.lastPriceEventData.ivPctChgDay}}</span> 
-                <span class="datum"> | life: </span>
+                <span class="label"> | life: </span>
                 <span class="datum">{{position.lastPriceEventData.ivPctChgLife}}</span>
-            </p>
+            </div>
             
         </div>
     </div>
-</div>
+</div> -->
 
 
     

@@ -1,5 +1,14 @@
 
 
+export enum Direction {
+    LONG = 'Long',
+    SHORT = 'Short',
+}
+
+export enum Status {
+    OPEN = 'Open',
+    CLOSED = 'Closed',
+}
 
 export interface Equity {
     symbol: string;

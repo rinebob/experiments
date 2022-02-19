@@ -1,24 +1,93 @@
 <div class="portfolio-container">
     <div class="columns-container">
-        <div class="tiles-column" *ngIf="optionPositions as positions">
-            <ng-container *ngFor="let position of positions">
-                <exp-position-tile [position]="position"></exp-position-tile>
-            </ng-container>
-            
 
+        <div class="tiles-column" *ngIf="optionPositions as positions">
+            <div class="sort-selects-container">
+
+                
+                <select class="sort-select" [formControl]="symbolControl">
+                    <option value="">Symbol</option>
+                    <!-- <ng-container *ngFor="let symbol of symbols$ | async">
+                        <option label="Symbol" value={{symbol}}>{{symbol}}</option>
+                    </ng-container> -->
+                    <ng-container *ngFor="let symbol of symbols$ | async">
+                        <option>{{symbol}}</option>
+                    </ng-container>
+                </select>
+
+                
+                <select class="sort-select" [formControl]="openDateControl">
+                    <option value="">Open date</option>
+                    <ng-container *ngFor="let date of openDates$ | async">
+                        <!-- <option value={{date}}>{{date}}</option> -->
+                        <option>{{date}}</option>
+                    </ng-container>
+                </select>
+                
+                
+                <select class="sort-select" [formControl]="expirationControl">
+                    <option value="">Expiration</option>
+                    <ng-container *ngFor="let date of expirationDates$ | async">
+                        <!-- <option value={{date}}>{{date}}</option> -->
+                        <option>{{date}}</option>
+                    </ng-container>
+                </select>
+                
+                
+                <select class="sort-select" [formControl]="strategyControl">
+                    <option value="">Strategy</option>
+                    <ng-container *ngFor="let strategy of strategies$ | async">
+                        <!-- <option value="strategy">{{strategy}}</option> -->
+                        <option>{{strategy}}</option>
+                    </ng-container>
+                </select>
+                
+                
+                <select class="sort-select" [formControl]="directionControl">
+                    <option value="">Direction</option>
+                    <ng-container *ngFor="let direction of directions$ | async">
+                        <!-- <option value="direction">{{direction}}</option> -->
+                        <option>{{direction}}</option>
+                    </ng-container>
+                </select>
+                
+                
+                <select class="sort-select" [formControl]="statusControl">
+                    <option value="">Status</option>
+                    <ng-container *ngFor="let status of statuses$ | async">
+                        <!-- <option value="status">{{status}}</option> -->
+                        <option>{{status}}</option>
+                    </ng-container>
+                </select>
+
+                <button type="button" class="reset-button" (click)="resetFilter()">R</button>
+
+
+            </div>
+        
+            <!-- <ng-container *ngFor="let position of positions"> -->
+            <ng-container *ngFor="let position of firstColumnPositions$ | async">
+                
+                <exp-position-tile [position]="position"></exp-position-tile>
+            </ng-container>
+        
+        </div>
+
+
+        <!-- Columns 2 and 3 -->
+        
+        <!-- <div class="tiles-column" *ngIf="optionPositions as positions">
+            <ng-container *ngFor="let position of positions">
+                <exp-position-tile [position]="position"></exp-position-tile>
+            </ng-container>
         </div>
         <div class="tiles-column" *ngIf="optionPositions as positions">
             <ng-container *ngFor="let position of positions">
                 <exp-position-tile [position]="position"></exp-position-tile>
             </ng-container>
-            
-        </div>
-        <div class="tiles-column" *ngIf="optionPositions as positions">
-            <ng-container *ngFor="let position of positions">
-                <exp-position-tile [position]="position"></exp-position-tile>
-            </ng-container>
-            
-        </div>
+        </div> -->
+
+        
 
     </div>
     <div class="results-container">

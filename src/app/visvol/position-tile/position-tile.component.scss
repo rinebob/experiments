@@ -23,29 +23,47 @@
             padding: 0;
         }
 
+        .header-label {
+            font-size: 10px;
+            padding: 0 0 0 4px;
+        }
+
+        .label {
+            min-width: 60px;
+            font-size: 10px;
+            padding: 0 0 0 8px;
+        }
+
+        .datum {
+            margin: 0 auto;
+            padding: 0 4px;
+            font-size: 12px;
+        }
+
+        .symbol {
+            padding: 0 8px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            // height: 20%;
             width: 100%;
 
-
-            .symbol {
-                margin: 0 auto;
-                // padding: 0;
-                
-
+            .symbol-container {
+                display: flex;
+                justify-content: flex-start;
+                align-items: flex-start;
             }
 
             .header-buttons {
                 height: 100%;
-                // width: 100%;
                 display: flex;
                 justify-content: flex-start;
                 align-items: flex-start;
-                // margin-left: auto;
-
+            
                 .header-button {
                     border: 1px solid black;
                     background-color: grey;
@@ -53,10 +71,8 @@
                     margin: 0 4px;
                     padding: 0 4px;
                     font-size: 10px;
-
                 }
             }
-
         }
 
         .type {
@@ -65,7 +81,6 @@
             justify-content: center;
             align-items: center;
             background-color: rgb(218, 218, 218);
-
         }
 
         .data {
@@ -75,11 +90,8 @@
             align-items: flex-start;
             height: 100%;
             background-color: rgb(218, 218, 218);
-
             
             .data-column {
-                // border: 1px solid rgb(31, 51, 233);
-                // border-radius: 8px;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-evenly;
@@ -87,9 +99,22 @@
                 height: 100%;
                 width: 50%;
 
-                .datum {
-                    // margin: 0;
-                    // padding: 0;
+                .datum-container {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    
+                    // .label {
+                    //     width: 100px;
+                    // }
+                    
+                    
+                    // .datum {
+
+                    //     margin: 0 auto;
+                    //     padding: 0 10px;
+                    // }
                 }
                 
             }
