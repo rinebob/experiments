@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { moneynessMap, MoneynessUnit, OptionLegBase, OptionPosition, OptionSpreadConfigBase, OptionSymbolMetadata, OptionType } from '../common/option_interfaces';
+import { moneynessMap, MoneynessUnit, OptionLegBase, OptionPosition, OptionPositionsAndSymbols, OptionSpreadConfigBase, OptionSymbolMetadata, OptionType } from '../common/option_interfaces';
+import {OratsDatum, OratsStrikeData, StrikeMetadata, } from '../common/interfaces_orats';
 import { DAYS_MAP, MONTHS_MAP } from '../common/constants';
 
 import { DatesService } from './dates.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -34,6 +36,28 @@ export class PositionBuilderService {
 
   }
 
+  // NEW METHOD TO RETURN OPTION POSITION OBJECTS AND A LIST OF SYMBOLS
+  // interface has OptionPositionObject array and symbols array
+  // just call generateOptionPositions and return an array of objects
+  // pass that array to a symbol extractor method
+  // put the positions array and the symbol array in an object and return it
+
+  generatePositionsAndSymbols(symbol: string, dates: any[], configsList: OptionSpreadConfigBase[]) {
+    const positions = this.generateOptionPositions(symbol, dates, configsList);
+
+
+    const positionsAndSymbols: OptionPositionsAndSymbols = {
+      positions,
+      symbols: this.extractSymbols(positions),
+      oratsStrikeDataObjects: this.generateOratsStrikeDataObjects(positions),
+    }
+
+    return positionsAndSymbols;
+
+  }
+
+
+  // CURRENT TOP LEVEL METHOD FOR THE SERVICE.  CALL THIS TO MAKE EVERYTHING HAPPEN...
   generateOptionPositions(symbol: string, dates: any[], configsList: OptionSpreadConfigBase[]) {
     let positions: OptionPosition[] = [];
     // const dates = this.posnBuilderService.generateTradingDates(data);
@@ -91,8 +115,12 @@ export class PositionBuilderService {
             
       for (const leg of posn.config?.legs) {
         const symbolObject = this.generateSymbolForLeg(leg, position.underlying, position.underlyingPrice, symbolDate, position.expDateText);
-        // console.log('pBS gSFP symbolObject: ', symbolObject);
+        // console.log('spBS gSFP symbolObject: ', symbolObject);
         posn.symbols ? posn.symbols.push(symbolObject) : posn.symbols = [symbolObject];
+
+        // Generate an OratsStrikeData object for each leg here
+        // 
+
       }
 
       // console.log('pBS gSFP position object end: ', posn);
@@ -101,6 +129,100 @@ export class PositionBuilderService {
 
     return updatedPositions;
   }
+
+  // NEW METHOD TO EXTRACT SYMBOLS FROM AN ARRAY OF POSITIONS
+  extractSymbols(positions: OptionPosition[]) {
+    const symbols: string[] = [];
+    for (const position of positions) {
+      for (const symbol of position.symbols) {
+        symbols.push(symbol.symbol);
+      }
+    }
+
+    return symbols;
+  }
+//   export interface StrikeMetadata {
+//     underlyingSymbol: string;
+//     strikeSymbol?: string;
+//     callSymbol?: string;
+//     putSymbol?: string;
+//     expirationDate: string;
+//     strike: string;
+// }
+
+// export interface OratsDatum {
+//     date: string;
+//     oratsDataPoint: OratsFileFormat;
+// }
+
+// export interface OratsStrikeData {
+//     metadata: StrikeMetadata;
+//     dataSeries: OratsDatum[];
+// }
+
+  generateOratsStrikeDataObjects(positions: OptionPosition[]) {
+
+    const oratsStrikeDataObjects: OratsStrikeData[] = [];
+
+    for (const position of positions) {
+      // console.log('--------------------------------------');
+      // console.log('pBS gOSDO input position: ', position);
+      
+      for (const symbol of position.symbols) {
+        // console.log('pBS gOSDO input symbol: ', symbol);
+
+        const {strike, strikeSymbol, contractSymbol, type} = this.generateOratsSymbols(symbol.symbol);
+
+        const strikeMetadata: StrikeMetadata = {
+          underlyingSymbol: position.underlying,
+          strikeSymbol,
+          contractSymbol,
+          expirationDate: position.expDateText,
+          strike,
+          type,
+        }
+  
+        const strikeData: OratsStrikeData = {
+          metadata: strikeMetadata,
+          dataSeries: [],
+        }
+
+        oratsStrikeDataObjects.push(strikeData);
+      }
+    }
+
+    // console.log('pBS gOSDO final strike data objects: ', oratsStrikeDataObjects);
+
+    return oratsStrikeDataObjects;
+
+  }
+
+  generateOratsSymbols(symbol: string) {
+    // console.log('pBS gOS input symbol: ', symbol);
+
+    const strike = symbol.slice(-8);
+    // console.log('pBS gOS strike: ', strike);
+    
+    let symbExp = symbol.slice(0, -8);
+    
+    const pC = symbExp.slice(symbExp.length - 1);
+    // console.log('pBS gOS pC: ', pC);
+
+    const type = (pC === 'C' ? 'CALL' : 'PUT') as OptionType;
+    
+    symbExp = symbExp.slice(0, symbExp.length - 1);
+    // console.log('pBS gOS symbExp: ', symbExp);
+    
+    
+    const strikeSymbol = symbExp + strike;
+    const contractSymbol = symbol;
+    // console.log('pBS gOS stk/stkSymb/cs: ', strike, strikeSymbol, contractSymbol);
+
+    return {strike, strikeSymbol, contractSymbol, type};
+
+
+  }
+
 
   getDateText(date: Date) {
     let dateText = '';

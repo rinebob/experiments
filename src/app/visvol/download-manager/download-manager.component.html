@@ -1,0 +1,38 @@
+<input type="file" #csvReader
+       name="Upload CSV"
+       id="txtFileUpload"
+       (change)="uploadListener($event)"
+       accept=".csv" />    
+
+<table class="minimalistBlack" *ngIf="data$ | async as records">    
+  <thead>    
+    <tr>    
+      <th>Ticker </th>    
+      <th>Und price </th>    
+      <th>Exp date </th>    
+      <th>Yr to exp</th>    
+      <th>Strike </th>    
+      <th>Call value </th>    
+      <th>Put value </th>    
+    </tr>    
+  </thead>    
+  <tbody>    
+    <tr *ngFor="let record of records;let i = index;">    
+      <td> <span>{{record.ticker}}</span> </td>    
+      <td> <span>{{record.stkPx}}</span> </td>    
+      <td> <span>{{record.expirDate}}</span> </td>    
+      <td> <span>{{record.yte}}</span> </td>    
+      <td> <span>{{record.strike}}</span> </td>    
+      <td> <span>{{record.cValue}}</span> </td>    
+      <td> <span>{{record.pValue}}</span> </td>    
+    </tr>    
+  </tbody>    
+</table>  
+
+<!-- ticker: string;
+    stkPx: number;
+    expirDate: string;
+    yte: number;
+    strike: number;
+    cValue: number;
+    pValue: number; -->

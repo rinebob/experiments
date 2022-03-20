@@ -18,10 +18,6 @@ export const interimMenu = [
         label: 'Base components',
         route: 'base-components',
     },
-    // {
-    //     label: 'Visvol panels',
-    //     route: 'visvol',
-    // },
     {
         label: 'Portfolio',
         route: 'portfolio',
@@ -33,6 +29,10 @@ export const interimMenu = [
     {
         label: 'Analysis',
         route: 'analysis',
+    },
+    {
+        label: 'Data manager',
+        route: 'data-manager',
     },
 ];
 

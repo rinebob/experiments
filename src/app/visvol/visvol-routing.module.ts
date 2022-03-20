@@ -7,6 +7,7 @@ const routes: Routes = [
 { path: 'portfolio', loadChildren: () => import('./portfolio/portfolio.module').then(m => m.PortfolioModule) },
 { path: 'opportunities', loadChildren: () => import('./opportunities/opportunities.module').then(m => m.OpportunitiesModule) },
 { path: 'analysis', loadChildren: () => import('./analysis/analysis.module').then(m => m.AnalysisModule) },
+{ path: 'data-manager', loadChildren: () => import('./download-manager/download-manager.module').then(m => m.DownloadManagerModule) },
 { path: '**', component: VisvolComponent },
 ];
 
