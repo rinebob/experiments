@@ -2,6 +2,7 @@
 // From Visvol interfaces.  Must keep in sync
 
 import { OHLCData } from "./interfaces";
+import { OratsStrikeData } from "./interfaces_orats";
 
 export enum OptionStrategyName {
   VERTICAL_CALL_DEBIT_SPREAD = 'Vertical call debit spread',
@@ -65,6 +66,14 @@ export interface OptionPosition {
   data?: PositionPricePoint[];    // TODO - normalize to separate table
 
 }
+
+export interface OptionPositionsAndSymbols {
+  positions: OptionPosition[];
+  symbols: string[];
+  oratsStrikeDataObjects?: OratsStrikeData[];
+}
+
+
 
 export interface OptionPositionPriceEventData {
   date: Date;
