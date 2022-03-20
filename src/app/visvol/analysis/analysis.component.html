@@ -1,1 +1,73 @@
-<p>analysis works!</p>
+<div class="config-builder-container">
+    <form class="config-builder-form"
+            [formGroup]="configForm">
+
+        <!-- ticker symbol input -->
+
+        <mat-form-field appearance="fill"
+                        class='config-control'>
+            <mat-label>Symbol</mat-label>
+            <input matInput 
+                    formControlName='symbolControl'
+                    type="text">
+
+        </mat-form-field>
+
+
+        <!-- open date picker -->
+
+        <mat-form-field appearance="fill"
+                        class='config-control'>
+            <mat-label>Open date</mat-label>
+            <input matInput 
+                    formControlName='openDateControl'
+                    [matDatepicker]="picker">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+
+        </mat-form-field>
+
+
+        <!-- expiration distance dropdown -->
+
+        <mat-form-field appearance="fill"
+                        class='config-control'>
+            <mat-label>Expiration distance</mat-label>
+            <mat-select formControlName='expirationControl'>
+                <mat-option *ngFor="let exp of expirations"
+                            [value]="exp">
+                    {{exp}}
+                </mat-option>
+            </mat-select>
+
+
+        </mat-form-field>
+
+
+        <!-- option spread config dropdown -->
+
+        <mat-form-field appearance="fill"
+                        class='config-control'>
+            <mat-label>Position config</mat-label>
+            <mat-select formControlName='optionConfigControl'>
+                <mat-option *ngFor="let config of configsList"
+                            [value]="config">
+                    {{config.name}}
+                </mat-option>
+            </mat-select>
+
+        </mat-form-field>
+
+        <!-- test name input -->
+
+        <mat-form-field appearance="fill"
+                        class='config-control'>
+            <mat-label>Test name</mat-label>
+            <input matInput 
+                    formControlName='nameControl'
+                    type="text">
+
+        </mat-form-field>
+
+    </form>
+</div>

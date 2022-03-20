@@ -1,0 +1,22 @@
+
+
+
+.config-builder-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    
+    .config-builder-form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 200px;
+
+        .config-control {
+            width: 100%;
+            
+        }
+
+    }
+}
