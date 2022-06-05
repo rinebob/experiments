@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+
 import { CsvService } from '../../../../services/csv/csv.service';
+import {TradedStrikesTableDataObject} from '../../../../common/interfaces';
 
 @Component({
   selector: 'exp-traded-strikes-view',
@@ -9,30 +12,30 @@ import { CsvService } from '../../../../services/csv/csv.service';
 })
 export class TradedStrikesViewComponent implements OnInit {
 
-  constructor(readonly csvService: CsvService) { }
+  tradedStrikesDataBS = new BehaviorSubject<Array<Object>>([]);
+  tradedStrikesData$: Observable<Array<Object>> = this.tradedStrikesDataBS;
+
+  allExpirationsBS = new BehaviorSubject<string[]>([]);
+  allExpirations$: Observable<string[]> = this.allExpirationsBS;
+
+  constructor(
+    readonly csvService: CsvService
+    ) { }
 
   ngOnInit(): void {
-    this.setText();
-    this.getText();
   }
 
   getTradedStrikesForSymbol(symbol: string) {
     console.log('tSV gTSFS get strikes for symbol: ', symbol);
 
+    const data: TradedStrikesTableDataObject = 
+      this.csvService.getTradedStrikesData([symbol]);
+
+    this.tradedStrikesDataBS.next(data.tradedStrikesData);
+    this.allExpirationsBS.next(data.allExpirations);
+
+    console.log('tSV gTSFS expirations: ', this.allExpirationsBS.value);
+
   }
-
-  setText() {
-    this.csvService.setText('dude')
-  }
-
-  getText() {
-    const text = this.csvService.getText();
-    console.log('tSV gT text from csv store: ', text);
-  };
-
-  // getSomething() {
-  //   const something = this.csvService.getSomething();
-  //   console.log('tSV gS something: ', something);
-  // }
 
 }

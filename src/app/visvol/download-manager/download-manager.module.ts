@@ -16,6 +16,9 @@ import { DownloadManagerComponent } from './download-manager.component';
     HttpClientModule,
     ReactiveFormsModule,
     DownloadManagerRoutingModule,
-  ]
+  ],
+  exports: [
+    DownloadManagerComponent,
+  ],
 })
 export class DownloadManagerModule { }

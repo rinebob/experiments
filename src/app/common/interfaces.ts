@@ -113,3 +113,7 @@ export enum PriceComponent {
     CLOSE = 'close',
 }
 
+export interface TradedStrikesTableDataObject {
+    allExpirations?: string[];
+    tradedStrikesData?: Object[];
+}
