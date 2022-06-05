@@ -12,7 +12,8 @@ export class TradedStrikesViewComponent implements OnInit {
   constructor(readonly csvService: CsvService) { }
 
   ngOnInit(): void {
-    this.getSomething();
+    this.setText();
+    this.getText();
   }
 
   getTradedStrikesForSymbol(symbol: string) {
@@ -20,9 +21,18 @@ export class TradedStrikesViewComponent implements OnInit {
 
   }
 
-  getSomething() {
-    const something = this.csvService.getSomething();
-    console.log('tSV gS something: ', something);
+  setText() {
+    this.csvService.setText('dude')
   }
+
+  getText() {
+    const text = this.csvService.getText();
+    console.log('tSV gT text from csv store: ', text);
+  };
+
+  // getSomething() {
+  //   const something = this.csvService.getSomething();
+  //   console.log('tSV gS something: ', something);
+  // }
 
 }
