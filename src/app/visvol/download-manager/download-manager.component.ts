@@ -76,46 +76,34 @@ export class DownloadManagerComponent implements OnInit  {
 
   processCsvFile(file) {
 
-    const records = this.processCsvFileForSymbols(file, ['TSLA']);
+    const records = this.generateRecordsArrayForSelectedSymbols(file, ['TSLA']);
 
     // const records = this.generateRecordsFromCsvFile(file);
-    
     // const records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
-
     // this.generateTradedStrikesMap(records.slice(10000, 11000));
     // this.generateTradedStrikesByExpirationMap(records);
 
     const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
-
     // console.log('dM pCF strikes with expirations: ', strikesWithExpirations);
 
-    const allExpirationsSet = this.getExpirationsFromStrikeExpirationsObject(strikesWithExpirations);
+    const allExpirations = this.getExpirationsFromStrikeExpirationsObject(strikesWithExpirations);
+    console.log('dM pCF allExpirations array: ', allExpirations);
 
-    console.log('dM pCF allExpirationsSet: ', allExpirationsSet);
+    const tradedStrikesData = this.generateTradedStrikesData(strikesWithExpirations, allExpirations)
 
     // const symbolsDataMap = this.generateSymbolsDataMap(records);
   }
 
   generateExpirationsByTradedStrike(records: OratsFileFormat[]) {
     console.log('dM gEBTSM records[0]: ', records[0]);
-
     const strikesWithExpirations = {};
-
     for (const record of records) {
-      let expirations: string[] = strikesWithExpirations[record.strike] ? [...strikesWithExpirations[record.strike]] : [];
+      let expirations: string[] = strikesWithExpirations[record.strike] ? 
+        [...strikesWithExpirations[record.strike]] 
+        : [];
       expirations.push(record.expirDate);
       strikesWithExpirations[record.strike] = expirations;
-    
-      // if (strikesWithExpirations[record.strike]) {
-      //   expirations = [...strikesWithExpirations[record.strike]];
-      //   strikesWithExpirations[record.strike].push(record.expirDate)
-
-      // } else {
-      //   strikesWithExpirations[record.strike] = [record.expirDate];
-
-      // }
     }
-
     console.log('dM gEBTS strikesWithExpirations: ', strikesWithExpirations);
 
     return strikesWithExpirations;
@@ -123,55 +111,48 @@ export class DownloadManagerComponent implements OnInit  {
 
   getExpirationsFromStrikeExpirationsObject(expirationsByStrike) {
     const expirationsSet = new Set<string>();
-
     for (const [key, value] of Object.entries(expirationsByStrike)) {
-
-      console.log('dM gEFSEO strike/e?xps: ', key, value);
-
+      // console.log('dM gEFSEO strike/e?xps: ', key, value);
       const expirations: string[] = [...Object.values(value)];
-
       for (const exp of Object.values(expirations)){
-        
         expirationsSet.add((new Date(exp)).toISOString());
       }
     }
-
     const expirationsDates = []
     for (const exp of expirationsSet) {
       expirationsDates.push(new Date(exp).getTime());
-
-
     }
     expirationsDates.sort();
-    
-    console.log('dM gEFSEO expirations dates: ', expirationsDates);
-
+    // console.log('dM gEFSEO expirations dates: ', expirationsDates);
     const expirationsDateTextStrings = [];
-
     for (const millis of expirationsDates) {
       const date = new Date(millis);
-      const dateText = `${DAYS_MAP.get(date.getDay())} ${new Intl.DateTimeFormat().format(date)}`;
+      // const dateText = `${DAYS_MAP.get(date.getDay())} ${new Intl.DateTimeFormat().format(date)}`;
+      const dateText = new Intl.DateTimeFormat().format(date);
       expirationsDateTextStrings.push(dateText);
     }
+    // console.log('dM gEFSEO expirations dates strings: ', expirationsDateTextStrings);
+    return expirationsDateTextStrings;
+  }
 
-    console.log('dM gEFSEO expirations dates strings: ', expirationsDateTextStrings);
+  generateTradedStrikesData(strikesWithExpirations, allExpirations: string[]) {
+    const tradedStrikesData = [];
+    for (const strike of Object.entries(strikesWithExpirations)) {
+      console.log('dM gTSDO strike object: ', strike);
+      const expirations: string[] = Object.values(strike[1]);
+      console.log('dM gTSDO expirations: ', expirations);
+      const row = {
+        strike: strike[0],
+      }
+      for (const exp of Object.values(allExpirations)) {
+        row[exp] = expirations.includes(exp) ? true : false;
+      }
+      // console.log('dM gTSDO final row: ', row);
+      tradedStrikesData.push(row);
+    }
+    console.log('dM gTSDO final tradedStrikesData: ', tradedStrikesData);
 
-
-
-    // for (const record of Object.values(expirationsByStrike)) {
-
-    //   // console.log('dM gEFSEO strike record: ', record, typeof record);
-
-    //   const expirations: string[] = [...Object.values(record)].sort();
-      
-    //   console.log('dM gEFSEO expirations: ', expirations, typeof expirations);
-    //   for (const exp of Object.values(expirations)){
-    //     expirationsSet.add(exp);
-    //   }
-    // }
-
-    
-    return expirationsSet;
+    return tradedStrikesData;
   }
 
   generateTradedStrikesByExpirationMap(records: OratsFileFormat[]) {
@@ -249,7 +230,7 @@ export class DownloadManagerComponent implements OnInit  {
 
   }
 
-  generateRecordsFromCsvFile(file): OratsFileFormat[] {
+  generateRecordsArrayFromCsvFile(file): OratsFileFormat[] {
     let csvRecordsArray = (<string>file).split(/\r\n|\n/);  
         // console.log('dM uL csvRecordsArray[100000]: ', csvRecordsArray[100000]);
         // console.log('dM uL tpeof file: ', typeof file);
@@ -262,9 +243,9 @@ export class DownloadManagerComponent implements OnInit  {
     return records;
   }
 
-  processCsvFileForSymbols(file, symbols: string[]): OratsFileFormat[] {
+  generateRecordsArrayForSelectedSymbols(file, symbols: string[]): OratsFileFormat[] {
 
-    const rawData = this.generateRecordsFromCsvFile(file);
+    const rawData = this.generateRecordsArrayFromCsvFile(file);
     const records: OratsFileFormat[] = [];
     console.log('dM pCFFS symbols/rawData[3]: ', symbols, rawData[3]);
 
