@@ -7,7 +7,6 @@ import { SymbolSelectorComponent } from './symbol-selector/symbol-selector.compo
 import { StrikesTableComponent } from './strikes-table/strikes-table.component';
 
 
-
 @NgModule({
   declarations: [
     TradedStrikesViewComponent,
