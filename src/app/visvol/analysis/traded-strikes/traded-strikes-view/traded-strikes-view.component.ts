@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'exp-traded-strikes-view',
@@ -11,6 +11,11 @@ export class TradedStrikesViewComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  getTradedStrikesForSymbol(symbol: string) {
+    console.log('tSV gTSFS get strikes for symbol: ', symbol);
+
   }
 
 }

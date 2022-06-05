@@ -1,4 +1,23 @@
 
+.analysis-nav-buttons {
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    height: 20px;
+    width: 100%;
+    margin: 4px 0;
+
+    .analysis-nav-button {
+        color: white;
+        background-color:lightslategrey;
+        height: 20px;
+        width: 100px;
+
+    }
+
+}
 
 
 .config-builder-container {
@@ -20,3 +39,4 @@
 
     }
 }
+

@@ -1,1 +1,12 @@
-<p>symbol-selector works!</p>
+
+<div class="symbol-buttons-container">
+    <button *ngFor="let symbol of SYMBOLS_LIST" 
+            mat-button
+            class="symbol-button"
+            color="primary"
+            (click)="getStrikesForSymbol(symbol)"
+    >
+        {{symbol}}
+    </button>
+
+</div>
