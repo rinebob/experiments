@@ -51,3 +51,5 @@ src/assets/data/vxx_21-0929.ts
 src/assets/data/MSFT_21-1112_sample.ts
 src/app/experiments/d3fc/yahoo_data.csv
 src/assets/data/MSFT_21-1112_sample2.ts
+src/assets/data/ORATS_SMV_Strikes_20200420.csv
+src/assets/data/test.csv

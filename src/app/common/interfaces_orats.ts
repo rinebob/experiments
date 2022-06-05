@@ -62,3 +62,14 @@ export interface OratsStrikeData {
     metadata: StrikeMetadata;
     dataSeries?: OratsDatum[];
 }
+
+export interface StrikesByExpiration {
+    yte: string;
+    date: string;
+    strikes: string[];
+}
+
+export interface StrikesWithExpirations {
+    strike: string;
+     expirations: string[];
+}

@@ -15,17 +15,20 @@ import * as configs from '../common/option_configs';
 export class PositionBuilderComponent implements OnInit {
   
   private readonly configsList: OptionSpreadConfigBase[] = [
-    // configs.ATM_LONG_STRADDLE,
-    // configs.IRON_CONDOR,
-    // configs.VERTICAL_CALL_DEBIT_SPREAD,
-    // configs.VERTICAL_CALL_CREDIT_SPREAD,
+    configs.ATM_LONG_STRADDLE,
+    configs.IRON_CONDOR,
+    configs.VERTICAL_CALL_DEBIT_SPREAD,
+    configs.VERTICAL_CALL_CREDIT_SPREAD,
     configs.TWENTY_DELTA_SHORT_STRANGLE,
     configs.VERTICAL_PUT_DEBIT_SPREAD,
-    // configs.VERTICAL_PUT_CREDIT_SPREAD,
+    configs.VERTICAL_PUT_CREDIT_SPREAD,
   ];
 
   positionsBS = new BehaviorSubject<OptionPosition[]>([]);
   positions$: Observable<OptionPosition[]> = this.positionsBS;
+
+  symbolsBS = new BehaviorSubject<string[]>([]);
+  symbols$: Observable<string[]> = this.symbolsBS;
 
   constructor(
     private readonly posnBuilderService: PositionBuilderService) { }
@@ -44,11 +47,32 @@ export class PositionBuilderComponent implements OnInit {
 
     if (symbol === 'NFLX') {
       dates = this.generateTradingDates(nflxData);
-      this.positionsBS.next(this.posnBuilderService.generateOptionPositions('NFLX', dates, this.configsList));
+
+      const {positions, symbols, oratsStrikeDataObjects} = this.posnBuilderService.generatePositionsAndSymbols('NFLX', dates, this.configsList);
+      // console.log('pB sC nflx.  positions: ', positions);
+      console.log('pB sC nflx.  symbols: ', symbols);
+
+      this.positionsBS.next(positions);
+      this.symbolsBS.next(symbols);
+
   } else {
       dates = this.generateTradingDates(tslaData);
-      this.positionsBS.next(this.posnBuilderService.generateOptionPositions('TSLA', dates, this.configsList));
+
+      const {positions, symbols, oratsStrikeDataObjects} = this.posnBuilderService.generatePositionsAndSymbols('TSLA', dates, this.configsList);
+      // console.log('pB sC tsla.  positions: ', positions);
+      console.log('pB sC tsla.  symbols: ', symbols);
+
+      this.positionsBS.next(positions);
+      this.symbolsBS.next(symbols);
+
     }
+  }
+
+  getAllOptionSymbols(positions: OptionPosition[]) {
+    const symbols = this.posnBuilderService.extractSymbols(positions);
+    console.log('pB gAOS option symbols: ', symbols);
+
+    return symbols;
   }
 
 

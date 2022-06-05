@@ -494,7 +494,7 @@ export const SYMBOLS: string[] = [
     "BKNG",
     "BLK",
     "BMY",
-    "BRK.B",
+    "BRK_B",
     "C",
     "CAT",
     "CHTR",

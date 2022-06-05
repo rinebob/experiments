@@ -1,8 +1,12 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';  
+import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { OratsFileFormat } from 'src/app/common/interfaces_orats';
-import { SYMBOLS } from 'src/app/common/constants';
-  
+import { map } from 'rxjs/operators';
+
+import { OratsFileFormat, StrikesByExpiration, StrikesWithExpirations } from 'src/app/common/interfaces_orats';
+import { DAYS_MAP, SYMBOLS } from 'src/app/common/constants';
+
 @Component({
   selector: 'exp-download-manager',
   templateUrl: './download-manager.component.html',
@@ -21,44 +25,43 @@ export class DownloadManagerComponent implements OnInit  {
   symbols = new Set<string>();
   expirations = new Set<string>();
   strikes = new Set<string>();
+  tradedStrikes = new Map<string, StrikesByExpiration[]>();
+
+  symbol = new FormControl('');
+  ticker = new FormControl('');
+
+  allTickers = [];
+
+  fileName = 'test.csv';
+  
+  constructor(private http: HttpClient) {
+
+  }
 
   ngOnInit() {
     
   }
 
   uploadListener($event: any): void {  
-    console.log('dM uL upload listener called. event: ', $event);
+    // console.log('dM uL upload listener called. event: ', $event);
     
     let text = [];  
     let files = $event.srcElement.files;  
-    console.log('dM uL files: ', $event.srcElement.files);
+    // console.log('dM uL files: ', $event.srcElement.files);
     
-    console.log('dM uL calling is valid file');
+    // console.log('dM uL calling is valid file');
     
     
     if (this.isValidCSVFile(files[0])) {  
-      console.log('dM uL in valid file block. files[0]: ', files[0]);
+      // console.log('dM uL in valid file block. files[0]: ', files[0]);
   
       let input = $event.target;  
       let reader = new FileReader();  
       reader.readAsText(input.files[0]);  
   
       reader.onload = () => {  
-        let csvData = reader.result;  
-        // console.log('dM uL csv data: ', csvData);
-        let csvRecordsArray = (<string>csvData).split(/\r\n|\n/);  
-        // console.log('dM uL csvRecordsArray[1000]: ', csvRecordsArray[1000]);
-        
-        let headersRow = this.getHeaderArray(csvRecordsArray);  
-        // console.log('dM uL headersRow: ', headersRow);
-        
-        // this.records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);  
-        const records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);  
-        // this.dataBS.next(records.slice(0, 10));
-        // console.log('dM uL records: ', this.dataBS.value);
-
-        const symbolsMap = this.generateSymbolsDataMap(records);
-
+        let csvData = reader.result;
+        this.processCsvFile(csvData);  
       };  
   
       reader.onerror = function () {  
@@ -71,43 +74,233 @@ export class DownloadManagerComponent implements OnInit  {
     }  
   }  
 
-  // symbolsDataMap 
-  // key: symbol value: expirationsData: ExpirationsMap
+  processCsvFile(file) {
 
-  // expirationsMap
-  // key: expiration: string, value: strikesData: StrikesMap
+    const records = this.processCsvFileForSymbols(file, ['TSLA']);
 
-  // strikesMap
-  // key: strike: string, value: data: OratsStrikeData
+    // const records = this.generateRecordsFromCsvFile(file);
+    
+    // const records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
 
-  // OratsStrikeData
-  // metadata, data
+    // this.generateTradedStrikesMap(records.slice(10000, 11000));
+    // this.generateTradedStrikesByExpirationMap(records);
 
-//   export interface StrikeMetadata {
-//     underlyingSymbol: string;
-//     optionSymbol: string;
-//     expirationDate: string;
-//     strike: string;
-// }
+    const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
 
-// export interface OratsDatum {
-//     date: string;
-//     data: OratsFileFormat;
-// }
+    // console.log('dM pCF strikes with expirations: ', strikesWithExpirations);
 
-// export interface OratsStrikeData {
-//     metadata: StrikeMetadata;
-//     data: OratsDatum[];
-// }
+    const allExpirationsSet = this.getExpirationsFromStrikeExpirationsObject(strikesWithExpirations);
 
-  generateSymbolsDataMap(data: OratsFileFormat[]) {
+    console.log('dM pCF allExpirationsSet: ', allExpirationsSet);
 
-    // const symbolsForData = SYMBOLS;
-    // const symbolsForData = [SYMBOLS[1]];
-    const symbolsForData = [...SYMBOLS.slice(10, 12)];
-    const symbolsDataMap = new Map<string, OratsFileFormat>();
+    // const symbolsDataMap = this.generateSymbolsDataMap(records);
+  }
+
+  generateExpirationsByTradedStrike(records: OratsFileFormat[]) {
+    console.log('dM gEBTSM records[0]: ', records[0]);
+
+    const strikesWithExpirations = {};
+
+    for (const record of records) {
+      let expirations: string[] = strikesWithExpirations[record.strike] ? [...strikesWithExpirations[record.strike]] : [];
+      expirations.push(record.expirDate);
+      strikesWithExpirations[record.strike] = expirations;
+    
+      // if (strikesWithExpirations[record.strike]) {
+      //   expirations = [...strikesWithExpirations[record.strike]];
+      //   strikesWithExpirations[record.strike].push(record.expirDate)
+
+      // } else {
+      //   strikesWithExpirations[record.strike] = [record.expirDate];
+
+      // }
+    }
+
+    console.log('dM gEBTS strikesWithExpirations: ', strikesWithExpirations);
+
+    return strikesWithExpirations;
+  }
+
+  getExpirationsFromStrikeExpirationsObject(expirationsByStrike) {
+    const expirationsSet = new Set<string>();
+
+    for (const [key, value] of Object.entries(expirationsByStrike)) {
+
+      console.log('dM gEFSEO strike/e?xps: ', key, value);
+
+      const expirations: string[] = [...Object.values(value)];
+
+      for (const exp of Object.values(expirations)){
+        
+        expirationsSet.add((new Date(exp)).toISOString());
+      }
+    }
+
+    const expirationsDates = []
+    for (const exp of expirationsSet) {
+      expirationsDates.push(new Date(exp).getTime());
+
+
+    }
+    expirationsDates.sort();
+    
+    console.log('dM gEFSEO expirations dates: ', expirationsDates);
+
+    const expirationsDateTextStrings = [];
+
+    for (const millis of expirationsDates) {
+      const date = new Date(millis);
+      const dateText = `${DAYS_MAP.get(date.getDay())} ${new Intl.DateTimeFormat().format(date)}`;
+      expirationsDateTextStrings.push(dateText);
+    }
+
+    console.log('dM gEFSEO expirations dates strings: ', expirationsDateTextStrings);
+
+
+
+    // for (const record of Object.values(expirationsByStrike)) {
+
+    //   // console.log('dM gEFSEO strike record: ', record, typeof record);
+
+    //   const expirations: string[] = [...Object.values(record)].sort();
+      
+    //   console.log('dM gEFSEO expirations: ', expirations, typeof expirations);
+    //   for (const exp of Object.values(expirations)){
+    //     expirationsSet.add(exp);
+    //   }
+    // }
 
     
+    return expirationsSet;
+  }
+
+  generateTradedStrikesByExpirationMap(records: OratsFileFormat[]) {
+    // console.log(records.slice(100, 110));
+    console.log('dM gTSM records[0]: ', records[0]);
+
+    let currentRecord, prevRecord: OratsFileFormat = {};
+    let currentTicker, prevTicker = '';
+    let currentYte, prevYte = '';
+
+    let strikesArray = [];
+    let strikesByExpiration = [];
+
+    for (const record of records) {
+      prevRecord =  {...currentRecord};
+      currentRecord = {...record};
+      currentTicker = record.ticker;
+      currentYte = record.yte;
+
+      // before we process the record, we have to check whether the current row is a new expiration or ticker
+      // if new expiration, write the data for prev exp and push to the array
+      // if new ticker, write the data for prev ticker and set the map
+      // then process the record no matter what
+
+      if (currentYte !== prevYte) {
+
+        if (strikesArray.length) {
+          // create the strikesByExpiration object and push to the array
+          const strikesForExpiration: StrikesByExpiration = {
+            yte: prevRecord.yte,
+            date: prevRecord.expirDate,
+            strikes: strikesArray,
+          };
+          console.log('dM gTSM setting stByExp for exp/len: ', prevRecord.expirDate, strikesArray.length, prevTicker);
+          strikesByExpiration.push(strikesForExpiration);
+          console.log('strikes array: ', strikesArray);
+          strikesArray = [];
+        };
+
+        // check for new ticker
+        if (currentTicker !== prevTicker) {
+
+          if (strikesByExpiration.length) {
+            // create the strikesForTicker object and set the tradedStrikes map
+            console.log('dM gTSM setting Map. ticker/strikes by exp len: ', prevTicker, strikesByExpiration.length);
+            this.tradedStrikes.set(prevTicker, strikesByExpiration);
+            console.log('map entry: ', this.tradedStrikes.get(prevTicker));
+            strikesByExpiration = [];
+          }
+
+            // begin the new ticker
+            console.log('=====================================');
+            console.log('dM gTSM new current ticker/prevTicker/stkPx: ', currentTicker, prevTicker ?? 'no prev ticker', record.stkPx);
+            this.allTickers.push(currentTicker);
+        
+            // set prevTicker = currentTicker
+            prevTicker = currentTicker;
+        }
+        
+        // begin the new expiration
+        console.log('------------------------------');
+        console.log('dM gTSM current expiration/prevExp: ', currentYte, record.expirDate, prevYte ?? 'no prev exp');
+        // set prevExp = currentExp
+        prevYte = currentYte;
+      } 
+
+      // process the row
+      strikesArray.push(record.strike);
+    }
+  }
+
+  getStrikesForSymbol() {
+    const symbol = this.symbol.value;
+
+
+  }
+
+  generateRecordsFromCsvFile(file): OratsFileFormat[] {
+    let csvRecordsArray = (<string>file).split(/\r\n|\n/);  
+        // console.log('dM uL csvRecordsArray[100000]: ', csvRecordsArray[100000]);
+        // console.log('dM uL tpeof file: ', typeof file);
+        
+    let headersRow = this.getHeaderArray(csvRecordsArray);  
+    // console.log('dM uL headersRow: ', headersRow);
+    
+    const records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
+
+    return records;
+  }
+
+  processCsvFileForSymbols(file, symbols: string[]): OratsFileFormat[] {
+
+    const rawData = this.generateRecordsFromCsvFile(file);
+    const records: OratsFileFormat[] = [];
+    console.log('dM pCFFS symbols/rawData[3]: ', symbols, rawData[3]);
+
+    for (const symbol of symbols) {
+      let index = rawData.findIndex(datum => datum.ticker === symbol);
+      let datum = rawData[index]
+      // console.log('dM pCFFS symbol/ind/datum: ', symbol, index, datum);
+
+      while(datum.ticker === symbol) {
+        records.push(datum);
+        // console.log('dM pCFFS while index/foundTicker: ', index, datum);
+        index++;
+        datum = rawData[index];
+      }
+
+    }
+
+    console.log('dM gCFFS records: ', records);
+
+
+    return records;
+
+
+  }
+
+  showDataFor() {
+    const ticker = this.ticker.value;
+    console.log('dM gTSM ticker/all tickers: ', ticker, this.allTickers);
+    console.log('dM gTSM expirations and strikes for ticker: ', this.tradedStrikes.get(ticker));
+  }
+
+  generateSymbolsDataMap(data: OratsFileFormat[]) {
+    // const symbolsForData = SYMBOLS;
+    // const symbolsForData = [SYMBOLS[1]];
+    const symbolsForData = [...SYMBOLS.slice(10, 120)];
+    const symbolsDataMap = new Map<string, OratsFileFormat>();
 
     for (const symbol of symbolsForData) {
       console.log('-----------------------------');
@@ -116,118 +309,40 @@ export class DownloadManagerComponent implements OnInit  {
       const symbolData = this.getDataForSymbol(data, symbol);
 
       let expiration, strike = '';
-
-      
-      // ALTERNATIVE 1 - CREATE JS MAPS FOR SYMBOLS/EXPIRATIONS/STRIKES/DATA
-
-      // loop through data row by row
-      // create a StrikeMetaDataObject including option symbol
-      // create an object with date and orats data.  this is an OratsDatum object
-      // each row of each spreadsheet is one OratsDatum object
-      // the very first time we run this, none of the symbol/expiration/strike maps will exist
-      // so we'll have to create them
-
-
-      // if symbol in symbolsMap
-      // yes
-          
-          // if expiration in symbolMap keys
-          // yes
-              // if strike in expirationMap keys
-              // yes
-                  // get the data series object
-                  // append the OratsDatum object
-
-              // no strike
-                  // create an OratsStrikeData object with the Metadata and an empty data series
-                  // push the oratsDatum object into the data series
-                  // set strikesMap entry for strike and orats strike data object
-
-
-          // no expiration
-              // run no strike tasks
-              // set expirationsMap with new entry expiration and strikesMap object
-
-
-      // no symbol
-          // run no strikes tasks
-          // run no expiration tasks
-          // set symbols map with new entry symbol and expirationsMap
-
-      // *** this alternative results in a large js Map object that is deeply nested ***
-          
-    // ALTERNATIVE 2 - CREATE FLAT DIRECTORY OF ALL OPTION SYMBOL DATA - NO NESTING
-
-    // for each spreadsheet:
-      // only capture data for target symbols
-      // for each row, create an option symbol string
-      // create a data series object for that symbol (OratsStrikeData)
-      // send an insert/update request to backend to append the object
-      // backend must figure out how to handle the request
-          // create new metadata object and data series
-          // append new data to existing data series
-      
-
-      // each row in a spreadsheet will be a different symbol
-      // a time series is created by adding one data point from each spreadsheet to the symbol data array
-      // after the first data ingestion to backend, most symbols will exist, but new ones will be added 
-      // as new expirations are released and new stocks are added/subtracted from the focus list
-
-      // *** this alternative results in a large flat collection of option symbol data documents ***
-      // key = option symbol
-      // value = OratsStrikeData object
-      
-      
-
-
-      // we only have one day of fake data (the orats demo spsht)
-      // to create any kind of data series we need > 1 spsht
-      // need to clone existing demo into new dates
-      // data can be the same just need the files to access
-
-
-
     }
-
-
   }
 
   getDataForSymbol(data: OratsFileFormat[], symbol: string) {
     let index = data.findIndex(datum => datum.ticker === symbol);
-    let rowTicker = data[index].ticker;
-
-    // console.log('dM gSDM init index/foundTicker: ', index, rowTicker);
-
-    const symbolData: OratsFileFormat[] = [];
-
-    while(rowTicker === symbol) {
-      symbolData.push(data[index]);
-      index++;
-      rowTicker = data[index].ticker;
-      // console.log('dM gSDM while index/foundTicker: ', index, rowTicker);
-      
-    }
+    if (index && data[index]) {
+      let rowTicker = data[index].ticker ?? '';
+      // console.log('dM gSDM init index/foundTicker: ', index, rowTicker);
+      const symbolData: OratsFileFormat[] = [];
     
-    // console.log('dM gSDM final symbol data slice for: ', symbol);
-    // console.table(symbolData.slice(100, 1000));
-    // console.table(symbolData);
+      while(rowTicker === symbol) {
+        symbolData.push(data[index]);
+        index++;
+        rowTicker = data[index].ticker;
+        // console.log('dM gSDM while index/foundTicker: ', index, rowTicker);
+      }
+      // console.log('dM gSDM final symbol data slice for: ', symbol);
+      // console.table(symbolData.slice(950, 1000));
+      // console.table(symbolData);
+  
+      this.dataBS.next(symbolData);
+      // console.log('dM uL symbolData: ', this.dataBS.value);
+  
+      return symbolData;
 
-    this.dataBS.next(symbolData);
-    // console.log('dM uL symbolData: ', this.dataBS.value);
-
-    return symbolData;
-
-
+    } else return;
   }
 
   generateDataMap(data: OratsFileFormat[], field: string) {
-
   }
   
   getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {  
     let csvArr = [];  
     let numRecords = csvRecordsArray.length;
-    // numRecords = 20;
   
     for (let i = 1; i < numRecords; i++) {  
       let currentRecord = (<string>csvRecordsArray[i]).split(',');  
