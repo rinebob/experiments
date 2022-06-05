@@ -2,6 +2,10 @@
 
 <exp-symbol-selector (selectedSymbol)="getTradedStrikesForSymbol($event)">
 
-    
+
 </exp-symbol-selector>
-<exp-strikes-table></exp-strikes-table>
+
+
+<exp-strikes-table [inputData]="strikesTableData$ | async">
+
+</exp-strikes-table>

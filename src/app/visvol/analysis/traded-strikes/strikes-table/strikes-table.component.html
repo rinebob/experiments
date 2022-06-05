@@ -1,1 +1,4 @@
-<p>strikes-table works!</p>
+<div *ngIf="tableData$ | async as data">
+    All expirations
+    <div *ngFor="let datum of data" >{{ datum | json }}</div>
+</div>

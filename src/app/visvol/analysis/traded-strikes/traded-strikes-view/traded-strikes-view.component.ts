@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { CsvService } from '../../../../services/csv/csv.service';
@@ -12,17 +12,23 @@ import {TradedStrikesTableDataObject} from '../../../../common/interfaces';
 })
 export class TradedStrikesViewComponent implements OnInit {
 
-  tradedStrikesDataBS = new BehaviorSubject<Array<Object>>([]);
-  tradedStrikesData$: Observable<Array<Object>> = this.tradedStrikesDataBS;
+  // tradedStrikesDataBS = new BehaviorSubject<Array<Object>>([]);
+  // tradedStrikesData$: Observable<Array<Object>> = this.tradedStrikesDataBS;
 
-  allExpirationsBS = new BehaviorSubject<string[]>([]);
-  allExpirations$: Observable<string[]> = this.allExpirationsBS;
+  // allExpirationsBS = new BehaviorSubject<string[]>([]);
+  // allExpirations$: Observable<string[]> = this.allExpirationsBS;
+
+  strikesTableDataBS = new BehaviorSubject<TradedStrikesTableDataObject>({});
+  strikesTableData$: Observable<TradedStrikesTableDataObject> = this.strikesTableDataBS;
 
   constructor(
-    readonly csvService: CsvService
+    readonly csvService: CsvService,
     ) { }
 
   ngOnInit(): void {
+    // this.allExpirations$.pipe().subscribe(
+    //   expirations => {console.log('tsV ngOI expirations sub: ', expirations)}
+    // );
   }
 
   getTradedStrikesForSymbol(symbol: string) {
@@ -31,10 +37,20 @@ export class TradedStrikesViewComponent implements OnInit {
     const data: TradedStrikesTableDataObject = 
       this.csvService.getTradedStrikesData([symbol]);
 
-    this.tradedStrikesDataBS.next(data.tradedStrikesData);
-    this.allExpirationsBS.next(data.allExpirations);
+      this.strikesTableDataBS.next(data);
 
-    console.log('tSV gTSFS expirations: ', this.allExpirationsBS.value);
+    if (data && data.allExpirations && data.tradedStrikesData) {
+      // this.tradedStrikesDataBS.next(data.tradedStrikesData);
+      // this.allExpirationsBS.next(data.allExpirations);
+      // console.log('tSV gTSFS expirations: ', this.allExpirationsBS.value);
+      // console.log('tSV gTSFS traded strikes data[0]: ', this.tradedStrikesDataBS.value[0]);
+
+      
+    } else {
+      console.log('cS gTSD dude i told you theres no effin data!!');
+    }
+
+    
 
   }
 
