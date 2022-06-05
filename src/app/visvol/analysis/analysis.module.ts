@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { AnalysisRoutingModule } from './analysis-routing.module';
 import { AnalysisComponent } from './analysis.component';
 import { AnalysisDashboardComponent } from './analysis-dashboard/analysis-dashboard.component';
+import { TradedStrikesModule } from './traded-strikes/traded-strikes.module';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { AnalysisDashboardComponent } from './analysis-dashboard/analysis-dashbo
     MatInputModule,
     MatNativeDateModule,
     MatSelectModule,
-    AnalysisRoutingModule
+    AnalysisRoutingModule,
+    TradedStrikesModule
   ]
 })
 export class AnalysisModule { }
