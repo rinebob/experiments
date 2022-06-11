@@ -115,5 +115,17 @@ export enum PriceComponent {
 
 export interface TradedStrikesTableDataObject {
     allExpirations?: string[];
-    tradedStrikesData?: Object[];
+    tradedStrikesData?: TradedStrikesDatum[];
+}
+
+export interface TradedStrikesDatum {
+    [key: string]: string | boolean;
+    strike: string;
+}
+
+export interface TableColumn {
+    columnDef: string;
+    header: string;
+    cell: (datum: TradedStrikesDatum) => string | boolean;
+    
 }

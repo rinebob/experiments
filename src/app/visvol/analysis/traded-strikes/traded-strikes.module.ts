@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import {ScrollingModule} from '@angular/cdk/scrolling';
 
 import { DownloadManagerModule } from '../../download-manager/download-manager.module';
 import { TradedStrikesViewComponent } from './traded-strikes-view/traded-strikes-view.component';
@@ -18,6 +20,8 @@ import { StrikesTableComponent } from './strikes-table/strikes-table.component';
   imports: [
     CommonModule,
     MatButtonModule,
+    MatTableModule,
+    ScrollingModule,
     DownloadManagerModule,
   ],
   exports: [TradedStrikesViewComponent],

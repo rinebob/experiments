@@ -1,0 +1,60 @@
+
+
+.strikes-grid-container {
+    border: 1px solid black;
+    // display: flex;
+    // flex-direction: column;
+    // flex: 1 0 auto;
+    // height: 100%;
+    // width: 100%;
+    // overflow-y: scroll;
+
+    .scroll-viewport {
+        border: 1px solid blue;
+        height: 700px;
+        
+
+    }
+
+    .row-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+        width: 100%;
+    
+        .cell {
+            width: 50px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .off {
+            background-color: dimgrey;
+        }
+
+        .on {
+            background-color: lime;
+            color: black;
+        }
+    
+        .strike-cell {
+            width: 60px;
+        }
+        
+    }
+}
+
+.example-viewport {
+    height: 700px;
+    width: 100%;
+    border: 1px solid black;
+  }
+  
+  .example-item-detail {
+    height: 18px;
+  }
+  
+  .example-alternate {
+    background: rgba(127, 127, 127, 0.3);
+  }
+
