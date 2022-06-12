@@ -4,7 +4,7 @@ import { OptionType } from "./option_interfaces";
 
 
 export interface OratsFileFormat {
-    ticker?: string;
+    symbol?: string;
     stkPx?:  string;
     expirDate?: string;
     yte?:  string;

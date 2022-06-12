@@ -72,13 +72,13 @@ export class CsvService {
     console.log('cS pCFFS symbols/rawData[3]: ', symbols, rawData[3]);
 
     for (const symbol of symbols) {
-      let index = rawData.findIndex(datum => datum.ticker === symbol);
+      let index = rawData.findIndex(datum => datum.symbol === symbol);
       let datum = rawData[index]
       // console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
 
-      while(datum.ticker === symbol) {
+      while(datum.symbol === symbol) {
         records.push(datum);
-        // console.log('cS pCFFS while index/foundTicker: ', index, datum);
+        // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
         index++;
         datum = rawData[index];
       }
@@ -115,13 +115,13 @@ export class CsvService {
       if (currentRecord.length == headerLength) {  
         // if (currentRecord[0].trim() !== 'A' ) {break}
         let csvRecord: OratsFileFormat = {
-          ticker: currentRecord[0].trim(),
+          symbol: currentRecord[0].trim(),
           stkPx: currentRecord[1].trim(),
           expirDate: currentRecord[2].trim(),
           yte: currentRecord[3].trim(),
           strike: currentRecord[4].trim(),
-          cValue: currentRecord[5].trim(),
-          pValue: currentRecord[6].trim(),
+          cValue: currentRecord[10].trim(),
+          pValue: currentRecord[13].trim(),
 
         };  
 
@@ -223,7 +223,7 @@ export class CsvService {
 
   // ====== OTHER METHODS FROM DOWNLOAD MANAGER BUT NOT USED NOW ==========
 
-  // allTickers = [];
+  // allSymbols = [];
   // tradedStrikes = new Map<string, StrikesByExpiration[]>();
 
   // private generateTradedStrikesByExpirationMap(records: OratsFileFormat[]) {
@@ -231,7 +231,7 @@ export class CsvService {
   //   console.log('cS gTSM records[0]: ', records[0]);
 
   //   let currentRecord, prevRecord: OratsFileFormat = {};
-  //   let currentTicker, prevTicker = '';
+  //   let currentSymbol, prevSymbol = '';
   //   let currentYte, prevYte = '';
 
   //   let strikesArray = [];
@@ -240,12 +240,12 @@ export class CsvService {
   //   for (const record of records) {
   //     prevRecord =  {...currentRecord};
   //     currentRecord = {...record};
-  //     currentTicker = record.ticker;
+  //     currentSymbol = record.symbol;
   //     currentYte = record.yte;
 
-  //     // before we process the record, we have to check whether the current row is a new expiration or ticker
+  //     // before we process the record, we have to check whether the current row is a new expiration or symbol
   //     // if new expiration, write the data for prev exp and push to the array
-  //     // if new ticker, write the data for prev ticker and set the map
+  //     // if new symbol, write the data for prev symbol and set the map
   //     // then process the record no matter what
 
   //     if (currentYte !== prevYte) {
@@ -257,30 +257,30 @@ export class CsvService {
   //           date: prevRecord.expirDate,
   //           strikes: strikesArray,
   //         };
-  //         console.log('cS gTSM setting stByExp for exp/len: ', prevRecord.expirDate, strikesArray.length, prevTicker);
+  //         console.log('cS gTSM setting stByExp for exp/len: ', prevRecord.expirDate, strikesArray.length, prevSymbol);
   //         strikesByExpiration.push(strikesForExpiration);
   //         console.log('strikes array: ', strikesArray);
   //         strikesArray = [];
   //       };
 
-  //       // check for new ticker
-  //       if (currentTicker !== prevTicker) {
+  //       // check for new symbol
+  //       if (currentSymbol !== prevSymbol) {
 
   //         if (strikesByExpiration.length) {
-  //           // create the strikesForTicker object and set the tradedStrikes map
-  //           console.log('cS gTSM setting Map. ticker/strikes by exp len: ', prevTicker, strikesByExpiration.length);
-  //           this.tradedStrikes.set(prevTicker, strikesByExpiration);
-  //           console.log('map entry: ', this.tradedStrikes.get(prevTicker));
+  //           // create the strikesForSymbol object and set the tradedStrikes map
+  //           console.log('cS gTSM setting Map. symbol/strikes by exp len: ', prevSymbol, strikesByExpiration.length);
+  //           this.tradedStrikes.set(prevSymbol, strikesByExpiration);
+  //           console.log('map entry: ', this.tradedStrikes.get(prevSymbol));
   //           strikesByExpiration = [];
   //         }
 
-  //           // begin the new ticker
+  //           // begin the new symbol
   //           console.log('=====================================');
-  //           console.log('cS gTSM new current ticker/prevTicker/stkPx: ', currentTicker, prevTicker ?? 'no prev ticker', record.stkPx);
-  //           this.allTickers.push(currentTicker);
+  //           console.log('cS gTSM new current symbol/prevSymbol/stkPx: ', currentSymbol, prevSymbol ?? 'no prev symbol', record.stkPx);
+  //           this.allSymbols.push(currentSymbol);
         
-  //           // set prevTicker = currentTicker
-  //           prevTicker = currentTicker;
+  //           // set prevSymbol = currentSymbol
+  //           prevSymbol = currentSymbol;
   //       }
         
   //       // begin the new expiration
@@ -312,17 +312,17 @@ export class CsvService {
   // }
 
   // private getDataForSymbol(data: OratsFileFormat[], symbol: string) {
-  //   let index = data.findIndex(datum => datum.ticker === symbol);
+  //   let index = data.findIndex(datum => datum.symbol === symbol);
   //   if (index && data[index]) {
-  //     let rowTicker = data[index].ticker ?? '';
-  //     // console.log('cS gSDM init index/foundTicker: ', index, rowTicker);
+  //     let rowSymbol = data[index].symbol ?? '';
+  //     // console.log('cS gSDM init index/foundSymbol: ', index, rowSymbol);
   //     const symbolData: OratsFileFormat[] = [];
     
-  //     while(rowTicker === symbol) {
+  //     while(rowSymbol === symbol) {
   //       symbolData.push(data[index]);
   //       index++;
-  //       rowTicker = data[index].ticker;
-  //       // console.log('cS gSDM while index/foundTicker: ', index, rowTicker);
+  //       rowSymbol = data[index].symbol;
+  //       // console.log('cS gSDM while index/foundSymbol: ', index, rowSymbol);
   //     }
   //     // console.log('cS gSDM final symbol data slice for: ', symbol);
   //     // console.table(symbolData.slice(950, 1000));
