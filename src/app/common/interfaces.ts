@@ -119,8 +119,8 @@ export interface TradedStrikesTableDataObject {
 }
 
 export interface TradedStrikesDatum {
-    [key: string]: string | boolean;
-    strike: string;
+    [key: string]: number | boolean;
+    strike: number;
 }
 
 export interface TableColumn {

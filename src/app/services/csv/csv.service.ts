@@ -208,7 +208,7 @@ export class CsvService {
       const expirations: string[] = Object.values(strike[1]);
       // console.log('cS gTSDO expirations: ', expirations);
       const row = {
-        strike: strike[0],
+        strike: Number(strike[0]),
       }
       for (const exp of Object.values(allExpirations)) {
         row[exp] = expirations.includes(exp) ? true : false;
@@ -220,8 +220,6 @@ export class CsvService {
 
     return tradedStrikesData;
   }
-
-
 
   // ====== OTHER METHODS FROM DOWNLOAD MANAGER BUT NOT USED NOW ==========
 

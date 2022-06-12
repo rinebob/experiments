@@ -1,27 +1,16 @@
 
 <div #strikesGridContainer class="strikes-grid-container">
 
-    <!-- <cdk-virtual-scroll-viewport [itemSize]="18 * 7" class="example-viewport">
+    <ng-container *ngIf="tableData$ | async as data">
+        <div class="header-row" *ngIf="!!data.length">
+            <div class="header-strike-cell">
+                Strike
+            </div>
+            <div class="header-cell" *ngFor="let exp of allExpirations" >
+                {{exp}}
+            </div>
 
-        <div *cdkVirtualFor="let item of scrollItems;
-                       let index = index;
-                       let count = count;
-                       let first = first;
-                       let last = last;
-                       let even = even;
-                       let odd = odd;" [class.example-alternate]="odd">
-            <div class="example-item-detail">Item: {{item}}</div>
-            <div class="example-item-detail">Index: {{index}}</div>
-            <div class="example-item-detail">Count: {{count}}</div>
-            <div class="example-item-detail">First: {{first ? 'Yes' : 'No'}}</div>
-            <div class="example-item-detail">Last: {{last ? 'Yes' : 'No'}}</div>
-            <div class="example-item-detail">Even: {{even ? 'Yes' : 'No'}}</div>
-            <div class="example-item-detail">Odd: {{odd ? 'Yes' : 'No'}}</div>
         </div>
-
-    </cdk-virtual-scroll-viewport> -->
-
-    <ng-container *ngIf="tableDataSlice as data">
 
         <cdk-virtual-scroll-viewport [itemSize]="12" class="scroll-viewport">
 
@@ -40,32 +29,8 @@
 
             </div>
 
-
-
         </cdk-virtual-scroll-viewport>
 
     </ng-container>
-
-
-    <!-- <ng-container *ngIf="tableDataSlice as data">
-        
-            <div *ngFor="let row of data"  class="row-container">
-
-
-                <div class="cell strike-cell">
-                    {{row.strike}}
-                </div>
-                <div *ngFor="let exp of allExpirations" 
-                    class="cell" 
-                    [class.on]="row[exp] === true"
-                    [class.off]="row[exp] === false"
-                
-                >
-                {{row[exp]}}
-                </div>
-            </div>
-
-    
-    </ng-container> -->
 
 </div>
