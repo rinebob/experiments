@@ -5,6 +5,8 @@ import { OptionType } from "./option_interfaces";
 
 export interface OratsFileFormat {
     symbol?: string;
+    ctxSymbol? : string;
+    ctxSymbolHash?: string;
     stkPx?:  string;
     expirDate?: string;
     yte?:  string;
@@ -41,6 +43,8 @@ export interface OratsFileFormat {
     extPTheo?:  string;
     spot_px?:  string;
     trade_date?: string;
+    callSymbol?: string;
+    putSymbol?: string;
 
 }
 

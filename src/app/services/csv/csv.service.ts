@@ -11,6 +11,8 @@ export class CsvService {
 
   // holds one .csv file at a time
   csvDataBS = new BehaviorSubject<Object>({});
+
+  // dataRecordsArrayBS = new BehaviorSubject<>();
   
   constructor() { }
 
@@ -19,7 +21,93 @@ export class CsvService {
   setCsvData(data: Object) {
     this.csvDataBS.next({});
     this.csvDataBS.next(data);
+    // const newRecord = this.addSymbolAndHashColumns(data);
+    // console.log('cS sCD record with contract symbol and hash: ', newRecord);
   }
+
+
+  ///////////// ADD CONTRACT SYMBOL COLUMNS //////////
+
+  addSymbolAndHashColumns(data: Object) {
+    const records = this.generateRecordsArrayFromCsvFile(data);
+    const recordsWithNewColumns = [];
+    console.log('cS aSAHC records[0]: ', records[0]);
+
+    const someRecords = [records[0]];
+
+    for (const record of someRecords) {
+      const contractSymbols = this.generateContractSymbols(record);
+
+      record.ctxSymbol = contractSymbols.ctxS;
+      record.callSymbol = contractSymbols.cS;
+      record.putSymbol = contractSymbols.pS;
+
+      // const hash = this.generateHash(contractSymbols.ctxS);
+      // const recordWithSymbolAndHash = this.appendSymbolsAndHashToRecord(contractSymbols.ctxS, hash, record);
+      
+      
+      recordsWithNewColumns.push(record);
+    }
+
+    console.log('cS aSAHC recordsWithNewColumns: ', recordsWithNewColumns);
+
+    return recordsWithNewColumns;
+  }
+
+  // Generates a text string representing the symbol for the option contract
+  // format: underlyingSymbol_twoDigitYearTwoDigitDateTwoDigitMonth_C/P_eightDigitPrice(5.3)
+  // ex: TSLA June 16, 2022 517.5 call
+  // TSLA220618C00517500
+  generateContractSymbols(record: OratsFileFormat) {
+    // console.log('cS gCS input record: ', record);
+    let contractSymbol = '';
+    let callSymbol = '';
+    let putSymbol = '';
+    const undSymbol = record.symbol;
+    
+    const expiration = record.expirDate;
+    const expDate = new Date(expiration);
+    const yrStr = expDate.getFullYear().toString().slice(-2);
+    const mo = expDate.getMonth().toString();
+    const moStr = mo.toString().padStart(2, '0');
+    const day = expDate.getDate().toString();
+    const dayStr = day.padStart(2, '0');
+    
+    const strike = record.strike;
+    const strikeTextParts = strike.split('.');
+    // console.log('cS gCS strikeTextParts: ', strikeTextParts);
+    let strikeText = '';
+
+    strikeText += strikeTextParts[0].padStart(5, '0');
+    strikeText += strikeTextParts[1] ? strikeTextParts[1].padEnd(3, '0') : '000';
+    
+    // console.log('cS gCS expDate/yr/mo/day/: ', expDate, yrStr, moStr, dayStr, strikeText);
+    
+    contractSymbol = `${undSymbol}${yrStr}${moStr}${dayStr}${strikeText}`;
+    callSymbol = `${undSymbol}${yrStr}${moStr}${dayStr}C${strikeText}`;
+    putSymbol = `${undSymbol}${yrStr}${moStr}${dayStr}P${strikeText}`;
+    
+    // console.log('cS gCS ctx/c/p symbols: ', contractSymbol, callSymbol, putSymbol);
+
+    return {ctxS: contractSymbol, cS: callSymbol, pS: putSymbol};
+  }
+
+  generateHash(contractSymbol: string): string {
+    console.log('cS gCS input ctxSymbol: ', contractSymbol);
+    const hash = '';
+
+    return hash;
+  }
+
+  appendSymbolsAndHashToRecord(contractSymbols: string, hash: string, record: OratsFileFormat): OratsFileFormat {
+    console.log('cS gCS input ctxSymbol/hash/record: ', contractSymbols, hash, record);
+
+
+    return record;
+  }
+
+
+  ///////////// END ADD CONTRACT SYMBOL COLUMNS //////////
   
   ///////////////// TRADED STRIKES SERVICE ////////////////////////////
 
@@ -29,7 +117,7 @@ export class CsvService {
   
   // only public method
   // takes an array of symbols 
-  // returns an array of strikes with all expirations objects
+  // returns an array of (strikes with all expirations) objects
   // and the master list of expiration dates
   getTradedStrikesData(symbols: string[]) {
 
@@ -124,6 +212,12 @@ export class CsvService {
           pValue: currentRecord[13].trim(),
 
         };  
+
+        const contractSymbols = this.generateContractSymbols(csvRecord);
+
+        csvRecord.ctxSymbol = contractSymbols.ctxS;
+        csvRecord.callSymbol = contractSymbols.cS;
+        csvRecord.putSymbol = contractSymbols.pS;
 
         // this.symbols.add(currentRecord[0].trim());
         // this.expirations.add(currentRecord[2].trim());
