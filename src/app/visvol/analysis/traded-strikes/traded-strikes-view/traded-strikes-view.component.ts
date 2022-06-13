@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { CsvService } from '../../../../services/csv/csv.service';
-import {TradedStrikesTableDataObject} from '../../../../common/interfaces';
+import {RibbonInfo, TradedStrikesTableDataObject} from '../../../../common/interfaces';
 
 @Component({
   selector: 'exp-traded-strikes-view',

@@ -8,6 +8,7 @@ import { DownloadManagerModule } from '../../download-manager/download-manager.m
 import { TradedStrikesViewComponent } from './traded-strikes-view/traded-strikes-view.component';
 import { SymbolSelectorComponent } from './symbol-selector/symbol-selector.component';
 import { StrikesTableComponent } from './strikes-table/strikes-table.component';
+import { InfoRibbonComponent } from './info-ribbon/info-ribbon.component';
 
 
 
@@ -15,7 +16,8 @@ import { StrikesTableComponent } from './strikes-table/strikes-table.component';
   declarations: [
     TradedStrikesViewComponent,
     SymbolSelectorComponent,
-    StrikesTableComponent
+    StrikesTableComponent,
+    InfoRibbonComponent
   ],
   imports: [
     CommonModule,

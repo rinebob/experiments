@@ -129,3 +129,10 @@ export interface TableColumn {
     cell: (datum: TradedStrikesDatum) => string | boolean;
     
 }
+
+export interface RibbonInfo {
+    symbol: string;
+    date: Date;
+    price: string;
+    iv: string;
+}

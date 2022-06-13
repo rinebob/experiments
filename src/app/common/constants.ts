@@ -1,4 +1,4 @@
-import { Equity, GalleryViewOption, OHLCData } from "./interfaces";
+import { Equity, GalleryViewOption, OHLCData, RibbonInfo } from "./interfaces";
 import { ChartPanelConfig, DomRectCoordinates, PlotName, MarginConfig, ScaleLocation, SymbolTimeSetting, TimeFrame, TranslationCoord } from "./interfaces_chart";
 import * as av from "../services/av/av_interfaces";
 import { BlackScholesCalculatorConfig, BlackScholesOutput, ExpirationSeries, ExpirationTimeDistance, ExpriationTimeDistanceLabel, ExpriationTimeDistanceName, OptionPosition} from "./option_interfaces";
@@ -578,3 +578,10 @@ export const SYMBOLS: string[] = [
     "WMT",
     "XOM"
 ];
+
+export const RIBBON_INFO_INITIALIZER: RibbonInfo = {
+    symbol: 'intializer',
+    date: new Date(),
+    price: '',
+    iv: '',
+}
