@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import {OratsFileFormat, StrikesByExpiration} from '../../common/interfaces_orats';
-import {TradedStrikesTableDataObject} from '../../common/interfaces';
+import {RibbonInfo, TradedStrikesTableDataObject} from '../../common/interfaces';
+import { RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -12,53 +13,88 @@ export class CsvService {
   // holds one .csv file at a time
   csvDataBS = new BehaviorSubject<Object>({});
 
-  // dataRecordsArrayBS = new BehaviorSubject<>();
+  // array of all rows in the .csv file as one OratsFileFormat object per row
+  allRecordsBS = new BehaviorSubject<OratsFileFormat[]>([]);
   
   constructor() { }
 
-  ////////////////////// CSV DATA FROM FILE READER //////////////////
+  ////////////////////// CSV DATA FROM FILE READER  ACTIONS //////////////////
 
   setCsvData(data: Object) {
-    this.csvDataBS.next({});
+    // pushes the .csv file to a file BS
     this.csvDataBS.next(data);
+
+    // pushes array of OratsFileFormat objects to all records BS
+    // use as internal data source so this only happens once per upload
+    this.allRecordsBS.next(this.generateRecordsArrayFromCsvFile(this.csvDataBS.value));
+
+
     // const newRecord = this.addSymbolAndHashColumns(data);
     // console.log('cS sCD record with contract symbol and hash: ', newRecord);
   }
 
+  // run this first when a new file arrives from download manager
+  private generateRecordsArrayFromCsvFile(file): OratsFileFormat[] {
+    let csvRecordsArray = (<string>file).split(/\r\n|\n/);  
+    let headersRow = this.getHeaderArray(csvRecordsArray);  
+    // console.log('cS uL headersRow: ', headersRow);
+    const records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
 
-  ///////////// ADD CONTRACT SYMBOL COLUMNS //////////
-
-  addSymbolAndHashColumns(data: Object) {
-    const records = this.generateRecordsArrayFromCsvFile(data);
-    const recordsWithNewColumns = [];
-    console.log('cS aSAHC records[0]: ', records[0]);
-
-    const someRecords = [records[0]];
-
-    for (const record of someRecords) {
-      const contractSymbols = this.generateContractSymbols(record);
-
-      record.ctxSymbol = contractSymbols.ctxS;
-      record.callSymbol = contractSymbols.cS;
-      record.putSymbol = contractSymbols.pS;
-
-      // const hash = this.generateHash(contractSymbols.ctxS);
-      // const recordWithSymbolAndHash = this.appendSymbolsAndHashToRecord(contractSymbols.ctxS, hash, record);
-      
-      
-      recordsWithNewColumns.push(record);
-    }
-
-    console.log('cS aSAHC recordsWithNewColumns: ', recordsWithNewColumns);
-
-    return recordsWithNewColumns;
+    return records;
   }
 
+  private getHeaderArray(csvRecordsArr: any) {  
+    let headers = (<string>csvRecordsArr[0]).split(',');  
+    let headerArray = [];  
+    for (let j = 0; j < headers.length; j++) {  
+      headerArray.push(headers[j]);  
+    }  
+    return headerArray;  
+  }
+
+  // this is the entry point for configuring the OratsFileFormat object instances
+  private getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {  
+    let csvArr = [];  
+    let numRecords = csvRecordsArray.length;
+  
+    for (let i = 1; i < numRecords; i++) {  
+      let currentRecord = (<string>csvRecordsArray[i]).split(',');  
+      if (currentRecord.length == headerLength) {  
+        let csvRecord: OratsFileFormat = {
+          symbol: currentRecord[0].trim(),
+          trade_date: currentRecord[36].trim(),
+          stkPx: currentRecord[1].trim(),
+          expirDate: currentRecord[2].trim(),
+          yte: currentRecord[3].trim(),
+          strike: currentRecord[4].trim(),
+          cValue: currentRecord[10].trim(),
+          pValue: currentRecord[13].trim(),
+
+        };  
+
+        const contractSymbols = this.generateContractSymbols(csvRecord);
+
+        csvRecord.ctxSymbol = contractSymbols.ctxS;
+        csvRecord.callSymbol = contractSymbols.cS;
+        csvRecord.putSymbol = contractSymbols.pS;
+  
+        csvArr.push(csvRecord);  
+      }  
+    }  
+
+    // console.log('cS gDRAFCF symbols/expirations: ', this.symbols, this.expirations, this.strikes);
+    return csvArr;  
+  } 
+
+  //************* add contract symbol columns **************
+
+  
   // Generates a text string representing the symbol for the option contract
-  // format: underlyingSymbol_twoDigitYearTwoDigitDateTwoDigitMonth_C/P_eightDigitPrice(5.3)
+  // format: underlyingSymbol twoDigitYear TwoDigitDate TwoDigitMonth C/P eightDigitPrice(5.3)
+  // all one word no spaces or underscores etc.
   // ex: TSLA June 16, 2022 517.5 call
   // TSLA220618C00517500
-  generateContractSymbols(record: OratsFileFormat) {
+  private generateContractSymbols(record: OratsFileFormat) {
     // console.log('cS gCS input record: ', record);
     let contractSymbol = '';
     let callSymbol = '';
@@ -92,14 +128,41 @@ export class CsvService {
     return {ctxS: contractSymbol, cS: callSymbol, pS: putSymbol};
   }
 
-  generateHash(contractSymbol: string): string {
+  // these will possibly be used later
+  private addSymbolAndHashColumns(data: Object) {
+    const records = this.generateRecordsArrayFromCsvFile(data);
+    const recordsWithNewColumns = [];
+    console.log('cS aSAHC records[0]: ', records[0]);
+
+    const someRecords = [records[0]];
+
+    for (const record of someRecords) {
+      const contractSymbols = this.generateContractSymbols(record);
+
+      record.ctxSymbol = contractSymbols.ctxS;
+      record.callSymbol = contractSymbols.cS;
+      record.putSymbol = contractSymbols.pS;
+
+      // const hash = this.generateHash(contractSymbols.ctxS);
+      // const recordWithSymbolAndHash = this.appendSymbolsAndHashToRecord(contractSymbols.ctxS, hash, record);
+      
+      
+      recordsWithNewColumns.push(record);
+    }
+
+    console.log('cS aSAHC recordsWithNewColumns: ', recordsWithNewColumns);
+
+    return recordsWithNewColumns;
+  }
+
+  private generateHash(contractSymbol: string): string {
     console.log('cS gCS input ctxSymbol: ', contractSymbol);
     const hash = '';
 
     return hash;
   }
 
-  appendSymbolsAndHashToRecord(contractSymbols: string, hash: string, record: OratsFileFormat): OratsFileFormat {
+  private appendSymbolsAndHashToRecord(contractSymbols: string, hash: string, record: OratsFileFormat): OratsFileFormat {
     console.log('cS gCS input ctxSymbol/hash/record: ', contractSymbols, hash, record);
 
 
@@ -107,7 +170,39 @@ export class CsvService {
   }
 
 
-  ///////////// END ADD CONTRACT SYMBOL COLUMNS //////////
+  //************* end add contract symbol columns **************
+
+
+
+  ///////////////// END CSV DATA FROM FILE READER ACTIONS //////////////////
+
+  
+
+  //////////// GENERATE RIBBON INFO FOR TRADED STRIKES VIEW ////////////
+
+
+  public getRibbonInfo(symbol: string): RibbonInfo {
+    console.log('cS gRI input ribbon info symbol: ', symbol);
+    const index = this.allRecordsBS.value.findIndex(item => item.symbol === symbol);
+    const source = this.allRecordsBS.value[index];
+
+    const ribbonInfo: RibbonInfo = {
+      date: source.trade_date,
+      symbol: source.symbol,
+      price: source.stkPx,
+      iv: 'not impl.',
+    }
+    
+    console.log('cS gRI final ribbon info: ', ribbonInfo);
+
+    return ribbonInfo;
+  }
+
+
+
+
+
+  //////////// END GENERATE TRADED STRIKES VIEW RIBBON INFO ////////////
   
   ///////////////// TRADED STRIKES SERVICE ////////////////////////////
 
@@ -128,9 +223,10 @@ export class CsvService {
     } else {
 
     // generate raw records array from file filtered by symbols
-    const records = this.generateRecordsArrayForSelectedSymbols(this.csvDataBS.value, symbols);
+    const records = this.generateRecordsArrayForSelectedSymbols(symbols);
 
     // generate a strikes with expirations data object
+    // const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
     const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
 
     // generate a distinct master list of expirations 
@@ -154,21 +250,20 @@ export class CsvService {
   // takes a .csv file and an array of strings as symbols
   // returns an array of OratsFileFormat objects
   // this is the raw data from the .csv for all the selected symbols
-  private generateRecordsArrayForSelectedSymbols(file, symbols: string[]): OratsFileFormat[] {
-    const rawData = this.generateRecordsArrayFromCsvFile(file);
+  private generateRecordsArrayForSelectedSymbols(symbols: string[]): OratsFileFormat[] {
+    console.log('cS pCFFS symbols: ', symbols);
     const records: OratsFileFormat[] = [];
-    console.log('cS pCFFS symbols/rawData[3]: ', symbols, rawData[3]);
 
     for (const symbol of symbols) {
-      let index = rawData.findIndex(datum => datum.symbol === symbol);
-      let datum = rawData[index]
+      let index = this.allRecordsBS.value.findIndex(datum => datum.symbol === symbol);
+      let datum = this.allRecordsBS.value[index]
       // console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
 
       while(datum.symbol === symbol) {
         records.push(datum);
         // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
         index++;
-        datum = rawData[index];
+        datum = this.allRecordsBS.value[index];
       }
     }
     console.log('cS gCFFS records: ', records);
@@ -176,60 +271,11 @@ export class CsvService {
     return records;
   }
 
-  private generateRecordsArrayFromCsvFile(file): OratsFileFormat[] {
-    let csvRecordsArray = (<string>file).split(/\r\n|\n/);  
-    let headersRow = this.getHeaderArray(csvRecordsArray);  
-    // console.log('cS uL headersRow: ', headersRow);
-    const records = this.getDataRecordsArrayFromCSVFile(csvRecordsArray, headersRow.length);
 
-    return records;
-  }
 
-  private getHeaderArray(csvRecordsArr: any) {  
-    let headers = (<string>csvRecordsArr[0]).split(',');  
-    let headerArray = [];  
-    for (let j = 0; j < headers.length; j++) {  
-      headerArray.push(headers[j]);  
-    }  
-    return headerArray;  
-  }
+ 
 
-  private getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {  
-    let csvArr = [];  
-    let numRecords = csvRecordsArray.length;
-  
-    for (let i = 1; i < numRecords; i++) {  
-      let currentRecord = (<string>csvRecordsArray[i]).split(',');  
-      if (currentRecord.length == headerLength) {  
-        // if (currentRecord[0].trim() !== 'A' ) {break}
-        let csvRecord: OratsFileFormat = {
-          symbol: currentRecord[0].trim(),
-          stkPx: currentRecord[1].trim(),
-          expirDate: currentRecord[2].trim(),
-          yte: currentRecord[3].trim(),
-          strike: currentRecord[4].trim(),
-          cValue: currentRecord[10].trim(),
-          pValue: currentRecord[13].trim(),
-
-        };  
-
-        const contractSymbols = this.generateContractSymbols(csvRecord);
-
-        csvRecord.ctxSymbol = contractSymbols.ctxS;
-        csvRecord.callSymbol = contractSymbols.cS;
-        csvRecord.putSymbol = contractSymbols.pS;
-
-        // this.symbols.add(currentRecord[0].trim());
-        // this.expirations.add(currentRecord[2].trim());
-        // this.strikes.add(currentRecord[4].trim());
-  
-        csvArr.push(csvRecord);  
-      }  
-    }  
-
-    // console.log('cS gDRAFCF symbols/expirations: ', this.symbols, this.expirations, this.strikes);
-    return csvArr;  
-  }  
+   
   
   // 2) generateExpirationsByTradedStrike
   // takes an array of OFF objects

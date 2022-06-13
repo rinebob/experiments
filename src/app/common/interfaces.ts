@@ -132,7 +132,7 @@ export interface TableColumn {
 
 export interface RibbonInfo {
     symbol: string;
-    date: Date;
+    date: string;
     price: string;
     iv: string;
 }

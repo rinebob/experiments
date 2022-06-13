@@ -1,28 +1,21 @@
-<div class="ribbon-container" *ngIf="true">
+<div class="ribbon-container" *ngIf="ribbonInfo">
 
     <div class="ribbon-item-label">Date:</div>
-    <div class="ribbon-item">
-    </div>
+    <div class="ribbon-item">{{ribbonInfo.date}}</div>
     
     <div class="ribbon-item-label">Symbol:</div>
-    <div class="ribbon-item">
-
-    </div>
+    <div class="ribbon-item">{{ribbonInfo.symbol}}</div>
     
     <div class="ribbon-item-label">Price:</div>
-    <div class="ribbon-item">
-
-    </div>
+    <div class="ribbon-item">{{ribbonInfo.price}}</div>
 
     <div class="ribbon-item-label">IV:</div>
-    <div class="ribbon-item">
-
-    </div>
+    <div class="ribbon-item">{{ribbonInfo.iv}}</div>
 
     <div class="buttons-container">
-        <button class="ribbon-button">Calls + Puts</button>
-        <button class="ribbon-button">Calls only</button>
-        <button class="ribbon-button">Puts only</button>
+        <button class="ribbon-button" (click)="changeView('CALLS_AND_PUTS')">Calls + Puts</button>
+        <button class="ribbon-button" (click)="changeView('CALLS_ONLY')">Calls only</button>
+        <button class="ribbon-button" (click)="changeView('PUTS_ONLY')">Puts only</button>
     </div>
 
 </div>

@@ -580,8 +580,8 @@ export const SYMBOLS: string[] = [
 ];
 
 export const RIBBON_INFO_INITIALIZER: RibbonInfo = {
-    symbol: 'intializer',
-    date: new Date(),
+    symbol: '',
+    date: '',
     price: '',
     iv: '',
 }
