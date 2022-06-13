@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { CsvService } from '../../../../services/csv/csv.service';
 import {RibbonInfo, TradedStrikesTableDataObject} from '../../../../common/interfaces';
 import { RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
+import { OratsFileFormat } from 'src/app/common/interfaces_orats';
 
 @Component({
   selector: 'exp-traded-strikes-view',
@@ -25,7 +26,8 @@ export class TradedStrikesViewComponent implements OnInit {
   strikesTableDataBS = new BehaviorSubject<TradedStrikesTableDataObject>({});
   strikesTableData$: Observable<TradedStrikesTableDataObject> = this.strikesTableDataBS;
 
-
+  oratsDataRecordsBS = new BehaviorSubject<OratsFileFormat[]>([]);
+  oratsDataRecords$: Observable<OratsFileFormat[]> = this.oratsDataRecordsBS;
 
   constructor(
     readonly csvService: CsvService,
@@ -49,11 +51,15 @@ export class TradedStrikesViewComponent implements OnInit {
     const tradedStrikesTableData = this.getTradedStrikesForSymbol(symbol);
     this.strikesTableDataBS.next(tradedStrikesTableData);
 
+    // get data records for symbol
+    const oratsDataRecords = this.getOratsDataRecordsForSymbol(symbol);
+    console.log('tSV hSS orats record [0]: ', oratsDataRecords[0]);
+    this.oratsDataRecordsBS.next(oratsDataRecords);
+
   }
 
   getRibbonInfo(symbol: string): RibbonInfo {
     console.log('tSV gRI ribbon info for symbol: ', symbol);
-    // const ribbonInfo: RibbonInfo = RIBBON_INFO_INITIALIZER;
     const ribbonInfo: RibbonInfo = this.csvService.getRibbonInfo(symbol);
 
     return ribbonInfo;
@@ -80,6 +86,12 @@ export class TradedStrikesViewComponent implements OnInit {
 
     return data;
 
+  }
+
+  getOratsDataRecordsForSymbol(symbol: string): OratsFileFormat[] {
+    const recordsForSymbol = this.csvService.generateRecordsArrayForSelectedSymbols([symbol]);
+
+    return recordsForSymbol;
   }
 
 }

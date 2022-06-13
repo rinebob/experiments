@@ -28,4 +28,9 @@ export class InfoRibbonComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  changeView(view: string) {
+    console.log('iR cV change to: ', view);
+
+  }
+
 }

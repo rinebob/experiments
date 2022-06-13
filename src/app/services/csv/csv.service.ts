@@ -28,9 +28,6 @@ export class CsvService {
     // use as internal data source so this only happens once per upload
     this.allRecordsBS.next(this.generateRecordsArrayFromCsvFile(this.csvDataBS.value));
 
-
-    // const newRecord = this.addSymbolAndHashColumns(data);
-    // console.log('cS sCD record with contract symbol and hash: ', newRecord);
   }
 
   // run this first when a new file arrives from download manager
@@ -87,7 +84,6 @@ export class CsvService {
   } 
 
   //************* add contract symbol columns **************
-
   
   // Generates a text string representing the symbol for the option contract
   // format: underlyingSymbol twoDigitYear TwoDigitDate TwoDigitMonth C/P eightDigitPrice(5.3)
@@ -169,17 +165,17 @@ export class CsvService {
     return record;
   }
 
-
   //************* end add contract symbol columns **************
 
-
-
   ///////////////// END CSV DATA FROM FILE READER ACTIONS //////////////////
+
+
+
+
 
   
 
   //////////// GENERATE RIBBON INFO FOR TRADED STRIKES VIEW ////////////
-
 
   public getRibbonInfo(symbol: string): RibbonInfo {
     console.log('cS gRI input ribbon info symbol: ', symbol);
@@ -198,23 +194,45 @@ export class CsvService {
     return ribbonInfo;
   }
 
+  //////////// END RIBBON INFO FOR TRADED STRIKES VIEW //////////
 
 
 
 
-  //////////// END GENERATE TRADED STRIKES VIEW RIBBON INFO ////////////
+
+
   
-  ///////////////// TRADED STRIKES SERVICE ////////////////////////////
+  //////////// TRADED STRIKES TABLE DATA OBJECT ////////////////////////
 
-  // symbols = new Set<string>();
-  // expirations = new Set<string>();
-  // strikes = new Set<string>();
-  
-  // only public method
+    // 1) generateRecordsArrayForSelectedSymbols
+  // takes a .csv file and an array of strings as symbols
+  // returns an array of OratsFileFormat objects
+  // this is the raw data from the .csv for all the selected symbols
+  public generateRecordsArrayForSelectedSymbols(symbols: string[]): OratsFileFormat[] {
+    console.log('cS gRAFSS symbols: ', symbols);
+    const records: OratsFileFormat[] = [];
+
+    for (const symbol of symbols) {
+      let index = this.allRecordsBS.value.findIndex(datum => datum.symbol === symbol);
+      let datum = this.allRecordsBS.value[index]
+      // console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
+
+      while(datum.symbol === symbol) {
+        records.push(datum);
+        // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
+        index++;
+        datum = this.allRecordsBS.value[index];
+      }
+    }
+    console.log('cS gRAFSS records: ', records);
+
+    return records;
+  }
+
   // takes an array of symbols 
   // returns an array of (strikes with all expirations) objects
   // and the master list of expiration dates
-  getTradedStrikesData(symbols: string[]) {
+  public getTradedStrikesData(symbols: string[]) {
 
     if (!this.csvDataBS.value || !this.csvDataBS.value[0] ) {
       console.log('cS gTSD no csv data dude!!  You gotta choose a file!');
@@ -245,37 +263,6 @@ export class CsvService {
   }
 
   }
-
-  // 1) generateRecordsArrayForSelectedSymbols
-  // takes a .csv file and an array of strings as symbols
-  // returns an array of OratsFileFormat objects
-  // this is the raw data from the .csv for all the selected symbols
-  private generateRecordsArrayForSelectedSymbols(symbols: string[]): OratsFileFormat[] {
-    console.log('cS pCFFS symbols: ', symbols);
-    const records: OratsFileFormat[] = [];
-
-    for (const symbol of symbols) {
-      let index = this.allRecordsBS.value.findIndex(datum => datum.symbol === symbol);
-      let datum = this.allRecordsBS.value[index]
-      // console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
-
-      while(datum.symbol === symbol) {
-        records.push(datum);
-        // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
-        index++;
-        datum = this.allRecordsBS.value[index];
-      }
-    }
-    console.log('cS gCFFS records: ', records);
-
-    return records;
-  }
-
-
-
- 
-
-   
   
   // 2) generateExpirationsByTradedStrike
   // takes an array of OFF objects
