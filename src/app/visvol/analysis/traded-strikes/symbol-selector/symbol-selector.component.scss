@@ -1,0 +1,16 @@
+
+
+.symbol-buttons-container {
+    border: 1px solid black;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+
+    .symbol-button {
+        padding: 2px 4px;
+        min-width: 0px;
+        line-height: 14px;
+
+
+    }
+}

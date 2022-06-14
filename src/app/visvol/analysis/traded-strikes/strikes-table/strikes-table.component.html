@@ -1,0 +1,36 @@
+
+<div #strikesGridContainer class="strikes-grid-container">
+
+    <ng-container *ngIf="tableData$ | async as data">
+        <div class="header-row" *ngIf="!!data.length">
+            <div class="header-strike-cell">
+                Strike
+            </div>
+            <div class="header-cell" *ngFor="let exp of allExpirations" >
+                {{exp}}
+            </div>
+
+        </div>
+
+        <cdk-virtual-scroll-viewport [itemSize]="12" class="scroll-viewport">
+
+            <div *cdkVirtualFor="let row of data;" class="row-container">
+                <div class="cell strike-cell">
+                    {{row.strike}}
+                </div>
+                <div *ngFor="let exp of allExpirations" 
+                    class="cell" 
+                    [class.on]="row[exp] === true"
+                    [class.off]="row[exp] === false"
+                
+                >
+                {{row[exp]}}
+                </div>
+
+            </div>
+
+        </cdk-virtual-scroll-viewport>
+
+    </ng-container>
+
+</div>

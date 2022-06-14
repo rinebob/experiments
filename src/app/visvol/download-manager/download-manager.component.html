@@ -1,8 +1,17 @@
 <input type="file" #csvReader
-       name="Upload CSV"
+       multiple
+       name="Upload CSV[]"
        id="txtFileUpload"
        (change)="uploadListener($event)"
-       accept=".csv" />    
+       accept=".csv" />
+
+<!-- <input type="text" [formControl]="symbol"/> 
+       
+<button (click)="getStrikesForSymbol()">Symbol</button>
+
+<input type="text" [formControl]="ticker"/> 
+       
+<button (click)="showDataFor()">Show data</button>
 
 <table class="minimalistBlack" *ngIf="data$ | async as records">    
   <thead>    
@@ -27,7 +36,7 @@
       <td> <span>{{record.pValue}}</span> </td>    
     </tr>    
   </tbody>    
-</table>  
+</table>   -->
 
 <!-- ticker: string;
     stkPx: number;

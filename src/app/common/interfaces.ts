@@ -113,3 +113,26 @@ export enum PriceComponent {
     CLOSE = 'close',
 }
 
+export interface TradedStrikesTableDataObject {
+    allExpirations?: string[];
+    tradedStrikesData?: TradedStrikesDatum[];
+}
+
+export interface TradedStrikesDatum {
+    [key: string]: number | boolean;
+    strike: number;
+}
+
+export interface TableColumn {
+    columnDef: string;
+    header: string;
+    cell: (datum: TradedStrikesDatum) => string | boolean;
+    
+}
+
+export interface RibbonInfo {
+    symbol: string;
+    date: string;
+    price: string;
+    iv: string;
+}

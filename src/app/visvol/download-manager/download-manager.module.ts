@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import {DownloadManagerRoutingModule} from './download-manager-routing.module';
 import { DownloadManagerComponent } from './download-manager.component';
 
@@ -11,7 +13,12 @@ import { DownloadManagerComponent } from './download-manager.component';
   ],
   imports: [
     CommonModule,
-    DownloadManagerRoutingModule
-  ]
+    HttpClientModule,
+    ReactiveFormsModule,
+    DownloadManagerRoutingModule,
+  ],
+  exports: [
+    DownloadManagerComponent,
+  ],
 })
 export class DownloadManagerModule { }

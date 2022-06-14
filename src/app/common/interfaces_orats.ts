@@ -4,7 +4,9 @@ import { OptionType } from "./option_interfaces";
 
 
 export interface OratsFileFormat {
-    ticker?: string;
+    symbol?: string;
+    ctxSymbol? : string;
+    ctxSymbolHash?: string;
     stkPx?:  string;
     expirDate?: string;
     yte?:  string;
@@ -41,6 +43,8 @@ export interface OratsFileFormat {
     extPTheo?:  string;
     spot_px?:  string;
     trade_date?: string;
+    callSymbol?: string;
+    putSymbol?: string;
 
 }
 
@@ -61,4 +65,15 @@ export interface OratsDatum {
 export interface OratsStrikeData {
     metadata: StrikeMetadata;
     dataSeries?: OratsDatum[];
+}
+
+export interface StrikesByExpiration {
+    yte: string;
+    date: string;
+    strikes: string[];
+}
+
+export interface StrikesWithExpirations {
+    strike: string;
+     expirations: string[];
 }

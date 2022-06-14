@@ -1,0 +1,49 @@
+
+
+.ribbon-container {
+    border: 1px solid black;
+    margin: 4px 0;
+    
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    
+
+    .ribbon-item {
+        color: white;
+        height: 18px;
+        width: 100px;
+        background-color: gray;
+        margin: 0 10px;
+        text-align: center;
+
+    }
+    .ribbon-item-label {
+        font-size: 12px;
+        color: black;
+        height: 16px;
+        margin: 0 0 0 10px;
+
+    }
+
+    .buttons-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex: 1 0 auto;
+
+
+        .ribbon-button {
+            background-color: gray;
+            color: white;
+            font-size: 12px;
+            height: 18px;
+            width: 100px;
+            margin: 0 10px;
+            padding: 0;
+
+        }
+
+    }
+}
