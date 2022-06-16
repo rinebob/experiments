@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { CsvService } from '../../../../services/csv/csv.service';
-import {RibbonInfo, TradedStrikesTableDataObject} from '../../../../common/interfaces';
-import { RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
-import { OratsFileFormat } from 'src/app/common/interfaces_orats';
+import {RibbonInfo, TradedStrikesDatum, TradedStrikesTableDataObject} from '../../../../common/interfaces';
+import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
+import { DeltaStrikesGridData, OratsFileFormat, OratsUiDatum } from 'src/app/common/interfaces_orats';
 
 @Component({
   selector: 'exp-traded-strikes-view',
@@ -23,11 +23,20 @@ export class TradedStrikesViewComponent implements OnInit {
   ribbonInfoBS = new BehaviorSubject<RibbonInfo>(RIBBON_INFO_INITIALIZER);
   ribbonInfo$: Observable<RibbonInfo> = this.ribbonInfoBS;
 
+  allExpirationsBS = new BehaviorSubject<string[]>([]);
+  allExpirations$: Observable<string[]> = this.allExpirationsBS;
+
+  strikesWithExpirationsBS = new BehaviorSubject<TradedStrikesDatum[]>([])
+  strikesWithExpirations$: Observable<TradedStrikesDatum[]> = this.strikesWithExpirationsBS;
+
   strikesTableDataBS = new BehaviorSubject<TradedStrikesTableDataObject>({});
   strikesTableData$: Observable<TradedStrikesTableDataObject> = this.strikesTableDataBS;
 
-  oratsDataRecordsBS = new BehaviorSubject<OratsFileFormat[]>([]);
-  oratsDataRecords$: Observable<OratsFileFormat[]> = this.oratsDataRecordsBS;
+  oratsDataRecordsBS = new BehaviorSubject<OratsUiDatum[]>([]);
+  oratsDataRecords$: Observable<OratsUiDatum[]> = this.oratsDataRecordsBS;
+
+  deltaStrikesGridDataBS = new BehaviorSubject<DeltaStrikesGridData>({});
+  deltaStrikesGridData$: Observable<DeltaStrikesGridData> = this.deltaStrikesGridDataBS;
 
   constructor(
     readonly csvService: CsvService,
@@ -47,51 +56,56 @@ export class TradedStrikesViewComponent implements OnInit {
     console.log('tSV hSS ribbon info: ', ribbonInfo);
     this.ribbonInfoBS.next(ribbonInfo);
 
-    // get traded strikes
-    const tradedStrikesTableData = this.getTradedStrikesForSymbol(symbol);
+    // get traded strikes for symbol
+    const tradedStrikesTableData = this.getTradedStrikesGridDataForSymbol(symbol);
     this.strikesTableDataBS.next(tradedStrikesTableData);
+    this.allExpirationsBS.next(tradedStrikesTableData.allExpirations);
+    this.strikesWithExpirationsBS.next(tradedStrikesTableData.tradedStrikesData);
 
-    // get data records for symbol
+    // get all data records for symbol
     const oratsDataRecords = this.getOratsDataRecordsForSymbol(symbol);
     console.log('tSV hSS orats record [0]: ', oratsDataRecords[0]);
     this.oratsDataRecordsBS.next(oratsDataRecords);
 
+    // get Delta strikes grid data object
+    const deltaStrikesGridData = this.getDeltaStrikesGridData(oratsDataRecords);
+    console.log('tSV hSS deltaStrikesGridData: ', deltaStrikesGridData);
+    this.deltaStrikesGridDataBS.next(deltaStrikesGridData);
+
+
+
   }
 
   getRibbonInfo(symbol: string): RibbonInfo {
-    console.log('tSV gRI ribbon info for symbol: ', symbol);
+    // console.log('tSV gRI ribbon info for symbol: ', symbol);
     const ribbonInfo: RibbonInfo = this.csvService.getRibbonInfo(symbol);
 
     return ribbonInfo;
   }
 
-  getTradedStrikesForSymbol(symbol: string): TradedStrikesTableDataObject {
-    console.log('tSV gTSFS get strikes for symbol: ', symbol);
+  getTradedStrikesGridDataForSymbol(symbol: string): TradedStrikesTableDataObject {
+    // console.log('tSV gTSFS get strikes for symbol: ', symbol);
 
     const data: TradedStrikesTableDataObject = 
       this.csvService.getTradedStrikesData([symbol]);
 
-      // this.strikesTableDataBS.next(data);
-
     if (data && data.allExpirations && data.tradedStrikesData) {
-      // this.tradedStrikesDataBS.next(data.tradedStrikesData);
-      // this.allExpirationsBS.next(data.allExpirations);
-      // console.log('tSV gTSFS expirations: ', this.allExpirationsBS.value);
-      // console.log('tSV gTSFS traded strikes data[0]: ', this.tradedStrikesDataBS.value[0]);
-
-      
     } else {
       console.log('cS gTSD dude i told you theres no effin data!!');
     }
 
     return data;
-
   }
 
-  getOratsDataRecordsForSymbol(symbol: string): OratsFileFormat[] {
+  getOratsDataRecordsForSymbol(symbol: string): OratsUiDatum[] {
     const recordsForSymbol = this.csvService.generateRecordsArrayForSelectedSymbols([symbol]);
 
     return recordsForSymbol;
   }
 
+  getDeltaStrikesGridData(data: OratsUiDatum[]): DeltaStrikesGridData  {
+    const deltaStrikesGridData = this.csvService.generateDeltaStrikesGridData(data);
+
+    return deltaStrikesGridData;
+  }
 }

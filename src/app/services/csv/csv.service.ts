@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import {OratsFileFormat, StrikesByExpiration} from '../../common/interfaces_orats';
-import {RibbonInfo, TradedStrikesTableDataObject} from '../../common/interfaces';
-import { RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
+import { DeltaStrikesGridData, OratsFileFormat, OratsUiDatum, StrikesByExpiration} from '../../common/interfaces_orats';
+import { RibbonInfo, TradedStrikesTableDataObject} from '../../common/interfaces';
+import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,8 @@ export class CsvService {
   // holds one .csv file at a time
   csvDataBS = new BehaviorSubject<Object>({});
 
-  // array of all rows in the .csv file as one OratsFileFormat object per row
-  allRecordsBS = new BehaviorSubject<OratsFileFormat[]>([]);
+  // array of all rows in the .csv file as one OratsUiDatum object per row
+  allRecordsBS = new BehaviorSubject<OratsUiDatum[]>([]);
   
   constructor() { }
 
@@ -24,14 +24,14 @@ export class CsvService {
     // pushes the .csv file to a file BS
     this.csvDataBS.next(data);
 
-    // pushes array of OratsFileFormat objects to all records BS
+    // pushes array of OratsUiDatum objects to all records BS
     // use as internal data source so this only happens once per upload
     this.allRecordsBS.next(this.generateRecordsArrayFromCsvFile(this.csvDataBS.value));
 
   }
 
   // run this first when a new file arrives from download manager
-  private generateRecordsArrayFromCsvFile(file): OratsFileFormat[] {
+  private generateRecordsArrayFromCsvFile(file): OratsUiDatum[] {
     let csvRecordsArray = (<string>file).split(/\r\n|\n/);  
     let headersRow = this.getHeaderArray(csvRecordsArray);  
     // console.log('cS uL headersRow: ', headersRow);
@@ -49,7 +49,7 @@ export class CsvService {
     return headerArray;  
   }
 
-  // this is the entry point for configuring the OratsFileFormat object instances
+  // this is the entry point for configuring the OratsUiDatum object instances
   private getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {  
     let csvArr = [];  
     let numRecords = csvRecordsArray.length;
@@ -57,7 +57,7 @@ export class CsvService {
     for (let i = 1; i < numRecords; i++) {  
       let currentRecord = (<string>csvRecordsArray[i]).split(',');  
       if (currentRecord.length == headerLength) {  
-        let csvRecord: OratsFileFormat = {
+        let csvRecord: OratsUiDatum = {
           symbol: currentRecord[0].trim(),
           trade_date: currentRecord[36].trim(),
           stkPx: currentRecord[1].trim(),
@@ -66,6 +66,9 @@ export class CsvService {
           strike: currentRecord[4].trim(),
           cValue: currentRecord[10].trim(),
           pValue: currentRecord[13].trim(),
+          delta: currentRecord[25].trim(),
+          cMidIv: currentRecord[16].trim(),
+          pMidIv: currentRecord[20].trim(),
 
         };  
 
@@ -90,7 +93,7 @@ export class CsvService {
   // all one word no spaces or underscores etc.
   // ex: TSLA June 16, 2022 517.5 call
   // TSLA220618C00517500
-  private generateContractSymbols(record: OratsFileFormat) {
+  private generateContractSymbols(record: OratsUiDatum) {
     // console.log('cS gCS input record: ', record);
     let contractSymbol = '';
     let callSymbol = '';
@@ -158,7 +161,7 @@ export class CsvService {
     return hash;
   }
 
-  private appendSymbolsAndHashToRecord(contractSymbols: string, hash: string, record: OratsFileFormat): OratsFileFormat {
+  private appendSymbolsAndHashToRecord(contractSymbols: string, hash: string, record: OratsUiDatum): OratsUiDatum {
     console.log('cS gCS input ctxSymbol/hash/record: ', contractSymbols, hash, record);
 
 
@@ -169,48 +172,15 @@ export class CsvService {
 
   ///////////////// END CSV DATA FROM FILE READER ACTIONS //////////////////
 
+  //////////////////// HELPER FUNCTIONS //////////////////////////////
 
 
-
-
-  
-
-  //////////// GENERATE RIBBON INFO FOR TRADED STRIKES VIEW ////////////
-
-  public getRibbonInfo(symbol: string): RibbonInfo {
-    console.log('cS gRI input ribbon info symbol: ', symbol);
-    const index = this.allRecordsBS.value.findIndex(item => item.symbol === symbol);
-    const source = this.allRecordsBS.value[index];
-
-    const ribbonInfo: RibbonInfo = {
-      date: source.trade_date,
-      symbol: source.symbol,
-      price: source.stkPx,
-      iv: 'not impl.',
-    }
-    
-    console.log('cS gRI final ribbon info: ', ribbonInfo);
-
-    return ribbonInfo;
-  }
-
-  //////////// END RIBBON INFO FOR TRADED STRIKES VIEW //////////
-
-
-
-
-
-
-  
-  //////////// TRADED STRIKES TABLE DATA OBJECT ////////////////////////
-
-    // 1) generateRecordsArrayForSelectedSymbols
   // takes a .csv file and an array of strings as symbols
-  // returns an array of OratsFileFormat objects
+  // returns an array of OratsUiDatum objects
   // this is the raw data from the .csv for all the selected symbols
-  public generateRecordsArrayForSelectedSymbols(symbols: string[]): OratsFileFormat[] {
-    console.log('cS gRAFSS symbols: ', symbols);
-    const records: OratsFileFormat[] = [];
+  public generateRecordsArrayForSelectedSymbols(symbols: string[]): OratsUiDatum[] {
+    // console.log('cS gRAFSS symbols: ', symbols);
+    const records: OratsUiDatum[] = [];
 
     for (const symbol of symbols) {
       let index = this.allRecordsBS.value.findIndex(datum => datum.symbol === symbol);
@@ -224,10 +194,151 @@ export class CsvService {
         datum = this.allRecordsBS.value[index];
       }
     }
-    console.log('cS gRAFSS records: ', records);
+    // console.log('cS gRAFSS records: ', records);
 
     return records;
   }
+
+//////////////////// END HELPER FUNCTIONS //////////////////////////////
+  
+
+//////////// GENERATE RIBBON INFO FOR TRADED STRIKES VIEW ////////////
+
+  public getRibbonInfo(symbol: string): RibbonInfo {
+    // console.log('cS gRI input ribbon info symbol: ', symbol);
+    const index = this.allRecordsBS.value.findIndex(item => item.symbol === symbol);
+    const source = this.allRecordsBS.value[index];
+
+    const ribbonInfo: RibbonInfo = {
+      date: source.trade_date,
+      symbol: source.symbol,
+      price: source.stkPx,
+      iv: 'not impl.',
+    }
+    
+    // console.log('cS gRI final ribbon info: ', ribbonInfo);
+
+    return ribbonInfo;
+  }
+
+//////////// END RIBBON INFO FOR TRADED STRIKES VIEW //////////
+
+/////////////// DELTA STRIKES GRID DATA OBJECT //////////////////
+
+  public generateDeltaStrikesGridData(data: OratsUiDatum[]): DeltaStrikesGridData  {
+    const deltas = [...DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS.keys()];
+    let currentDelta = deltas[0];
+    console.log('tSV gDSGD deltas: ', deltas, currentDelta);
+
+    let currentExpiration = 'initExp';
+    let currentDistance = 999;
+    let recordsForExpiration = [];
+    let index = 0;
+    let goToNextExpiration = false;
+    
+    // output object shape
+    // key as expiration and value as object with array of records for each target delta
+    // {
+    //   '6/1/2020': [...targetDeltaRecordsForExpiration],
+    //   '6/8/2020': [...targetDeltaRecordsForExpiration],
+    //   '6/22/2020': [...targetDeltaRecordsForExpiration],
+    // }
+    const deltaStrikesGridData: DeltaStrikesGridData = {}
+
+    for (const datum of data) {
+      
+      if (goToNextExpiration === false || (goToNextExpiration === true && (datum.expirDate !== currentExpiration))) {
+
+        if (datum.expirDate !== currentExpiration) {
+          // console.log('========== New expiration ==============================');
+          // console.log('tSV gDSGD datum index: ', index);
+          // console.log('tSV gDSGD cur/new exp: ', currentExpiration, datum.expirDate);
+          // console.log('tSV gDSGD recordsForExp.len: ', recordsForExpiration.length);
+
+          currentExpiration = datum.expirDate;
+
+          // only write to delta strikes object if there are records for exp
+          if (recordsForExpiration.length) {
+            deltaStrikesGridData[currentExpiration] = [...recordsForExpiration];
+            // console.log('tSV gDSGD writing deltaStrikesGridData: ', deltaStrikesGridData);
+            
+            // reset for new expiration
+            
+            recordsForExpiration.length = 0;
+            goToNextExpiration = false;
+            currentDistance = 999;
+            currentDelta = deltas[0];
+            // console.log('tSV gDSGD finished reset. new gTNE/cE/cDi/cDe: ', goToNextExpiration, currentExpiration, currentDistance, currentDelta);
+            // console.log('-------------------------------');
+          }
+        }
+        
+        // use absolute value since we only need the magnitude
+        const distance = Math.abs(Number(datum.delta) - currentDelta);
+        // console.log('tSV gDSGD curDel/dat.del/distance/cur dist: ', currentDelta, datum.delta, distance, currentDistance);
+
+        // the first new record will always fail because initial currentDistance is 999
+        if (distance > currentDistance) {
+
+          // we found our target 
+          // console.log('--------------- tSV gDSGD target found for delta ',currentDelta,' ----------------');
+
+          // get the number of records to return
+          // create an array by slicing data at the current index and as many on either side to create the proper size array
+
+          const offset = Math.floor(DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS.get(currentDelta) / 2);
+
+          // since we're now on the record after the one we're interested on, specify the index
+          // of the target record as index - 1, and use that to grab the records we want
+          const targetIndex = index - 1;
+          // console.log('tSV gDSGD found at index: ', targetIndex);
+
+          const records = data.slice(targetIndex - offset, targetIndex + offset + 1);
+          // console.log('tSV gDSGD strike/offset: ', data[targetIndex].strike, offset);
+          // console.log('tSV gDSGD writing to records for exp array');
+          // console.table(records)
+
+          // push these records to the records for expiration array
+          recordsForExpiration.push(...records);
+
+          // now we need to search for the next target delta
+          // this continues the search from the current record
+          const curIndex = [...deltas].findIndex(delta => delta === currentDelta);
+          currentDelta = deltas[curIndex + 1];
+          currentDistance = 999;
+          // console.log('tSV gDSGD new current delta/dist: ', currentDelta, currentDistance);
+
+          if (!currentDelta) {
+            // since we don't want to search any more records in this expiration, we set go to next exp to true
+            goToNextExpiration = true;
+            // console.log('setting go to next expiration true. index: ', index);
+            // console.log('-------------------------------');
+          }
+        } else {
+          // console.log('tSV gDSGD dist < cur dist: ', distance, currentDistance);
+          currentDistance = distance;
+          // go to next record - this will happen until we find the target delta
+          index ++;
+          // console.log('tSV gDSGD new index/cur dist: ', index, currentDistance);
+        }
+      } else {
+        index ++;
+        // console.log('tSV gDSGD go to next exp = true. new index: ', index);
+      }
+    }
+
+    // console.log('tSV gDSGD final deltaStrikesGridData: ', deltaStrikesGridData);
+    
+    return deltaStrikesGridData;
+  }
+
+
+
+
+
+/////////////// END DELTA STRIKES GRID DATA OBJECT //////////////////
+  
+  //////////// TRADED STRIKES TABLE DATA OBJECT ////////////////////////
 
   // takes an array of symbols 
   // returns an array of (strikes with all expirations) objects
@@ -270,8 +381,8 @@ export class CsvService {
   // array of strings as expirations for the key strike
   // this is all the traded contracts for a particular symbol
   // arranged by strike with all expirations for that strike
-  private generateExpirationsByTradedStrike(records: OratsFileFormat[]) {
-    console.log('cS gEBTSM records[0]: ', records[0]);
+  private generateExpirationsByTradedStrike(records: OratsUiDatum[]) {
+    // console.log('cS gEBTSM records[0]: ', records[0]);
     const strikesWithExpirations = {};
     for (const record of records) {
       let expirations: string[] = strikesWithExpirations[record.strike] ? 
@@ -280,7 +391,7 @@ export class CsvService {
       expirations.push(record.expirDate);
       strikesWithExpirations[record.strike] = expirations;
     }
-    console.log('cS gEBTS strikesWithExpirations: ', strikesWithExpirations);
+    // console.log('cS gEBTS strikesWithExpirations: ', strikesWithExpirations);
 
     return strikesWithExpirations;
   }
@@ -343,7 +454,7 @@ export class CsvService {
       // console.log('cS gTSDO final row: ', row);
       tradedStrikesData.push(row);
     }
-    console.log('cS gTSDO final tradedStrikesData: ', tradedStrikesData);
+    // console.log('cS gTSDO final tradedStrikesData: ', tradedStrikesData);
 
     return tradedStrikesData;
   }
@@ -353,11 +464,11 @@ export class CsvService {
   // allSymbols = [];
   // tradedStrikes = new Map<string, StrikesByExpiration[]>();
 
-  // private generateTradedStrikesByExpirationMap(records: OratsFileFormat[]) {
+  // private generateTradedStrikesByExpirationMap(records: OratsUiDatum[]) {
   //   // console.log(records.slice(100, 110));
   //   console.log('cS gTSM records[0]: ', records[0]);
 
-  //   let currentRecord, prevRecord: OratsFileFormat = {};
+  //   let currentRecord, prevRecord: OratsUiDatum = {};
   //   let currentSymbol, prevSymbol = '';
   //   let currentYte, prevYte = '';
 
@@ -422,11 +533,11 @@ export class CsvService {
   //   }
   // }
 
-  // private generateSymbolsDataMap(data: OratsFileFormat[]) {
+  // private generateSymbolsDataMap(data: OratsUiDatum[]) {
   //   // const symbolsForData = SYMBOLS;
   //   // const symbolsForData = [SYMBOLS[1]];
   //   const symbolsForData = [...SYMBOLS.slice(10, 120)];
-  //   const symbolsDataMap = new Map<string, OratsFileFormat>();
+  //   const symbolsDataMap = new Map<string, OratsUiDatum>();
 
   //   for (const symbol of symbolsForData) {
   //     console.log('-----------------------------');
@@ -438,12 +549,12 @@ export class CsvService {
   //   }
   // }
 
-  // private getDataForSymbol(data: OratsFileFormat[], symbol: string) {
+  // private getDataForSymbol(data: OratsUiDatum[], symbol: string) {
   //   let index = data.findIndex(datum => datum.symbol === symbol);
   //   if (index && data[index]) {
   //     let rowSymbol = data[index].symbol ?? '';
   //     // console.log('cS gSDM init index/foundSymbol: ', index, rowSymbol);
-  //     const symbolData: OratsFileFormat[] = [];
+  //     const symbolData: OratsUiDatum[] = [];
     
   //     while(rowSymbol === symbol) {
   //       symbolData.push(data[index]);
@@ -463,7 +574,7 @@ export class CsvService {
   //   } else return;
   // }
 
-  // private generateDataMap(data: OratsFileFormat[], field: string) {
+  // private generateDataMap(data: OratsUiDatum[], field: string) {
   // }
 
   private thatsAllFolks() {}

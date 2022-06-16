@@ -585,3 +585,11 @@ export const RIBBON_INFO_INITIALIZER: RibbonInfo = {
     price: '',
     iv: '',
 }
+
+// For DeltaStrikesGrid component
+// Map of key target delta and value number of records to return for that target delta
+export const DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS = new Map([
+    [.80, 1],
+    [.50, 3],
+    [.20, 1],
+]);
