@@ -136,3 +136,9 @@ export interface RibbonInfo {
     price: string;
     iv: string;
 }
+
+export enum TradedStrikesViewMode {
+    CALLS_ONLY = 'calls-only',
+    PUTS_ONLY = 'puts-only',
+    CALLS_AND_PUTS = 'calls-and-puts',
+}

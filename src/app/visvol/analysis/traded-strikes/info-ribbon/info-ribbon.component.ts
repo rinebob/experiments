@@ -1,7 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, EventEmitter, Input, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import {RibbonInfo} from '../../../../common/interfaces';
+import {RibbonInfo, TradedStrikesViewMode} from '../../../../common/interfaces';
 import { RIBBON_INFO_INITIALIZER} from '../../../../common/constants';
 
 @Component({
@@ -11,7 +11,6 @@ import { RIBBON_INFO_INITIALIZER} from '../../../../common/constants';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InfoRibbonComponent implements OnInit {
-
   @Input()
   set ribbonInfo(info: RibbonInfo) {
     this.ribbonInfoBS.next(info);
@@ -22,15 +21,18 @@ export class InfoRibbonComponent implements OnInit {
   }
   private ribbonInfoBS = new BehaviorSubject<RibbonInfo>(RIBBON_INFO_INITIALIZER);
 
+  @Output() viewMode = new EventEmitter<TradedStrikesViewMode>();
+
+  readonly ViewMode = TradedStrikesViewMode;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  changeView(view: string) {
+  changeView(view: TradedStrikesViewMode) {
     console.log('iR cV change to: ', view);
-
+    this.viewMode.emit(view);
   }
 
 }
