@@ -11,7 +11,13 @@
 
     .expirations-container {
         display: flex;
+        align-items: center;
         width: 100%;
+
+        .toggle-button {
+            font-size: 12px;
+            margin-right: 6px;
+        }
 
         .expiration {
             cursor: pointer;

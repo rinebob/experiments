@@ -24,7 +24,7 @@ export class DeltaStrikesGridComponent implements OnInit {
   expirations: string[] = [];
   dataForExpiration: OratsUiDatum[] = [];
   visibleColumns = ['strike', 'cValue', 'pValue', 'delta', 'cMidIv', 'pMidIv',];
-  showTable = false;
+  showTable = true;
 
   constructor() { }
 
@@ -44,6 +44,10 @@ export class DeltaStrikesGridComponent implements OnInit {
     this.showTable = true;
 
     this.dataForExpiration = data;
+  }
+
+  toggleTable() {
+    this.showTable = !this.showTable;
   }
 
 }
