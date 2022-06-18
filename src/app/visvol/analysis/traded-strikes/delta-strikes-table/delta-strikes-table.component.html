@@ -1,0 +1,40 @@
+<div class="delta-strikes-table-container">
+
+    <table mat-table [dataSource]="tableData">
+        
+        <ng-container matColumnDef="strike">
+            <th mat-header-cell *matHeaderCellDef>Strike</th>
+            <td mat-cell *matCellDef="let row">{{row.strike}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cValue">
+            <th mat-header-cell *matHeaderCellDef>Call value</th>
+            <td mat-cell *matCellDef="let row">{{row.cValue}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="pValue">
+            <th mat-header-cell *matHeaderCellDef>Put value</th>
+            <td mat-cell *matCellDef="let row">{{row.pValue}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="delta">
+            <th mat-header-cell *matHeaderCellDef>Delta</th>
+            <td mat-cell *matCellDef="let row">{{row.delta}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cMidIv">
+            <th mat-header-cell *matHeaderCellDef>Call mid IV</th>
+            <td mat-cell *matCellDef="let row">{{row.cMidIv}}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="pMidIv">
+            <th mat-header-cell *matHeaderCellDef>Put mid IV</th>
+            <td mat-cell *matCellDef="let row">{{row.pMidIv}}</td>
+        </ng-container>
+
+
+    
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+    </table>
+</div>

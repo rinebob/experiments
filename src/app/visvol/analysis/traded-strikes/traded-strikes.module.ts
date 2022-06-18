@@ -10,6 +10,7 @@ import { SymbolSelectorComponent } from './symbol-selector/symbol-selector.compo
 import { StrikesTableComponent } from './strikes-table/strikes-table.component';
 import { InfoRibbonComponent } from './info-ribbon/info-ribbon.component';
 import { DeltaStrikesGridComponent } from './delta-strikes-grid/delta-strikes-grid.component';
+import { DeltaStrikesTableComponent } from './delta-strikes-table/delta-strikes-table.component';
 
 
 
@@ -19,7 +20,8 @@ import { DeltaStrikesGridComponent } from './delta-strikes-grid/delta-strikes-gr
     SymbolSelectorComponent,
     StrikesTableComponent,
     InfoRibbonComponent,
-    DeltaStrikesGridComponent
+    DeltaStrikesGridComponent,
+    DeltaStrikesTableComponent
   ],
   imports: [
     CommonModule,

@@ -228,7 +228,7 @@ export class CsvService {
   public generateDeltaStrikesGridData(data: OratsUiDatum[]): DeltaStrikesGridData  {
     const deltas = [...DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS.keys()];
     let currentDelta = deltas[0];
-    console.log('tSV gDSGD deltas: ', deltas, currentDelta);
+    console.log('cS gDSGD deltas: ', deltas, currentDelta);
 
     let currentExpiration = 'initExp';
     let currentDistance = 999;
@@ -250,38 +250,42 @@ export class CsvService {
       if (goToNextExpiration === false || (goToNextExpiration === true && (datum.expirDate !== currentExpiration))) {
 
         if (datum.expirDate !== currentExpiration) {
-          // console.log('========== New expiration ==============================');
-          // console.log('tSV gDSGD datum index: ', index);
-          // console.log('tSV gDSGD cur/new exp: ', currentExpiration, datum.expirDate);
-          // console.log('tSV gDSGD recordsForExp.len: ', recordsForExpiration.length);
+          console.log('========== New expiration ==============================');
+          console.log('cS gDSGD datum index: ', index);
+          console.log('cS gDSGD cur/new exp: ', currentExpiration, datum.expirDate);
+          console.log('cS gDSGD recordsForExp.len: ', recordsForExpiration.length);
 
-          currentExpiration = datum.expirDate;
+          
 
           // only write to delta strikes object if there are records for exp
           if (recordsForExpiration.length) {
             deltaStrikesGridData[currentExpiration] = [...recordsForExpiration];
-            // console.log('tSV gDSGD writing deltaStrikesGridData: ', deltaStrikesGridData);
+            // console.log('cS gDSGD writing deltaStrikesGridData: ', deltaStrikesGridData);
             
             // reset for new expiration
-            
             recordsForExpiration.length = 0;
             goToNextExpiration = false;
             currentDistance = 999;
             currentDelta = deltas[0];
-            // console.log('tSV gDSGD finished reset. new gTNE/cE/cDi/cDe: ', goToNextExpiration, currentExpiration, currentDistance, currentDelta);
-            // console.log('-------------------------------');
+            console.log('cS gDSGD finished reset. new gTNE/cE/cDi/cDe: ', goToNextExpiration, currentExpiration, currentDistance, currentDelta);
+            console.log('-------------------------------');
           }
+          currentExpiration = datum.expirDate;
         }
+
         
         // use absolute value since we only need the magnitude
         const distance = Math.abs(Number(datum.delta) - currentDelta);
-        // console.log('tSV gDSGD curDel/dat.del/distance/cur dist: ', currentDelta, datum.delta, distance, currentDistance);
+        console.log('-------------------------------');
+        console.log('cS gDSGD index/curDel/dat.del/distance/cur dist: ', index, currentDelta, datum.delta, distance, currentDistance);
+        console.log('cS gDSGD datum.strike/delta: ', datum.strike, datum.delta);
+        console.log('cS gDSGD data[index]strike/delta: ', data[index].strike, data[index].delta);
 
         // the first new record will always fail because initial currentDistance is 999
-        if (distance > currentDistance) {
+        if (distance > currentDistance && Number(datum.delta) < currentDelta) {
 
           // we found our target 
-          // console.log('--------------- tSV gDSGD target found for delta ',currentDelta,' ----------------');
+          console.log('--------------- cS gDSGD target found for delta ',currentDelta,' ----------------');
 
           // get the number of records to return
           // create an array by slicing data at the current index and as many on either side to create the proper size array
@@ -291,43 +295,45 @@ export class CsvService {
           // since we're now on the record after the one we're interested on, specify the index
           // of the target record as index - 1, and use that to grab the records we want
           const targetIndex = index - 1;
-          // console.log('tSV gDSGD found at index: ', targetIndex);
+          // const targetIndex = index;
+          console.log('cS gDSGD found at index: ', targetIndex);
 
           const records = data.slice(targetIndex - offset, targetIndex + offset + 1);
-          // console.log('tSV gDSGD strike/offset: ', data[targetIndex].strike, offset);
-          // console.log('tSV gDSGD writing to records for exp array');
-          // console.table(records)
+          console.log('cS gDSGD strike/offset/delta: ', data[targetIndex].strike, offset,  data[targetIndex].delta);
+          console.log('cS gDSGD writing to records for exp array');
+          console.table(records)
 
           // push these records to the records for expiration array
           recordsForExpiration.push(...records);
+          index ++;
 
           // now we need to search for the next target delta
           // this continues the search from the current record
           const curIndex = [...deltas].findIndex(delta => delta === currentDelta);
           currentDelta = deltas[curIndex + 1];
           currentDistance = 999;
-          // console.log('tSV gDSGD new current delta/dist: ', currentDelta, currentDistance);
+          console.log('cS gDSGD new current delta/dist: ', currentDelta, currentDistance);
 
           if (!currentDelta) {
             // since we don't want to search any more records in this expiration, we set go to next exp to true
             goToNextExpiration = true;
-            // console.log('setting go to next expiration true. index: ', index);
-            // console.log('-------------------------------');
+            console.log('setting go to next expiration true. index: ', index);
+            console.log('-------------------------------');
           }
         } else {
-          // console.log('tSV gDSGD dist < cur dist: ', distance, currentDistance);
+          console.log('cS gDSGD dist < cur dist: ', distance, currentDistance);
           currentDistance = distance;
           // go to next record - this will happen until we find the target delta
           index ++;
-          // console.log('tSV gDSGD new index/cur dist: ', index, currentDistance);
+          console.log('cS gDSGD new index/cur dist: ', index, currentDistance);
         }
       } else {
         index ++;
-        // console.log('tSV gDSGD go to next exp = true. new index: ', index);
+        console.log('cS gDSGD go to next exp = true. new index: ', index);
       }
     }
 
-    // console.log('tSV gDSGD final deltaStrikesGridData: ', deltaStrikesGridData);
+    console.log('cS gDSGD final deltaStrikesGridData: ', deltaStrikesGridData);
     
     return deltaStrikesGridData;
   }

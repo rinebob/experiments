@@ -1,0 +1,14 @@
+
+
+.delta-strikes-table-container {
+    display: flex;
+    width: 100%;
+
+    table {
+        width: 100%;
+
+        tr.mat-row, tr.mat-header-row {
+            height: 10px;
+        }
+    }
+}

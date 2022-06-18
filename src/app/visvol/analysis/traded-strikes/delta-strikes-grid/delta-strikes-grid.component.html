@@ -1,4 +1,23 @@
-<p>delta-strikes-grid works!</p>
 <div class="delta-strikes-grid-container">
-    {{deltaStrikesGridData | json}}
+    
+    <div class="expirations-container">
+        <div class="expiration" *ngFor="let exp of expirations"
+                (click)="getDeltaStrikesDataForExpiration(exp)"
+        >
+            {{exp}}
+        </div>
+    </div>
+
+
+    <div class="delta-strikes-data-container">
+        
+        <exp-delta-strikes-table *ngIf="showTable"
+                                 [tableData]="dataForExpiration"
+                                 [columns]="visibleColumns"
+        >
+
+        </exp-delta-strikes-table>
+        
+    </div>
+
 </div>
