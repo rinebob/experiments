@@ -128,3 +128,8 @@ export interface DeltaStrikesGridData {
     // key as expiration date and value as array of records for each target delta
     [key: string]: OratsUiDatum[]   
 }
+
+export interface ContractLookupObject {
+    // key is the call/put option contract symbol.  Value is the OratsUiDatum for that symbol
+    [key: string]: OratsUiDatum
+}

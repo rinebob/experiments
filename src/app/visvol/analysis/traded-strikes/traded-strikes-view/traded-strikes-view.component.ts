@@ -38,6 +38,9 @@ export class TradedStrikesViewComponent implements OnInit {
   deltaStrikesGridDataBS = new BehaviorSubject<DeltaStrikesGridData>({});
   deltaStrikesGridData$: Observable<DeltaStrikesGridData> = this.deltaStrikesGridDataBS;
 
+  targetStrikesRecordsBS = new BehaviorSubject<OratsUiDatum[]>([]);
+  targetStrikesRecords$: Observable<OratsUiDatum[]> = this.targetStrikesRecordsBS;
+
   constructor(
     readonly csvService: CsvService,
     ) { }
@@ -72,8 +75,13 @@ export class TradedStrikesViewComponent implements OnInit {
     console.log('tSV hSS deltaStrikesGridData: ', deltaStrikesGridData);
     this.deltaStrikesGridDataBS.next(deltaStrikesGridData);
 
-
-
+    // generate an object with key = expiration and value = array of contract symbols 
+    // that pass a delta filter
+    const targetStrikesByExpiration = this.getTargetStrikesByExpiration(symbol);
+    
+    // generate an array of records that are all the contracts for the target strikes
+    const targetRecords = this.getRecordsArrayFromTargetStrikesByExpirationObject(targetStrikesByExpiration);
+    this.targetStrikesRecordsBS.next(targetRecords);
   }
 
   getRibbonInfo(symbol: string): RibbonInfo {
@@ -108,4 +116,19 @@ export class TradedStrikesViewComponent implements OnInit {
 
     return deltaStrikesGridData;
   }
+
+  getTargetStrikesByExpiration(symbol: string)  {
+    const targetStrikesByExpiration = this.csvService.generateTargetStrikesByExpiration(symbol);
+
+    return targetStrikesByExpiration;
+  }
+
+  getRecordsArrayFromTargetStrikesByExpirationObject(strikesByExpiration)  {
+    const targetRecords = this.csvService.generateRecordsArrayFromTargetStrikesByExpirationObject(strikesByExpiration);
+
+    return targetRecords;
+  }
+
 }
+
+

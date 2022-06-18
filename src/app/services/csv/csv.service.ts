@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { DeltaStrikesGridData, OratsFileFormat, OratsUiDatum, StrikesByExpiration} from '../../common/interfaces_orats';
+import { ContractLookupObject, DeltaStrikesGridData, OratsFileFormat, OratsUiDatum, StrikesByExpiration} from '../../common/interfaces_orats';
 import { RibbonInfo, TradedStrikesTableDataObject} from '../../common/interfaces';
 import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
 
@@ -15,6 +15,21 @@ export class CsvService {
 
   // array of all rows in the .csv file as one OratsUiDatum object per row
   allRecordsBS = new BehaviorSubject<OratsUiDatum[]>([]);
+
+  // key-value pairs object of all rows in .csv
+  // key is contract symbol; value is OratsUiDatum for that symbol
+  contractLookupBS = new BehaviorSubject<ContractLookupObject>({});
+
+  // enables filtering by delta value.  We don't use any contracts at the outer delta
+  // values, so don't show them.  
+  // useDeltaThresholds = false;
+  useDeltaThresholds = true;
+
+  // upper and lower boundaries to filter by delta.  To be included, record.delta must
+  // be between upper and lower thresholds.  
+  targetStrikeUpperDeltaThreshold = 0.9;
+  targetStrikeLowerDeltaThreshold = 0.1;
+
   
   constructor() { }
 
@@ -27,6 +42,9 @@ export class CsvService {
     // pushes array of OratsUiDatum objects to all records BS
     // use as internal data source so this only happens once per upload
     this.allRecordsBS.next(this.generateRecordsArrayFromCsvFile(this.csvDataBS.value));
+
+    // Object with key = contract symbol and value = OratsUiDatum for that symbol
+    this.contractLookupBS.next(this.generateContractLookupObject(this.allRecordsBS.value));
 
   }
 
@@ -56,6 +74,7 @@ export class CsvService {
   
     for (let i = 1; i < numRecords; i++) {  
       let currentRecord = (<string>csvRecordsArray[i]).split(',');  
+
       if (currentRecord.length == headerLength) {  
         let csvRecord: OratsUiDatum = {
           symbol: currentRecord[0].trim(),
@@ -174,7 +193,6 @@ export class CsvService {
 
   //////////////////// HELPER FUNCTIONS //////////////////////////////
 
-
   // takes a .csv file and an array of strings as symbols
   // returns an array of OratsUiDatum objects
   // this is the raw data from the .csv for all the selected symbols
@@ -184,11 +202,21 @@ export class CsvService {
 
     for (const symbol of symbols) {
       let index = this.allRecordsBS.value.findIndex(datum => datum.symbol === symbol);
-      let datum = this.allRecordsBS.value[index]
+      let datum = this.allRecordsBS.value[index];
       // console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
 
       while(datum.symbol === symbol) {
-        records.push(datum);
+        
+        if (this.useDeltaThresholds) {
+          const isTargetStrike = (Number(datum.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(datum.delta) > this.targetStrikeLowerDeltaThreshold);
+          console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', datum.expirDate, datum.strike, datum.delta, isTargetStrike);
+          if (isTargetStrike) {
+            records.push(datum);
+          }
+        } else {
+          console.log('cS gRAFSS not using delta filter');
+          records.push(datum);
+        }
         // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
         index++;
         datum = this.allRecordsBS.value[index];
@@ -197,6 +225,72 @@ export class CsvService {
     // console.log('cS gRAFSS records: ', records);
 
     return records;
+  }
+
+
+  // generates an object for all records key = contract symbol, value = OratsUiDatum
+  private generateContractLookupObject(records: OratsUiDatum[]): ContractLookupObject {
+    const lookupObject = {};
+
+    for (const record of records) {
+      const symbol = this.generateContractSymbols(record).ctxS;
+
+      lookupObject[symbol] = record;
+
+    }
+
+    return lookupObject;
+  }
+
+  // {
+  //   '11/07/2020': [TSLA20110700512500, TSLA20110700515000, TSLA20110700515000, TSLA20110700515000],
+  //   '11/14/2020': [TSLA20110700515000, TSLA20110700517500, TSLA20110700520000, TSLA20110700522500],
+  // }
+
+  generateTargetStrikesByExpiration(symbol: string) {
+
+    let index = this.allRecordsBS.value.findIndex(record => record.symbol === symbol);
+    let record = this.allRecordsBS.value[index];
+    const targetStrikeSymbolsByExpiration = {};
+    
+    while(record.symbol === symbol) {
+      const isTargetStrike = (Number(record.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(record.delta) > this.targetStrikeLowerDeltaThreshold);
+      // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', record.expirDate, record.strike, record.delta, isTargetStrike);
+      if (isTargetStrike) {
+
+        const symbol = this.generateContractSymbols(record).ctxS;
+        const expiration = record.expirDate;
+
+        let targetStrikeSymbols: string[] = targetStrikeSymbolsByExpiration[expiration] ? 
+          [...targetStrikeSymbolsByExpiration[expiration]] 
+          : [];
+        targetStrikeSymbols.push(symbol);
+        targetStrikeSymbolsByExpiration[expiration] = targetStrikeSymbols;
+      }
+      // console.log('cS pCFFS while index/foundsymbol: ', index, record);
+      index++;
+      record = this.allRecordsBS.value[index];
+    }
+
+    return targetStrikeSymbolsByExpiration;
+  }
+
+  generateRecordsArrayFromTargetStrikesByExpirationObject(targetStrikeSymbolsByExpiration) {
+
+    const targetStrikesRecords: OratsUiDatum[] = []
+
+    for (const [key, value] of Object.entries(targetStrikeSymbolsByExpiration)) {
+      for (const symbol of Object.values(value)) {
+        const datum = this.contractLookupBS.value[symbol];
+        targetStrikesRecords.push(datum);
+
+      }
+    }
+
+    // console.log('cS gRAFTSBEO targetStrikesRecords.slice(0, 50): ', targetStrikesRecords.slice(0, 50));
+    console.log('cS gRAFTSBEO targetStrikesRecords: ', targetStrikesRecords);
+    return targetStrikesRecords;
+
   }
 
 //////////////////// END HELPER FUNCTIONS //////////////////////////////
@@ -228,7 +322,7 @@ export class CsvService {
   public generateDeltaStrikesGridData(data: OratsUiDatum[]): DeltaStrikesGridData  {
     const deltas = [...DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS.keys()];
     let currentDelta = deltas[0];
-    console.log('cS gDSGD deltas: ', deltas, currentDelta);
+    // console.log('cS gDSGD deltas: ', deltas, currentDelta);
 
     let currentExpiration = 'initExp';
     let currentDistance = 999;
@@ -250,10 +344,10 @@ export class CsvService {
       if (goToNextExpiration === false || (goToNextExpiration === true && (datum.expirDate !== currentExpiration))) {
 
         if (datum.expirDate !== currentExpiration) {
-          console.log('========== New expiration ==============================');
-          console.log('cS gDSGD datum index: ', index);
-          console.log('cS gDSGD cur/new exp: ', currentExpiration, datum.expirDate);
-          console.log('cS gDSGD recordsForExp.len: ', recordsForExpiration.length);
+          // console.log('========== New expiration ==============================');
+          // console.log('cS gDSGD datum index: ', index);
+          // console.log('cS gDSGD cur/new exp: ', currentExpiration, datum.expirDate);
+          // console.log('cS gDSGD recordsForExp.len: ', recordsForExpiration.length);
 
           
 
@@ -267,8 +361,8 @@ export class CsvService {
             goToNextExpiration = false;
             currentDistance = 999;
             currentDelta = deltas[0];
-            console.log('cS gDSGD finished reset. new gTNE/cE/cDi/cDe: ', goToNextExpiration, currentExpiration, currentDistance, currentDelta);
-            console.log('-------------------------------');
+            // console.log('cS gDSGD finished reset. new gTNE/cE/cDi/cDe: ', goToNextExpiration, currentExpiration, currentDistance, currentDelta);
+            // console.log('-------------------------------');
           }
           currentExpiration = datum.expirDate;
         }
@@ -276,16 +370,16 @@ export class CsvService {
         
         // use absolute value since we only need the magnitude
         const distance = Math.abs(Number(datum.delta) - currentDelta);
-        console.log('-------------------------------');
-        console.log('cS gDSGD index/curDel/dat.del/distance/cur dist: ', index, currentDelta, datum.delta, distance, currentDistance);
-        console.log('cS gDSGD datum.strike/delta: ', datum.strike, datum.delta);
-        console.log('cS gDSGD data[index]strike/delta: ', data[index].strike, data[index].delta);
+        // console.log('-------------------------------');
+        // console.log('cS gDSGD index/curDel/dat.del/distance/cur dist: ', index, currentDelta, datum.delta, distance, currentDistance);
+        // console.log('cS gDSGD datum.strike/delta: ', datum.strike, datum.delta);
+        // console.log('cS gDSGD data[index]strike/delta: ', data[index].strike, data[index].delta);
 
         // the first new record will always fail because initial currentDistance is 999
         if (distance > currentDistance && Number(datum.delta) < currentDelta) {
 
           // we found our target 
-          console.log('--------------- cS gDSGD target found for delta ',currentDelta,' ----------------');
+          // console.log('--------------- cS gDSGD target found for delta ',currentDelta,' ----------------');
 
           // get the number of records to return
           // create an array by slicing data at the current index and as many on either side to create the proper size array
@@ -296,12 +390,12 @@ export class CsvService {
           // of the target record as index - 1, and use that to grab the records we want
           const targetIndex = index - 1;
           // const targetIndex = index;
-          console.log('cS gDSGD found at index: ', targetIndex);
+          // console.log('cS gDSGD found at index: ', targetIndex);
 
           const records = data.slice(targetIndex - offset, targetIndex + offset + 1);
-          console.log('cS gDSGD strike/offset/delta: ', data[targetIndex].strike, offset,  data[targetIndex].delta);
-          console.log('cS gDSGD writing to records for exp array');
-          console.table(records)
+          // console.log('cS gDSGD strike/offset/delta: ', data[targetIndex].strike, offset,  data[targetIndex].delta);
+          // console.log('cS gDSGD writing to records for exp array');
+          // console.table(records)
 
           // push these records to the records for expiration array
           recordsForExpiration.push(...records);
@@ -312,24 +406,24 @@ export class CsvService {
           const curIndex = [...deltas].findIndex(delta => delta === currentDelta);
           currentDelta = deltas[curIndex + 1];
           currentDistance = 999;
-          console.log('cS gDSGD new current delta/dist: ', currentDelta, currentDistance);
+          // console.log('cS gDSGD new current delta/dist: ', currentDelta, currentDistance);
 
           if (!currentDelta) {
             // since we don't want to search any more records in this expiration, we set go to next exp to true
             goToNextExpiration = true;
-            console.log('setting go to next expiration true. index: ', index);
-            console.log('-------------------------------');
+            // console.log('setting go to next expiration true. index: ', index);
+            // console.log('-------------------------------');
           }
         } else {
-          console.log('cS gDSGD dist < cur dist: ', distance, currentDistance);
+          // console.log('cS gDSGD dist < cur dist: ', distance, currentDistance);
           currentDistance = distance;
           // go to next record - this will happen until we find the target delta
           index ++;
-          console.log('cS gDSGD new index/cur dist: ', index, currentDistance);
+          // console.log('cS gDSGD new index/cur dist: ', index, currentDistance);
         }
       } else {
         index ++;
-        console.log('cS gDSGD go to next exp = true. new index: ', index);
+        // console.log('cS gDSGD go to next exp = true. new index: ', index);
       }
     }
 
@@ -337,9 +431,6 @@ export class CsvService {
     
     return deltaStrikesGridData;
   }
-
-
-
 
 
 /////////////// END DELTA STRIKES GRID DATA OBJECT //////////////////
@@ -358,7 +449,13 @@ export class CsvService {
     } else {
 
     // generate raw records array from file filtered by symbols
+    // records can be filtered by delta to remove very high/low delta records
+    // set this.useDeltaThresholds to true
+    // provide settings for
+    // targetStrikeUpperDeltaThreshold = 0.95;
+    // targetStrikeLowerDeltaThreshold = 0.05;
     const records = this.generateRecordsArrayForSelectedSymbols(symbols);
+    console.log('cS gTSD records[0]: ', records[0]);
 
     // generate a strikes with expirations data object
     // const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
@@ -382,7 +479,7 @@ export class CsvService {
   }
   
   // 2) generateExpirationsByTradedStrike
-  // takes an array of OFF objects
+  // takes an array of OUiD objects
   // returns a single object with keys as string strike and values
   // array of strings as expirations for the key strike
   // this is all the traded contracts for a particular symbol
@@ -391,13 +488,27 @@ export class CsvService {
     // console.log('cS gEBTSM records[0]: ', records[0]);
     const strikesWithExpirations = {};
     for (const record of records) {
+
       let expirations: string[] = strikesWithExpirations[record.strike] ? 
         [...strikesWithExpirations[record.strike]] 
         : [];
       expirations.push(record.expirDate);
       strikesWithExpirations[record.strike] = expirations;
+
+      // const isTargetStrike = (Number(record.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(record.delta) > this.targetStrikeLowerDeltaThreshold);
+      // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', record.expirDate, record.strike, record.delta, isTargetStrike);
+
+      // if (isTargetStrike) {
+      //   let expirations: string[] = strikesWithExpirations[record.strike] ? 
+      //     [...strikesWithExpirations[record.strike]] 
+      //     : [];
+      //   expirations.push(record.expirDate);
+      //   strikesWithExpirations[record.strike] = expirations;
+        // console.log('cS gDRAFCF add to expirations: ', record.expirDate, record.strike, record.delta, isTargetStrike);
+      // }
+
     }
-    // console.log('cS gEBTS strikesWithExpirations: ', strikesWithExpirations);
+    console.log('cS gEBTS strikesWithExpirations: ', strikesWithExpirations);
 
     return strikesWithExpirations;
   }
