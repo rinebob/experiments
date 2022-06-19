@@ -1,3 +1,4 @@
+import { OratsUiDatum } from "./interfaces_orats";
 
 
 export enum Direction {
@@ -121,6 +122,17 @@ export interface TradedStrikesTableDataObject {
 export interface TradedStrikesDatum {
     [key: string]: number | boolean;
     strike: number;
+}
+
+// object with key = expiration and value = OratsUiDatum for that key/exp
+export interface ContractsByExpirationForStrike {
+    [key: string]: OratsUiDatum;
+}
+
+// key = strike
+// value = object with key = expiration and value = OratsUiDatum for that key/exp
+export interface AllContractsByStrikeAndExpiration {
+    [key: number]: ContractsByExpirationForStrike;
 }
 
 export interface TableColumn {

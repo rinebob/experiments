@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { CsvService } from '../../../../services/csv/csv.service';
-import {RibbonInfo, TradedStrikesDatum, TradedStrikesTableDataObject} from '../../../../common/interfaces';
+import { AllContractsByStrikeAndExpiration, ContractsByExpirationForStrike, RibbonInfo, TradedStrikesDatum, TradedStrikesTableDataObject} from '../../../../common/interfaces';
 import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
 import { DeltaStrikesGridData, OratsFileFormat, OratsUiDatum } from 'src/app/common/interfaces_orats';
 
@@ -33,13 +33,16 @@ export class TradedStrikesViewComponent implements OnInit {
   strikesTableData$: Observable<TradedStrikesTableDataObject> = this.strikesTableDataBS;
 
   oratsDataRecordsBS = new BehaviorSubject<OratsUiDatum[]>([]);
-  oratsDataRecords$: Observable<OratsUiDatum[]> = this.oratsDataRecordsBS;
+  oratsDataRecordsForSymbol$: Observable<OratsUiDatum[]> = this.oratsDataRecordsBS;
 
   deltaStrikesGridDataBS = new BehaviorSubject<DeltaStrikesGridData>({});
   deltaStrikesGridData$: Observable<DeltaStrikesGridData> = this.deltaStrikesGridDataBS;
 
   targetStrikesRecordsBS = new BehaviorSubject<OratsUiDatum[]>([]);
   targetStrikesRecords$: Observable<OratsUiDatum[]> = this.targetStrikesRecordsBS;
+
+  allContractsByStrikeAndExpirationBS = new BehaviorSubject<AllContractsByStrikeAndExpiration>({});
+  allContractsByStrikeAndExpiration$: Observable<AllContractsByStrikeAndExpiration> = this.allContractsByStrikeAndExpirationBS;
 
   constructor(
     readonly csvService: CsvService,
@@ -66,13 +69,13 @@ export class TradedStrikesViewComponent implements OnInit {
     this.strikesWithExpirationsBS.next(tradedStrikesTableData.tradedStrikesData);
 
     // get all data records for symbol
-    const oratsDataRecords = this.getOratsDataRecordsForSymbol(symbol);
-    console.log('tSV hSS orats record [0]: ', oratsDataRecords[0]);
-    this.oratsDataRecordsBS.next(oratsDataRecords);
+    const oratsDataRecordsForSymbol = this.getOratsDataRecordsForSymbol(symbol);
+    console.log('tSV hSS orats record [0]: ', oratsDataRecordsForSymbol[0]);
+    this.oratsDataRecordsBS.next(oratsDataRecordsForSymbol);
 
     // get Delta strikes grid data object
-    const deltaStrikesGridData = this.getDeltaStrikesGridData(oratsDataRecords);
-    console.log('tSV hSS deltaStrikesGridData: ', deltaStrikesGridData);
+    const deltaStrikesGridData = this.getDeltaStrikesGridData(oratsDataRecordsForSymbol);
+    // console.log('tSV hSS deltaStrikesGridData: ', deltaStrikesGridData);
     this.deltaStrikesGridDataBS.next(deltaStrikesGridData);
 
     // generate an object with key = expiration and value = array of contract symbols 
@@ -82,6 +85,12 @@ export class TradedStrikesViewComponent implements OnInit {
     // generate an array of records that are all the contracts for the target strikes
     const targetRecords = this.getRecordsArrayFromTargetStrikesByExpirationObject(targetStrikesByExpiration);
     this.targetStrikesRecordsBS.next(targetRecords);
+
+    // generate an object with key = strike and value is object with key = expiration
+    // and value = OratsUiDatum.  This is the actual data for each contract
+    const allContractsByStrikeAndExpiration = this.getAllContractsByStrikeAndExpiration(oratsDataRecordsForSymbol);
+    this.allContractsByStrikeAndExpirationBS.next(allContractsByStrikeAndExpiration);
+
   }
 
   getRibbonInfo(symbol: string): RibbonInfo {
@@ -127,6 +136,13 @@ export class TradedStrikesViewComponent implements OnInit {
     const targetRecords = this.csvService.generateRecordsArrayFromTargetStrikesByExpirationObject(strikesByExpiration);
 
     return targetRecords;
+  }
+
+  getAllContractsByStrikeAndExpiration(data: OratsUiDatum[]) {
+    const allContractsByStrikeAndExpiration = this.csvService.generateAllContractsByStrikeAndExpiration(data);
+
+    return allContractsByStrikeAndExpiration;
+
   }
 
 }

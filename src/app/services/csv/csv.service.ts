@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { ContractLookupObject, DeltaStrikesGridData, OratsFileFormat, OratsUiDatum, StrikesByExpiration} from '../../common/interfaces_orats';
-import { RibbonInfo, TradedStrikesTableDataObject} from '../../common/interfaces';
+import { AllContractsByStrikeAndExpiration, ContractsByExpirationForStrike, RibbonInfo, TradedStrikesDatum, TradedStrikesTableDataObject} from '../../common/interfaces';
 import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
 
 @Injectable({
@@ -27,6 +27,7 @@ export class CsvService {
 
   // upper and lower boundaries to filter by delta.  To be included, record.delta must
   // be between upper and lower thresholds.  
+  // consider moving this to constants
   targetStrikeUpperDeltaThreshold = 0.9;
   targetStrikeLowerDeltaThreshold = 0.1;
 
@@ -209,12 +210,12 @@ export class CsvService {
         
         if (this.useDeltaThresholds) {
           const isTargetStrike = (Number(datum.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(datum.delta) > this.targetStrikeLowerDeltaThreshold);
-          console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', datum.expirDate, datum.strike, datum.delta, isTargetStrike);
+          // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', datum.expirDate, datum.strike, datum.delta, isTargetStrike);
           if (isTargetStrike) {
             records.push(datum);
           }
         } else {
-          console.log('cS gRAFSS not using delta filter');
+          // console.log('cS gRAFSS not using delta filter');
           records.push(datum);
         }
         // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
@@ -288,7 +289,7 @@ export class CsvService {
     }
 
     // console.log('cS gRAFTSBEO targetStrikesRecords.slice(0, 50): ', targetStrikesRecords.slice(0, 50));
-    console.log('cS gRAFTSBEO targetStrikesRecords: ', targetStrikesRecords);
+    // console.log('cS gRAFTSBEO targetStrikesRecords: ', targetStrikesRecords);
     return targetStrikesRecords;
 
   }
@@ -427,7 +428,7 @@ export class CsvService {
       }
     }
 
-    console.log('cS gDSGD final deltaStrikesGridData: ', deltaStrikesGridData);
+    // console.log('cS gDSGD final deltaStrikesGridData: ', deltaStrikesGridData);
     
     return deltaStrikesGridData;
   }
@@ -486,31 +487,31 @@ export class CsvService {
   // arranged by strike with all expirations for that strike
   private generateExpirationsByTradedStrike(records: OratsUiDatum[]) {
     // console.log('cS gEBTSM records[0]: ', records[0]);
-    const strikesWithExpirations = {};
+    const StrikesWithExpirations = {};
     for (const record of records) {
 
-      let expirations: string[] = strikesWithExpirations[record.strike] ? 
-        [...strikesWithExpirations[record.strike]] 
+      let expirations: string[] = StrikesWithExpirations[record.strike] ? 
+        [...StrikesWithExpirations[record.strike]] 
         : [];
       expirations.push(record.expirDate);
-      strikesWithExpirations[record.strike] = expirations;
+      StrikesWithExpirations[record.strike] = expirations;
 
       // const isTargetStrike = (Number(record.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(record.delta) > this.targetStrikeLowerDeltaThreshold);
       // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', record.expirDate, record.strike, record.delta, isTargetStrike);
 
       // if (isTargetStrike) {
-      //   let expirations: string[] = strikesWithExpirations[record.strike] ? 
-      //     [...strikesWithExpirations[record.strike]] 
+      //   let expirations: string[] = StrikesWithExpirations[record.strike] ? 
+      //     [...StrikesWithExpirations[record.strike]] 
       //     : [];
       //   expirations.push(record.expirDate);
-      //   strikesWithExpirations[record.strike] = expirations;
+      //   StrikesWithExpirations[record.strike] = expirations;
         // console.log('cS gDRAFCF add to expirations: ', record.expirDate, record.strike, record.delta, isTargetStrike);
       // }
 
     }
-    console.log('cS gEBTS strikesWithExpirations: ', strikesWithExpirations);
+    console.log('cS gEBTS StrikesWithExpirations: ', StrikesWithExpirations);
 
-    return strikesWithExpirations;
+    return StrikesWithExpirations;
   }
 
 
@@ -556,9 +557,9 @@ export class CsvService {
   // For each key a boolean is set true if that expiration is traded 
   // or false if not
   // This is the final data set for the UI strikes table feature
-  private generateTradedStrikesData(strikesWithExpirations, allExpirations: string[]) {
+  private generateTradedStrikesData(allContractsByStrikeAndExpiration, allExpirations: string[]) {
     const tradedStrikesData = [];
-    for (const strike of Object.entries(strikesWithExpirations)) {
+    for (const strike of Object.entries(allContractsByStrikeAndExpiration)) {
       // console.log('cS gTSDO strike object: ', strike);
       const expirations: string[] = Object.values(strike[1]);
       // console.log('cS gTSDO expirations: ', expirations);
@@ -574,6 +575,41 @@ export class CsvService {
     // console.log('cS gTSDO final tradedStrikesData: ', tradedStrikesData);
 
     return tradedStrikesData;
+  }
+
+  // 5) generateOratsUiDataByTradedStrike
+  // this is very similar to #2 above but the output object is slightly different
+  // in #2 the output is an object with key of strike and value as array of expirations
+  // for that strike
+  // Here we still have an object with key of strike.  The value however is now an
+  // object with key of expiration and value of OratsUiDatum
+  // this represents the data for that cell, rather than just whether the cell is traded
+  // As in #2, input is an array of OUiD objects
+
+  // Output shape:
+  // {
+  //   100: {'1/1/2020': OratsUiDatum object, '1/8/2020': OratsUiDatum object, '2/8/2020': OratsUiDatum object,},
+  //   105: {'1/1/2020': OratsUiDatum object, '1/8/2020': OratsUiDatum object, '2/8/2020': OratsUiDatum object,}
+  // }
+  generateAllContractsByStrikeAndExpiration(records: OratsUiDatum[]) {
+    console.log('cS gOUDBTS input records[0]: ', records[0]);
+    const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
+    console.log('cS gOUDBTS input strikesWithExps: ', strikesWithExpirations);
+    
+    const allContractsByStrikeAndExpiration = {};
+    for (const [strike, expirations] of Object.entries(strikesWithExpirations)) {
+      // console.log('cS gOUDBTS strike/expiration: ', strike, expirations);
+
+      const contractsForStrikeByExpiration = {};
+
+      for (const exp of Object.values(expirations)) {
+        contractsForStrikeByExpiration[exp] = records.find(record => record.strike === strike && record.expirDate === exp);
+      }
+      allContractsByStrikeAndExpiration[strike] = contractsForStrikeByExpiration;
+    }
+    console.log('cS gOUDBTS allContractsByStrikeAndExpiration: ', allContractsByStrikeAndExpiration);
+
+    return allContractsByStrikeAndExpiration;
   }
 
   // ====== OTHER METHODS FROM DOWNLOAD MANAGER BUT NOT USED NOW ==========
