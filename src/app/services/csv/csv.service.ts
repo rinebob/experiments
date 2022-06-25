@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-import { ContractLookupObject, DeltaStrikesGridData, OratsFileFormat, OratsUiDatum, StrikesByExpiration} from '../../common/interfaces_orats';
+import { AllContractsDataForStrike, ContractLookupObject, DeltaStrikesGridData, OratsFileFormat, OratsUiDatum, StrikesByExpiration} from '../../common/interfaces_orats';
 import { AllContractsByStrikeAndExpiration, ContractsByExpirationForStrike, RibbonInfo, TradedStrikesDatum, TradedStrikesTableDataObject} from '../../common/interfaces';
 import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
 
@@ -15,6 +15,9 @@ export class CsvService {
 
   // array of all rows in the .csv file as one OratsUiDatum object per row
   allRecordsBS = new BehaviorSubject<OratsUiDatum[]>([]);
+
+  // unique array of all expirations in the .csv file 
+  allExpirationsBS = new BehaviorSubject<string[]>([]);
 
   // key-value pairs object of all rows in .csv
   // key is contract symbol; value is OratsUiDatum for that symbol
@@ -44,6 +47,10 @@ export class CsvService {
     // use as internal data source so this only happens once per upload
     this.allRecordsBS.next(this.generateRecordsArrayFromCsvFile(this.csvDataBS.value));
 
+    // generates unique array of all expirations in the entire .csv file
+    // use as internal data source so this only happens once per upload
+    this.allExpirationsBS.next(this.generateAllExpirationsArray(this.allRecordsBS.value));
+
     // Object with key = contract symbol and value = OratsUiDatum for that symbol
     this.contractLookupBS.next(this.generateContractLookupObject(this.allRecordsBS.value));
 
@@ -58,6 +65,8 @@ export class CsvService {
 
     return records;
   }
+
+  
 
   private getHeaderArray(csvRecordsArr: any) {  
     let headers = (<string>csvRecordsArr[0]).split(',');  
@@ -229,6 +238,39 @@ export class CsvService {
   }
 
 
+  // generateAllExpirationsArray
+  // takes the allRecordsBS value
+  // returns a single array of strings representing the unique list
+  // of expiration dates that exist that day for all symbols
+  // used as master list of expirations and as keys for final data objects
+  // as column headers in tables
+  generateAllExpirationsArray(records: OratsUiDatum[]) {
+    const expirationsSet = new Set<string>();
+    for (const record of records) {
+      expirationsSet.add(new Date(record.expirDate).toISOString())
+
+    }
+
+    const expirationsDates = [];
+    for (const exp of expirationsSet) {
+      expirationsDates.push(new Date(exp).getTime())
+    }
+    expirationsDates.sort();
+
+    const expirationsDateTextStrings = [];
+    for (const millis of expirationsDates) {
+      const date = new Date(millis);
+      const dateText = new Intl.DateTimeFormat().format(date);
+      expirationsDateTextStrings.push(dateText);
+    }
+
+
+    console.log('cS gAEA final all expirations: ', expirationsDateTextStrings);
+    return expirationsDateTextStrings;
+
+  }
+
+
   // generates an object for all records key = contract symbol, value = OratsUiDatum
   private generateContractLookupObject(records: OratsUiDatum[]): ContractLookupObject {
     const lookupObject = {};
@@ -305,11 +347,19 @@ export class CsvService {
     const source = this.allRecordsBS.value[index];
 
     const ribbonInfo: RibbonInfo = {
-      date: source.trade_date,
-      symbol: source.symbol,
-      price: source.stkPx,
-      iv: 'not impl.',
+      date: '',
+      symbol: '',
+      price: '',
+      iv: '',
     }
+
+    if (!!source) {
+      ribbonInfo.date = source.trade_date;
+      ribbonInfo.symbol = source.symbol;
+      ribbonInfo.price = source.stkPx;
+      ribbonInfo.iv = 'not impl.';
+    }
+
     
     // console.log('cS gRI final ribbon info: ', ribbonInfo);
 
@@ -469,6 +519,7 @@ export class CsvService {
     // this is used as table data in the strikes-table component
     const tradedStrikesData = this.generateTradedStrikesData(strikesWithExpirations, allExpirations);
 
+    console.log('cS gTSD tSD[0]: ', tradedStrikesData[0]);
     const data: TradedStrikesTableDataObject = {
       allExpirations, 
       tradedStrikesData,
@@ -509,7 +560,7 @@ export class CsvService {
       // }
 
     }
-    console.log('cS gEBTS StrikesWithExpirations: ', StrikesWithExpirations);
+    // console.log('cS gEBTS StrikesWithExpirations: ', StrikesWithExpirations);
 
     return StrikesWithExpirations;
   }
@@ -577,7 +628,7 @@ export class CsvService {
     return tradedStrikesData;
   }
 
-  // 5) generateOratsUiDataByTradedStrike
+  // 5) generateAllContractsByStrikeAndExpiration
   // this is very similar to #2 above but the output object is slightly different
   // in #2 the output is an object with key of strike and value as array of expirations
   // for that strike
@@ -591,10 +642,10 @@ export class CsvService {
   //   100: {'1/1/2020': OratsUiDatum object, '1/8/2020': OratsUiDatum object, '2/8/2020': OratsUiDatum object,},
   //   105: {'1/1/2020': OratsUiDatum object, '1/8/2020': OratsUiDatum object, '2/8/2020': OratsUiDatum object,}
   // }
-  generateAllContractsByStrikeAndExpiration(records: OratsUiDatum[]) {
-    console.log('cS gOUDBTS input records[0]: ', records[0]);
+  generateAllContractsByStrikeAndExpiration(records: OratsUiDatum[]): AllContractsByStrikeAndExpiration {
+    // console.log('cS gACBSAE input records[0]: ', records[0]);
     const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
-    console.log('cS gOUDBTS input strikesWithExps: ', strikesWithExpirations);
+    // console.log('cS gACBSAE input strikesWithExps: ', strikesWithExpirations);
     
     const allContractsByStrikeAndExpiration = {};
     for (const [strike, expirations] of Object.entries(strikesWithExpirations)) {
@@ -607,9 +658,68 @@ export class CsvService {
       }
       allContractsByStrikeAndExpiration[strike] = contractsForStrikeByExpiration;
     }
-    console.log('cS gOUDBTS allContractsByStrikeAndExpiration: ', allContractsByStrikeAndExpiration);
+    // console.log('cS gACBSAE allContractsByStrikeAndExpiration: ', allContractsByStrikeAndExpiration);
 
     return allContractsByStrikeAndExpiration;
+  }
+
+  // 6) The object generated by #5 must be converted to an array so we can render it in
+  // a table.  Use the same technique as for generating the tradedStrikes data array.
+  // loop through all the entries in the object.  For each entry, loop over the array
+  // of all expirations, creating an object with key = expiration and value is the 
+  // OratsUiDatum for that strike/exp combination
+  
+  // Output shape:
+  // [
+  //   {
+  //     strike: '100',
+  //     '1/1/20': OratsUiDatum,
+  //     '1/8/20': undefined,
+  //     '1/15/20': OratsUiDatum,
+  //   },
+  //   {
+  //     strike: '105',
+  //     '1/1/20': OratsUiDatum,
+  //     '1/8/20': undefined,
+  //     '1/15/20': OratsUiDatum,
+  //   }
+  // ]
+
+
+
+  convertAllContractsDataObjectToArray(allDataObject: AllContractsByStrikeAndExpiration): AllContractsDataForStrike[] {
+    const allData = []
+
+    // loop through the entries in allDataObject.  For each entry:
+    // create a AllContractsDataForStrike object and push to an arry.  return the array
+
+    for (const [strike, contracts] of Object.entries(allDataObject)) {
+
+      const contractsForStrike: AllContractsDataForStrike = {
+        strike,
+      }
+
+      for (const [exp, datum] of Object.entries(contracts)) {
+        contractsForStrike[exp] = datum;
+
+      }
+
+      allData.push(contractsForStrike);
+
+    }
+
+    // sort the data by strike
+    allData.sort((a, b) => {
+      // return a.strike - b.strike;
+      return b.strike - a.strike;
+    });
+
+
+    console.log('cS cACDOTA final allData: ', allData);
+
+    
+
+    return allData;
   }
 
   // ====== OTHER METHODS FROM DOWNLOAD MANAGER BUT NOT USED NOW ==========

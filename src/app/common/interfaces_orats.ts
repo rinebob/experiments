@@ -126,10 +126,30 @@ export interface StrikesWithExpirations {
 
 export interface DeltaStrikesGridData {
     // key as expiration date and value as array of records for each target delta
-    [key: string]: OratsUiDatum[]   
+    [key: string]: OratsUiDatum[];
 }
 
 export interface ContractLookupObject {
     // key is the call/put option contract symbol.  Value is the OratsUiDatum for that symbol
-    [key: string]: OratsUiDatum
+    [key: string]: OratsUiDatum;
+}
+
+// for generateAllContractsByStrikeAndExpiration (CsvService #5).  This is the intervace for
+// the value 
+export interface DataByExpirationForStrike {
+    // key is the expiration.  Value is the OratsUiDatum for that expiration
+    [key: string]: OratsUiDatum;
+}
+
+// for generateAllContractsByStrikeAndExpiration (CsvService #5)
+export interface AllContractsByStrikeAndExpiration {
+    // key is the strike.  Value is an object with key = expiration and value = OratsUiDatum 
+    // for that strike/exp
+    [key: string]: DataByExpirationForStrike;
+}
+
+
+export interface AllContractsDataForStrike {
+    strike: string;
+    [key: string]: OratsUiDatum | string;
 }

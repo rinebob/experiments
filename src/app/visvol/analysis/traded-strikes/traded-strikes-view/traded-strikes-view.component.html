@@ -13,5 +13,7 @@
 </exp-delta-strikes-grid>
 
 
-<exp-strikes-table [inputData]="strikesTableData$ | async">
+<exp-strikes-table [inputTradedStrikesData]="strikesTableData$ | async"
+                   [inputAllContractsData]="allContractsTableData$ | async"
+>
 </exp-strikes-table>

@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { CsvService } from '../../../../services/csv/csv.service';
 import { AllContractsByStrikeAndExpiration, ContractsByExpirationForStrike, RibbonInfo, TradedStrikesDatum, TradedStrikesTableDataObject} from '../../../../common/interfaces';
 import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
-import { DeltaStrikesGridData, OratsFileFormat, OratsUiDatum } from 'src/app/common/interfaces_orats';
+import { AllContractsDataForStrike, DeltaStrikesGridData, OratsFileFormat, OratsUiDatum } from 'src/app/common/interfaces_orats';
 
 @Component({
   selector: 'exp-traded-strikes-view',
@@ -44,6 +44,9 @@ export class TradedStrikesViewComponent implements OnInit {
   allContractsByStrikeAndExpirationBS = new BehaviorSubject<AllContractsByStrikeAndExpiration>({});
   allContractsByStrikeAndExpiration$: Observable<AllContractsByStrikeAndExpiration> = this.allContractsByStrikeAndExpirationBS;
 
+  allContractsTableDataBS = new BehaviorSubject<AllContractsDataForStrike[]>([]);
+  allContractsTableData$: Observable<AllContractsDataForStrike[]> = this.allContractsTableDataBS;
+
   constructor(
     readonly csvService: CsvService,
     ) { }
@@ -64,6 +67,9 @@ export class TradedStrikesViewComponent implements OnInit {
 
     // get traded strikes for symbol
     const tradedStrikesTableData = this.getTradedStrikesGridDataForSymbol(symbol);
+
+    console.log('tSV hSS strikesTableData: ', tradedStrikesTableData);
+    
     this.strikesTableDataBS.next(tradedStrikesTableData);
     this.allExpirationsBS.next(tradedStrikesTableData.allExpirations);
     this.strikesWithExpirationsBS.next(tradedStrikesTableData.tradedStrikesData);
@@ -87,9 +93,14 @@ export class TradedStrikesViewComponent implements OnInit {
     this.targetStrikesRecordsBS.next(targetRecords);
 
     // generate an object with key = strike and value is object with key = expiration
-    // and value = OratsUiDatum.  This is the actual data for each contract
+    // and value = OratsUiDatum.  This is the actual data for each contract.
     const allContractsByStrikeAndExpiration = this.getAllContractsByStrikeAndExpiration(oratsDataRecordsForSymbol);
     this.allContractsByStrikeAndExpirationBS.next(allContractsByStrikeAndExpiration);
+
+    // the above data is an object, but we're displaying in a table, so we need to convert it to
+    // an array.  Use the same technique as strikes table data (strikesWithExpirations)
+    const allContractsTableData = this.convertAllContractsDataObjectToArray(allContractsByStrikeAndExpiration);
+    this.allContractsTableDataBS.next(allContractsTableData);
 
   }
 
@@ -143,6 +154,11 @@ export class TradedStrikesViewComponent implements OnInit {
 
     return allContractsByStrikeAndExpiration;
 
+  }
+
+  convertAllContractsDataObjectToArray(allContractsByStrikeAndExpiration: AllContractsByStrikeAndExpiration) {
+    const allContractsDataArray = this.csvService.convertAllContractsDataObjectToArray(allContractsByStrikeAndExpiration);
+    return allContractsDataArray;
   }
 
 }

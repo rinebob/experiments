@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, ElementRef, Input, OnInit, ViewChild  } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-
-import { TradedStrikesDatum, TradedStrikesTableDataObject } from '../../../../common/interfaces';
+import { AllContractsByStrikeAndExpiration, TradedStrikesDatum, TradedStrikesTableDataObject } from '../../../../common/interfaces';
+import {AllContractsDataForStrike} from '../../../../common/interfaces_orats';
 
 @Component({
   selector: 'exp-strikes-table',
@@ -15,32 +15,48 @@ export class StrikesTableComponent {
   @ViewChild('strikesGridContainer', {read: ElementRef}) strikesGridContainer: ElementRef;
 
   @Input()
-  set inputData(data: TradedStrikesTableDataObject) {
+  set inputTradedStrikesData(data: TradedStrikesTableDataObject) {
     if (data && data.allExpirations && data.tradedStrikesData) {
-      this.inputDataBS.next(data);
-      this.tableDataBS.next(this.sortData(data.tradedStrikesData));
+      this.inputTradedStrikesDataBS.next(data);
+      this.tradedStrikesTableDataBS.next(this.sortData(data.tradedStrikesData));
       this.allExpirationsBS.next(data.allExpirations);
     }
-
+  }
+  get inputTradedStrikesData() {
+    return this.inputTradedStrikesDataBS.value;
 
   }
-  get inputData() {
-    return this.inputDataBS.value;
+  inputTradedStrikesDataBS = new BehaviorSubject<TradedStrikesTableDataObject>({});
+
+  tradedStrikesTableDataBS = new BehaviorSubject<TradedStrikesDatum[]>([]);
+  tradedStrikesTableData$: Observable<TradedStrikesDatum[]> = this.tradedStrikesTableDataBS;
+
+
+  @Input()
+  set inputAllContractsData(data: AllContractsDataForStrike[]) {
+    if (data) {
+      console.log('sT @i inputAllCtxData: ', data)
+      this.inputAllContractsDataBS.next(data);
+      this.allContractsTableDataBS.next(data);
+    }
+  }
+  get inputAllContractsData() {
+    return this.inputAllContractsDataBS.value;
 
   }
-  inputDataBS = new BehaviorSubject<TradedStrikesTableDataObject>({});
-
-  tableDataBS = new BehaviorSubject<TradedStrikesDatum[]>([]);
-  tableData$: Observable<TradedStrikesDatum[]> = this.tableDataBS;
+  inputAllContractsDataBS = new BehaviorSubject<AllContractsDataForStrike[]>([]);
+  
+  allContractsTableDataBS = new BehaviorSubject<AllContractsDataForStrike[]>([]);
+  allcontractsTableData$: Observable<AllContractsDataForStrike[]> = this.allContractsTableDataBS;
   
   allExpirationsBS = new BehaviorSubject<string[]>([]);
   allExpirations$: Observable<string[]> = this.allExpirationsBS;
   allExpirations: string[] = [];
 
-  scrollItemSize = 0;
+  scrollItemSize = 12;
 
   constructor() { 
-    this.tableData$.pipe().subscribe(
+    this.tradedStrikesTableData$.pipe().subscribe(
       data => {
         // console.log('sT ctor table data sub value: ', data);
       }
@@ -59,4 +75,6 @@ export class StrikesTableComponent {
     const sortedData = data.sort((a, b) => {return a.strike - b.strike});
     return sortedData;
   }
+
+  
 }
