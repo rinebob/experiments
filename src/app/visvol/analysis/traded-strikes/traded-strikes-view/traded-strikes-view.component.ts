@@ -14,12 +14,6 @@ import { AllContractsDataForStrike, DeltaStrikesGridData, OratsFileFormat, Orats
 })
 export class TradedStrikesViewComponent implements OnInit {
 
-  // tradedStrikesDataBS = new BehaviorSubject<Array<Object>>([]);
-  // tradedStrikesData$: Observable<Array<Object>> = this.tradedStrikesDataBS;
-
-  // allExpirationsBS = new BehaviorSubject<string[]>([]);
-  // allExpirations$: Observable<string[]> = this.allExpirationsBS;
-
   ribbonInfoBS = new BehaviorSubject<RibbonInfo>(RIBBON_INFO_INITIALIZER);
   ribbonInfo$: Observable<RibbonInfo> = this.ribbonInfoBS;
 
@@ -47,6 +41,11 @@ export class TradedStrikesViewComponent implements OnInit {
   allContractsTableDataBS = new BehaviorSubject<AllContractsDataForStrike[]>([]);
   allContractsTableData$: Observable<AllContractsDataForStrike[]> = this.allContractsTableDataBS;
 
+  symbolSelected = false;
+  symbol = '';
+  fileChosen = false;
+  dataExistsForSymbol = false;
+
   constructor(
     readonly csvService: CsvService,
     ) { }
@@ -57,8 +56,14 @@ export class TradedStrikesViewComponent implements OnInit {
     // );
   }
 
+  handleFileSelection() {
+    this.fileChosen = true;
+  }
+
   handleSymbolSelection(symbol: string) {
     console.log('tSV hSS selected symbol: ', symbol);
+    this.symbol = symbol;
+    this.symbolSelected = true;
 
     // get ribbon info first and render 
     const ribbonInfo = this.getRibbonInfo(symbol);
@@ -76,31 +81,43 @@ export class TradedStrikesViewComponent implements OnInit {
 
     // get all data records for symbol
     const oratsDataRecordsForSymbol = this.getOratsDataRecordsForSymbol(symbol);
-    console.log('tSV hSS orats record [0]: ', oratsDataRecordsForSymbol[0]);
-    this.oratsDataRecordsBS.next(oratsDataRecordsForSymbol);
 
-    // get Delta strikes grid data object
-    const deltaStrikesGridData = this.getDeltaStrikesGridData(oratsDataRecordsForSymbol);
-    // console.log('tSV hSS deltaStrikesGridData: ', deltaStrikesGridData);
-    this.deltaStrikesGridDataBS.next(deltaStrikesGridData);
+    // if no data exists, don't do anything else
+    if (oratsDataRecordsForSymbol.length === 0) {
+      this.dataExistsForSymbol = false;
+      console.log('tSV hSS NO DATA FOR SYMBOL: ', symbol);
+    } else {
+      // only do following operations if data exists
+      this.dataExistsForSymbol = true;
+      console.log('tSV hSS orats record [0]: ', oratsDataRecordsForSymbol[0]);
+      this.oratsDataRecordsBS.next(oratsDataRecordsForSymbol);
 
-    // generate an object with key = expiration and value = array of contract symbols 
-    // that pass a delta filter
-    const targetStrikesByExpiration = this.getTargetStrikesByExpiration(symbol);
+      // get Delta strikes grid data object
+      const deltaStrikesGridData = this.getDeltaStrikesGridData(oratsDataRecordsForSymbol);
+      // console.log('tSV hSS deltaStrikesGridData: ', deltaStrikesGridData);
+      this.deltaStrikesGridDataBS.next(deltaStrikesGridData);
+
+      // generate an object with key = expiration and value = array of contract symbols 
+      // that pass a delta filter
+      const targetStrikesByExpiration = this.getTargetStrikesByExpiration(symbol);
+      
+      // generate an array of records that are all the contracts for the target strikes
+      const targetRecords = this.getRecordsArrayFromTargetStrikesByExpirationObject(targetStrikesByExpiration);
+      this.targetStrikesRecordsBS.next(targetRecords);
+
+      // generate an object with key = strike and value is object with key = expiration
+      // and value = OratsUiDatum.  This is the actual data for each contract.
+      const allContractsByStrikeAndExpiration = this.getAllContractsByStrikeAndExpiration(oratsDataRecordsForSymbol);
+      this.allContractsByStrikeAndExpirationBS.next(allContractsByStrikeAndExpiration);
+
+      // the above data is an object, but we're displaying in a table, so we need to convert it to
+      // an array.  Use the same technique as strikes table data (strikesWithExpirations)
+      const allContractsTableData = this.convertAllContractsDataObjectToArray(allContractsByStrikeAndExpiration);
+      this.allContractsTableDataBS.next(allContractsTableData);
+
+    }
+
     
-    // generate an array of records that are all the contracts for the target strikes
-    const targetRecords = this.getRecordsArrayFromTargetStrikesByExpirationObject(targetStrikesByExpiration);
-    this.targetStrikesRecordsBS.next(targetRecords);
-
-    // generate an object with key = strike and value is object with key = expiration
-    // and value = OratsUiDatum.  This is the actual data for each contract.
-    const allContractsByStrikeAndExpiration = this.getAllContractsByStrikeAndExpiration(oratsDataRecordsForSymbol);
-    this.allContractsByStrikeAndExpirationBS.next(allContractsByStrikeAndExpiration);
-
-    // the above data is an object, but we're displaying in a table, so we need to convert it to
-    // an array.  Use the same technique as strikes table data (strikesWithExpirations)
-    const allContractsTableData = this.convertAllContractsDataObjectToArray(allContractsByStrikeAndExpiration);
-    this.allContractsTableDataBS.next(allContractsTableData);
 
   }
 

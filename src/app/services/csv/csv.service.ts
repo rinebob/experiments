@@ -207,29 +207,34 @@ export class CsvService {
   // returns an array of OratsUiDatum objects
   // this is the raw data from the .csv for all the selected symbols
   public generateRecordsArrayForSelectedSymbols(symbols: string[]): OratsUiDatum[] {
-    // console.log('cS gRAFSS symbols: ', symbols);
+    console.log('cS gRAFSS symbols: ', symbols);
     const records: OratsUiDatum[] = [];
 
     for (const symbol of symbols) {
       let index = this.allRecordsBS.value.findIndex(datum => datum.symbol === symbol);
       let datum = this.allRecordsBS.value[index];
-      // console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
+      console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
 
-      while(datum.symbol === symbol) {
+      if (index === -1) {
+        console.log('cS pCFFS NO DATA FOR SYMBOL: ', symbol);
+        return [];
+      } else {
+        while(datum.symbol === symbol) {
         
-        if (this.useDeltaThresholds) {
-          const isTargetStrike = (Number(datum.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(datum.delta) > this.targetStrikeLowerDeltaThreshold);
-          // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', datum.expirDate, datum.strike, datum.delta, isTargetStrike);
-          if (isTargetStrike) {
+          if (this.useDeltaThresholds) {
+            const isTargetStrike = (Number(datum.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(datum.delta) > this.targetStrikeLowerDeltaThreshold);
+            // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', datum.expirDate, datum.strike, datum.delta, isTargetStrike);
+            if (isTargetStrike) {
+              records.push(datum);
+            }
+          } else {
+            // console.log('cS gRAFSS not using delta filter');
             records.push(datum);
           }
-        } else {
-          // console.log('cS gRAFSS not using delta filter');
-          records.push(datum);
+          // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
+          index++;
+          datum = this.allRecordsBS.value[index];
         }
-        // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
-        index++;
-        datum = this.allRecordsBS.value[index];
       }
     }
     // console.log('cS gRAFSS records: ', records);
@@ -689,35 +694,20 @@ export class CsvService {
 
   convertAllContractsDataObjectToArray(allDataObject: AllContractsByStrikeAndExpiration): AllContractsDataForStrike[] {
     const allData = []
-
-    // loop through the entries in allDataObject.  For each entry:
-    // create a AllContractsDataForStrike object and push to an arry.  return the array
-
     for (const [strike, contracts] of Object.entries(allDataObject)) {
-
       const contractsForStrike: AllContractsDataForStrike = {
         strike,
       }
-
       for (const [exp, datum] of Object.entries(contracts)) {
         contractsForStrike[exp] = datum;
-
       }
-
       allData.push(contractsForStrike);
-
     }
-
-    // sort the data by strike
+    // sort the data by strike so highest strike is at top of table
     allData.sort((a, b) => {
-      // return a.strike - b.strike;
       return b.strike - a.strike;
     });
-
-
-    console.log('cS cACDOTA final allData: ', allData);
-
-    
+    // console.log('cS cACDOTA final allData: ', allData);
 
     return allData;
   }

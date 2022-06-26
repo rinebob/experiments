@@ -1,19 +1,36 @@
-<exp-download-manager>
+<exp-download-manager (fileSelected)="handleFileSelection()">
 </exp-download-manager>
 
-<exp-symbol-selector (selectedSymbol)="handleSymbolSelection($event)">
-</exp-symbol-selector>
+<ng-container *ngIf="fileChosen">
+    <exp-symbol-selector (selectedSymbol)="handleSymbolSelection($event)">
+    </exp-symbol-selector>
+
+    <ng-container *ngIf="symbolSelected">
+        <ng-container *ngIf="dataExistsForSymbol; else noData">
+    
+            <exp-info-ribbon [ribbonInfo]="ribbonInfo$ | async">
+            </exp-info-ribbon>
+            
+            
+            <exp-delta-strikes-grid [deltaStrikesGridData]="deltaStrikesGridData$ | async">
+            </exp-delta-strikes-grid>
+            
+            
+            <exp-strikes-table [inputTradedStrikesData]="strikesTableData$ | async"
+                               [inputAllContractsData]="allContractsTableData$ | async"
+            >
+            </exp-strikes-table>
+        
+        </ng-container>
+
+    </ng-container>
+
+</ng-container>
+
+<ng-template #noData>
+    <div class="no-data">Sorry, no data exists for symbol {{symbol}}</div>
+</ng-template>
 
 
-<exp-info-ribbon [ribbonInfo]="ribbonInfo$ | async">
-</exp-info-ribbon>
 
 
-<exp-delta-strikes-grid [deltaStrikesGridData]="deltaStrikesGridData$ | async">
-</exp-delta-strikes-grid>
-
-
-<exp-strikes-table [inputTradedStrikesData]="strikesTableData$ | async"
-                   [inputAllContractsData]="allContractsTableData$ | async"
->
-</exp-strikes-table>
