@@ -1,12 +1,12 @@
 
 <div #strikesGridContainer class="strikes-grid-container">
 
-    <ng-container *ngIf="allcontractsTableData$ | async as data">
+    <ng-container *ngIf="tradedStrikesData$ | async as data">
         <div class="header-row" *ngIf="!!data.length">
             <div class="header-strike-cell">
                 Strike
             </div>
-            <div class="header-cell" *ngFor="let exp of allExpirations" >
+            <div class="header-cell" *ngFor="let exp of expirations$ | async" >
                 {{exp}}
             </div>
 
@@ -18,7 +18,7 @@
                 <div class="cell strike-cell">
                     {{row.strike}}
                 </div>
-                <div *ngFor="let exp of allExpirations" 
+                <div *ngFor="let exp of expirations$ | async" 
                     class="cell" 
                     [class.on]="!!row[exp]"
                     [class.off]="!row[exp]"

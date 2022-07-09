@@ -114,31 +114,22 @@ export enum PriceComponent {
     CLOSE = 'close',
 }
 
-export interface TradedStrikesTableDataObject {
+export interface TradedStrikesBoolTableDataObject {
     allExpirations?: string[];
-    tradedStrikesData?: TradedStrikesDatum[];
+    tradedStrikesBool?: TradedStrikesBoolDatum[];
 }
 
-export interface TradedStrikesDatum {
+// object with properties strike and key = expiration value = boolean whether that strike/exp
+// combo is traded
+export interface TradedStrikesBoolDatum {
     [key: string]: number | boolean;
     strike: number;
-}
-
-// object with key = expiration and value = OratsUiDatum for that key/exp
-export interface ContractsByExpirationForStrike {
-    [key: string]: OratsUiDatum;
-}
-
-// key = strike
-// value = object with key = expiration and value = OratsUiDatum for that key/exp
-export interface AllContractsByStrikeAndExpiration {
-    [key: number]: ContractsByExpirationForStrike;
 }
 
 export interface TableColumn {
     columnDef: string;
     header: string;
-    cell: (datum: TradedStrikesDatum) => string | boolean;
+    cell: (datum: TradedStrikesBoolDatum) => string | boolean;
     
 }
 

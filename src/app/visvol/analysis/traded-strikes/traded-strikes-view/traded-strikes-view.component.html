@@ -12,12 +12,13 @@
             </exp-info-ribbon>
             
             
-            <exp-delta-strikes-grid [deltaStrikesGridData]="deltaStrikesGridData$ | async">
+            <exp-delta-strikes-grid [deltaStrikesGridData]="deltaStrikesData$ | async">
             </exp-delta-strikes-grid>
             
             
-            <exp-strikes-table [inputTradedStrikesData]="strikesTableData$ | async"
-                               [inputAllContractsData]="allContractsTableData$ | async"
+            <exp-strikes-table [expirations]="allExpirationsForSymbol$ | async"
+                               [inputTradedStrikesBool]="tradedStrikesBool$ | async"
+                               [inputTradedStrikesData]="tradedStrikesData$ | async"
             >
             </exp-strikes-table>
         

@@ -124,6 +124,11 @@ export interface StrikesWithExpirations {
     expirations: string[];
 }
 
+// key = strike value = array of expriation data strings for that strike
+export interface ExpirationsByStrike {
+    [key: number]: string[];
+}
+
 export interface DeltaStrikesGridData {
     // key as expiration date and value as array of records for each target delta
     [key: string]: OratsUiDatum[];
@@ -134,7 +139,7 @@ export interface ContractLookupObject {
     [key: string]: OratsUiDatum;
 }
 
-// for generateAllContractsByStrikeAndExpiration (CsvService #5).  This is the intervace for
+// for generateAllContractsByStrikeAndExpiration (CsvService #5).  This is the interface for
 // the value 
 export interface DataByExpirationForStrike {
     // key is the expiration.  Value is the OratsUiDatum for that expiration
@@ -148,8 +153,19 @@ export interface AllContractsByStrikeAndExpiration {
     [key: string]: DataByExpirationForStrike;
 }
 
-
+// object with property strike and key = expiration and value = OratsUiDatum for that 
+// strike/expiration.  This is one object in the 
 export interface AllContractsDataForStrike {
     strike: string;
     [key: string]: OratsUiDatum | string;
+}
+
+export interface TradedStrikesGridData {
+    allExpirations: string[];
+    tradedStrikesData: AllContractsDataForStrike[];
+}
+
+// Object with key = exiration and value = array of option contract symbols for that expiration.
+export interface SymbolsForExpiration {
+    [key: string]: string[];
 }

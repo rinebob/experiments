@@ -12,8 +12,8 @@ import { DeltaStrikesGridData, OratsUiDatum } from 'src/app/common/interfaces_or
 export class DeltaStrikesGridComponent implements OnInit {
   @Input()
   set deltaStrikesGridData(data: DeltaStrikesGridData) {
+    // console.log('dSG @i dSGD data', data);
     this.deltaStrikesGridDataBS.next(data);
-    this.expirations = this.getExpirations(data);
   }
   get deltaStrikesGridData() {
     return this.deltaStrikesGridDataBS.value;
@@ -28,11 +28,14 @@ export class DeltaStrikesGridComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.expirations = this.getExpirations(this.deltaStrikesGridData);
+  }
 
   getExpirations(data: DeltaStrikesGridData): string[] {
+  // console.log('dSG gE get expirations. data: ', data);
     const expirations = Object.keys(this.deltaStrikesGridData);
-    console.log('dSG get expirations: ', expirations);
+    // console.log('dSG get expirations: ', expirations);
 
     return expirations;
 
@@ -40,7 +43,7 @@ export class DeltaStrikesGridComponent implements OnInit {
 
   getDeltaStrikesDataForExpiration(exp: string) {
     const data = this.deltaStrikesGridData[exp];
-    console.log('dSG gDSDFE data for exp: ', exp, data);
+    // console.log('dSG gDSDFE data for exp: ', exp, data);
     this.showTable = true;
 
     this.dataForExpiration = data;
