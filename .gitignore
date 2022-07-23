@@ -4,6 +4,9 @@
 /dist
 /tmp
 /out-tsc
+
+# added 7-23-22 rinebob to hide compiled webpack files
+.angular/
 # Only exists if Bazel was run
 /bazel-out
 
