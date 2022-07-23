@@ -35,7 +35,7 @@ export class CalcFormComponent implements OnInit {
   constructor(private readonly bsService: BlackScholesService ) { }
 
   ngOnInit(): void {
-    this.calculatorFormValuesBS.next(this.calculatorForm.value);
+    this.calculatorFormValuesBS.next(BLACK_SCHOLES_INITIALIZER);
      // console.log('bSC ngOI initial calculatorForm.value: ', this.calculatorForm.value);
     // console.log('bSC ngOI initial calculatorFormValuesBS: ', this.calculatorFormValuesBS.value);
     this.calculatorFormValues.pipe().subscribe(

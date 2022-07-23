@@ -131,12 +131,12 @@ export interface PositionPricePoint {
 }
 
 export interface BlackScholesInputs {
-  S0: number;   // S0 - price of underlying security ($)
-  X: number;    // X - option strike price ($)
-  s: number;    // s - implied volatility (% / yr as decimal) (s = sigma)
-  t: number;    // t - time to expiration (percent of the year as decimal (i.e. 3 mo = .25 year))
-  r: number;    // r - risk free interest rate (% / yr as decimal)
-  q: number;    // q - dividend yield (% / yr as decimal).  If stock pays no dividend enter zero
+  S0?: number;   // S0 - price of underlying security ($)
+  X?: number;    // X - option strike price ($)
+  s?: number;    // s - implied volatility (% / yr as decimal) (s = sigma)
+  t?: number;    // t - time to expiration (percent of the year as decimal (i.e. 3 mo = .25 year))
+  r?: number;    // r - risk free interest rate (% / yr as decimal)
+  q?: number;    // q - dividend yield (% / yr as decimal).  If stock pays no dividend enter zero
 }
 
 export interface BlackScholesOutput {
@@ -165,16 +165,16 @@ export type OptionProjectionDataSet = BlackScholesOutputSeries[];
 // }
 
 export interface BlackScholesCalculatorConfig {
-  undPriceMin: number;
-  undPriceMax: number;
-  strikeMin: number;
-  strikeMax: number;
-  strikeIncrement: number;
-  timeMin: number;
-  timeMax: number;
-  volMin: number;
-  volMax: number;
-  numDataPoints: number;
+  undPriceMin?: number;
+  undPriceMax?: number;
+  strikeMin?: number;
+  strikeMax?: number;
+  strikeIncrement?: number;
+  timeMin?: number;
+  timeMax?: number;
+  volMin?: number;
+  volMax?: number;
+  numDataPoints?: number;
 }
 
 export type Direction = 'LONG' | 'SHORT';

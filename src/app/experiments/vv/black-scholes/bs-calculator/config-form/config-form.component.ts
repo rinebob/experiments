@@ -46,7 +46,8 @@ export class ConfigFormComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.configFormValueChangesBS.next(this.configForm.value);
+    // this.configFormValueChangesBS.next(this.configForm.value);
+    this.configFormValueChangesBS.next(BLACK_SCHOLES_CONFIG_INITIALIZER);
     // console.log('bSC ngOI initial configForm.value: ', this.configForm.value);
     // console.log('bSC ngOI initial configFormValuesBS: ', this.configFormValuesBS.value);
 

@@ -8,7 +8,7 @@ import {EQUITY_DATA_MAP} from '../../common/constants';
 // import { tslaData } from 'src/assets/data/tsla_21-0917';
 
 import * as configs from '../../common/option_configs';
-import { Option } from 'black-scholes-js';
+// import { Option } from 'black-scholes-js';
 
 @Component({
   selector: 'exp-portfolio',

@@ -7,9 +7,9 @@ import { MenuConfig } from './common/interfaces';
 import { getOpcalc, loadOpcalc } from './common/opcalc';
 
 // import * as oc from 'opcalc';
-import * as abs from 'angular-black-scholes';
+// import * as abs from 'angular-black-scholes';
 
-import * as bs from 'black-scholes-js';
+// import * as bs from 'black-scholes-js';
 
 @Component({
   selector: 'exp-root',
