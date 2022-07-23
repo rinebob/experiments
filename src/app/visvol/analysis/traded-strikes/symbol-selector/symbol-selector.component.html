@@ -1,12 +1,12 @@
-
 <div class="symbol-buttons-container">
-    <button *ngFor="let symbol of SYMBOLS_LIST" 
+    <button *ngFor="let symbol of SYMBOLS_LIST"
             mat-button
             class="symbol-button"
             color="primary"
-            (click)="getStrikesForSymbol(symbol)"
+            (click)="handleSymbolSelection(symbol)"
     >
         {{symbol}}
     </button>
 
 </div>
+<p *ngIf="!symbolSelected">Click on a symbol to continue</p>

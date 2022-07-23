@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, ElementRef, Input, OnInit, ViewChild  } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-
-import { TradedStrikesDatum, TradedStrikesTableDataObject } from '../../../../common/interfaces';
+import { TradedStrikesBoolDatum, TradedStrikesBoolTableDataObject } from '../../../../common/interfaces';
+import {AllContractsDataForStrike} from '../../../../common/interfaces_orats';
 
 @Component({
   selector: 'exp-strikes-table',
@@ -15,48 +15,93 @@ export class StrikesTableComponent {
   @ViewChild('strikesGridContainer', {read: ElementRef}) strikesGridContainer: ElementRef;
 
   @Input()
-  set inputData(data: TradedStrikesTableDataObject) {
-    if (data && data.allExpirations && data.tradedStrikesData) {
-      this.inputDataBS.next(data);
-      this.tableDataBS.next(this.sortData(data.tradedStrikesData));
-      this.allExpirationsBS.next(data.allExpirations);
+  set expirations(expirations: string[]) {
+    console.log('sT @i exps: ', expirations);
+    if (expirations) {
+      this.expirationsBS.next(expirations);
     }
-
+  }
+  get expirations() {
+    return this.expirationsBS.value;
 
   }
-  get inputData() {
-    return this.inputDataBS.value;
+  expirationsBS = new BehaviorSubject<string[]>([]);
+  expirations$: Observable<string[]> = this.expirationsBS;
+
+  @Input()
+  set inputTradedStrikesBool(bool: TradedStrikesBoolDatum[]) {
+    if (bool) {
+      this.inputTradedStrikesBoolBS.next(bool);
+    }
+  }
+  get inputTradedStrikesBool() {
+    return this.inputTradedStrikesBoolBS.value;
 
   }
-  inputDataBS = new BehaviorSubject<TradedStrikesTableDataObject>({});
+  inputTradedStrikesBoolBS = new BehaviorSubject<TradedStrikesBoolDatum[]>([]);
+  tradedStrikesBool$: Observable<TradedStrikesBoolDatum[]> = this.inputTradedStrikesBoolBS;
 
-  tableDataBS = new BehaviorSubject<TradedStrikesDatum[]>([]);
-  tableData$: Observable<TradedStrikesDatum[]> = this.tableDataBS;
+  @Input()
+  set inputTradedStrikesData(data: AllContractsDataForStrike[]) {
+    console.log('sT @i tSD: ', data);
+    if (data) {
+      this.inputTradedStrikesDataBS.next(data);
+    }
+  }
+  get inputTradedStrikesData() {
+    return this.inputTradedStrikesDataBS.value;
+
+  }
+  inputTradedStrikesDataBS = new BehaviorSubject<AllContractsDataForStrike[]>([]);
+  tradedStrikesData$: Observable<AllContractsDataForStrike[]> = this.inputTradedStrikesDataBS;
+
+  // tradedStrikesBoolTableDataBS = new BehaviorSubject<TradedStrikesBoolDatum[]>([]);
+  // tradedStrikesBoolTableData$: Observable<TradedStrikesBoolDatum[]> = this.tradedStrikesBoolTableDataBS;
+
+
+  // @Input()
+  // set inputAllContractsData(data: AllContractsDataForStrike[]) {
+  //   if (data) {
+  //     console.log('sT @i inputAllCtxData: ', data)
+  //     this.inputAllContractsDataBS.next(data);
+  //     this.allContractsTableDataBS.next(data);
+  //   }
+  // }
+  // get inputAllContractsData() {
+  //   return this.inputAllContractsDataBS.value;
+
+  // }
+  // inputAllContractsDataBS = new BehaviorSubject<AllContractsDataForStrike[]>([]);
   
-  allExpirationsBS = new BehaviorSubject<string[]>([]);
-  allExpirations$: Observable<string[]> = this.allExpirationsBS;
-  allExpirations: string[] = [];
+  // allContractsTableDataBS = new BehaviorSubject<AllContractsDataForStrike[]>([]);
+  // allcontractsTableData$: Observable<AllContractsDataForStrike[]> = this.allContractsTableDataBS;
+  
+  // allExpirationsBS = new BehaviorSubject<string[]>([]);
+  
+  // allExpirations: string[] = [];
 
-  scrollItemSize = 0;
+  scrollItemSize = 12;
 
   constructor() { 
-    this.tableData$.pipe().subscribe(
-      data => {
-        // console.log('sT ctor table data sub value: ', data);
-      }
+    // this.tradedStrikesData$.pipe().subscribe(
+    //   data => {
+    //     // console.log('sT ctor table data sub value: ', data);
+    //   }
 
-    );
+    // );
 
-    this.allExpirations$.pipe().subscribe(
-      expirations => {
-        this.allExpirations = Object.values(expirations);
-        // console.log('sT ctor expirations sub value/allExps: ', expirations, this.allExpirations);
-      }
-    );
+    // this.allExpirations$.pipe().subscribe(
+    //   expirations => {
+    //     this.allExpirations = Object.values(expirations);
+    //     // console.log('sT ctor expirations sub value/allExps: ', expirations, this.allExpirations);
+    //   }
+    // );
   }
 
-  sortData(data: TradedStrikesDatum[]): TradedStrikesDatum[] {
+  sortData(data) {
     const sortedData = data.sort((a, b) => {return a.strike - b.strike});
     return sortedData;
   }
+
+  
 }

@@ -5,6 +5,8 @@
        (change)="uploadListener($event)"
        accept=".csv" />
 
+<p *ngIf="!fileChosen">Please choose a file to continue</p>
+
 <!-- <input type="text" [formControl]="symbol"/> 
        
 <button (click)="getStrikesForSymbol()">Symbol</button>

@@ -1,13 +1,37 @@
-<exp-download-manager></exp-download-manager>
+<exp-download-manager (fileSelected)="handleFileSelection()">
+</exp-download-manager>
 
-<exp-symbol-selector (selectedSymbol)="handleSymbolSelection($event)">
+<ng-container *ngIf="fileChosen">
+    <exp-symbol-selector (selectedSymbol)="handleSymbolSelection($event)">
+    </exp-symbol-selector>
+
+    <ng-container *ngIf="symbolSelected">
+        <ng-container *ngIf="dataExistsForSymbol; else noData">
+    
+            <exp-info-ribbon [ribbonInfo]="ribbonInfo$ | async">
+            </exp-info-ribbon>
+            
+            
+            <exp-delta-strikes-grid [deltaStrikesGridData]="deltaStrikesData$ | async">
+            </exp-delta-strikes-grid>
+            
+            
+            <exp-strikes-table [expirations]="allExpirationsForSymbol$ | async"
+                               [inputTradedStrikesBool]="tradedStrikesBool$ | async"
+                               [inputTradedStrikesData]="tradedStrikesData$ | async"
+            >
+            </exp-strikes-table>
+        
+        </ng-container>
+
+    </ng-container>
+
+</ng-container>
+
+<ng-template #noData>
+    <p class="no-data">Sorry, no data exists for symbol {{symbol}}</p>
+</ng-template>
 
 
-</exp-symbol-selector>
-
-<exp-info-ribbon [ribbonInfo]="ribbonInfo$ | async"></exp-info-ribbon>
 
 
-<exp-strikes-table [inputData]="strikesTableData$ | async">
-
-</exp-strikes-table>

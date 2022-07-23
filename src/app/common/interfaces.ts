@@ -1,3 +1,4 @@
+import { OratsUiDatum } from "./interfaces_orats";
 
 
 export enum Direction {
@@ -113,12 +114,14 @@ export enum PriceComponent {
     CLOSE = 'close',
 }
 
-export interface TradedStrikesTableDataObject {
+export interface TradedStrikesBoolTableDataObject {
     allExpirations?: string[];
-    tradedStrikesData?: TradedStrikesDatum[];
+    tradedStrikesBool?: TradedStrikesBoolDatum[];
 }
 
-export interface TradedStrikesDatum {
+// object with properties strike and key = expiration value = boolean whether that strike/exp
+// combo is traded
+export interface TradedStrikesBoolDatum {
     [key: string]: number | boolean;
     strike: number;
 }
@@ -126,7 +129,7 @@ export interface TradedStrikesDatum {
 export interface TableColumn {
     columnDef: string;
     header: string;
-    cell: (datum: TradedStrikesDatum) => string | boolean;
+    cell: (datum: TradedStrikesBoolDatum) => string | boolean;
     
 }
 
@@ -135,4 +138,10 @@ export interface RibbonInfo {
     date: string;
     price: string;
     iv: string;
+}
+
+export enum TradedStrikesViewMode {
+    CALLS_ONLY = 'calls-only',
+    PUTS_ONLY = 'puts-only',
+    CALLS_AND_PUTS = 'calls-and-puts',
 }

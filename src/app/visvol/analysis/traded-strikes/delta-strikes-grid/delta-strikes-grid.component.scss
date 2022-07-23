@@ -1,0 +1,43 @@
+
+
+.delta-strikes-grid-container {
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    margin-left: 10px;
+
+    .expirations-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        .toggle-button {
+            font-size: 12px;
+            margin-right: 6px;
+        }
+
+        .expiration {
+            cursor: pointer;
+            font-size: 10px;
+            width: 100px;
+
+        }
+
+    }
+
+    .delta-strikes-data-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        .strikes-datum {
+
+        }
+
+    }
+
+}
+

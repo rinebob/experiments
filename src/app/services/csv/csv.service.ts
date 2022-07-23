@@ -1,37 +1,123 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
-import {OratsFileFormat, StrikesByExpiration} from '../../common/interfaces_orats';
-import {RibbonInfo, TradedStrikesTableDataObject} from '../../common/interfaces';
-import { RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
+import { AllContractsByStrikeAndExpiration, AllContractsDataForStrike, ContractLookupObject, DataByExpirationForStrike, DeltaStrikesGridData, OratsFileFormat, OratsUiDatum, StrikesByExpiration, SymbolsForExpiration } from '../../common/interfaces_orats';
+import { RibbonInfo, TradedStrikesBoolDatum, TradedStrikesBoolTableDataObject} from '../../common/interfaces';
+import {ExpirationsByStrike, TradedStrikesGridData} from '../../common/interfaces_orats';
+import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CsvService {
 
-  // holds one .csv file at a time
-  csvDataBS = new BehaviorSubject<Object>({});
+  ////////////////////// PUBLIC API /////////////////////////////
 
-  // array of all rows in the .csv file as one OratsFileFormat object per row
-  allRecordsBS = new BehaviorSubject<OratsFileFormat[]>([]);
+  // holds one .csv file at a time
+  private csvDataBS = new BehaviorSubject<Object>({});
+
+  // array of all rows in the .csv file as one OratsUiDatum object per row
+  private allRecordsBS = new BehaviorSubject<OratsUiDatum[]>([]);
+  allRecords$: Observable<OratsUiDatum[]> = this.allRecordsBS;
+
+  // unique array of all expirations in the .csv file 
+  private allExpirationsBS = new BehaviorSubject<string[]>([]);
+  allExpirations$: Observable<string[]> = this.allExpirationsBS;
+
+  // key-value pairs object of all rows in .csv
+  // key is contract symbol; value is OratsUiDatum for that symbol
+  private contractLookupBS = new BehaviorSubject<ContractLookupObject>({});
+  contractLookup$: Observable<ContractLookupObject> = this.contractLookupBS;
+
+  // enables filtering by delta value.  We don't use any contracts at the outer delta
+  // values, so don't show them.  
+  // useDeltaThresholds = false;
+  useDeltaThresholds = true;
+
+  // upper and lower boundaries to filter by delta.  To be included, record.delta must
+  // be between upper and lower thresholds.  
+  // consider moving this to constants
+  targetStrikeUpperDeltaThreshold = 0.9;
+  targetStrikeLowerDeltaThreshold = 0.1;
+  
+  private ribbonInfoBS = new BehaviorSubject<RibbonInfo>(RIBBON_INFO_INITIALIZER);
+  ribbonInfo$: Observable<RibbonInfo> = this.ribbonInfoBS;
+
+  // unique array of all expirations in the data for the symbol
+  private allExpirationsForSymbolBS = new BehaviorSubject<string[]>([]);
+  allExpirationsForSymbol$: Observable<string[]> = this.allExpirationsForSymbolBS;
+
+  // unique array of all expirations in the data for the symbol
+  private allRecordsForSymbolBS = new BehaviorSubject<OratsUiDatum[]>([]);
+  allRecordsForSymbol$: Observable<OratsUiDatum[]> = this.allRecordsForSymbolBS;
+
+  private tradedStrikesBoolBS = new BehaviorSubject<TradedStrikesBoolDatum[]>([]);
+  tradedStrikesBool$: Observable<TradedStrikesBoolDatum[]> = this.tradedStrikesBoolBS;
+
+  private tradedStrikesDataBS = new BehaviorSubject<AllContractsDataForStrike[]>([]);
+  tradedStrikesData$: Observable<AllContractsDataForStrike[]> = this.tradedStrikesDataBS;
+
+  private deltaStrikesDataBS = new BehaviorSubject<DeltaStrikesGridData>({});
+  deltaStrikesData$: Observable<DeltaStrikesGridData> = this.deltaStrikesDataBS;
+   
+  get allRecordsCount() {
+    return this.allRecordsBS.value.length;
+  } 
+
+  get targetStrikesRecordsCount() {
+    return this.tradedStrikesDataBS.value.length;
+  }
+
+  
   
   constructor() { }
 
   ////////////////////// CSV DATA FROM FILE READER  ACTIONS //////////////////
 
+  // Runs when a .csv file is sent here to the service
   setCsvData(data: Object) {
     // pushes the .csv file to a file BS
     this.csvDataBS.next(data);
 
-    // pushes array of OratsFileFormat objects to all records BS
+    // pushes array of OratsUiDatum objects to all records BS
     // use as internal data source so this only happens once per upload
     this.allRecordsBS.next(this.generateRecordsArrayFromCsvFile(this.csvDataBS.value));
 
+    // generates unique array of all expirations in the entire .csv file
+    // use as internal data source so this only happens once per upload
+    this.allExpirationsBS.next(this.generateAllExpirationsArray(this.allRecordsBS.value));
+
+    // Object with key = contract symbol and value = OratsUiDatum for that symbol
+    this.contractLookupBS.next(this.generateContractLookupObject(this.allRecordsBS.value));
+}
+  
+  // runs when a user selects a symbol in a view.  Currently supporting traded strikes view
+  handleSymbolSelection(symbol: string) {
+    // get ribbon info
+    this.ribbonInfoBS.next(this.getRibbonInfo(symbol));
+
+    // get all records for symbol
+    this.allRecordsForSymbolBS.next(this.generateRecordsArrayForSelectedSymbols([symbol]));
+
+    // get all expirations for symbol
+    this.allExpirationsForSymbolBS.next(this.generateAllExpirationsArray(this.allRecordsForSymbolBS.value));
+
+    // get traded strikes bool
+    this.tradedStrikesBoolBS.next(this.getTradedStrikesBool([symbol]));
+
+    // get traded strikes data
+    this.tradedStrikesDataBS.next(this.getTradedStrikesData([symbol]));
+
+    // get delta strikes data
+    this.deltaStrikesDataBS.next(this.generateDeltaStrikesGridData([symbol]));
   }
 
+  ////////////////////// END PUBLIC API /////////////////////////////
+
+  ////////////////////////////// SET CSV METHODS ////////////////////////
+
   // run this first when a new file arrives from download manager
-  private generateRecordsArrayFromCsvFile(file): OratsFileFormat[] {
+  private generateRecordsArrayFromCsvFile(file): OratsUiDatum[] {
     let csvRecordsArray = (<string>file).split(/\r\n|\n/);  
     let headersRow = this.getHeaderArray(csvRecordsArray);  
     // console.log('cS uL headersRow: ', headersRow);
@@ -49,15 +135,16 @@ export class CsvService {
     return headerArray;  
   }
 
-  // this is the entry point for configuring the OratsFileFormat object instances
+  // this is the entry point for configuring the OratsUiDatum object instances
   private getDataRecordsArrayFromCSVFile(csvRecordsArray: any, headerLength: any) {  
     let csvArr = [];  
     let numRecords = csvRecordsArray.length;
   
     for (let i = 1; i < numRecords; i++) {  
       let currentRecord = (<string>csvRecordsArray[i]).split(',');  
+
       if (currentRecord.length == headerLength) {  
-        let csvRecord: OratsFileFormat = {
+        let csvRecord: OratsUiDatum = {
           symbol: currentRecord[0].trim(),
           trade_date: currentRecord[36].trim(),
           stkPx: currentRecord[1].trim(),
@@ -66,6 +153,9 @@ export class CsvService {
           strike: currentRecord[4].trim(),
           cValue: currentRecord[10].trim(),
           pValue: currentRecord[13].trim(),
+          delta: currentRecord[25].trim(),
+          cMidIv: currentRecord[16].trim(),
+          pMidIv: currentRecord[20].trim(),
 
         };  
 
@@ -90,7 +180,7 @@ export class CsvService {
   // all one word no spaces or underscores etc.
   // ex: TSLA June 16, 2022 517.5 call
   // TSLA220618C00517500
-  private generateContractSymbols(record: OratsFileFormat) {
+  private generateContractSymbols(record: OratsUiDatum) {
     // console.log('cS gCS input record: ', record);
     let contractSymbol = '';
     let callSymbol = '';
@@ -122,6 +212,53 @@ export class CsvService {
     // console.log('cS gCS ctx/c/p symbols: ', contractSymbol, callSymbol, putSymbol);
 
     return {ctxS: contractSymbol, cS: callSymbol, pS: putSymbol};
+  }
+
+  // generateAllExpirationsArray
+  // takes the allRecordsBS value
+  // returns a single array of strings representing the unique list
+  // of expiration dates that exist that day for all symbols
+  // used as master list of expirations and as keys for final data objects
+  // as column headers in tables
+  private generateAllExpirationsArray(records: OratsUiDatum[]) {
+    const expirationsSet = new Set<string>();
+    for (const record of records) {
+      expirationsSet.add(new Date(record.expirDate).toISOString())
+
+    }
+
+    const expirationsDates = [];
+    for (const exp of expirationsSet) {
+      expirationsDates.push(new Date(exp).getTime())
+    }
+    expirationsDates.sort();
+
+    const expirationsDateTextStrings = [];
+    for (const millis of expirationsDates) {
+      const date = new Date(millis);
+      const dateText = new Intl.DateTimeFormat().format(date);
+      expirationsDateTextStrings.push(dateText);
+    }
+
+
+    console.log('cS gAEA final all expirations: ', expirationsDateTextStrings);
+    return expirationsDateTextStrings;
+
+  }
+
+
+  // generates an object for all records key = contract symbol, value = OratsUiDatum
+  private generateContractLookupObject(records: OratsUiDatum[]): ContractLookupObject {
+    const lookupObject = {};
+
+    for (const record of records) {
+      const symbol = this.generateContractSymbols(record).ctxS;
+
+      lookupObject[symbol] = record;
+
+    }
+
+    return lookupObject;
   }
 
   // these will possibly be used later
@@ -158,7 +295,7 @@ export class CsvService {
     return hash;
   }
 
-  private appendSymbolsAndHashToRecord(contractSymbols: string, hash: string, record: OratsFileFormat): OratsFileFormat {
+  private appendSymbolsAndHashToRecord(contractSymbols: string, hash: string, record: OratsUiDatum): OratsUiDatum {
     console.log('cS gCS input ctxSymbol/hash/record: ', contractSymbols, hash, record);
 
 
@@ -169,70 +306,259 @@ export class CsvService {
 
   ///////////////// END CSV DATA FROM FILE READER ACTIONS //////////////////
 
+  //////////////////// HELPER FUNCTIONS //////////////////////////////
 
-
-
-
-  
-
-  //////////// GENERATE RIBBON INFO FOR TRADED STRIKES VIEW ////////////
-
-  public getRibbonInfo(symbol: string): RibbonInfo {
-    console.log('cS gRI input ribbon info symbol: ', symbol);
-    const index = this.allRecordsBS.value.findIndex(item => item.symbol === symbol);
-    const source = this.allRecordsBS.value[index];
-
-    const ribbonInfo: RibbonInfo = {
-      date: source.trade_date,
-      symbol: source.symbol,
-      price: source.stkPx,
-      iv: 'not impl.',
-    }
-    
-    console.log('cS gRI final ribbon info: ', ribbonInfo);
-
-    return ribbonInfo;
-  }
-
-  //////////// END RIBBON INFO FOR TRADED STRIKES VIEW //////////
-
-
-
-
-
-
-  
-  //////////// TRADED STRIKES TABLE DATA OBJECT ////////////////////////
-
-    // 1) generateRecordsArrayForSelectedSymbols
   // takes a .csv file and an array of strings as symbols
-  // returns an array of OratsFileFormat objects
+  // returns an array of OratsUiDatum objects
   // this is the raw data from the .csv for all the selected symbols
-  public generateRecordsArrayForSelectedSymbols(symbols: string[]): OratsFileFormat[] {
+  private generateRecordsArrayForSelectedSymbols(symbols: string[]): OratsUiDatum[] {
     console.log('cS gRAFSS symbols: ', symbols);
-    const records: OratsFileFormat[] = [];
+    const records: OratsUiDatum[] = [];
 
     for (const symbol of symbols) {
       let index = this.allRecordsBS.value.findIndex(datum => datum.symbol === symbol);
-      let datum = this.allRecordsBS.value[index]
-      // console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
+      let datum = this.allRecordsBS.value[index];
+      console.log('cS pCFFS symbol/ind/datum: ', symbol, index, datum);
 
-      while(datum.symbol === symbol) {
-        records.push(datum);
-        // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
-        index++;
-        datum = this.allRecordsBS.value[index];
+      if (index === -1) {
+        console.log('cS pCFFS NO DATA FOR SYMBOL: ', symbol);
+        return [];
+      } else {
+        while(datum.symbol === symbol) {
+        
+          if (this.useDeltaThresholds) {
+            const isTargetStrike = (Number(datum.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(datum.delta) > this.targetStrikeLowerDeltaThreshold);
+            // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', datum.expirDate, datum.strike, datum.delta, isTargetStrike);
+            if (isTargetStrike) {
+              records.push(datum);
+            }
+          } else {
+            // console.log('cS gRAFSS not using delta filter');
+            records.push(datum);
+          }
+          // console.log('cS pCFFS while index/foundsymbol: ', index, datum);
+          index++;
+          datum = this.allRecordsBS.value[index];
+        }
       }
     }
-    console.log('cS gRAFSS records: ', records);
+    // console.log('cS gRAFSS records: ', records);
 
     return records;
   }
 
+
+  // {
+  //   '11/07/2020': [TSLA20110700512500, TSLA20110700515000, TSLA20110700515000, TSLA20110700515000],
+  //   '11/14/2020': [TSLA20110700515000, TSLA20110700517500, TSLA20110700520000, TSLA20110700522500],
+  // }
+
+  private generateTargetStrikeSymbolsByExpiration(symbol: string): SymbolsForExpiration {
+
+    let index = this.allRecordsBS.value.findIndex(record => record.symbol === symbol);
+    let record = this.allRecordsBS.value[index];
+    const targetStrikeSymbolsByExpiration = {};
+    
+    while(record.symbol === symbol) {
+      const isTargetStrike = (Number(record.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(record.delta) > this.targetStrikeLowerDeltaThreshold);
+      // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', record.expirDate, record.strike, record.delta, isTargetStrike);
+      if (isTargetStrike) {
+
+        const symbol = this.generateContractSymbols(record).ctxS;
+        const expiration = record.expirDate;
+
+        let targetStrikeSymbols: string[] = targetStrikeSymbolsByExpiration[expiration] ? 
+          [...targetStrikeSymbolsByExpiration[expiration]] 
+          : [];
+        targetStrikeSymbols.push(symbol);
+        targetStrikeSymbolsByExpiration[expiration] = targetStrikeSymbols;
+      }
+      // console.log('cS pCFFS while index/foundsymbol: ', index, record);
+      index++;
+      record = this.allRecordsBS.value[index];
+    }
+
+    return targetStrikeSymbolsByExpiration;
+  }
+
+  private generateRecordsArrayFromTargetStrikeSymbolsByExpirationObject(targetStrikeSymbolsByExpiration: SymbolsForExpiration): OratsUiDatum[] {
+
+    const targetStrikesRecords: OratsUiDatum[] = []
+
+    for (const [key, value] of Object.entries(targetStrikeSymbolsByExpiration)) {
+      for (const symbol of Object.values(value)) {
+        const datum = this.contractLookupBS.value[symbol];
+        targetStrikesRecords.push(datum);
+
+      }
+    }
+
+    // console.log('cS gRAFTSBEO targetStrikesRecords.slice(0, 50): ', targetStrikesRecords.slice(0, 50));
+    // console.log('cS gRAFTSBEO targetStrikesRecords: ', targetStrikesRecords);
+    return targetStrikesRecords;
+
+  }
+
+//////////////////// END HELPER FUNCTIONS //////////////////////////////
+  
+
+//////////// GENERATE RIBBON INFO FOR TRADED STRIKES VIEW ////////////
+
+  private getRibbonInfo(symbol: string): RibbonInfo {
+    // console.log('cS gRI input ribbon info symbol: ', symbol);
+    const index = this.allRecordsBS.value.findIndex(item => item.symbol === symbol);
+    const source = this.allRecordsBS.value[index];
+
+    const ribbonInfo: RibbonInfo = {
+      date: '',
+      symbol: '',
+      price: '',
+      iv: '',
+    }
+
+    if (!!source) {
+      ribbonInfo.date = source.trade_date;
+      ribbonInfo.symbol = source.symbol;
+      ribbonInfo.price = source.stkPx;
+      ribbonInfo.iv = 'not impl.';
+    }
+
+    
+    // console.log('cS gRI final ribbon info: ', ribbonInfo);
+
+    return ribbonInfo;
+  }
+
+//////////// END RIBBON INFO FOR TRADED STRIKES VIEW //////////
+
+/////////////// DELTA STRIKES GRID DATA OBJECT //////////////////
+
+  private generateDeltaStrikesGridData(symbols: string[]): DeltaStrikesGridData  {
+
+    const data = this.generateRecordsArrayForSelectedSymbols([symbols[0]]);
+
+    // return recordsForSymbol;
+    const deltas = [...DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS.keys()];
+    let currentDelta = deltas[0];
+    // console.log('cS gDSGD deltas: ', deltas, currentDelta);
+
+    let currentExpiration = 'initExp';
+    let currentDistance = 999;
+    let recordsForExpiration = [];
+    let index = 0;
+    let goToNextExpiration = false;
+    
+    // output object shape
+    // key as expiration and value as object with array of records for each target delta
+    // {
+    //   '6/1/2020': [...targetDeltaRecordsForExpiration],
+    //   '6/8/2020': [...targetDeltaRecordsForExpiration],
+    //   '6/22/2020': [...targetDeltaRecordsForExpiration],
+    // }
+    const deltaStrikesGridData: DeltaStrikesGridData = {}
+
+    for (const datum of data) {
+      
+      if (goToNextExpiration === false || (goToNextExpiration === true && (datum.expirDate !== currentExpiration))) {
+
+        if (datum.expirDate !== currentExpiration) {
+          // console.log('========== New expiration ==============================');
+          // console.log('cS gDSGD datum index: ', index);
+          // console.log('cS gDSGD cur/new exp: ', currentExpiration, datum.expirDate);
+          // console.log('cS gDSGD recordsForExp.len: ', recordsForExpiration.length);
+
+          
+
+          // only write to delta strikes object if there are records for exp
+          if (recordsForExpiration.length) {
+            deltaStrikesGridData[currentExpiration] = [...recordsForExpiration];
+            // console.log('cS gDSGD writing deltaStrikesGridData: ', deltaStrikesGridData);
+            
+            // reset for new expiration
+            recordsForExpiration.length = 0;
+            goToNextExpiration = false;
+            currentDistance = 999;
+            currentDelta = deltas[0];
+            // console.log('cS gDSGD finished reset. new gTNE/cE/cDi/cDe: ', goToNextExpiration, currentExpiration, currentDistance, currentDelta);
+            // console.log('-------------------------------');
+          }
+          currentExpiration = datum.expirDate;
+        }
+
+        
+        // use absolute value since we only need the magnitude
+        const distance = Math.abs(Number(datum.delta) - currentDelta);
+        // console.log('-------------------------------');
+        // console.log('cS gDSGD index/curDel/dat.del/distance/cur dist: ', index, currentDelta, datum.delta, distance, currentDistance);
+        // console.log('cS gDSGD datum.strike/delta: ', datum.strike, datum.delta);
+        // console.log('cS gDSGD data[index]strike/delta: ', data[index].strike, data[index].delta);
+
+        // the first new record will always fail because initial currentDistance is 999
+        if (distance > currentDistance && Number(datum.delta) < currentDelta) {
+
+          // we found our target 
+          // console.log('--------------- cS gDSGD target found for delta ',currentDelta,' ----------------');
+
+          // get the number of records to return
+          // create an array by slicing data at the current index and as many on either side to create the proper size array
+
+          const offset = Math.floor(DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS.get(currentDelta) / 2);
+
+          // since we're now on the record after the one we're interested on, specify the index
+          // of the target record as index - 1, and use that to grab the records we want
+          const targetIndex = index - 1;
+          // const targetIndex = index;
+          // console.log('cS gDSGD found at index: ', targetIndex);
+
+          const records = data.slice(targetIndex - offset, targetIndex + offset + 1);
+          // console.log('cS gDSGD strike/offset/delta: ', data[targetIndex].strike, offset,  data[targetIndex].delta);
+          // console.log('cS gDSGD writing to records for exp array');
+          // console.table(records)
+
+          // push these records to the records for expiration array
+          recordsForExpiration.push(...records);
+          index ++;
+
+          // now we need to search for the next target delta
+          // this continues the search from the current record
+          const curIndex = [...deltas].findIndex(delta => delta === currentDelta);
+          currentDelta = deltas[curIndex + 1];
+          currentDistance = 999;
+          // console.log('cS gDSGD new current delta/dist: ', currentDelta, currentDistance);
+
+          if (!currentDelta) {
+            // since we don't want to search any more records in this expiration, we set go to next exp to true
+            goToNextExpiration = true;
+            // console.log('setting go to next expiration true. index: ', index);
+            // console.log('-------------------------------');
+          }
+        } else {
+          // console.log('cS gDSGD dist < cur dist: ', distance, currentDistance);
+          currentDistance = distance;
+          // go to next record - this will happen until we find the target delta
+          index ++;
+          // console.log('cS gDSGD new index/cur dist: ', index, currentDistance);
+        }
+      } else {
+        index ++;
+        // console.log('cS gDSGD go to next exp = true. new index: ', index);
+      }
+    }
+
+    // console.log('cS gDSGD final deltaStrikesGridData: ', deltaStrikesGridData);
+    
+    return deltaStrikesGridData;
+  }
+
+
+/////////////// END DELTA STRIKES GRID DATA OBJECT //////////////////
+
+  //////////// TRADED STRIKES BOOL AND TABLE DATA OBJECTS ////////////////////////
+
   // takes an array of symbols 
   // returns an array of (strikes with all expirations) objects
   // and the master list of expiration dates
-  public getTradedStrikesData(symbols: string[]) {
+  private getTradedStrikesBool(symbols: string[]) {
 
     if (!this.csvDataBS.value || !this.csvDataBS.value[0] ) {
       console.log('cS gTSD no csv data dude!!  You gotta choose a file!');
@@ -240,47 +566,91 @@ export class CsvService {
       return
     } else {
 
-    // generate raw records array from file filtered by symbols
-    const records = this.generateRecordsArrayForSelectedSymbols(symbols);
+      // generate raw records array from file filtered by symbols
+      // records can be filtered by delta to remove very high/low delta records
+      // set this.useDeltaThresholds to true
+      // provide settings for
+      // targetStrikeUpperDeltaThreshold = 0.95;
+      // targetStrikeLowerDeltaThreshold = 0.05;
+      const records = this.generateRecordsArrayForSelectedSymbols(symbols);
+      // console.log('cS gTSD records[0]: ', records[0]);
 
-    // generate a strikes with expirations data object
-    // const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
-    const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
+      // generate a strikes with expirations data object
+      const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
 
-    // generate a distinct master list of expirations 
-    const allExpirations = this.getExpirationsFromStrikeExpirationsObject(strikesWithExpirations);
+      // generate a distinct master list of expirations 
+      const allExpirations = this.getExpirationsFromStrikeExpirationsObject(strikesWithExpirations);
 
-    // generate the final array of strikes with exipirations objects
-    // this is used as table data in the strikes-table component
-    const tradedStrikesData = this.generateTradedStrikesData(strikesWithExpirations, allExpirations);
+      // generate the final array of strikes with exipirations booleans
+      // this is used as table data in the strikes-table is this strike traded component
+      const tradedStrikesBool = this.generateTradedStrikesBool(strikesWithExpirations, allExpirations);
 
-    const data: TradedStrikesTableDataObject = {
-      allExpirations, 
-      tradedStrikesData,
-    };
-    
-    return data;
+      // console.log('cS gTSB tSBool[0]: ', tradedStrikesBool[0]);
+      
+      return tradedStrikesBool;
+    }
+
   }
+
+  private getTradedStrikesData(symbols: string[]) {
+
+    if (!this.csvDataBS.value || !this.csvDataBS.value[0] ) {
+      console.log('cS gTSD no csv data dude!!  You gotta choose a file!');
+      
+      return
+    } else {
+
+      // generate raw records array from file filtered by symbols
+      // records can be filtered by delta to remove very high/low delta records
+      // set this.useDeltaThresholds to true
+      // provide settings for
+      // targetStrikeUpperDeltaThreshold = 0.95;
+      // targetStrikeLowerDeltaThreshold = 0.05;
+      const records = this.generateRecordsArrayForSelectedSymbols(symbols);
+      // console.log('cS gTSD records[0]: ', records[0]);
+      
+      const allContractsByStrikeAndExpiration = this.generateAllContractsByStrikeAndExpiration(records);
+
+      const tradedStrikesData = this.convertAllContractsDataObjectToArray(allContractsByStrikeAndExpiration);
+
+      // console.log('cS gTSD tSD[0]: ', tradedStrikesData[0]);
+
+      return tradedStrikesData;
+    }
 
   }
   
   // 2) generateExpirationsByTradedStrike
-  // takes an array of OFF objects
+  // takes an array of OUiD objects
   // returns a single object with keys as string strike and values
   // array of strings as expirations for the key strike
   // this is all the traded contracts for a particular symbol
   // arranged by strike with all expirations for that strike
-  private generateExpirationsByTradedStrike(records: OratsFileFormat[]) {
-    console.log('cS gEBTSM records[0]: ', records[0]);
+  private generateExpirationsByTradedStrike(records: OratsUiDatum[]) {
+    // console.log('cS gEBTSM records[0]: ', records[0]);
     const strikesWithExpirations = {};
     for (const record of records) {
+
       let expirations: string[] = strikesWithExpirations[record.strike] ? 
         [...strikesWithExpirations[record.strike]] 
         : [];
       expirations.push(record.expirDate);
       strikesWithExpirations[record.strike] = expirations;
+
+      // const isTargetStrike = (Number(record.delta) < this.targetStrikeUpperDeltaThreshold) && (Number(record.delta) > this.targetStrikeLowerDeltaThreshold);
+      // console.log('cS gDRAFCF exp/strike/delta/isTargetStrike: ', record.expirDate, record.strike, record.delta, isTargetStrike);
+
+      // if (isTargetStrike) {
+      //   let expirations: string[] = StrikesWithExpirations[record.strike] ? 
+      //     [...StrikesWithExpirations[record.strike]] 
+      //     : [];
+      //   expirations.push(record.expirDate);
+      //   StrikesWithExpirations[record.strike] = expirations;
+        // console.log('cS gDRAFCF add to expirations: ', record.expirDate, record.strike, record.delta, isTargetStrike);
+      // }
+
     }
-    console.log('cS gEBTS strikesWithExpirations: ', strikesWithExpirations);
+    // console.log('cS gEBTS StrikesWithExpirations: ', StrikesWithExpirations);
 
     return strikesWithExpirations;
   }
@@ -320,7 +690,7 @@ export class CsvService {
   }
 
 
-  // 4) generateTradedStrikesData
+  // 4) generateTradedStrikesBool
   // takes a strikes with all expirations object and the master list of 
   // expirations
   // returns an array of objects with one key of strike and additional keys 
@@ -328,9 +698,9 @@ export class CsvService {
   // For each key a boolean is set true if that expiration is traded 
   // or false if not
   // This is the final data set for the UI strikes table feature
-  private generateTradedStrikesData(strikesWithExpirations, allExpirations: string[]) {
-    const tradedStrikesData = [];
-    for (const strike of Object.entries(strikesWithExpirations)) {
+  private generateTradedStrikesBool(allContractsByStrikeAndExpiration, allExpirations: string[]) {
+    const tradedStrikesBool = [];
+    for (const strike of Object.entries(allContractsByStrikeAndExpiration)) {
       // console.log('cS gTSDO strike object: ', strike);
       const expirations: string[] = Object.values(strike[1]);
       // console.log('cS gTSDO expirations: ', expirations);
@@ -341,23 +711,101 @@ export class CsvService {
         row[exp] = expirations.includes(exp) ? true : false;
       }
       // console.log('cS gTSDO final row: ', row);
-      tradedStrikesData.push(row);
+      tradedStrikesBool.push(row);
     }
-    console.log('cS gTSDO final tradedStrikesData: ', tradedStrikesData);
+    // console.log('cS gTSDO final tradedStrikesData: ', tradedStrikesData);
 
-    return tradedStrikesData;
+    return tradedStrikesBool;
   }
+
+  // 5) generateAllContractsByStrikeAndExpiration
+  // this is very similar to #2 above but the output object is slightly different
+  // in #2 the output is an object with key of strike and value as array of expirations
+  // for that strike
+  // Here we still have an object with key of strike.  The value however is now an
+  // object with key of expiration and value of OratsUiDatum
+  // this represents the data for that cell, rather than just whether the cell is traded
+  // As in #2, input is an array of OUiD objects
+
+  // Output shape:
+  // {
+  //   100: {'1/1/2020': OratsUiDatum object, '1/8/2020': OratsUiDatum object, '2/8/2020': OratsUiDatum object,},
+  //   105: {'1/1/2020': OratsUiDatum object, '1/8/2020': OratsUiDatum object, '2/8/2020': OratsUiDatum object,}
+  // }
+  private generateAllContractsByStrikeAndExpiration(records: OratsUiDatum[]): AllContractsByStrikeAndExpiration {
+    // console.log('cS gACBSAE input records[0]: ', records[0]);
+    const strikesWithExpirations = this.generateExpirationsByTradedStrike(records);
+    // console.log('cS gACBSAE input strikesWithExps: ', strikesWithExpirations);
+    
+    const allContractsByStrikeAndExpiration = {};
+    for (const [strike, expirations] of Object.entries(strikesWithExpirations)) {
+      // console.log('cS gOUDBTS strike/expiration: ', strike, expirations);
+
+      const contractsForStrikeByExpiration = {};
+
+      for (const exp of Object.values(expirations)) {
+        contractsForStrikeByExpiration[exp] = records.find(record => record.strike === strike && record.expirDate === exp);
+      }
+      allContractsByStrikeAndExpiration[strike] = contractsForStrikeByExpiration;
+    }
+    // console.log('cS gACBSAE allContractsByStrikeAndExpiration: ', allContractsByStrikeAndExpiration);
+
+    return allContractsByStrikeAndExpiration;
+  }
+
+  // 6) The object generated by #5 must be converted to an array so we can render it in
+  // a table.  Use the same technique as for generating the tradedStrikes data array.
+  // loop through all the entries in the object.  For each entry, loop over the array
+  // of all expirations, creating an object with key = expiration and value is the 
+  // OratsUiDatum for that strike/exp combination
+  
+  // Output shape:
+  // [
+  //   {
+  //     strike: '100',
+  //     '1/1/20': OratsUiDatum,
+  //     '1/8/20': undefined,
+  //     '1/15/20': OratsUiDatum,
+  //   },
+  //   {
+  //     strike: '105',
+  //     '1/1/20': OratsUiDatum,
+  //     '1/8/20': undefined,
+  //     '1/15/20': OratsUiDatum,
+  //   }
+  // ]
+  private convertAllContractsDataObjectToArray(allDataObject: AllContractsByStrikeAndExpiration): AllContractsDataForStrike[] {
+    const allData = []
+    for (const [strike, contracts] of Object.entries(allDataObject)) {
+      const contractsForStrike: AllContractsDataForStrike = {
+        strike,
+      }
+      for (const [exp, datum] of Object.entries(contracts)) {
+        contractsForStrike[exp] = datum;
+      }
+      allData.push(contractsForStrike);
+    }
+    // sort the data by strike so highest strike is at top of table
+    allData.sort((a, b) => {
+      return b.strike - a.strike;
+    });
+    // console.log('cS cACDOTA final allData: ', allData);
+
+    return allData;
+  }
+
+  ///////////////// END TRADED STRIKES OBJECT /////////////////////////
 
   // ====== OTHER METHODS FROM DOWNLOAD MANAGER BUT NOT USED NOW ==========
 
   // allSymbols = [];
   // tradedStrikes = new Map<string, StrikesByExpiration[]>();
 
-  // private generateTradedStrikesByExpirationMap(records: OratsFileFormat[]) {
+  // private generateTradedStrikesByExpirationMap(records: OratsUiDatum[]) {
   //   // console.log(records.slice(100, 110));
   //   console.log('cS gTSM records[0]: ', records[0]);
 
-  //   let currentRecord, prevRecord: OratsFileFormat = {};
+  //   let currentRecord, prevRecord: OratsUiDatum = {};
   //   let currentSymbol, prevSymbol = '';
   //   let currentYte, prevYte = '';
 
@@ -422,11 +870,11 @@ export class CsvService {
   //   }
   // }
 
-  // private generateSymbolsDataMap(data: OratsFileFormat[]) {
+  // private generateSymbolsDataMap(data: OratsUiDatum[]) {
   //   // const symbolsForData = SYMBOLS;
   //   // const symbolsForData = [SYMBOLS[1]];
   //   const symbolsForData = [...SYMBOLS.slice(10, 120)];
-  //   const symbolsDataMap = new Map<string, OratsFileFormat>();
+  //   const symbolsDataMap = new Map<string, OratsUiDatum>();
 
   //   for (const symbol of symbolsForData) {
   //     console.log('-----------------------------');
@@ -438,12 +886,12 @@ export class CsvService {
   //   }
   // }
 
-  // private getDataForSymbol(data: OratsFileFormat[], symbol: string) {
+  // private getDataForSymbol(data: OratsUiDatum[], symbol: string) {
   //   let index = data.findIndex(datum => datum.symbol === symbol);
   //   if (index && data[index]) {
   //     let rowSymbol = data[index].symbol ?? '';
   //     // console.log('cS gSDM init index/foundSymbol: ', index, rowSymbol);
-  //     const symbolData: OratsFileFormat[] = [];
+  //     const symbolData: OratsUiDatum[] = [];
     
   //     while(rowSymbol === symbol) {
   //       symbolData.push(data[index]);
@@ -463,14 +911,14 @@ export class CsvService {
   //   } else return;
   // }
 
-  // private generateDataMap(data: OratsFileFormat[], field: string) {
+  // private generateDataMap(data: OratsUiDatum[], field: string) {
   // }
 
   private thatsAllFolks() {}
 
 // ====== END OTHER METHODS ==========
 
-  ///////////////// END TRADED STRIKES SERVICE /////////////////////////
+  ///////////////// END CSV SERVICE /////////////////////////
 
 
 }

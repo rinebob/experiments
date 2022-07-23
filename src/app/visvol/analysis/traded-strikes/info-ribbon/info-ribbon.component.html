@@ -13,9 +13,9 @@
     <div class="ribbon-item">{{ribbonInfo.iv}}</div>
 
     <div class="buttons-container">
-        <button class="ribbon-button" (click)="changeView('CALLS_AND_PUTS')">Calls + Puts</button>
-        <button class="ribbon-button" (click)="changeView('CALLS_ONLY')">Calls only</button>
-        <button class="ribbon-button" (click)="changeView('PUTS_ONLY')">Puts only</button>
+        <button class="ribbon-button" (click)="changeView(ViewMode.CALLS_AND_PUTS)">Calls + Puts</button>
+        <button class="ribbon-button" (click)="changeView(ViewMode.CALLS_ONLY)">Calls only</button>
+        <button class="ribbon-button" (click)="changeView(ViewMode.PUTS_ONLY)">Puts only</button>
     </div>
 
 </div>

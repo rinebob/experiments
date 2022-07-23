@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, ChangeDetectionStrategy, ViewChild, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -17,13 +17,16 @@ export class DownloadManagerComponent implements OnInit  {
   title = 'Angular7-readCSV';  
   
   public records: any[] = [];  
-  @ViewChild('csvReader') csvReader: any;  
+  @ViewChild('csvReader') csvReader: any;
+
+  @Output() fileSelected = new EventEmitter<boolean>()
 
   symbol = new FormControl('');
   ticker = new FormControl('');
 
   allTickers = [];
 
+  fileChosen = false;
   fileName = 'test.csv';
   
   constructor(private csvService: CsvService) {}
@@ -32,6 +35,8 @@ export class DownloadManagerComponent implements OnInit  {
 
   uploadListener($event: any): void {  
     // console.log('dM uL upload listener called. event: ', $event);
+    this.fileChosen = true;
+    this.fileSelected.emit(true);
     
     let text = [];  
     let files = $event.srcElement.files;  

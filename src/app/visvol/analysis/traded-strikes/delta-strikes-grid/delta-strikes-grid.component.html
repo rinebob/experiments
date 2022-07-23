@@ -1,0 +1,26 @@
+<div class="delta-strikes-grid-container">
+    
+    <div class="expirations-container">
+        <button (click)="toggleTable()" class="toggle-button">
+            {{!!showTable ? 'Hide' : 'Show'}}
+        </button>
+        <div class="expiration" *ngFor="let exp of expirations"
+                (click)="getDeltaStrikesDataForExpiration(exp)"
+        >
+            {{exp}}
+        </div>
+    </div>
+
+
+    <div class="delta-strikes-data-container">
+        
+        <exp-delta-strikes-table *ngIf="showTable"
+                                 [tableData]="dataForExpiration"
+                                 [columns]="visibleColumns"
+        >
+
+        </exp-delta-strikes-table>
+        
+    </div>
+
+</div>

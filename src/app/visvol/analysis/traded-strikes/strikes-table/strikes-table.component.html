@@ -1,7 +1,56 @@
 
 <div #strikesGridContainer class="strikes-grid-container">
 
-    <ng-container *ngIf="tableData$ | async as data">
+    <ng-container *ngIf="tradedStrikesData$ | async as data">
+        <div class="header-row" *ngIf="!!data.length">
+            <div class="header-strike-cell">
+                Strike
+            </div>
+            <div class="header-cell" *ngFor="let exp of expirations$ | async" >
+                {{exp}}
+            </div>
+
+        </div>
+
+        <cdk-virtual-scroll-viewport [itemSize]="scrollItemSize" class="scroll-viewport">
+
+            <div *cdkVirtualFor="let row of data;" class="row-container">
+                <div class="cell strike-cell">
+                    {{row.strike}}
+                </div>
+                <div *ngFor="let exp of expirations$ | async" 
+                    class="cell" 
+                    [class.on]="!!row[exp]"
+                    [class.off]="!row[exp]"
+                
+                >
+                <ng-container *ngIf="row[exp]">
+
+                    {{row[exp].delta}}
+
+                </ng-container>
+                
+                </div>
+
+            </div>
+
+        </cdk-virtual-scroll-viewport>
+
+    </ng-container>
+
+
+
+
+
+
+
+
+
+
+    <!-- Existing traded strikes data true/false html -->
+
+    <!-- <ng-container *ngIf="tradedStrikesTableData$ | async as data"></ng-container> -->
+    <ng-container *ngIf="false">
         <div class="header-row" *ngIf="!!data.length">
             <div class="header-strike-cell">
                 Strike

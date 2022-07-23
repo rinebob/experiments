@@ -9,6 +9,8 @@ import { TradedStrikesViewComponent } from './traded-strikes-view/traded-strikes
 import { SymbolSelectorComponent } from './symbol-selector/symbol-selector.component';
 import { StrikesTableComponent } from './strikes-table/strikes-table.component';
 import { InfoRibbonComponent } from './info-ribbon/info-ribbon.component';
+import { DeltaStrikesGridComponent } from './delta-strikes-grid/delta-strikes-grid.component';
+import { DeltaStrikesTableComponent } from './delta-strikes-table/delta-strikes-table.component';
 
 
 
@@ -17,7 +19,9 @@ import { InfoRibbonComponent } from './info-ribbon/info-ribbon.component';
     TradedStrikesViewComponent,
     SymbolSelectorComponent,
     StrikesTableComponent,
-    InfoRibbonComponent
+    InfoRibbonComponent,
+    DeltaStrikesGridComponent,
+    DeltaStrikesTableComponent
   ],
   imports: [
     CommonModule,
