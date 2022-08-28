@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 import { AllContractsByStrikeAndExpiration, AllContractsDataForStrike, ContractLookupObject, DataByExpirationForStrike, DeltaStrikesGridData, OratsFileFormat, OratsUiDatum, StrikesByExpiration, SymbolsForExpiration } from '../../common/interfaces_orats';
 import { RibbonInfo, TradedStrikesBoolDatum, TradedStrikesBoolTableDataObject} from '../../common/interfaces';
-import {ExpirationsByStrike, TradedStrikesGridData} from '../../common/interfaces_orats';
+import {ExpirationsByStrike, OratsHighVolumeDatum, OratsVolumeDataObject, OratsVolumeDataObjectFlat, OratsVolumeDataObjects, OratsVolumeDataObjectsFlat, TradedStrikesGridData} from '../../common/interfaces_orats';
 import { DELTA_STRIKES_TARGET_DELTA_NUM_RECORDS, RIBBON_INFO_INITIALIZER } from 'src/app/common/constants';
 
 @Injectable({
@@ -68,7 +68,8 @@ export class CsvService {
     return this.tradedStrikesDataBS.value.length;
   }
 
-  
+  private highestVolumeObjectBS = new BehaviorSubject<OratsVolumeDataObjectsFlat>({});
+  highestVolumeObject$: Observable<OratsVolumeDataObjectsFlat> = this.highestVolumeObjectBS;
   
   constructor() { }
 
@@ -89,6 +90,8 @@ export class CsvService {
 
     // Object with key = contract symbol and value = OratsUiDatum for that symbol
     this.contractLookupBS.next(this.generateContractLookupObject(this.allRecordsBS.value));
+
+    this.highestVolumeObjectBS.next(this.generateHighestVolumeObject());
 }
   
   // runs when a user selects a symbol in a view.  Currently supporting traded strikes view
@@ -111,6 +114,8 @@ export class CsvService {
     // get delta strikes data
     this.deltaStrikesDataBS.next(this.generateDeltaStrikesGridData([symbol]));
   }
+
+  
 
   ////////////////////// END PUBLIC API /////////////////////////////
 
@@ -156,6 +161,10 @@ export class CsvService {
           delta: currentRecord[25].trim(),
           cMidIv: currentRecord[16].trim(),
           pMidIv: currentRecord[20].trim(),
+          cVolu: currentRecord[5].trim(),
+          cOi: currentRecord[6].trim(),
+          pVolu: currentRecord[7].trim(),
+          pOi: currentRecord[8].trim(),
 
         };  
 
@@ -795,6 +804,102 @@ export class CsvService {
   }
 
   ///////////////// END TRADED STRIKES OBJECT /////////////////////////
+
+  ///////////////// HIGH VOLUME/OPEN INT FINDER /////////////////////////
+
+  // generates an object for each security.  Object has highest values for
+  // call and put volume and open interest for any contract for the security.
+  // Include current stock price, and for each of the four data points, expiration,
+  // strike and value
+  generateHighestVolumeObject(): OratsVolumeDataObjectsFlat {
+    let prevSymbol = '';
+    let prevExp = '';
+    
+    const flatVolumeDataObjectInitializer: OratsVolumeDataObjectFlat = {
+      symbol: '',
+      price: '',
+      highCallVolExp: '',
+      highCallVolStrike: '',
+      highCallVolValue: '',
+      highCallOIExp: '',
+      highCallOIStrike: '',
+      highCallOIValue: '',
+      highPutVolExp: '',
+      highPutVolStrike: '',
+      highPutVolValue: '',
+      highPutOIExp: '',
+      highPutOIStrike: '',
+      highPutOIValue: '',
+    };
+
+    let oratsVolumeDataObjectsFlat: OratsVolumeDataObjectsFlat = {};
+
+    let flatVolumeDataObject = {...flatVolumeDataObjectInitializer};
+
+    for (const datum of this.allRecordsBS.value.slice(24361, 29000)) {
+      console.log('cS gHVO prevS/prevE/symbol/exp/strike/cVol: ', prevSymbol, prevExp, datum.symbol, datum.yte, datum.strike, datum.cVolu);
+      if (datum.symbol !== prevSymbol) {
+        // console.log('cS gHVO final volumeDataObject: ', {...volumeDataObject});
+        console.log('cS gHVO final flat volumeDataObject: ', {...flatVolumeDataObject});
+        console.log('==============================');
+
+        if (prevSymbol) {
+          oratsVolumeDataObjectsFlat[prevSymbol] = {...flatVolumeDataObject};
+        }
+ 
+        prevSymbol = datum.symbol;
+        flatVolumeDataObject = {...flatVolumeDataObjectInitializer};
+        flatVolumeDataObject.symbol = datum.symbol;
+        flatVolumeDataObject.price = datum.stkPx;
+        console.log('cS gHVO new flatVolumeDataObject: ', {...flatVolumeDataObject});
+      }
+
+      if (datum.yte !== prevExp) {
+        console.log('----------- exp: ', datum.yte,' ---------------');
+        prevExp = datum.yte;
+      }
+
+      console.log('cS gHVO cVolu/high: ', datum.cVolu, flatVolumeDataObject.highCallVolValue);
+      if (Number(datum.cVolu) > Number(flatVolumeDataObject.highCallVolValue)) {
+        console.log('cS gHVO cVolu/high: ', datum.cVolu, flatVolumeDataObject.highCallVolValue);
+        flatVolumeDataObject.highCallVolExp = datum.yte;
+        flatVolumeDataObject.highCallVolStrike = datum.strike;
+        flatVolumeDataObject.highCallVolValue = datum.cVolu;
+        console.log('cS gHVO cur flat vDO: ', {...flatVolumeDataObject});
+      }
+
+      if (Number(datum.cOi) > Number(flatVolumeDataObject.highCallOIValue)) {
+        console.log('cS gHVO cOi/high: ', datum.cOi, flatVolumeDataObject.highCallOIValue);
+        flatVolumeDataObject.highCallOIExp = datum.yte;
+        flatVolumeDataObject.highCallOIStrike = datum.strike;
+        flatVolumeDataObject.highCallOIValue = datum.cOi;
+      }
+
+      if (Number(datum.pVolu) > Number(flatVolumeDataObject.highPutVolValue)) {
+        console.log('cS gHVO pVolu/high: ', datum.pVolu, flatVolumeDataObject.highPutVolValue);
+        flatVolumeDataObject.highPutVolExp = datum.yte;
+        flatVolumeDataObject.highPutVolStrike = datum.strike;
+        flatVolumeDataObject.highPutVolValue = datum.pVolu;
+      }
+
+      if (Number(datum.pOi) > Number(flatVolumeDataObject.highPutOIValue)) {
+        console.log('cS gHVO pOi/high: ', datum.pOi, flatVolumeDataObject.highPutOIValue);
+        flatVolumeDataObject.highPutOIExp = datum.yte;
+        flatVolumeDataObject.highPutOIStrike = datum.strike;
+        flatVolumeDataObject.highPutOIValue = datum.pOi;
+      }
+
+    }
+
+    oratsVolumeDataObjectsFlat[prevSymbol] = {...flatVolumeDataObject};
+    console.log('cS gHVO final final flat oratsVolumeDataObjects: ', {...oratsVolumeDataObjectsFlat});
+
+    return oratsVolumeDataObjectsFlat;
+
+  }
+
+
+  ///////////////// END HIGH VOLUME/OPEN INT FINDER /////////////////////////
 
   // ====== OTHER METHODS FROM DOWNLOAD MANAGER BUT NOT USED NOW ==========
 

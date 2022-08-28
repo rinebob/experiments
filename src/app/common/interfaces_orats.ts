@@ -64,10 +64,10 @@ export interface OratsUiDatum {
     pMidIv?:  string;
     
     // ctxSymbolHash?: string;
-    // cVolu?:  string;
-    // cOi?:  string;
-    // pVolu?:  string;
-    // pOi?:  string;
+    cVolu?:  string;
+    cOi?:  string;
+    pVolu?:  string;
+    pOi?:  string;
     // cBidPx?:  string;
     // cAskPx?:  string;
     // pBidPx?:  string;
@@ -168,4 +168,50 @@ export interface TradedStrikesGridData {
 // Object with key = exiration and value = array of option contract symbols for that expiration.
 export interface SymbolsForExpiration {
     [key: string]: string[];
+}
+
+export interface OratsHighVolumeDatum {
+    expiration: string;
+    strike: string;
+    value: string;
+}
+
+
+// Object used to determine what securitites to include in the api.  Looking for
+// securities with highest call/put volume/open interest.  This object holds the 
+// highest values of any one contract per stock symbol.
+export interface OratsVolumeDataObject {
+    symbol: string;
+    price: string;
+    highCallVol: OratsHighVolumeDatum;
+    highPutVol?: OratsHighVolumeDatum;
+    highCallOI?: OratsHighVolumeDatum;
+    highPutOI?: OratsHighVolumeDatum;
+}
+
+export interface OratsVolumeDataObjectFlat {
+    symbol: string;
+    price: string;
+    highCallVolExp: string;
+    highCallVolStrike: string;
+    highCallVolValue: string;
+    highCallOIExp: string;
+    highCallOIStrike: string;
+    highCallOIValue: string;
+    highPutVolExp: string;
+    highPutVolStrike: string;
+    highPutVolValue: string;
+    highPutOIExp: string;
+    highPutOIStrike: string;
+    highPutOIValue: string;
+}
+
+export interface OratsVolumeDataObjects {
+    // key is the underlying stock symbol
+    [key: string]: OratsVolumeDataObject
+}
+
+export interface OratsVolumeDataObjectsFlat {
+    // key is the underlying stock symbol
+    [key: string]: OratsVolumeDataObjectFlat
 }
